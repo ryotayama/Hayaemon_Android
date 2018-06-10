@@ -1,0 +1,1325 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabEqualizer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        />
+
+    <ListView
+        android:id="@+id/equalizerPresets"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_below="@+id/tabEqualizer"
+        />
+
+    <ScrollView
+        android:id="@+id/scrollCustomEqualizer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tabEqualizer"
+        android:visibility="invisible"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/textVolName"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="音量"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seekVol"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/textVolName"
+                    android:layout_toLeftOf="@+id/textVolValue"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/textVolValue"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text20KName"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="20K"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek20K"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text20KName"
+                    android:layout_toLeftOf="@+id/text20KValue"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text20KValue"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text16KName"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="16K"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek16K"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text16KName"
+                    android:layout_toLeftOf="@+id/text16KValue"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text16KValue"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text12_5KName"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="12.5K"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek12_5K"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text12_5KName"
+                    android:layout_toLeftOf="@+id/text12_5KValue"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text12_5KValue"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text10KName"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="10K"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek10K"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text10KName"
+                    android:layout_toLeftOf="@+id/text10KValue"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text10KValue"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text8KName"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="8K"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek8K"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text8KName"
+                    android:layout_toLeftOf="@+id/text8KValue"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text8KValue"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text6_3KName"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="6.3K"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek6_3K"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text6_3KName"
+                    android:layout_toLeftOf="@+id/text6_3KValue"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text6_3KValue"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text5KName"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="5K"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek5K"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text5KName"
+                    android:layout_toLeftOf="@+id/text5KValue"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text5KValue"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text4KName"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="4K"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek4K"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text4KName"
+                    android:layout_toLeftOf="@+id/text4KValue"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text4KValue"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text3_15KName"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="3.15K"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek3_15K"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text3_15KName"
+                    android:layout_toLeftOf="@+id/text3_15KValue"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text3_15KValue"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text2_5KName"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="2.5K"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek2_5K"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text2_5KName"
+                    android:layout_toLeftOf="@+id/text2_5KValue"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text2_5KValue"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text2KName"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="2K"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek2K"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text2KName"
+                    android:layout_toLeftOf="@+id/text2KValue"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text2KValue"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text1_6KName"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="1.6K"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek1_6K"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text1_6KName"
+                    android:layout_toLeftOf="@+id/text1_6KValue"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text1_6KValue"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text1_25KName"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="1.25K"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek1_25K"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text1_25KName"
+                    android:layout_toLeftOf="@+id/text1_25KValue"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text1_25KValue"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text1KName"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="1K"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek1K"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text1KName"
+                    android:layout_toLeftOf="@+id/text1KValue"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text1KValue"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text800Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="800"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek800"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text800Name"
+                    android:layout_toLeftOf="@+id/text800Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text800Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text630Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="630"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek630"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text630Name"
+                    android:layout_toLeftOf="@+id/text630Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text630Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text500Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="500"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek500"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text500Name"
+                    android:layout_toLeftOf="@+id/text500Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text500Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text400Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="400"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek400"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text400Name"
+                    android:layout_toLeftOf="@+id/text400Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text400Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text315Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="315"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek315"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text315Name"
+                    android:layout_toLeftOf="@+id/text315Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text315Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text250Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="250"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek250"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text250Name"
+                    android:layout_toLeftOf="@+id/text250Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text250Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text200Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="200"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek200"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text200Name"
+                    android:layout_toLeftOf="@+id/text200Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text200Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text160Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="160"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek160"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text160Name"
+                    android:layout_toLeftOf="@+id/text160Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text160Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text125Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="125"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek125"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text125Name"
+                    android:layout_toLeftOf="@+id/text125Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text125Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text100Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="100"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek100"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text100Name"
+                    android:layout_toLeftOf="@+id/text100Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text100Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text80Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="80"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek80"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text80Name"
+                    android:layout_toLeftOf="@+id/text80Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text80Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text63Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="63"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek63"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text63Name"
+                    android:layout_toLeftOf="@+id/text63Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text63Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text50Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="50"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek50"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text50Name"
+                    android:layout_toLeftOf="@+id/text50Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text50Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text40Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="40"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek40"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text40Name"
+                    android:layout_toLeftOf="@+id/text40Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text40Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text31_5Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="31.5"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek31_5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text31_5Name"
+                    android:layout_toLeftOf="@+id/text31_5Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text31_5Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text25Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="25"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek25"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text25Name"
+                    android:layout_toLeftOf="@+id/text25Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text25Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/text20Name"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="20"
+                    android:gravity="right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seek20"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_toRightOf="@+id/text20Name"
+                    android:layout_toLeftOf="@+id/text20Value"
+                    android:layout_centerVertical="true"
+                    android:max="60"
+                    android:progress="30"
+                    />
+
+                <TextView
+                    android:id="@+id/text20Value"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="left"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

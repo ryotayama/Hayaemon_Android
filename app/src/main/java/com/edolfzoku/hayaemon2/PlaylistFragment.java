@@ -1,0 +1,582 @@
+/*
+ * PlaylistFragment
+ *
+ * Copyright (c) 2018 Ryota Yamauchi. All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.edolfzoku.hayaemon2;
+
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.ContentUris;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Color;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+
+import com.google.gson.Gson;
+import com.un4seen.bass.BASS;
+import com.un4seen.bass.BASS_FX;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+public class PlaylistFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
+    private List<Map<String, String>> listSongs;
+    private int hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20;
+    private List<String> arSongsPath;
+    private List<Boolean> arPlayed;
+    private ListView listView;
+    private SimpleAdapter adapter;
+    private MainActivity activity;
+    private int nPlaying;
+    private int nDeleteItem;
+
+    public PlaylistFragment()
+    {
+        activity = null;
+        nPlaying = -1;
+        listSongs = new ArrayList<>();
+        arSongsPath = new ArrayList<>();
+        arPlayed = new ArrayList<>();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context != null && context instanceof MainActivity) {
+            activity = (MainActivity) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        activity = null;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        adapter = new SimpleAdapter(
+                activity,
+                listSongs,
+                android.R.layout.simple_list_item_2,
+                new String[]{"songName","artistName"},
+                new int[]{android.R.id.text1, android.R.id.text2}
+        );
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.btnRewind)
+        {
+            if(activity.hStream == 0) return;
+            if(BASS.BASS_ChannelBytes2Seconds(activity.hStream, BASS.BASS_ChannelGetPosition(activity.hStream, BASS.BASS_POS_BYTE)) > activity.dLoopA + 1.0)
+                BASS.BASS_ChannelSetPosition(activity.hStream, BASS.BASS_ChannelSeconds2Bytes(activity.hStream, activity.dLoopA), BASS.BASS_POS_BYTE);
+            else
+                playPrev();
+        }
+        else if(v.getId() == R.id.btnStop)
+        {
+            if(activity.hStream == 0) return;
+            stop();
+        }
+        else if(v.getId() == R.id.btnPlay)
+        {
+            if(BASS.BASS_ChannelIsActive(activity.hStream) == BASS.BASS_ACTIVE_PLAYING)
+            {
+                pause();
+            }
+            else
+            {
+                if(BASS.BASS_ChannelIsActive(activity.hStream) == BASS.BASS_ACTIVE_PAUSED)
+                {
+                    play();
+                }
+                else
+                {
+                    if(activity.hStream == 0)
+                    {
+                        playNext();
+                    }
+                }
+            }
+        }
+        else if(v.getId() == R.id.btnForward)
+        {
+            if(activity.hStream == 0) return;
+            playNext();
+        }
+        else if(v.getId() == R.id.btnPlayMode)
+        {
+            Button btnPlayMode = (Button)activity.findViewById(R.id.btnPlayMode);
+            if(btnPlayMode.getText().equals("通常モード"))
+            {
+                btnPlayMode.setText("１曲ループ");
+                btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_sloop, 0, 0);
+            }
+            else if(btnPlayMode.getText().equals("１曲ループ"))
+            {
+                btnPlayMode.setText("全曲ループ");
+                btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_aloop, 0, 0);
+            }
+            else if(btnPlayMode.getText().equals("全曲ループ"))
+            {
+                btnPlayMode.setText("ランダム再生");
+                btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_random, 0, 0);
+            }
+            else if(btnPlayMode.getText().equals("ランダム再生"))
+            {
+                btnPlayMode.setText("通常モード");
+                btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_normal, 0, 0);
+            }
+
+            SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+            int nPlayMode = 0;
+            if(btnPlayMode.getText().equals("通常モード"))
+                nPlayMode = 0;
+            else if(btnPlayMode.getText().equals("１曲ループ"))
+                nPlayMode = 1;
+            else if(btnPlayMode.getText().equals("全曲ループ"))
+                nPlayMode = 2;
+            else if(btnPlayMode.getText().equals("ランダム再生"))
+                nPlayMode = 3;
+            preferences.edit().putInt("playmode", nPlayMode).commit();
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState)
+    {
+        View rootView = inflater.inflate(R.layout.fragment_playlist, container, false);
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        listView = (ListView)activity.findViewById(R.id.listView);
+
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(this);
+
+        registerForContextMenu(listView);
+
+        Button btnRewind = (Button) activity.findViewById(R.id.btnRewind);
+        btnRewind.setOnClickListener(this);
+
+        Button btnPlay = (Button) activity.findViewById(R.id.btnPlay);
+        btnPlay.setOnClickListener(this);
+
+        Button btnStop = (Button) activity.findViewById(R.id.btnStop);
+        btnStop.setOnClickListener(this);
+
+        Button btnForward = (Button) activity.findViewById(R.id.btnForward);
+        btnForward.setOnClickListener(this);
+
+        Button btnPlayMode = (Button) activity.findViewById(R.id.btnPlayMode);
+        btnPlayMode.setOnClickListener(this);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1)
+        {
+            if(Build.VERSION.SDK_INT < 19)
+            {
+                addSong(activity, data.getData(), true);
+            }
+            else
+            {
+                if(data.getClipData() == null)
+                {
+                    addSong(activity, data.getData(), true);
+                }
+                else
+                {
+                    for(int i = 0; i < data.getClipData().getItemCount(); i++)
+                    {
+                        Uri uri = data.getClipData().getItemAt(i).getUri();
+                        addSong(activity, uri, true);
+                    }
+                }
+            }
+            adapter.notifyDataSetChanged();
+        }
+        else if(requestCode == 2)
+        {
+            activity.getContentResolver().takePersistableUriPermission(data.getData(), Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            addSong(activity, Uri.parse(activity.strPath), false);
+            adapter.notifyDataSetChanged();
+        }
+
+        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        Gson gson = new Gson();
+        preferences.edit().putString("arSongsPath", gson.toJson(arSongsPath)).commit();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo info)
+    {
+        super.onCreateContextMenu(menu, view, info);
+        AdapterView.AdapterContextMenuInfo adapterInfo = (AdapterView.AdapterContextMenuInfo)info;
+        ListView listView = (ListView)view;
+        nDeleteItem = adapterInfo.position;
+        Map<String, String> map = (Map)listView.getItemAtPosition(nDeleteItem);
+        String strSong = map.get("songName");
+
+        menu.setHeaderTitle(strSong);
+        menu.add("削除");
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item)
+    {
+        if(item.getTitle().equals("削除"))
+        {
+            listSongs.remove(nDeleteItem);
+            arSongsPath.remove(nDeleteItem);
+            arPlayed.remove(nDeleteItem);
+            adapter.notifyDataSetChanged();
+
+            SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+            Gson gson = new Gson();
+            preferences.edit().putString("arSongsPath", gson.toJson(arSongsPath)).commit();
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View v, int position, long id)
+    {
+        playSong(position);
+    }
+
+    public void play()
+    {
+        if(MainActivity.hStream == 0) return;
+        BASS.BASS_ChannelPlay(MainActivity.hStream, false);
+        Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
+        btnPlay.setBackgroundColor(Color.argb(0, 0, 0, 0));
+    }
+
+    public void pause()
+    {
+        if(MainActivity.hStream == 0) return;
+        BASS.BASS_ChannelPause(MainActivity.hStream);
+        Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
+        btnPlay.setBackgroundColor(Color.argb(64, 0, 0, 0));
+    }
+
+    public void playPrev()
+    {
+        if(MainActivity.hStream == 0) return;
+        nPlaying--;
+        if(nPlaying < 0) return;
+        playSong(nPlaying);
+    }
+
+    public void playNext()
+    {
+        MainActivity activity = (MainActivity)getActivity();
+        Button btnPlayMode = (Button)activity.findViewById(R.id.btnPlayMode);
+        if(btnPlayMode.getText().equals("通常モード") || btnPlayMode.getText().equals("１曲ループ"))
+        {
+            nPlaying++;
+            if(nPlaying >= listSongs.size())
+            {
+                stop();
+                return;
+            }
+        }
+        else if(btnPlayMode.getText().equals("全曲ループ"))
+        {
+            nPlaying++;
+            if(nPlaying >= listSongs.size())
+            {
+                nPlaying = 0;
+            }
+        }
+        else if(btnPlayMode.getText().equals("ランダム再生"))
+        {
+            ArrayList<Integer> arTemp = new ArrayList<Integer>();
+            for(int i = 0; i < arPlayed.size(); i++)
+            {
+                if(i == nPlaying) continue;
+                Boolean bPlayed = arPlayed.get(i);
+                if(!bPlayed.booleanValue())
+                {
+                    arTemp.add(i);
+                }
+            }
+            if(arTemp.size() == 0)
+            {
+                for(int i = 0; i < arPlayed.size(); i++)
+                {
+                    arPlayed.set(i, false);
+                }
+            }
+            if(arPlayed.size() != 1)
+            {
+                Random random = new Random();
+                if(arTemp.size() == 0 || arTemp.size() == arPlayed.size())
+                {
+                    nPlaying = random.nextInt(arPlayed.size());
+                }
+                else
+                {
+                    int nRandom = random.nextInt(arTemp.size());
+                    nPlaying = arTemp.get(nRandom);
+                }
+            }
+        }
+        playSong(nPlaying);
+    }
+
+    public void playSong(int nSong)
+    {
+        MainActivity activity = (MainActivity)getActivity();
+        activity.clearLoop();
+        nPlaying = nSong;
+        String strPath = arSongsPath.get(nSong);
+        if(MainActivity.hStream != 0)
+        {
+            BASS.BASS_StreamFree(MainActivity.hStream);
+            MainActivity.hStream = 0;
+        }
+        arPlayed.set(nSong, true);
+        MainActivity.hStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE);
+        MainActivity.hStream = BASS_FX.BASS_FX_ReverseCreate(MainActivity.hStream, 2, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+        MainActivity.hStream = BASS_FX.BASS_FX_TempoCreate(MainActivity.hStream, BASS_FX.BASS_FX_FREESOURCE);
+        int chan = BASS_FX.BASS_FX_TempoGetSource(MainActivity.hStream);
+        BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
+        MainActivity.hFxVol = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_VOLUME, 0);
+        hFx20K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx16K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx12_5K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx10K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx8K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx6_3K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx5K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx4K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx3_15K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx2_5K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx2K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx1_6K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx1_25K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx1K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx800 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx630 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx500 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx400 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx315 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx250 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx200 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx160 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx125 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx100 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx80 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx63 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx50 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx40 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx31_5 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx25 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        hFx20 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+        BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed);
+        BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, controlFragment.fPitch);
+        EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+        equalizerFragment.setArHFX(new int[] {hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20});
+        equalizerFragment.setEQ();
+        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+        effectFragment.applyEffect();
+        activity.setSync();
+        BASS.BASS_ChannelPlay(MainActivity.hStream, false);
+        Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
+        btnPlay.setText("一時停止");
+        btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pause, 0, 0);
+
+        LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(2);
+        loopFragment.drawWaveForm(strPath);
+    }
+
+    public void stop()
+    {
+        if(MainActivity.hStream == 0) return;
+        nPlaying = -1;
+        BASS.BASS_ChannelStop(MainActivity.hStream);
+        MainActivity.hStream = 0;
+        Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
+        btnPlay.setText("再生");
+        btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_play, 0, 0);
+        MainActivity activity = (MainActivity)getActivity();
+        activity.clearLoop();
+    }
+
+    public void addSong(MainActivity activity, Uri uri, boolean bAccessIntent)
+    {
+        String strPath = getPathFromUri(activity.getApplicationContext(), uri);
+        if(bAccessIntent && Build.VERSION.SDK_INT == 24)
+        {
+            if(activity.startStorageAccessIntent(strPath))
+                return;
+        }
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        boolean bError = false;
+        try {
+            mmr.setDataSource(strPath);
+        }
+        catch(Exception e) {
+            bError = true;
+        }
+        String strTitle = null;
+        String strArtist = null;
+        if(!bError) {
+            strTitle = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+            strArtist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+        }
+        if(strTitle != null) {
+            Map<String, String> map = new HashMap<>();
+            map.put("songName", strTitle);
+            map.put("artistName", strArtist);
+            listSongs.add(map);
+        }
+        else
+        {
+            File file = new File(strPath);
+            String strFileName = file.getName();
+            strFileName = strFileName.substring(0, strFileName.lastIndexOf("."));
+            Map<String, String> map = new HashMap<>();
+            map.put("songName", strFileName);
+            map.put("artistName", "");
+            listSongs.add(map);
+        }
+        arSongsPath.add(strPath);
+        arPlayed.add(false);
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private String getPathFromUri(final Context context, final Uri uri)
+    {
+        boolean isAfterKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+        if (isAfterKitKat && DocumentsContract.isDocumentUri(context, uri))
+        {
+            if("com.android.externalstorage.documents".equals(uri.getAuthority()))
+            { // ExternalStorageProvider
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                if ("primary".equalsIgnoreCase(type))
+                {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+                else
+                {
+                    return "/storage/" + type +  "/" + split[1];
+                }
+            }
+            else if("com.android.providers.downloads.documents".equals(
+                    uri.getAuthority()))
+            {
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                return getDataColumn(context, contentUri, null, null);
+            }
+            else if("com.android.providers.media.documents".equals(
+                    uri.getAuthority())) {// MediaProvider
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                Uri contentUri = null;
+                contentUri = MediaStore.Files.getContentUri("external");
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[] {
+                        split[1]
+                };
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        }
+        else if ("content".equalsIgnoreCase(uri.getScheme()))
+        {
+            return getDataColumn(context, uri, null, null);
+        }
+        else if ("file".equalsIgnoreCase(uri.getScheme()))
+        {
+            return uri.getPath();
+        }
+        return uri.toString();
+    }
+
+    public String getDataColumn(Context context, Uri uri, String selection,
+                                String[] selectionArgs)
+    {
+        Cursor cursor = null;
+        final String[] projection = {
+                MediaStore.Files.FileColumns.DATA
+        };
+        try
+        {
+            cursor = context.getContentResolver().query(
+                    uri, projection, selection, selectionArgs, null);
+            if (cursor != null && cursor.moveToFirst())
+            {
+                final int cindex = cursor.getColumnIndexOrThrow(projection[0]);
+                return cursor.getString(cindex);
+            }
+        }
+        finally
+        {
+            if(cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+}

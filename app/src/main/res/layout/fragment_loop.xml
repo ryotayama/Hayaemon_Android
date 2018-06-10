@@ -1,0 +1,190 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relative_loop"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/abTab_Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        >
+
+    </android.support.design.widget.TabLayout>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/textViewMarker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/abTab_Layout"
+        />
+
+    <com.edolfzoku.hayaemon2.WaveView
+        android:id="@+id/waveView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="0px"
+        android:background="@android:color/transparent"
+        android:layout_below="@+id/textViewMarker"
+        android:layout_above="@+id/ABButton"
+        >
+    </com.edolfzoku.hayaemon2.WaveView>
+
+    <View
+        android:id="@+id/viewCurPos"
+        android:layout_width="1px"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black"
+        android:layout_below="@+id/textViewMarker"
+        android:layout_above="@+id/ABButton"
+        />
+
+    <View
+        android:id="@+id/viewMaskA"
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="0dp"
+        android:background="@android:color/white"
+        android:layout_below="@+id/textViewMarker"
+        android:layout_above="@+id/ABButton"
+        android:alpha="0.75"
+        />
+
+    <View
+        android:id="@+id/viewMaskB"
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="0dp"
+        android:background="@android:color/white"
+        android:layout_below="@+id/textViewMarker"
+        android:layout_above="@+id/ABButton"
+        android:alpha="0.75"
+        />
+
+    <LinearLayout
+        android:id="@+id/ABButton"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <ImageButton
+            android:id="@+id/btnRewind5Sec"
+            android:src="@drawable/ic_rewind5sec"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            />
+
+        <ImageButton
+            android:id="@+id/btnA"
+            android:src="@drawable/ic_a"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            />
+
+        <ImageButton
+            android:id="@+id/btnB"
+            android:src="@drawable/ic_b"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            />
+
+        <ImageButton
+            android:id="@+id/btnForward5Sec"
+            android:src="@drawable/ic_forward5sec"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/MarkerButton"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        >
+
+
+        <ImageButton
+            android:id="@+id/btnRewind5Sec2"
+            android:src="@drawable/ic_rewind5sec"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            />
+
+        <ImageButton
+            android:id="@+id/btnPrevmarker"
+            android:src="@drawable/ic_prevmarker"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            />
+
+        <ImageButton
+            android:id="@+id/btnDelmarker"
+            android:src="@drawable/ic_delmarker"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            />
+
+        <ImageButton
+            android:id="@+id/btnAddmarker"
+            android:src="@drawable/ic_addmarker"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            />
+
+        <ImageButton
+            android:id="@+id/btnNextmarker"
+            android:src="@drawable/ic_nextmarker"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            />
+
+        <ImageButton
+            android:id="@+id/btnLoopmarker"
+            android:src="@drawable/ic_loopmarker"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            />
+
+        <ImageButton
+            android:id="@+id/btnForward5Sec2"
+            android:src="@drawable/ic_forward5sec"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            />
+
+    </LinearLayout>
+¥
+</RelativeLayout>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16px"
+        android:scrollbars="vertical"
+        android:layout_above="@+id/textViewBlog"
+        android:id="@+id/textView"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16px"
+        android:text="この内容は開発者ブログから"
+        android:textColorLink="#0000FF"
+        android:layout_above="@+id/textViewRead"
+        android:id="@+id/textViewBlog"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16px"
+        android:text="いつでも読み返せます。"
+        android:layout_above="@+id/textViewArticle"
+        android:id="@+id/textViewRead"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16px"
+        android:textColorLink="#0000FF"
+        android:text="該当記事へ"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/switchNextHidden"
+        android:id="@+id/textViewArticle"
+        />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16px"
+        android:text="次回から表示しない"
+        android:layout_above="@+id/buttons"
+        android:id="@+id/switchNextHidden"
+        />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/buttons"
+        >
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="閉じる"
+            android:id="@+id/buttonClose"
+            />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="シェア"
+            android:layout_toRightOf="@+id/buttonClose"
+            android:id="@+id/buttonShare"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>
