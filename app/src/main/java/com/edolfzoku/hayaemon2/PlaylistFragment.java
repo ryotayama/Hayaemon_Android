@@ -20,10 +20,12 @@ package com.edolfzoku.hayaemon2;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
@@ -47,14 +49,22 @@ import android.widget.SimpleAdapter;
 
 import com.google.gson.Gson;
 import com.un4seen.bass.BASS;
+import com.un4seen.bass.BASS_AAC;
 import com.un4seen.bass.BASS_FX;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import static com.un4seen.bass.BASS_AAC.BASS_AAC_StreamCreateFileUser;
 
 public class PlaylistFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
     private List<Map<String, String>> listSongs;
@@ -251,8 +261,8 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         }
         else if(requestCode == 2)
         {
-            activity.getContentResolver().takePersistableUriPermission(data.getData(), Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            addSong(activity, Uri.parse(activity.strPath), false);
+            activity.getContentResolver().takePersistableUriPermission(data.getData(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            addSong(activity, data.getData(), false);
             adapter.notifyDataSetChanged();
         }
 
@@ -391,7 +401,71 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
             MainActivity.hStream = 0;
         }
         arPlayed.set(nSong, true);
-        MainActivity.hStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE);
+
+        BASS.BASS_FILEPROCS fileprocs=new BASS.BASS_FILEPROCS() {
+            @Override
+            public boolean FILESEEKPROC(long offset, Object user) {
+                FileChannel fc=(FileChannel)user;
+                try {
+                    fc.position(offset);
+                    return true;
+                } catch (IOException e) {
+                }
+                return false;
+            }
+
+            @Override
+            public int FILEREADPROC(ByteBuffer buffer, int length, Object user) {
+                FileChannel fc=(FileChannel)user;
+                try {
+                    return fc.read(buffer);
+                } catch (IOException e) {
+                }
+                return 0;
+            }
+
+            @Override
+            public long FILELENPROC(Object user) {
+                FileChannel fc=(FileChannel)user;
+                try {
+                    return fc.size();
+                } catch (IOException e) {
+                }
+                return 0;
+            }
+
+            @Override
+            public void FILECLOSEPROC(Object user) {
+                FileChannel fc=(FileChannel)user;
+                try {
+                    fc.close();
+                } catch (IOException e) {
+                }
+            }
+        };
+
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        boolean bError = false;
+        try {
+            mmr.setDataSource(activity.getApplicationContext(), Uri.parse(strPath));
+        }
+        catch(Exception e) {
+            bError = true;
+        }
+        String strMimeType = null;
+        if(!bError)
+            strMimeType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
+        ContentResolver cr = activity.getApplicationContext().getContentResolver();
+        try {
+            AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+            FileChannel fc = afd.createInputStream().getChannel();
+            if(strMimeType == "audio/mp4")
+                MainActivity.hStream = BASS_AAC.BASS_MP4_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+            else
+                MainActivity.hStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+        } catch (IOException e) {
+        }
+
         MainActivity.hStream = BASS_FX.BASS_FX_ReverseCreate(MainActivity.hStream, 2, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
         MainActivity.hStream = BASS_FX.BASS_FX_TempoCreate(MainActivity.hStream, BASS_FX.BASS_FX_FREESOURCE);
         int chan = BASS_FX.BASS_FX_TempoGetSource(MainActivity.hStream);
@@ -440,8 +514,7 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         BASS.BASS_ChannelPlay(MainActivity.hStream, false);
         Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
         btnPlay.setText("一時停止");
-        btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pause, 0, 0);
-
+        btnPlay.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_pause,0,0);
         LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(2);
         loopFragment.drawWaveForm(strPath);
     }
@@ -461,16 +534,16 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
 
     public void addSong(MainActivity activity, Uri uri, boolean bAccessIntent)
     {
-        String strPath = getPathFromUri(activity.getApplicationContext(), uri);
         if(bAccessIntent && Build.VERSION.SDK_INT == 24)
         {
-            if(activity.startStorageAccessIntent(strPath))
+            if(activity.startStorageAccessIntent(URI.create(uri.toString())))
                 return;
         }
+
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         boolean bError = false;
         try {
-            mmr.setDataSource(strPath);
+            mmr.setDataSource(activity.getApplicationContext(), uri);
         }
         catch(Exception e) {
             bError = true;
@@ -489,7 +562,7 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         }
         else
         {
-            File file = new File(strPath);
+            File file = new File(URI.create(uri.toString()));
             String strFileName = file.getName();
             strFileName = strFileName.substring(0, strFileName.lastIndexOf("."));
             Map<String, String> map = new HashMap<>();
@@ -497,86 +570,7 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
             map.put("artistName", "");
             listSongs.add(map);
         }
-        arSongsPath.add(strPath);
+        arSongsPath.add(uri.toString());
         arPlayed.add(false);
     }
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    private String getPathFromUri(final Context context, final Uri uri)
-    {
-        boolean isAfterKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-        if (isAfterKitKat && DocumentsContract.isDocumentUri(context, uri))
-        {
-            if("com.android.externalstorage.documents".equals(uri.getAuthority()))
-            { // ExternalStorageProvider
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-                if ("primary".equalsIgnoreCase(type))
-                {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
-                }
-                else
-                {
-                    return "/storage/" + type +  "/" + split[1];
-                }
-            }
-            else if("com.android.providers.downloads.documents".equals(
-                    uri.getAuthority()))
-            {
-                final String id = DocumentsContract.getDocumentId(uri);
-                final Uri contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-                return getDataColumn(context, contentUri, null, null);
-            }
-            else if("com.android.providers.media.documents".equals(
-                    uri.getAuthority())) {// MediaProvider
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-                Uri contentUri = null;
-                contentUri = MediaStore.Files.getContentUri("external");
-                final String selection = "_id=?";
-                final String[] selectionArgs = new String[] {
-                        split[1]
-                };
-                return getDataColumn(context, contentUri, selection, selectionArgs);
-            }
-        }
-        else if ("content".equalsIgnoreCase(uri.getScheme()))
-        {
-            return getDataColumn(context, uri, null, null);
-        }
-        else if ("file".equalsIgnoreCase(uri.getScheme()))
-        {
-            return uri.getPath();
-        }
-        return uri.toString();
-    }
-
-    public String getDataColumn(Context context, Uri uri, String selection,
-                                String[] selectionArgs)
-    {
-        Cursor cursor = null;
-        final String[] projection = {
-                MediaStore.Files.FileColumns.DATA
-        };
-        try
-        {
-            cursor = context.getContentResolver().query(
-                    uri, projection, selection, selectionArgs, null);
-            if (cursor != null && cursor.moveToFirst())
-            {
-                final int cindex = cursor.getColumnIndexOrThrow(projection[0]);
-                return cursor.getString(cindex);
-            }
-        }
-        finally
-        {
-            if(cursor != null)
-                cursor.close();
-        }
-        return null;
-    }
-
 }

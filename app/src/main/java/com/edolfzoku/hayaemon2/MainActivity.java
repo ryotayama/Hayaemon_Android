@@ -75,6 +75,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     SectionsPagerAdapter mSectionsPagerAdapter;
     boolean bLoopA, bLoopB;
     double dLoopA, dLoopB;
-    String strPath;
     private HoldableViewPager mViewPager;
     private int hSync;
     private MenuSheet menuSheet;
@@ -565,11 +565,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @TargetApi(24)
-    public boolean startStorageAccessIntent(String strPath)
+    public boolean startStorageAccessIntent(URI uri)
     {
-        File file = new File(strPath);
-        file = new File(file.getAbsolutePath());
-        this.strPath = file.getAbsolutePath();
+        File file = new File(uri);
         StorageManager sm = (StorageManager)getSystemService(Context.STORAGE_SERVICE);
         if(sm == null) return false;
         StorageVolume volume = sm.getStorageVolume(file);
