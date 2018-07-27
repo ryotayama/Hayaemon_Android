@@ -442,28 +442,34 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
             }
         };
 
-        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        boolean bError = false;
-        try {
-            mmr.setDataSource(activity.getApplicationContext(), Uri.parse(strPath));
+        Uri uri = Uri.parse(strPath);
+        if(uri.getScheme() != null && uri.getScheme().equals("content")) {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            boolean bError = false;
+            try {
+                mmr.setDataSource(activity.getApplicationContext(), Uri.parse(strPath));
+            }
+            catch(Exception e) {
+                bError = true;
+            }
+            String strMimeType = null;
+            if(!bError)
+                strMimeType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
+            ContentResolver cr = activity.getApplicationContext().getContentResolver();
+            try {
+                AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+                if(afd == null) return;
+                FileChannel fc = afd.createInputStream().getChannel();
+                if(strMimeType == "audio/mp4")
+                    MainActivity.hStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                else
+                    MainActivity.hStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+            } catch (IOException e) {
+                return;
+            }
         }
-        catch(Exception e) {
-            bError = true;
-        }
-        String strMimeType = null;
-        if(!bError)
-            strMimeType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
-        ContentResolver cr = activity.getApplicationContext().getContentResolver();
-        try {
-            AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
-            if(afd == null) return;
-            FileChannel fc = afd.createInputStream().getChannel();
-            if(strMimeType == "audio/mp4")
-                MainActivity.hStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-            else
-                MainActivity.hStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-        } catch (IOException e) {
-            return;
+        else {
+            MainActivity.hStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE);
         }
         if(MainActivity.hStream == 0) return;
 
