@@ -79,6 +79,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.un4seen.bass.BASS_AAC.BASS_CONFIG_AAC_MP4;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         View.OnLongClickListener, View.OnTouchListener
 {
@@ -563,6 +565,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         BASS.BASS_Init(-1, 44100, 0);
         BASS.BASS_SetConfig(BASS.BASS_CONFIG_FLOATDSP, 1);
+        BASS.BASS_SetConfig(BASS_CONFIG_AAC_MP4, 1);
+
+        BASS.BASS_PluginLoad("libbass_aac.so", 0);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 

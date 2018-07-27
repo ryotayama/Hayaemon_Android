@@ -456,13 +456,16 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         ContentResolver cr = activity.getApplicationContext().getContentResolver();
         try {
             AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+            if(afd == null) return;
             FileChannel fc = afd.createInputStream().getChannel();
             if(strMimeType == "audio/mp4")
-                MainActivity.hStream = BASS_AAC.BASS_MP4_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                MainActivity.hStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
             else
                 MainActivity.hStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
         } catch (IOException e) {
+            return;
         }
+        if(MainActivity.hStream == 0) return;
 
         MainActivity.hStream = BASS_FX.BASS_FX_ReverseCreate(MainActivity.hStream, 2, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
         MainActivity.hStream = BASS_FX.BASS_FX_TempoCreate(MainActivity.hStream, BASS_FX.BASS_FX_FREESOURCE);
