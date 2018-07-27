@@ -112,13 +112,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setContentView(R.layout.activity_main);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-            }
-        }
         initialize();
         loadData();
 
@@ -319,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(arSongsPath != null)
         {
             for(int i = 0; i < arSongsPath.size(); i++) {
-                playlistFragment.addSong(this, Uri.parse(arSongsPath.get(i)), true);
+                playlistFragment.addSong(this, Uri.parse(arSongsPath.get(i)));
             }
         }
 
@@ -397,11 +390,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         if (requestCode == 1)
         {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
-                initialize();
-            }
-            else
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED)
             {
                 System.err.println("外部ファイルの読み込み許可は降りませんでした。");
                 finish();
@@ -562,23 +551,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
             preferences.edit().putBoolean("hideads", mAdView.getVisibility() == AdView.GONE).commit();
         }
-    }
-
-    @TargetApi(24)
-    public boolean startStorageAccessIntent(URI uri)
-    {
-        File file = new File(uri);
-        StorageManager sm = (StorageManager)getSystemService(Context.STORAGE_SERVICE);
-        if(sm == null) return false;
-        StorageVolume volume = sm.getStorageVolume(file);
-        if(volume == null) return false;
-        Intent intent = volume.createAccessIntent(null);
-        if(intent != null)
-        {
-            startActivityForResult(intent, 2);
-            return true;
-        }
-        return false;
     }
 
     private void initialize()

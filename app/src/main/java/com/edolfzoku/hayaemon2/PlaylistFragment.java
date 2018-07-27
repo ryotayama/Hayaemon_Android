@@ -64,6 +64,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import static android.app.Activity.RESULT_OK;
 import static com.un4seen.bass.BASS_AAC.BASS_AAC_StreamCreateFileUser;
 
 public class PlaylistFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
@@ -240,29 +241,23 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         {
             if(Build.VERSION.SDK_INT < 19)
             {
-                addSong(activity, data.getData(), true);
+                addSong(activity, data.getData());
             }
             else
             {
                 if(data.getClipData() == null)
                 {
-                    addSong(activity, data.getData(), true);
+                    addSong(activity, data.getData());
                 }
                 else
                 {
                     for(int i = 0; i < data.getClipData().getItemCount(); i++)
                     {
                         Uri uri = data.getClipData().getItemAt(i).getUri();
-                        addSong(activity, uri, true);
+                        addSong(activity, uri);
                     }
                 }
             }
-            adapter.notifyDataSetChanged();
-        }
-        else if(requestCode == 2)
-        {
-            activity.getContentResolver().takePersistableUriPermission(data.getData(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            addSong(activity, data.getData(), false);
             adapter.notifyDataSetChanged();
         }
 
@@ -532,14 +527,8 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         activity.clearLoop();
     }
 
-    public void addSong(MainActivity activity, Uri uri, boolean bAccessIntent)
+    public void addSong(MainActivity activity, Uri uri)
     {
-        if(bAccessIntent && Build.VERSION.SDK_INT == 24)
-        {
-            if(activity.startStorageAccessIntent(URI.create(uri.toString())))
-                return;
-        }
-
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         boolean bError = false;
         try {
@@ -562,9 +551,8 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         }
         else
         {
-            File file = new File(URI.create(uri.toString()));
-            String strFileName = file.getName();
-            strFileName = strFileName.substring(0, strFileName.lastIndexOf("."));
+            int startIndex = uri.toString().lastIndexOf('/');
+            String strFileName = uri.toString().substring(startIndex + 1);
             Map<String, String> map = new HashMap<>();
             map.put("songName", strFileName);
             map.put("artistName", "");
