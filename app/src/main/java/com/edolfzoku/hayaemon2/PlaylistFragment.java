@@ -239,26 +239,29 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
 
         if(requestCode == 1)
         {
-            if(Build.VERSION.SDK_INT < 19)
+            if(resultCode == RESULT_OK)
             {
-                addSong(activity, data.getData());
-            }
-            else
-            {
-                if(data.getClipData() == null)
+                if(Build.VERSION.SDK_INT < 19)
                 {
                     addSong(activity, data.getData());
                 }
                 else
                 {
-                    for(int i = 0; i < data.getClipData().getItemCount(); i++)
+                    if(data.getClipData() == null)
                     {
-                        Uri uri = data.getClipData().getItemAt(i).getUri();
-                        addSong(activity, uri);
+                        addSong(activity, data.getData());
+                    }
+                    else
+                    {
+                        for(int i = 0; i < data.getClipData().getItemCount(); i++)
+                        {
+                            Uri uri = data.getClipData().getItemAt(i).getUri();
+                            addSong(activity, uri);
+                        }
                     }
                 }
+                adapter.notifyDataSetChanged();
             }
-            adapter.notifyDataSetChanged();
         }
 
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
