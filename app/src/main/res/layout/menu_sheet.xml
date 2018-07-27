@@ -13,7 +13,7 @@
         android:layout_weight="1"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        android:text="追加"
+        android:text="曲を追加"
         android:id="@+id/menuOpen"/>
 
     <TextView
