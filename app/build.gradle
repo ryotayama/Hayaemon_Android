@@ -8,8 +8,8 @@ android {
         applicationId "com.edolfzoku.hayaemon2"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 79
-        versionName "1.55.1"
+        versionCode 80
+        versionName "1.55"
         ndk {
             moduleName = 'bass'
             moduleName = 'bass_fx'
