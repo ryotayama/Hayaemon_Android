@@ -586,8 +586,14 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         switch (scheme) {
             case "content":
                 String[] projection = {MediaStore.MediaColumns.DISPLAY_NAME};
-                Cursor cursor = context.getContentResolver()
-                        .query(uri, projection, null, null, null);
+                Cursor cursor = null;
+                try {
+                    cursor = context.getContentResolver()
+                            .query(uri, projection, null, null, null);
+                }
+                catch(Exception e) {
+                    return null;
+                }
                 if (cursor != null) {
                     if (cursor.moveToFirst()) {
                         fileName = cursor.getString(
