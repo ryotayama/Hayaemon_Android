@@ -45,7 +45,7 @@
 
                 <TextView
                     android:id="@+id/textVolName"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="音量"
                     android:gravity="right"
@@ -85,7 +85,7 @@
 
                 <TextView
                     android:id="@+id/text20KName"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="20K"
                     android:gravity="right"
@@ -125,7 +125,7 @@
 
                 <TextView
                     android:id="@+id/text16KName"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="16K"
                     android:gravity="right"
@@ -165,7 +165,7 @@
 
                 <TextView
                     android:id="@+id/text12_5KName"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="12.5K"
                     android:gravity="right"
@@ -205,7 +205,7 @@
 
                 <TextView
                     android:id="@+id/text10KName"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="10K"
                     android:gravity="right"
@@ -245,7 +245,7 @@
 
                 <TextView
                     android:id="@+id/text8KName"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="8K"
                     android:gravity="right"
@@ -285,7 +285,7 @@
 
                 <TextView
                     android:id="@+id/text6_3KName"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="6.3K"
                     android:gravity="right"
@@ -325,7 +325,7 @@
 
                 <TextView
                     android:id="@+id/text5KName"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="5K"
                     android:gravity="right"
@@ -365,7 +365,7 @@
 
                 <TextView
                     android:id="@+id/text4KName"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="4K"
                     android:gravity="right"
@@ -405,7 +405,7 @@
 
                 <TextView
                     android:id="@+id/text3_15KName"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="3.15K"
                     android:gravity="right"
@@ -445,7 +445,7 @@
 
                 <TextView
                     android:id="@+id/text2_5KName"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="2.5K"
                     android:gravity="right"
@@ -485,7 +485,7 @@
 
                 <TextView
                     android:id="@+id/text2KName"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="2K"
                     android:gravity="right"
@@ -525,7 +525,7 @@
 
                 <TextView
                     android:id="@+id/text1_6KName"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="1.6K"
                     android:gravity="right"
@@ -565,7 +565,7 @@
 
                 <TextView
                     android:id="@+id/text1_25KName"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="1.25K"
                     android:gravity="right"
@@ -605,7 +605,7 @@
 
                 <TextView
                     android:id="@+id/text1KName"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="1K"
                     android:gravity="right"
@@ -645,7 +645,7 @@
 
                 <TextView
                     android:id="@+id/text800Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="800"
                     android:gravity="right"
@@ -685,7 +685,7 @@
 
                 <TextView
                     android:id="@+id/text630Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="630"
                     android:gravity="right"
@@ -725,7 +725,7 @@
 
                 <TextView
                     android:id="@+id/text500Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="500"
                     android:gravity="right"
@@ -765,7 +765,7 @@
 
                 <TextView
                     android:id="@+id/text400Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="400"
                     android:gravity="right"
@@ -805,7 +805,7 @@
 
                 <TextView
                     android:id="@+id/text315Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="315"
                     android:gravity="right"
@@ -845,7 +845,7 @@
 
                 <TextView
                     android:id="@+id/text250Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="250"
                     android:gravity="right"
@@ -885,7 +885,7 @@
 
                 <TextView
                     android:id="@+id/text200Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="200"
                     android:gravity="right"
@@ -925,7 +925,7 @@
 
                 <TextView
                     android:id="@+id/text160Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="160"
                     android:gravity="right"
@@ -965,7 +965,7 @@
 
                 <TextView
                     android:id="@+id/text125Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="125"
                     android:gravity="right"
@@ -1005,7 +1005,7 @@
 
                 <TextView
                     android:id="@+id/text100Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="100"
                     android:gravity="right"
@@ -1045,7 +1045,7 @@
 
                 <TextView
                     android:id="@+id/text80Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="80"
                     android:gravity="right"
@@ -1085,7 +1085,7 @@
 
                 <TextView
                     android:id="@+id/text63Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="63"
                     android:gravity="right"
@@ -1125,7 +1125,7 @@
 
                 <TextView
                     android:id="@+id/text50Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="50"
                     android:gravity="right"
@@ -1165,7 +1165,7 @@
 
                 <TextView
                     android:id="@+id/text40Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="40"
                     android:gravity="right"
@@ -1205,7 +1205,7 @@
 
                 <TextView
                     android:id="@+id/text31_5Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="31.5"
                     android:gravity="right"
@@ -1245,7 +1245,7 @@
 
                 <TextView
                     android:id="@+id/text25Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="25"
                     android:gravity="right"
@@ -1285,7 +1285,7 @@
 
                 <TextView
                     android:id="@+id/text20Name"
-                    android:layout_width="35dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="20"
                     android:gravity="right"
