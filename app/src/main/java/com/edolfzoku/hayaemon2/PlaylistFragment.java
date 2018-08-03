@@ -563,14 +563,47 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         }
         else
         {
-            int startIndex = uri.toString().lastIndexOf('/');
-            String strFileName = uri.toString().substring(startIndex + 1);
+            strTitle = getFileNameFromUri(activity.getApplicationContext(), uri);
+            if(strTitle == null) {
+                int startIndex = uri.toString().lastIndexOf('/');
+                strTitle = uri.toString().substring(startIndex + 1);
+            }
             Map<String, String> map = new HashMap<>();
-            map.put("songName", strFileName);
+            map.put("songName", strTitle);
             map.put("artistName", "");
             listSongs.add(map);
         }
         arSongsPath.add(uri.toString());
         arPlayed.add(false);
+    }
+
+    public String getFileNameFromUri(Context context, Uri uri) {
+        if (null == uri) return null;
+
+        String scheme = uri.getScheme();
+
+        String fileName = null;
+        switch (scheme) {
+            case "content":
+                String[] projection = {MediaStore.MediaColumns.DISPLAY_NAME};
+                Cursor cursor = context.getContentResolver()
+                        .query(uri, projection, null, null, null);
+                if (cursor != null) {
+                    if (cursor.moveToFirst()) {
+                        fileName = cursor.getString(
+                                cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME));
+                    }
+                    cursor.close();
+                }
+                break;
+
+            case "file":
+                fileName = new File(uri.getPath()).getName();
+                break;
+
+            default:
+                break;
+        }
+        return fileName;
     }
 }
