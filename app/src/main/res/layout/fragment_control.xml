@@ -2,10 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="0dp"
-    android:paddingLeft="0dp"
-    android:paddingRight="0dp"
-    android:paddingTop="0dp">
+    android:padding="0dp"
+    android:layout_margin="0dp"
+    >
     <RelativeLayout
         android:id="@+id/relative"
         android:layout_width="match_parent"
@@ -17,8 +16,8 @@
             android:id="@+id/textSpeed"
             android:text="速度:"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_margin="13dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
             android:layout_alignBaseline="@id/textResetSpeed"
             android:focusable="true"
             android:focusableInTouchMode="true">
@@ -28,22 +27,19 @@
             android:id="@+id/textSpeedValue"
             android:text="100.0%"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_margin="13dp"
+            android:layout_height="wrap_content"
             android:layout_alignBaseline="@id/textResetSpeed"
             android:layout_toRightOf="@id/textSpeed"
             />
-        <TextView
+        <Button
             android:id="@+id/textResetSpeed"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_margin="4dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="4dp"
             android:layout_alignParentTop="true"
             android:text="リセット"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
             android:layout_alignParentRight="true"
-            android:background="@drawable/radius"
             android:clickable="true"
             android:gravity="center"
             />
@@ -51,29 +47,25 @@
             android:id="@+id/textPitch"
             android:text="音程:"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_margin="13dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
             android:layout_alignBaseline="@id/textResetPitch"
             />
         <EditText
             android:id="@+id/textPitchValue"
             android:text="　0.0"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_margin="13dp"
+            android:layout_height="wrap_content"
             android:layout_alignBaseline="@id/textResetPitch"
             android:layout_toRightOf="@id/textPitch"
             />
-        <TextView
+        <Button
             android:id="@+id/textResetPitch"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_margin="4dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
             android:text="リセット"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
             android:layout_alignParentRight="true"
-            android:background="@drawable/radius"
             android:clickable="true"
             android:gravity="center"
             android:layout_below="@id/textResetSpeed"
