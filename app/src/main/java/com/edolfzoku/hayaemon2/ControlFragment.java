@@ -150,6 +150,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         int nPtWidth = imgPoint.getWidth();
         int nPtHeight = imgPoint.getHeight();
         View viewBk = getActivity().findViewById(R.id.imgBack);
+        int nBkLeft = viewBk.getLeft();
         int nBkWidth = viewBk.getWidth();
         float fCenter = nBkWidth / 2;
         float fMaxSpeed = 4.0f;
@@ -158,9 +159,9 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
         float fX = 0.0f;
         if(fSpeed >= 0.0)
-            fX = fCenter + (fSpeed / fMaxSpeed) * fCenter;
+            fX = nBkLeft + fCenter + (fSpeed / fMaxSpeed) * fCenter;
         else
-            fX = fCenter - (fSpeed / fMinSpeed) * fCenter;
+            fX = nBkLeft + fCenter - (fSpeed / fMinSpeed) * fCenter;
         float fY = imgPoint.getY() + nPtHeight / 2;
         imgPoint.animate()
                 .x(fX - nPtWidth / 2)
@@ -207,14 +208,16 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         int nPtWidth = imgPoint.getWidth();
         int nPtHeight = imgPoint.getHeight();
         View viewBk = getActivity().findViewById(R.id.imgBack);
+        int nBkTop = viewBk.getTop();
         int nBkHeight = viewBk.getHeight();
+        float fBkHeight = nBkHeight - nPtHeight;
         float fMaxPitch = 12.0f;
         float fMinPitch = -12.0f;
         float fX = imgPoint.getX() + nPtWidth / 2;
-        float fY = nBkHeight - ((fPitch - fMinPitch) / (fMaxPitch - fMinPitch)) * nBkHeight;
+        float fY = nBkTop + fBkHeight - ((fPitch - fMinPitch) / (fMaxPitch - fMinPitch)) * fBkHeight;
         imgPoint.animate()
                 .x(fX - nPtWidth / 2)
-                .y(fY - nPtHeight / 2)
+                .y(fY)
                 .setDuration(0)
                 .start();
     }
@@ -361,33 +364,38 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         else if(v.getId() == R.id.imgBack)
         {
             ImageView imgPoint = (ImageView)getActivity().findViewById(R.id.imgPoint);
-            float fX = event.getX();
-            float fY = event.getY();
             View viewBk = getActivity().findViewById(R.id.imgBack);
             int nPtWidth = imgPoint.getWidth();
             int nPtHeight = imgPoint.getHeight();
+            int nBkLeft = viewBk.getLeft();
+            int nBkTop = viewBk.getTop();
             int nBkWidth = viewBk.getWidth();
             int nBkHeight = viewBk.getHeight();
+            float fX = nBkLeft + event.getX();
+            float fY = nBkTop + event.getY();
 
-            if(fX < 0) fX = 0;
-            else if(fX > nBkWidth) fX = nBkWidth;
-            if(fY < 0) fY = 0;
-            else if(fY > nBkHeight) fY = nBkHeight;
+            if(fX < nBkLeft + nPtWidth / 2) fX = nBkLeft + nPtWidth / 2;
+            else if(fX > nBkLeft + nBkWidth - nPtWidth / 2) fX = nBkLeft + nBkWidth - nPtWidth / 2;
+            if(fY < nBkTop + nPtHeight / 2) fY = nBkTop + nPtHeight / 2;
+            else if(fY > nBkTop + nBkHeight - nPtHeight / 2) fY = nBkTop + nBkHeight - nPtHeight / 2;
 
-            float fCenter = nBkWidth / 2;
-            float fDX = fX - fCenter;
+            float fBkHalfWidth = nBkWidth / 2 - nPtWidth / 2;
+            float fDX = fX - (nBkLeft + nBkWidth / 2);
             float fMaxSpeed = 4.0f;
             float fMinSpeed = 0.1f;
             fMaxSpeed = (fMaxSpeed - 1.0f) * 100.0f;
             fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
-            if(fX >= fCenter) fSpeed = (fDX / fCenter) * fMaxSpeed;
-            else fSpeed = (fDX / fCenter) * -fMinSpeed;
+            if(fX >= nBkLeft + nBkWidth / 2) fSpeed = (fDX / fBkHalfWidth) * fMaxSpeed;
+            else fSpeed = (fDX / fBkHalfWidth) * -fMinSpeed;
             if(MainActivity.hStream != 0)
                 BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, fSpeed);
 
+            float fBkHeight = nBkHeight - nPtHeight;
+            float fDY = fY - (nBkTop + nPtHeight / 2);
+            System.out.println(fDY);
             float fMaxPitch = 12.0f;
             float fMinPitch = -12.0f;
-            fPitch = ((fY / nBkHeight) * (fMaxPitch - fMinPitch) + fMinPitch) * -1;
+            fPitch = ((fDY / fBkHeight) * (fMaxPitch - fMinPitch) + fMinPitch) * -1;
             if(MainActivity.hStream != 0)
                 BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, fPitch);
 
