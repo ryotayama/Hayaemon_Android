@@ -141,6 +141,7 @@
                 android:clickable="true"
                 android:longClickable="true"
                 android:gravity="center"
+                android:layout_margin="4dp"
                 />
             <TextView
                 android:id="@+id/textSpeedDown"
@@ -154,6 +155,7 @@
                 android:clickable="true"
                 android:longClickable="true"
                 android:gravity="center"
+                android:layout_margin="4dp"
                 />
             <TextView
                 android:id="@+id/textPitchUp"
@@ -167,6 +169,7 @@
                 android:clickable="true"
                 android:longClickable="true"
                 android:gravity="center"
+                android:layout_margin="4dp"
                 />
             <TextView
                 android:id="@+id/textPitchDown"
@@ -180,6 +183,7 @@
                 android:clickable="true"
                 android:longClickable="true"
                 android:gravity="center"
+                android:layout_margin="4dp"
                 />
         </RelativeLayout>
     </RelativeLayout>
