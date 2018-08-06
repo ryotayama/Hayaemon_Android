@@ -26,6 +26,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,6 +36,8 @@ import com.un4seen.bass.BASS_FX;
 public class ControlFragment extends Fragment implements View.OnTouchListener, View.OnLongClickListener, View.OnFocusChangeListener {
     float fSpeed = 0.0f;
     float fPitch = 0.0f;
+    boolean bLockSpeed = false;
+    boolean bLockPitch = false;
     private boolean isContinue = true;
     private Handler handler;
 
@@ -63,6 +66,12 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
 
         View viewBk = getActivity().findViewById(R.id.imgBack);
         viewBk.setOnTouchListener(this);
+
+        ImageButton btnLockSpeed = (ImageButton)getActivity().findViewById(R.id.btnLockSpeed);
+        btnLockSpeed.setOnTouchListener(this);
+
+        ImageButton btnLockPitch = (ImageButton)getActivity().findViewById(R.id.btnLockPitch);
+        btnLockPitch.setOnTouchListener(this);
 
         TextView textResetSpeed = (TextView)getActivity().findViewById(R.id.textResetSpeed);
         textResetSpeed.setOnTouchListener(this);
@@ -312,7 +321,33 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     @Override
     public boolean onTouch(View v, MotionEvent event)
     {
-        if(v.getId() == R.id.textResetSpeed)
+        if(v.getId() == R.id.btnLockSpeed)
+        {
+            if(event.getAction() == MotionEvent.ACTION_UP)
+            {
+                ImageButton btn = (ImageButton)v;
+                bLockSpeed = !bLockSpeed;
+                if(bLockSpeed)
+                    btn.setImageResource(R.drawable.ic_control_lock);
+                else
+                    btn.setImageResource(R.drawable.ic_control_unlock);
+            }
+            return false;
+        }
+        else if(v.getId() == R.id.btnLockPitch)
+        {
+            if(event.getAction() == MotionEvent.ACTION_UP)
+            {
+                ImageButton btn = (ImageButton)v;
+                bLockPitch = !bLockPitch;
+                if(bLockPitch)
+                    btn.setImageResource(R.drawable.ic_control_lock);
+                else
+                    btn.setImageResource(R.drawable.ic_control_unlock);
+            }
+            return false;
+        }
+        else if(v.getId() == R.id.textResetSpeed)
         {
             if(event.getAction() == MotionEvent.ACTION_UP)
             {
@@ -371,52 +406,59 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             int nBkTop = viewBk.getTop();
             int nBkWidth = viewBk.getWidth();
             int nBkHeight = viewBk.getHeight();
-            float fX = nBkLeft + event.getX();
-            float fY = nBkTop + event.getY();
+            float fX = imgPoint.getX();
+            float fY = imgPoint.getY();
 
-            if(fX < nBkLeft + nPtWidth / 2) fX = nBkLeft + nPtWidth / 2;
-            else if(fX > nBkLeft + nBkWidth - nPtWidth / 2) fX = nBkLeft + nBkWidth - nPtWidth / 2;
-            if(fY < nBkTop + nPtHeight / 2) fY = nBkTop + nPtHeight / 2;
-            else if(fY > nBkTop + nBkHeight - nPtHeight / 2) fY = nBkTop + nBkHeight - nPtHeight / 2;
+            if(!bLockSpeed) {
+                fX = nBkLeft + event.getX();
+                if(fX < nBkLeft + nPtWidth / 2) fX = nBkLeft + nPtWidth / 2;
+                else if(fX > nBkLeft + nBkWidth - nPtWidth / 2) fX = nBkLeft + nBkWidth - nPtWidth / 2;
 
-            float fBkHalfWidth = nBkWidth / 2 - nPtWidth / 2;
-            float fDX = fX - (nBkLeft + nBkWidth / 2);
-            float fMaxSpeed = 4.0f;
-            float fMinSpeed = 0.1f;
-            fMaxSpeed = (fMaxSpeed - 1.0f) * 100.0f;
-            fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
-            if(fX >= nBkLeft + nBkWidth / 2) fSpeed = (fDX / fBkHalfWidth) * fMaxSpeed;
-            else fSpeed = (fDX / fBkHalfWidth) * -fMinSpeed;
-            if(MainActivity.hStream != 0)
-                BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, fSpeed);
+                float fBkHalfWidth = nBkWidth / 2 - nPtWidth / 2;
+                float fDX = fX - (nBkLeft + nBkWidth / 2);
+                fX -= nPtWidth / 2;
+                float fMaxSpeed = 4.0f;
+                float fMinSpeed = 0.1f;
+                fMaxSpeed = (fMaxSpeed - 1.0f) * 100.0f;
+                fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
+                if(fX >= nBkLeft + nBkWidth / 2) fSpeed = (fDX / fBkHalfWidth) * fMaxSpeed;
+                else fSpeed = (fDX / fBkHalfWidth) * -fMinSpeed;
+                if(MainActivity.hStream != 0)
+                    BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, fSpeed);
 
-            float fBkHeight = nBkHeight - nPtHeight;
-            float fDY = fY - (nBkTop + nPtHeight / 2);
-            System.out.println(fDY);
-            float fMaxPitch = 12.0f;
-            float fMinPitch = -12.0f;
-            fPitch = ((fDY / fBkHeight) * (fMaxPitch - fMinPitch) + fMinPitch) * -1;
-            if(MainActivity.hStream != 0)
-                BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, fPitch);
+                EditText textSpeedValue = (EditText)getActivity().findViewById(R.id.textSpeedValue);
+                textSpeedValue.setText(String.format("%.1f%%", fSpeed + 100));
+            }
 
-            EditText textSpeedValue = (EditText)getActivity().findViewById(R.id.textSpeedValue);
-            textSpeedValue.setText(String.format("%.1f%%", fSpeed + 100));
+            if(!bLockPitch) {
+                fY = nBkTop + event.getY();
+                if(fY < nBkTop + nPtHeight / 2) fY = nBkTop + nPtHeight / 2;
+                else if(fY > nBkTop + nBkHeight - nPtHeight / 2) fY = nBkTop + nBkHeight - nPtHeight / 2;
+                float fBkHeight = nBkHeight - nPtHeight;
+                float fDY = fY - (nBkTop + nPtHeight / 2);
+                fY -= nPtHeight / 2;
+                float fMaxPitch = 12.0f;
+                float fMinPitch = -12.0f;
+                fPitch = ((fDY / fBkHeight) * (fMaxPitch - fMinPitch) + fMinPitch) * -1;
+                if(MainActivity.hStream != 0)
+                    BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, fPitch);
 
-            TextView textPitchValue = (TextView)getActivity().findViewById(R.id.textPitchValue);
-            if(fPitch > 0.05)
-                textPitchValue.setText(String.format("♯%.1f", fPitch));
-            else if(fPitch < -0.05)
-                textPitchValue.setText(String.format("♭%.1f", fPitch * -1));
-            else
-            {
-                textPitchValue.setText(String.format("　%.1f", fPitch));
-                if(textPitchValue.getText().equals("　-0.0"))
-                    textPitchValue.setText("　0.0");
+                TextView textPitchValue = (TextView)getActivity().findViewById(R.id.textPitchValue);
+                if(fPitch > 0.05)
+                    textPitchValue.setText(String.format("♯%.1f", fPitch));
+                else if(fPitch < -0.05)
+                    textPitchValue.setText(String.format("♭%.1f", fPitch * -1));
+                else
+                {
+                    textPitchValue.setText(String.format("　%.1f", fPitch));
+                    if(textPitchValue.getText().equals("　-0.0"))
+                        textPitchValue.setText("　0.0");
+                }
             }
 
             imgPoint.animate()
-                    .x(fX - nPtWidth / 2)
-                    .y(fY - nPtHeight / 2)
+                    .x(fX)
+                    .y(fY)
                     .setDuration(0)
                     .start();
 

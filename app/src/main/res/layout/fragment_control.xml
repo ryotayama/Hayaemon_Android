@@ -31,6 +31,19 @@
             android:layout_alignBaseline="@id/textResetSpeed"
             android:layout_toRightOf="@id/textSpeed"
             />
+        <ImageButton
+            android:id="@+id/btnLockSpeed"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@null"
+            android:src="@drawable/ic_control_unlock"
+            android:scaleType="centerInside"
+            android:layout_marginRight="8dp"
+            android:layout_marginVertical="8dp"
+            android:layout_alignTop="@id/textResetSpeed"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            />
         <Button
             android:id="@+id/textResetSpeed"
             android:layout_width="wrap_content"
@@ -39,7 +52,7 @@
             android:layout_marginTop="4dp"
             android:layout_alignParentTop="true"
             android:text="リセット"
-            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@+id/btnLockSpeed"
             android:clickable="true"
             android:gravity="center"
             />
@@ -60,13 +73,26 @@
             android:layout_alignLeft="@+id/textSpeedValue"
             android:layout_alignRight="@+id/textSpeedValue"
             />
+        <ImageButton
+            android:id="@+id/btnLockPitch"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@null"
+            android:src="@drawable/ic_control_unlock"
+            android:scaleType="centerInside"
+            android:layout_marginRight="8dp"
+            android:layout_marginVertical="8dp"
+            android:layout_alignTop="@id/textResetPitch"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            />
         <Button
             android:id="@+id/textResetPitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
             android:text="リセット"
-            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@+id/btnLockPitch"
             android:clickable="true"
             android:gravity="center"
             android:layout_below="@id/textResetSpeed"
