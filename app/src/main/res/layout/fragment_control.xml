@@ -57,7 +57,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@id/textResetPitch"
-            android:layout_toRightOf="@id/textPitch"
+            android:layout_alignLeft="@+id/textSpeedValue"
+            android:layout_alignRight="@+id/textSpeedValue"
             />
         <Button
             android:id="@+id/textResetPitch"
