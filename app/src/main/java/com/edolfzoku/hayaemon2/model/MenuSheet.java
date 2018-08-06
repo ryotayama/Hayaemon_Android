@@ -48,6 +48,8 @@ public class MenuSheet extends BottomSheetDialogFragment
 
                 TextView menuHideAds = (TextView)d.findViewById(R.id.menuHideAds);
                 menuHideAds.setOnClickListener(activity);
+                if(!activity.isAdsVisible())
+                    menuHideAds.setVisibility(View.GONE);
 
                 TextView menuCancel = (TextView)d.findViewById(R.id.menuCancel);
                 menuCancel.setOnClickListener(activity);

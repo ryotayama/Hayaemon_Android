@@ -137,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
             mBound = true;
         }
+
+        hideAds();
     }
 
     @Override
@@ -615,6 +617,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnForward.setOnTouchListener(this);
 
         menuSheet = new MenuSheet();
+    }
+
+    public boolean isAdsVisible() {
+        if (mAdView.getVisibility() == AdView.GONE) return false;
+        else return true;
     }
 
     public void setSync()
