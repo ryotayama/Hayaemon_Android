@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -73,11 +74,11 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         ImageButton btnLockPitch = (ImageButton)getActivity().findViewById(R.id.btnLockPitch);
         btnLockPitch.setOnTouchListener(this);
 
-        TextView textResetSpeed = (TextView)getActivity().findViewById(R.id.textResetSpeed);
-        textResetSpeed.setOnTouchListener(this);
+        Button btnResetSpeed = (Button)getActivity().findViewById(R.id.btnResetSpeed);
+        btnResetSpeed.setOnTouchListener(this);
 
-        TextView textResetPitch = (TextView)getActivity().findViewById(R.id.textResetPitch);
-        textResetPitch.setOnTouchListener(this);
+        Button btnResetPitch = (Button)getActivity().findViewById(R.id.btnResetPitch);
+        btnResetPitch.setOnTouchListener(this);
 
         TextView textSpeedUp = (TextView)getActivity().findViewById(R.id.textSpeedUp);
         textSpeedUp.setOnTouchListener(this);
@@ -347,7 +348,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             }
             return false;
         }
-        else if(v.getId() == R.id.textResetSpeed)
+        else if(v.getId() == R.id.btnResetSpeed)
         {
             if(event.getAction() == MotionEvent.ACTION_UP)
             {
@@ -355,7 +356,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             }
             return false;
         }
-        else if(v.getId() == R.id.textResetPitch)
+        else if(v.getId() == R.id.btnResetPitch)
         {
             if(event.getAction() == MotionEvent.ACTION_UP)
             {
