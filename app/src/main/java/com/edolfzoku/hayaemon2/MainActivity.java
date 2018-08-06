@@ -26,6 +26,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -514,6 +515,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             catch(Exception e) {
             }
             menuSheet.dismiss();
+        }
+        else if(v.getId() == R.id.menuAbout)
+        {
+            menuSheet.dismiss();
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            try {
+                String strVersionName = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
+                builder.setMessage("バージョン: " + strVersionName);
+            }
+            catch(PackageManager.NameNotFoundException e) {
+                builder.setMessage("バージョン: 〈バージョン情報を取得できませんでした〉");
+            }
+
+            builder.setTitle("ハヤえもんについて");
+            builder.setIcon(R.mipmap.ic_launcher);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+// ボタンをクリックしたときの動作
+                        }
+                    });
+            builder.show();
         }
         else if(v.getId() == R.id.menuCancel)
         {
