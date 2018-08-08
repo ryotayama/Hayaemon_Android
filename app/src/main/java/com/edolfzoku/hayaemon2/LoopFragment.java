@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -244,6 +245,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener {
                         btnA.setAlpha(1.0f);
                         View viewMaskA = getActivity().findViewById(R.id.viewMaskA);
                         viewMaskA.setVisibility(View.INVISIBLE);
+                        EditText textAValue  = (EditText)getActivity().findViewById(R.id.textAValue);
+                        textAValue.setText("00:00:00.00");
                     }
                     else {
                         activity.dLoopA = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
@@ -258,6 +261,14 @@ public class LoopFragment extends Fragment implements View.OnTouchListener {
                         viewMaskA.getLayoutParams().width = nLeft;
                         viewMaskA.setVisibility(View.VISIBLE);
                         viewMaskA.requestLayout();
+
+                        int nMinute = (int)(activity.dLoopA / 60);
+                        int nSecond = (int)(activity.dLoopA % 60);
+                        int nHour = (int)(nMinute / 60);
+                        nMinute = nMinute % 60;
+                        int nDec = (int)((activity.dLoopA * 100) % 100);
+                        EditText textAValue = (EditText)getActivity().findViewById(R.id.textAValue);
+                        textAValue.setText(String.format("%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
                     }
                 }
             }
@@ -276,6 +287,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener {
                         btnB.setAlpha(1.0f);
                         View viewMaskB = getActivity().findViewById(R.id.viewMaskB);
                         viewMaskB.setVisibility(View.INVISIBLE);
+
+                        EditText textBValue  = (EditText)getActivity().findViewById(R.id.textBValue);
+                        textBValue.setText("00:00:00.00");
                     }
                     else {
                         activity.dLoopB = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
@@ -292,6 +306,14 @@ public class LoopFragment extends Fragment implements View.OnTouchListener {
                         viewMaskB.setVisibility(View.VISIBLE);
                         viewMaskB.requestLayout();
                         BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA), BASS.BASS_POS_BYTE);
+
+                        int nMinute = (int)(activity.dLoopB / 60);
+                        int nSecond = (int)(activity.dLoopB % 60);
+                        int nHour = (int)(nMinute / 60);
+                        nMinute = nMinute % 60;
+                        int nDec = (int)((activity.dLoopB * 100) % 100);
+                        EditText textBValue  = (EditText)getActivity().findViewById(R.id.textBValue);
+                        textBValue.setText(String.format("%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
                     }
                     activity.setSync();
                 }
@@ -512,6 +534,13 @@ public class LoopFragment extends Fragment implements View.OnTouchListener {
             RelativeLayout layout = (RelativeLayout)getActivity().findViewById(R.id.relative_loop);
             layout.removeView(textView);
         }
+
+        EditText textAValue  = (EditText)getActivity().findViewById(R.id.textAValue);
+        textAValue.setText("00:00:00.00");
+
+        EditText textBValue  = (EditText)getActivity().findViewById(R.id.textBValue);
+        textBValue.setText("00:00:00.00");
+
         arMarkerTime.clear();
         arMarkerText.clear();
 

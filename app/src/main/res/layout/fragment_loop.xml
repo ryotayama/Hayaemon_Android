@@ -22,13 +22,56 @@
         android:layout_below="@+id/abTab_Layout"
         />
 
+    <LinearLayout
+        android:id="@+id/ABLabel"
+        android:orientation="horizontal"
+        android:layout_below="@+id/abTab_Layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:id="@+id/textA"
+            android:text="A: "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+            <requestFocus/>
+        </TextView>
+
+        <EditText
+            android:id="@+id/textAValue"
+            android:text="00:00:00.00"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/textB"
+            android:text="B: "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            />
+
+        <EditText
+            android:id="@+id/textBValue"
+            android:text="00:00:00.00"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+    </LinearLayout>
+
     <com.edolfzoku.hayaemon2.WaveView
         android:id="@+id/waveView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="0px"
         android:background="@android:color/transparent"
-        android:layout_below="@+id/textViewMarker"
+        android:layout_below="@+id/ABLabel"
         android:layout_above="@+id/ABButton"
         >
     </com.edolfzoku.hayaemon2.WaveView>
@@ -38,7 +81,7 @@
         android:layout_width="1dp"
         android:layout_height="wrap_content"
         android:background="@android:color/black"
-        android:layout_below="@+id/textViewMarker"
+        android:layout_below="@+id/ABLabel"
         android:layout_above="@+id/ABButton"
         />
 
@@ -48,7 +91,7 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="0dp"
         android:background="@android:color/white"
-        android:layout_below="@+id/textViewMarker"
+        android:layout_below="@+id/ABLabel"
         android:layout_above="@+id/ABButton"
         android:alpha="0.75"
         />
@@ -59,7 +102,7 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="0dp"
         android:background="@android:color/white"
-        android:layout_below="@+id/textViewMarker"
+        android:layout_below="@+id/ABLabel"
         android:layout_above="@+id/ABButton"
         android:alpha="0.75"
         />
