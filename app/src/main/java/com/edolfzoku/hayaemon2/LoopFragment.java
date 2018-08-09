@@ -19,10 +19,13 @@
 package com.edolfzoku.hayaemon2;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -37,7 +41,7 @@ import com.un4seen.bass.BASS;
 
 import java.util.ArrayList;
 
-public class LoopFragment extends Fragment implements View.OnTouchListener {
+public class LoopFragment extends Fragment implements View.OnTouchListener, View.OnFocusChangeListener {
     private int nMarker; // マーカー再生時のループ位置
     private Handler handler;
     private MainActivity mainActivity;
@@ -190,6 +194,207 @@ public class LoopFragment extends Fragment implements View.OnTouchListener {
 
             }
         });
+
+
+        EditText textAValue = (EditText)getActivity().findViewById(R.id.textAValue);
+        textAValue.setOnFocusChangeListener(this);
+
+        EditText textBValue = (EditText)getActivity().findViewById(R.id.textBValue);
+        textBValue.setOnFocusChangeListener(this);
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus)
+    {
+        if(hasFocus)
+        {
+            if(v.getId() == R.id.textAValue)
+            {
+                showABLoopPicker(true);
+            }
+            else if(v.getId() == R.id.textBValue)
+            {
+                showABLoopPicker(false);
+            }
+        }
+    }
+
+    public void showABLoopPicker(boolean bAPos) {
+        MainActivity activity = (MainActivity)getActivity();
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.ablooppicker, null, false);
+        double dValue = 0.0;
+        if(bAPos) dValue = activity.dLoopA;
+        else dValue = activity.dLoopB;
+        int nMinute = (int)(dValue / 60);
+        int nSecond = (int)(dValue % 60);
+        int nHour = (int)(nMinute / 60);
+        nMinute = nMinute % 60;
+        int nDec = (int)((dValue * 100) % 100);
+        String strHour = String.format("%02d", nHour);
+        String strMinute = String.format("%02d", nMinute);
+        String strSecond = String.format("%02d", nSecond);
+        String strDec = String.format("%02d", nDec);
+
+        final NumberPicker hourPicker = (NumberPicker)view.findViewById(R.id.abLoopHourPicker);
+        final String[] arInts = {"59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
+        hourPicker.setDisplayedValues(arInts);
+        hourPicker.setMinValue(0);
+        hourPicker.setMaxValue(59);
+        for(int i = 0; i < arInts.length; i++)
+        {
+            if(arInts[i].equals(strHour))
+                hourPicker.setValue(i);
+        }
+
+        final NumberPicker minutePicker = (NumberPicker)view.findViewById(R.id.abLoopMinutePicker);
+        minutePicker.setDisplayedValues(arInts);
+        minutePicker.setMinValue(0);
+        minutePicker.setMaxValue(59);
+        for(int i = 0; i < arInts.length; i++)
+        {
+            if(arInts[i].equals(strMinute))
+                minutePicker.setValue(i);
+        }
+        final NumberPicker secondPicker = (NumberPicker)view.findViewById(R.id.abLoopSecondPicker);
+        secondPicker.setDisplayedValues(arInts);
+        secondPicker.setMinValue(0);
+        secondPicker.setMaxValue(59);
+        for(int i = 0; i < arInts.length; i++)
+        {
+            if(arInts[i].equals(strSecond))
+                secondPicker.setValue(i);
+        }
+
+        final NumberPicker decimalPicker = (NumberPicker)view.findViewById(R.id.abLoopDecimalPicker);
+        final String[] arDecimals = {"99", "98", "97", "96", "95", "94", "93", "92", "91", "90", "89", "88", "87", "86", "85", "84", "83", "82", "81", "80", "79", "78", "77", "76", "75", "74", "73", "72", "71", "70", "69", "68", "67", "66", "65", "64", "63", "62", "61", "60", "59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
+        decimalPicker.setDisplayedValues(arDecimals);
+        decimalPicker.setMinValue(0);
+        decimalPicker.setMaxValue(99);
+        for(int i = 0; i < arDecimals.length; i++)
+        {
+            if(arDecimals[i].equals(strDec))
+                decimalPicker.setValue(i);
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        if(bAPos) builder.setTitle("A位置の調整");
+        else builder.setTitle("B位置の調整");
+        final boolean f_bAPos = bAPos;
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                View view = inflater.inflate(R.layout.ablooppicker, null, false);
+                int nHour = Integer.parseInt(arInts[hourPicker.getValue()]);
+                int nMinute = Integer.parseInt(arInts[minutePicker.getValue()]);
+                int nSecond = Integer.parseInt(arInts[secondPicker.getValue()]);
+                double dDec = Double.parseDouble(arDecimals[decimalPicker.getValue()]);
+                double dPos = nHour * 3600 + nMinute * 60 + nSecond + dDec / 100.0;
+
+                if(f_bAPos) setLoopA(dPos);
+                else setLoopB(dPos);
+                clearFocus();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                clearFocus();
+            }
+        });
+        builder.setView(view);
+        builder.show();
+    }
+
+    public void clearFocus()
+    {
+        EditText textAValue = (EditText)getActivity().findViewById(R.id.textAValue);
+        textAValue.clearFocus();
+
+        EditText textBValue = (EditText)getActivity().findViewById(R.id.textBValue);
+        textBValue.clearFocus();
+    }
+
+    public void setLoopA(double dLoopA)
+    {
+        if(MainActivity.hStream == 0) return;
+
+        MainActivity activity = (MainActivity)getActivity();
+        if(activity == null) return;
+
+        double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
+        if(dLoopA >= dLength)
+            dLoopA = dLength;
+
+        if(activity.bLoopB && dLoopA >= activity.dLoopB)
+            dLoopA = activity.dLoopB - 1.0;
+
+        activity.dLoopA = dLoopA;
+        activity.bLoopA = true;
+        ImageButton btnA = (ImageButton)getActivity().findViewById(R.id.btnA);
+        btnA.setSelected(true);
+        btnA.setAlpha(0.3f);
+
+        long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
+        long nPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dLoopA);
+        int nBkWidth = waveView.getWidth();
+        int nLeft = (int) (nBkWidth * nPos / nLength);
+        View viewMaskA = getActivity().findViewById(R.id.viewMaskA);
+        viewMaskA.getLayoutParams().width = nLeft;
+        viewMaskA.setVisibility(View.VISIBLE);
+        viewMaskA.requestLayout();
+
+        int nMinute = (int)(activity.dLoopA / 60);
+        int nSecond = (int)(activity.dLoopA % 60);
+        int nHour = (int)(nMinute / 60);
+        nMinute = nMinute % 60;
+        int nDec = (int)((activity.dLoopA * 100) % 100);
+        EditText textAValue = (EditText)getActivity().findViewById(R.id.textAValue);
+        textAValue.setText(String.format("%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
+    }
+
+    public void setLoopB(double dLoopB)
+    {
+        if(MainActivity.hStream == 0) return;
+
+        MainActivity activity = (MainActivity)getActivity();
+        if(activity == null) return;
+
+        double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
+        if(dLoopB >= dLength)
+            dLoopB = dLength;
+
+        if(activity.bLoopA && dLoopB <= activity.dLoopA)
+            dLoopB = activity.dLoopA + 1.0;
+
+        activity.dLoopB = dLoopB;
+        activity.bLoopB = true;
+        ImageButton btnB = (ImageButton)getActivity().findViewById(R.id.btnB);
+        btnB.setSelected(true);
+        btnB.setAlpha(0.3f);
+        long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
+        long nPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dLoopB);
+        int nBkWidth = waveView.getWidth();
+        int nLeft = (int) (nBkWidth * nPos / nLength);
+        View viewMaskB = getActivity().findViewById(R.id.viewMaskB);
+        viewMaskB.setTranslationX(nLeft);
+        viewMaskB.getLayoutParams().width = nBkWidth - nLeft;
+        viewMaskB.setVisibility(View.VISIBLE);
+        viewMaskB.requestLayout();
+        BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA), BASS.BASS_POS_BYTE);
+
+        int nMinute = (int)(activity.dLoopB / 60);
+        int nSecond = (int)(activity.dLoopB % 60);
+        int nHour = (int)(nMinute / 60);
+        nMinute = nMinute % 60;
+        int nDec = (int)((activity.dLoopB * 100) % 100);
+        EditText textBValue  = (EditText)getActivity().findViewById(R.id.textBValue);
+        textBValue.setText(String.format("%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
+
+        activity.setSync();
     }
 
     @Override
