@@ -6,8 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.un4seen.bass.BASS;
 
 import java.util.List;
 
@@ -41,6 +44,8 @@ public class PlaylistAdapter extends ArrayAdapter<PlaylistItem>
         }
 
         PlaylistItem item = items.get(position);
+        int nItem = Integer.parseInt(item.getNumber()) - 1;
+        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
 
         TextView textNumber = (TextView)view.findViewById(R.id.textNumber);
         textNumber.setText(item.getNumber());
@@ -51,9 +56,20 @@ public class PlaylistAdapter extends ArrayAdapter<PlaylistItem>
         TextView textArtist = (TextView)view.findViewById(R.id.textArtist);
         textArtist.setText(item.getArtist());
 
+        ImageView imgStatus = (ImageView)view.findViewById(R.id.imgStatus);
+        if(nItem == playlistFragment.getPlaying()) {
+            if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED)
+                imgStatus.setImageResource(R.drawable.pause_circle);
+            else
+                imgStatus.setImageResource(R.drawable.circle_music);
+            textNumber.setVisibility(View.INVISIBLE);
+        }
+        else {
+            imgStatus.setImageDrawable(null);
+            textNumber.setVisibility(View.VISIBLE);
+        }
+
         RelativeLayout playlistItem = (RelativeLayout)view.findViewById(R.id.playlistItem);
-        int nItem = Integer.parseInt(item.getNumber()) - 1;
-        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
         if(nItem == playlistFragment.getPlaying())
             playlistItem.setBackgroundColor(Color.argb(255, 224, 239, 255));
         else if(nItem % 2 == 0)

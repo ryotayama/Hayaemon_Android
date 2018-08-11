@@ -316,6 +316,7 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         BASS.BASS_ChannelPlay(MainActivity.hStream, false);
         Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
         btnPlay.setBackgroundColor(Color.argb(0, 0, 0, 0));
+        adapter.notifyDataSetChanged();
     }
 
     public void pause()
@@ -324,6 +325,7 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         BASS.BASS_ChannelPause(MainActivity.hStream);
         Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
         btnPlay.setBackgroundColor(Color.argb(64, 0, 0, 0));
+        adapter.notifyDataSetChanged();
     }
 
     public void playPrev()
