@@ -1,10 +1,12 @@
 package com.edolfzoku.hayaemon2;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -46,6 +48,13 @@ public class PlaylistAdapter extends ArrayAdapter<PlaylistItem>
 
         TextView textArtist = (TextView)view.findViewById(R.id.textArtist);
         textArtist.setText(item.getArtist());
+
+        RelativeLayout playlistItem = (RelativeLayout)view.findViewById(R.id.playlistItem);
+        int nItem = Integer.parseInt(item.getNumber());
+        if(nItem % 2 == 0)
+            playlistItem.setBackgroundColor(Color.argb(255, 240, 240, 240));
+        else
+            playlistItem.setBackgroundColor(Color.argb(255, 247, 247, 247));
 
         return view;
     }
