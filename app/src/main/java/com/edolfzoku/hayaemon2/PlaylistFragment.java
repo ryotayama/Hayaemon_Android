@@ -78,6 +78,8 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
     private int nPlaying;
     private int nDeleteItem;
 
+    public int getPlaying() { return nPlaying; }
+
     public PlaylistFragment()
     {
         activity = null;
@@ -282,6 +284,8 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
     {
         if(item.getTitle().equals("削除"))
         {
+            if(nDeleteItem < nPlaying) nPlaying--;
+
             listSongs.remove(nDeleteItem);
             arSongsPath.remove(nDeleteItem);
             arPlayed.remove(nDeleteItem);
@@ -524,6 +528,7 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         btnPlay.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_pause,0,0);
         LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(2);
         loopFragment.drawWaveForm(strPath);
+        adapter.notifyDataSetChanged();
     }
 
     public void stop()
@@ -537,6 +542,7 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_play, 0, 0);
         MainActivity activity = (MainActivity)getActivity();
         activity.clearLoop();
+        adapter.notifyDataSetChanged();
     }
 
     public void addSong(MainActivity activity, Uri uri)

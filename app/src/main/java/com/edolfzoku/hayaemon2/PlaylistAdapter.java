@@ -13,6 +13,7 @@ import java.util.List;
 
 public class PlaylistAdapter extends ArrayAdapter<PlaylistItem>
 {
+    MainActivity activity;
     private int resource;
     private List<PlaylistItem> items;
     private LayoutInflater inflater;
@@ -21,6 +22,7 @@ public class PlaylistAdapter extends ArrayAdapter<PlaylistItem>
     {
         super(context, resource, items);
 
+        this.activity = (MainActivity)context;
         this.resource = resource;
         this.items = items;
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -50,11 +52,14 @@ public class PlaylistAdapter extends ArrayAdapter<PlaylistItem>
         textArtist.setText(item.getArtist());
 
         RelativeLayout playlistItem = (RelativeLayout)view.findViewById(R.id.playlistItem);
-        int nItem = Integer.parseInt(item.getNumber());
-        if(nItem % 2 == 0)
-            playlistItem.setBackgroundColor(Color.argb(255, 240, 240, 240));
-        else
+        int nItem = Integer.parseInt(item.getNumber()) - 1;
+        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+        if(nItem == playlistFragment.getPlaying())
+            playlistItem.setBackgroundColor(Color.argb(255, 224, 239, 255));
+        else if(nItem % 2 == 0)
             playlistItem.setBackgroundColor(Color.argb(255, 247, 247, 247));
+        else
+            playlistItem.setBackgroundColor(Color.argb(255, 240, 240, 240));
 
         return view;
     }
