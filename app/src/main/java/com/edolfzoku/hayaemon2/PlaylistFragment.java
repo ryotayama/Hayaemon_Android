@@ -68,12 +68,12 @@ import static android.app.Activity.RESULT_OK;
 import static com.un4seen.bass.BASS_AAC.BASS_AAC_StreamCreateFileUser;
 
 public class PlaylistFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
-    private List<Map<String, String>> listSongs;
+    private ArrayList<PlaylistItem> listSongs;
     private int hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20;
     private List<String> arSongsPath;
     private List<Boolean> arPlayed;
     private ListView listView;
-    private SimpleAdapter adapter;
+    private PlaylistAdapter adapter;
     private MainActivity activity;
     private int nPlaying;
     private int nDeleteItem;
@@ -107,13 +107,7 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        adapter = new SimpleAdapter(
-                activity,
-                listSongs,
-                android.R.layout.simple_list_item_2,
-                new String[]{"songName","artistName"},
-                new int[]{android.R.id.text1, android.R.id.text2}
-        );
+        adapter = new PlaylistAdapter(activity, R.layout.playlist_item, listSongs);
     }
 
     @Override
@@ -276,8 +270,8 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         AdapterView.AdapterContextMenuInfo adapterInfo = (AdapterView.AdapterContextMenuInfo)info;
         ListView listView = (ListView)view;
         nDeleteItem = adapterInfo.position;
-        Map<String, String> map = (Map)listView.getItemAtPosition(nDeleteItem);
-        String strSong = map.get("songName");
+        PlaylistItem item = (PlaylistItem)listView.getItemAtPosition(nDeleteItem);
+        String strSong = item.getTitle();
 
         menu.setHeaderTitle(strSong);
         menu.add("削除");
@@ -291,6 +285,12 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
             listSongs.remove(nDeleteItem);
             arSongsPath.remove(nDeleteItem);
             arPlayed.remove(nDeleteItem);
+
+            for(int i = nDeleteItem; i < listSongs.size(); i++) {
+                PlaylistItem playlistItem = listSongs.get(i);
+                playlistItem.setNumber(String.format("%d", i+1));
+            }
+
             adapter.notifyDataSetChanged();
 
             SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
@@ -556,10 +556,8 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
             strArtist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
         }
         if(strTitle != null) {
-            Map<String, String> map = new HashMap<>();
-            map.put("songName", strTitle);
-            map.put("artistName", strArtist);
-            listSongs.add(map);
+            PlaylistItem item = new PlaylistItem(String.format("%d", listSongs.size()+1), strTitle, strArtist);
+            listSongs.add(item);
         }
         else
         {
@@ -568,10 +566,8 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
                 int startIndex = uri.toString().lastIndexOf('/');
                 strTitle = uri.toString().substring(startIndex + 1);
             }
-            Map<String, String> map = new HashMap<>();
-            map.put("songName", strTitle);
-            map.put("artistName", "");
-            listSongs.add(map);
+            PlaylistItem item = new PlaylistItem(String.format("%d", listSongs.size()+1), strTitle, "");
+            listSongs.add(item);
         }
         arSongsPath.add(uri.toString());
         arPlayed.add(false);

@@ -11,7 +11,16 @@
         android:layout_height="wrap_content"
         android:id="@+id/listView"
         android:layout_width="match_parent"
+        android:divider="#BFBFBF"
+        android:dividerHeight="0.5dp"
         android:layout_weight="1">
 
     </ListView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#BFBFBF"
+        android:layout_below="@+id/listView"
+        />
 </RelativeLayout>
