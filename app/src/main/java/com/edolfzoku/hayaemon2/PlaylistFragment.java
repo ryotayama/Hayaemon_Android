@@ -269,14 +269,17 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo info)
     {
         super.onCreateContextMenu(menu, view, info);
-        AdapterView.AdapterContextMenuInfo adapterInfo = (AdapterView.AdapterContextMenuInfo)info;
-        ListView listView = (ListView)view;
-        nDeleteItem = adapterInfo.position;
-        PlaylistItem item = (PlaylistItem)listView.getItemAtPosition(nDeleteItem);
-        String strSong = item.getTitle();
+        if(listView.equals(view))
+        {
+            AdapterView.AdapterContextMenuInfo adapterInfo = (AdapterView.AdapterContextMenuInfo)info;
+            ListView listView = (ListView)view;
+            nDeleteItem = adapterInfo.position;
+            PlaylistItem item = (PlaylistItem)listView.getItemAtPosition(nDeleteItem);
+            String strSong = item.getTitle();
 
-        menu.setHeaderTitle(strSong);
-        menu.add("削除");
+            menu.setHeaderTitle(strSong);
+            menu.add("削除");
+        }
     }
 
     @Override

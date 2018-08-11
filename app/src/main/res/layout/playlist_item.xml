@@ -37,8 +37,8 @@
         android:textColor="#000000"
         android:layout_marginTop="10dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
         android:layout_toRightOf="@id/textNumber"
+        android:layout_toLeftOf="@+id/frameSongMenu"
         />
 
     <TextView
@@ -50,8 +50,32 @@
         android:textColor="#666666"
         android:layout_marginTop="29dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
         android:layout_toRightOf="@id/textNumber"
+        android:layout_toLeftOf="@+id/frameSongMenu"
         />
+
+    <FrameLayout
+        android:id="@+id/frameSongMenu"
+        android:layout_width="42dp"
+        android:layout_height="52dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:clickable="true"
+        >
+
+        <ImageView
+            android:id="@+id/btnSongMenu"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@null"
+            android:src="@drawable/listmenu"
+            android:scaleType="centerInside"
+            android:layout_marginRight="12dp"
+            android:layout_marginVertical="11dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            />
+
+    </FrameLayout>
 
 </RelativeLayout>

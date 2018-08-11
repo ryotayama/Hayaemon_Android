@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -68,6 +69,15 @@ public class PlaylistAdapter extends ArrayAdapter<PlaylistItem>
             imgStatus.setImageDrawable(null);
             textNumber.setVisibility(View.VISIBLE);
         }
+
+        final FrameLayout frameSongMenu = (FrameLayout)view.findViewById(R.id.frameSongMenu);
+        playlistFragment.registerForContextMenu(frameSongMenu);
+        frameSongMenu.setOnClickListener(new View.OnClickListener() {
+           @Override
+            public void onClick(View v) {
+                frameSongMenu.showContextMenu();
+            }
+        });
 
         RelativeLayout playlistItem = (RelativeLayout)view.findViewById(R.id.playlistItem);
         if(nItem == playlistFragment.getPlaying())
