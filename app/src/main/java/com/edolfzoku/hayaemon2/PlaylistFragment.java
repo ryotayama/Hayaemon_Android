@@ -39,6 +39,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -75,11 +76,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private List<Boolean> arPlayed;
     private RecyclerView recyclerView;
     private PlaylistAdapter adapter;
+    private ItemTouchHelper touchHelper;
     private MainActivity activity;
     private int nPlaying;
     private int nDeleteItem;
+    private boolean bSorting = false;
 
     public int getPlaying() { return nPlaying; }
+    public ItemTouchHelper getItemTouchHelper() { return touchHelper; }
+    public boolean isSorting() { return bSorting; }
 
     public PlaylistFragment()
     {
@@ -190,6 +195,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 nPlayMode = 3;
             preferences.edit().putInt("playmode", nPlayMode).commit();
         }
+        else if(v.getId() == R.id.textFinishSort)
+        {
+            TextView textFinishSort = (TextView) activity.findViewById(R.id.textFinishSort);
+            textFinishSort.setVisibility(View.GONE);
+            bSorting = false;
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -211,6 +223,56 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(adapter);
         recyclerView.setOnClickListener(this);
+        touchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
+                0) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                final int fromPos = viewHolder.getAdapterPosition();
+                final int toPos = target.getAdapterPosition();
+
+                PlaylistItem itemTemp = listSongs.get(fromPos);
+                listSongs.remove(fromPos);
+                listSongs.add(toPos, itemTemp);
+
+                String strTemp = arSongsPath.get(fromPos);
+                arSongsPath.remove(fromPos);
+                arSongsPath.add(toPos, strTemp);
+
+                Boolean bTemp = arPlayed.get(fromPos);
+                arPlayed.remove(fromPos);
+                arPlayed.add(toPos, bTemp);
+
+                int nStart = fromPos < toPos ? fromPos : toPos;
+                for(int i = nStart; i < listSongs.size(); i++) {
+                    PlaylistItem playlistItem = listSongs.get(i);
+                    playlistItem.setNumber(String.format("%d", i+1));
+                }
+
+                if(fromPos == nPlaying) nPlaying = toPos;
+                else if(fromPos < nPlaying && nPlaying <= toPos) nPlaying--;
+                else if(fromPos > nPlaying && nPlaying >= toPos) nPlaying++;
+
+                adapter.notifyItemMoved(fromPos, toPos);
+
+                return true;
+            }
+
+            @Override
+            public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                super.clearView(recyclerView, viewHolder);
+
+                adapter.notifyDataSetChanged();
+
+                SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                Gson gson = new Gson();
+                preferences.edit().putString("arSongsPath", gson.toJson(arSongsPath)).commit();
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            }
+        });
+        touchHelper.attachToRecyclerView(recyclerView);
 
         Button btnRewind = (Button) activity.findViewById(R.id.btnRewind);
         btnRewind.setOnClickListener(this);
@@ -226,6 +288,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         Button btnPlayMode = (Button) activity.findViewById(R.id.btnPlayMode);
         btnPlayMode.setOnClickListener(this);
+
+        TextView textFinishSort = (TextView) activity.findViewById(R.id.textFinishSort);
+        textFinishSort.setOnClickListener(this);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -277,6 +342,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             String strSong = adapter.getTitle(nDeleteItem);
             menu.setHeaderTitle(strSong);
             menu.add("削除");
+            if(bSorting) menu.add("並べ替えを終了する");
+            else menu.add("曲順の並べ替え");
         }
     }
 
@@ -301,6 +368,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
             Gson gson = new Gson();
             preferences.edit().putString("arSongsPath", gson.toJson(arSongsPath)).commit();
+        }
+        else if(item.getTitle().equals("曲順の並べ替え"))
+        {
+            TextView textFinishSort = (TextView) activity.findViewById(R.id.textFinishSort);
+            textFinishSort.setVisibility(View.VISIBLE);
+            bSorting = true;
+            adapter.notifyDataSetChanged();
+        }
+        else if(item.getTitle().equals("並べ替えを終了する"))
+        {
+            bSorting = false;
+            adapter.notifyDataSetChanged();
         }
         return super.onContextItemSelected(item);
     }

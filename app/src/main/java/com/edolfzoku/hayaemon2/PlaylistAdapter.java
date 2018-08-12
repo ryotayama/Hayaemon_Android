@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -35,6 +36,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         TextView textArtist;
         ImageView imgStatus;
         FrameLayout frameSongMenu;
+        ImageView imgSongMenu;
 
         ViewHolder(View view) {
             super(view);
@@ -44,6 +46,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             textArtist = (TextView) view.findViewById(R.id.textArtist);
             imgStatus = (ImageView) view.findViewById(R.id.imgStatus);
             frameSongMenu = (FrameLayout) view.findViewById(R.id.frameSongMenu);
+            imgSongMenu = (ImageView) view.findViewById(R.id.imgSongMenu);
         }
     }
 
@@ -64,7 +67,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position)
+    public void onBindViewHolder(final ViewHolder holder, int position)
     {
         PlaylistItem item = items.get(position);
         final int nItem = Integer.parseInt(item.getNumber()) - 1;
@@ -89,19 +92,34 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
 
         playlistFragment.registerForContextMenu(holder.playlistItem);
         playlistFragment.registerForContextMenu(holder.frameSongMenu);
-        final ViewHolder _holder = holder;
         holder.playlistItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 playlistFragment.playSong(nItem);
             }
         });
-        holder.frameSongMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                _holder.frameSongMenu.showContextMenu();
-            }
-        });
+        if(playlistFragment.isSorting()) {
+            holder.frameSongMenu.setOnClickListener(null);
+            holder.frameSongMenu.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event)
+                {
+                    playlistFragment.getItemTouchHelper().startDrag(holder);
+                    return true;
+                }
+            });
+            holder.imgSongMenu.setImageResource(R.drawable.ic_sort);
+        }
+        else {
+            holder.frameSongMenu.setOnTouchListener(null);
+            holder.frameSongMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.frameSongMenu.showContextMenu();
+                }
+            });
+            holder.imgSongMenu.setImageResource(R.drawable.ic_listmenu);
+        }
 
         if(nItem == playlistFragment.getPlaying())
             holder.playlistItem.setBackgroundColor(Color.argb(255, 224, 239, 255));

@@ -61,14 +61,16 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         >
 
         <ImageView
-            android:id="@+id/btnSongMenu"
+            android:id="@+id/imgSongMenu"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:background="@null"
-            android:src="@drawable/listmenu"
+            android:src="@drawable/ic_listmenu"
             android:scaleType="centerInside"
             android:layout_marginRight="12dp"
             android:layout_marginVertical="11dp"

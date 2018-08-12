@@ -138,8 +138,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
             mBound = true;
         }
-
-        hideAds();
     }
 
     @Override
