@@ -37,15 +37,16 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.un4seen.bass.BASS;
@@ -67,12 +68,12 @@ import java.util.Random;
 import static android.app.Activity.RESULT_OK;
 import static com.un4seen.bass.BASS_AAC.BASS_AAC_StreamCreateFileUser;
 
-public class PlaylistFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
+public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private ArrayList<PlaylistItem> listSongs;
     private int hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20;
     private List<String> arSongsPath;
     private List<Boolean> arPlayed;
-    private ListView listView;
+    private RecyclerView recyclerView;
     private PlaylistAdapter adapter;
     private MainActivity activity;
     private int nPlaying;
@@ -204,13 +205,12 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
     {
         super.onActivityCreated(savedInstanceState);
 
-        listView = (ListView)activity.findViewById(R.id.listView);
-
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(this);
-
-        registerForContextMenu(listView);
+        recyclerView = (RecyclerView)activity.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(false);
+        LinearLayoutManager llm = new LinearLayoutManager(activity);
+        recyclerView.setLayoutManager(llm);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setOnClickListener(this);
 
         Button btnRewind = (Button) activity.findViewById(R.id.btnRewind);
         btnRewind.setOnClickListener(this);
@@ -269,14 +269,12 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo info)
     {
         super.onCreateContextMenu(menu, view, info);
-        if(listView.equals(view))
+        if(view instanceof RelativeLayout)
         {
-            AdapterView.AdapterContextMenuInfo adapterInfo = (AdapterView.AdapterContextMenuInfo)info;
-            ListView listView = (ListView)view;
-            nDeleteItem = adapterInfo.position;
-            PlaylistItem item = (PlaylistItem)listView.getItemAtPosition(nDeleteItem);
-            String strSong = item.getTitle();
-
+            RelativeLayout relative = (RelativeLayout)view;
+            TextView textNumber = (TextView)relative.getChildAt(0);
+            nDeleteItem = Integer.parseInt((String)textNumber.getText()) - 1;
+            String strSong = adapter.getTitle(nDeleteItem);
             menu.setHeaderTitle(strSong);
             menu.add("削除");
         }
@@ -305,12 +303,6 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
             preferences.edit().putString("arSongsPath", gson.toJson(arSongsPath)).commit();
         }
         return super.onContextItemSelected(item);
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View v, int position, long id)
-    {
-        playSong(position);
     }
 
     public void play()

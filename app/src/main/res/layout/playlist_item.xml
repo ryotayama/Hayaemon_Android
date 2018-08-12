@@ -78,4 +78,11 @@
 
     </FrameLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#BFBFBF"
+        android:layout_alignParentBottom="true"
+        />
+
 </RelativeLayout>

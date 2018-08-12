@@ -182,6 +182,7 @@ public class WaveView extends View {
 
     public void clearWaveForm()
     {
+        if(mBitmap == null) mBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         if(mCanvas == null) mCanvas = new Canvas(mBitmap);
         mCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         invalidate();
