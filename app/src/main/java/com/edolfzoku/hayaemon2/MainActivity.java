@@ -456,21 +456,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if(v.getId() == R.id.menuOpen)
         {
-            if (Build.VERSION.SDK_INT < 19)
-            {
-                final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("audio/*");
-                playlistFragment.startActivityForResult(intent, 1);
-            }
-            else
-            {
-                final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
-                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("audio/*");
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                playlistFragment.startActivityForResult(intent, 1);
-            }
+            open();
             menuSheet.dismiss();
         }
         else if(v.getId() == R.id.menuTwitter)
@@ -531,7 +517,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.setIcon(R.mipmap.ic_launcher);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-// ボタンをクリックしたときの動作
                         }
                     });
             builder.show();
@@ -539,6 +524,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(v.getId() == R.id.menuCancel)
         {
             menuSheet.dismiss();
+        }
+    }
+
+    public void open()
+    {
+        PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
+        if (Build.VERSION.SDK_INT < 19)
+        {
+            final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("audio/*");
+            playlistFragment.startActivityForResult(intent, 1);
+        }
+        else
+        {
+            final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("audio/*");
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            playlistFragment.startActivityForResult(intent, 1);
         }
     }
 

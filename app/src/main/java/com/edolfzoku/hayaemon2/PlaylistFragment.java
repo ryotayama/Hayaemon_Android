@@ -195,10 +195,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 nPlayMode = 3;
             preferences.edit().putInt("playmode", nPlayMode).commit();
         }
+        else if(v.getId() == R.id.textAddSong)
+        {
+            activity.open();
+        }
         else if(v.getId() == R.id.textFinishSort)
         {
+            recyclerView.setPadding(0, 0, 0, (int)(80 * getResources().getDisplayMetrics().density + 0.5));
             TextView textFinishSort = (TextView) activity.findViewById(R.id.textFinishSort);
             textFinishSort.setVisibility(View.GONE);
+            TextView textAddSong = (TextView) activity.findViewById(R.id.textAddSong);
+            textAddSong.setVisibility(View.VISIBLE);
             bSorting = false;
             adapter.notifyDataSetChanged();
         }
@@ -289,6 +296,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         Button btnPlayMode = (Button) activity.findViewById(R.id.btnPlayMode);
         btnPlayMode.setOnClickListener(this);
 
+        TextView textAddSong = (TextView) activity.findViewById(R.id.textAddSong);
+        textAddSong.setOnClickListener(this);
+
         TextView textFinishSort = (TextView) activity.findViewById(R.id.textFinishSort);
         textFinishSort.setOnClickListener(this);
     }
@@ -371,8 +381,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         }
         else if(item.getTitle().equals("曲順の並べ替え"))
         {
+            recyclerView.setPadding(0, 0, 0, (int)(64 * getResources().getDisplayMetrics().density + 0.5));
             TextView textFinishSort = (TextView) activity.findViewById(R.id.textFinishSort);
             textFinishSort.setVisibility(View.VISIBLE);
+            TextView textAddSong = (TextView) activity.findViewById(R.id.textAddSong);
+            textAddSong.setVisibility(View.GONE);
             bSorting = true;
             adapter.notifyDataSetChanged();
         }
