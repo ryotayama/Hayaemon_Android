@@ -9,7 +9,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 27
         versionCode 83
-        versionName "1.57.1"
+        versionName "1.57"
         ndk {
             moduleName = 'bass'
             moduleName = 'bass_fx'
