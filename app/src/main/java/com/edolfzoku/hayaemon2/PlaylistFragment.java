@@ -18,10 +18,8 @@
  */
 package com.edolfzoku.hayaemon2;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,8 +30,6 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
@@ -56,42 +52,46 @@ import com.un4seen.bass.BASS_FX;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import static android.app.Activity.RESULT_OK;
-import static com.un4seen.bass.BASS_AAC.BASS_AAC_StreamCreateFileUser;
 
 public class PlaylistFragment extends Fragment implements View.OnClickListener {
-    private ArrayList<PlaylistItem> listSongs;
+    private ArrayList<String> arPlaylistNames;
+    private  ArrayList<ArrayList<PlaylistItem>> arPlaylists;
     private int hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20;
-    private List<String> arSongsPath;
     private List<Boolean> arPlayed;
-    private RecyclerView recyclerView;
-    private PlaylistAdapter adapter;
+    private RecyclerView recyclerTab;
+    private RecyclerView recyclerSongs;
+    private PlaylistTabAdapter tabAdapter;
+    private PlaylistAdapter listAdapter;
     private ItemTouchHelper touchHelper;
     private MainActivity activity;
+    private int nPlayingPlaylist = -1;
+    private int nSelectedPlaylist = 0;
     private int nPlaying;
     private int nDeleteItem;
     private boolean bSorting = false;
 
+    public void setArPlaylists(ArrayList<ArrayList<PlaylistItem>> arLists) { arPlaylists = arLists; }
+    public void setArPlaylistNames(ArrayList<String> arNames) { arPlaylistNames = arNames; }
+    public int getSelectedPlaylist() { return nSelectedPlaylist; }
     public int getPlaying() { return nPlaying; }
+    public int getPlayingPlaylist() { return nPlayingPlaylist; }
     public ItemTouchHelper getItemTouchHelper() { return touchHelper; }
     public boolean isSorting() { return bSorting; }
+    public void setPlayingPlaylist(int nPlaylist) { nPlayingPlaylist = nPlaylist; }
 
     public PlaylistFragment()
     {
         activity = null;
         nPlaying = -1;
-        listSongs = new ArrayList<>();
-        arSongsPath = new ArrayList<>();
+        arPlaylistNames = new ArrayList<>();
+        arPlaylists = new ArrayList<>();
         arPlayed = new ArrayList<>();
     }
 
@@ -115,7 +115,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        adapter = new PlaylistAdapter(activity, R.layout.playlist_item, listSongs);
+        tabAdapter = new PlaylistTabAdapter(activity, R.layout.playlist_tab_item, arPlaylistNames);
+        listAdapter = new PlaylistAdapter(activity, R.layout.playlist_item, arPlaylists.get(nSelectedPlaylist));
     }
 
     @Override
@@ -149,6 +150,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 {
                     if(activity.hStream == 0)
                     {
+                        nPlayingPlaylist = nSelectedPlaylist;
+                        ArrayList<PlaylistItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+                        arPlayed = new ArrayList<Boolean>();
+                        for(int i = 0; i < arSongs.size(); i++)
+                            arPlayed.add(false);
                         playNext();
                     }
                 }
@@ -195,20 +201,40 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 nPlayMode = 3;
             preferences.edit().putInt("playmode", nPlayMode).commit();
         }
+        else if(v.getId() == R.id.textAddPlaylist)
+        {
+            String strName = "再生リスト " + String.format("%d", arPlaylistNames.size() + 1);
+            addPlaylist(strName);
+        }
         else if(v.getId() == R.id.textAddSong)
         {
             activity.open();
         }
         else if(v.getId() == R.id.textFinishSort)
         {
-            recyclerView.setPadding(0, 0, 0, (int)(80 * getResources().getDisplayMetrics().density + 0.5));
+            recyclerSongs.setPadding(0, 0, 0, (int)(80 * getResources().getDisplayMetrics().density + 0.5));
             TextView textFinishSort = (TextView) activity.findViewById(R.id.textFinishSort);
             textFinishSort.setVisibility(View.GONE);
             TextView textAddSong = (TextView) activity.findViewById(R.id.textAddSong);
             textAddSong.setVisibility(View.VISIBLE);
             bSorting = false;
-            adapter.notifyDataSetChanged();
+            listAdapter.notifyDataSetChanged();
         }
+    }
+
+    public void addPlaylist(String strName)
+    {
+        arPlaylistNames.add(strName);
+        ArrayList<PlaylistItem> arSongs = new ArrayList<>();
+        arPlaylists.add(arSongs);
+        if(activity != null)
+        {
+            SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+            Gson gson = new Gson();
+            preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+            preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+        }
+        selectPlaylist(arPlaylists.size() - 1);
     }
 
     @Override
@@ -224,34 +250,38 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     {
         super.onActivityCreated(savedInstanceState);
 
-        recyclerView = (RecyclerView)activity.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(false);
+        recyclerTab = (RecyclerView)activity.findViewById(R.id.recyclerTab);
+        recyclerTab.setHasFixedSize(false);
+        LinearLayoutManager managerTab = new LinearLayoutManager(activity);
+        managerTab.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerTab.setLayoutManager(managerTab);
+        recyclerTab.setAdapter(tabAdapter);
+
+        recyclerSongs = (RecyclerView)activity.findViewById(R.id.recyclerSongs);
+        recyclerSongs.setHasFixedSize(false);
         LinearLayoutManager llm = new LinearLayoutManager(activity);
-        recyclerView.setLayoutManager(llm);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setOnClickListener(this);
+        recyclerSongs.setLayoutManager(llm);
+        recyclerSongs.setAdapter(listAdapter);
+        recyclerSongs.setOnClickListener(this);
         touchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
                 0) {
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            public boolean onMove(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 final int fromPos = viewHolder.getAdapterPosition();
                 final int toPos = target.getAdapterPosition();
 
-                PlaylistItem itemTemp = listSongs.get(fromPos);
-                listSongs.remove(fromPos);
-                listSongs.add(toPos, itemTemp);
-
-                String strTemp = arSongsPath.get(fromPos);
-                arSongsPath.remove(fromPos);
-                arSongsPath.add(toPos, strTemp);
+                ArrayList<PlaylistItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+                PlaylistItem itemTemp = arSongs.get(fromPos);
+                arSongs.remove(fromPos);
+                arSongs.add(toPos, itemTemp);
 
                 Boolean bTemp = arPlayed.get(fromPos);
                 arPlayed.remove(fromPos);
                 arPlayed.add(toPos, bTemp);
 
                 int nStart = fromPos < toPos ? fromPos : toPos;
-                for(int i = nStart; i < listSongs.size(); i++) {
-                    PlaylistItem playlistItem = listSongs.get(i);
+                for(int i = nStart; i < arSongs.size(); i++) {
+                    PlaylistItem playlistItem = arSongs.get(i);
                     playlistItem.setNumber(String.format("%d", i+1));
                 }
 
@@ -259,27 +289,28 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 else if(fromPos < nPlaying && nPlaying <= toPos) nPlaying--;
                 else if(fromPos > nPlaying && nPlaying >= toPos) nPlaying++;
 
-                adapter.notifyItemMoved(fromPos, toPos);
+                listAdapter.notifyItemMoved(fromPos, toPos);
 
                 return true;
             }
 
             @Override
-            public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                super.clearView(recyclerView, viewHolder);
+            public void clearView(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder) {
+                super.clearView(recyclerSongs, viewHolder);
 
-                adapter.notifyDataSetChanged();
+                listAdapter.notifyDataSetChanged();
 
                 SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 Gson gson = new Gson();
-                preferences.edit().putString("arSongsPath", gson.toJson(arSongsPath)).commit();
+                preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
             }
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
             }
         });
-        touchHelper.attachToRecyclerView(recyclerView);
+        touchHelper.attachToRecyclerView(recyclerSongs);
 
         Button btnRewind = (Button) activity.findViewById(R.id.btnRewind);
         btnRewind.setOnClickListener(this);
@@ -295,6 +326,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         Button btnPlayMode = (Button) activity.findViewById(R.id.btnPlayMode);
         btnPlayMode.setOnClickListener(this);
+
+        TextView textAddPlaylist = (TextView) activity.findViewById(R.id.textAddPlaylist);
+        textAddPlaylist.setOnClickListener(this);
 
         TextView textAddSong = (TextView) activity.findViewById(R.id.textAddSong);
         textAddSong.setOnClickListener(this);
@@ -331,13 +365,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 }
-                adapter.notifyDataSetChanged();
+                listAdapter.notifyDataSetChanged();
             }
         }
 
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
-        preferences.edit().putString("arSongsPath", gson.toJson(arSongsPath)).commit();
+        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
     }
 
     @Override
@@ -349,7 +384,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             RelativeLayout relative = (RelativeLayout)view;
             TextView textNumber = (TextView)relative.getChildAt(0);
             nDeleteItem = Integer.parseInt((String)textNumber.getText()) - 1;
-            String strSong = adapter.getTitle(nDeleteItem);
+            String strSong = listAdapter.getTitle(nDeleteItem);
             menu.setHeaderTitle(strSong);
             menu.add("削除");
             if(bSorting) menu.add("並べ替えを終了する");
@@ -364,35 +399,36 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         {
             if(nDeleteItem < nPlaying) nPlaying--;
 
-            listSongs.remove(nDeleteItem);
-            arSongsPath.remove(nDeleteItem);
+            ArrayList<PlaylistItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+            arSongs.remove(nDeleteItem);
             arPlayed.remove(nDeleteItem);
 
-            for(int i = nDeleteItem; i < listSongs.size(); i++) {
-                PlaylistItem playlistItem = listSongs.get(i);
+            for(int i = nDeleteItem; i < arSongs.size(); i++) {
+                PlaylistItem playlistItem = arSongs.get(i);
                 playlistItem.setNumber(String.format("%d", i+1));
             }
 
-            adapter.notifyDataSetChanged();
+            listAdapter.notifyDataSetChanged();
 
             SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
             Gson gson = new Gson();
-            preferences.edit().putString("arSongsPath", gson.toJson(arSongsPath)).commit();
+            preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+            preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
         }
         else if(item.getTitle().equals("曲順の並べ替え"))
         {
-            recyclerView.setPadding(0, 0, 0, (int)(64 * getResources().getDisplayMetrics().density + 0.5));
+            recyclerSongs.setPadding(0, 0, 0, (int)(64 * getResources().getDisplayMetrics().density + 0.5));
             TextView textFinishSort = (TextView) activity.findViewById(R.id.textFinishSort);
             textFinishSort.setVisibility(View.VISIBLE);
             TextView textAddSong = (TextView) activity.findViewById(R.id.textAddSong);
             textAddSong.setVisibility(View.GONE);
             bSorting = true;
-            adapter.notifyDataSetChanged();
+            listAdapter.notifyDataSetChanged();
         }
         else if(item.getTitle().equals("並べ替えを終了する"))
         {
             bSorting = false;
-            adapter.notifyDataSetChanged();
+            listAdapter.notifyDataSetChanged();
         }
         return super.onContextItemSelected(item);
     }
@@ -403,7 +439,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         BASS.BASS_ChannelPlay(MainActivity.hStream, false);
         Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
         btnPlay.setBackgroundColor(Color.argb(0, 0, 0, 0));
-        adapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
     }
 
     public void pause()
@@ -412,7 +448,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         BASS.BASS_ChannelPause(MainActivity.hStream);
         Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
         btnPlay.setBackgroundColor(Color.argb(64, 0, 0, 0));
-        adapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
     }
 
     public void playPrev()
@@ -427,10 +463,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     {
         MainActivity activity = (MainActivity)getActivity();
         Button btnPlayMode = (Button)activity.findViewById(R.id.btnPlayMode);
+        ArrayList<PlaylistItem> arSongs = arPlaylists.get(nPlayingPlaylist);
         if(btnPlayMode.getText().equals("通常モード") || btnPlayMode.getText().equals("１曲ループ"))
         {
             nPlaying++;
-            if(nPlaying >= listSongs.size())
+            if(nPlaying >= arSongs.size())
             {
                 stop();
                 return;
@@ -439,7 +476,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         else if(btnPlayMode.getText().equals("全曲ループ"))
         {
             nPlaying++;
-            if(nPlaying >= listSongs.size())
+            if(nPlaying >= arSongs.size())
             {
                 nPlaying = 0;
             }
@@ -480,12 +517,25 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         playSong(nPlaying);
     }
 
+    public void onClick(int nSong)
+    {
+        ArrayList<PlaylistItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        if(nPlayingPlaylist != nSelectedPlaylist) {
+            arPlayed = new ArrayList<Boolean>();
+            for(int i = 0; i < arSongs.size(); i++)
+                arPlayed.add(false);
+        }
+        nPlayingPlaylist = nSelectedPlaylist;
+        playSong(nSong);
+    }
+
     public void playSong(int nSong)
     {
         MainActivity activity = (MainActivity)getActivity();
         activity.clearLoop();
         nPlaying = nSong;
-        String strPath = arSongsPath.get(nSong);
+        PlaylistItem item = arPlaylists.get(nPlayingPlaylist).get(nSong);
+        String strPath = item.getPath();
         if(MainActivity.hStream != 0)
         {
             BASS.BASS_StreamFree(MainActivity.hStream);
@@ -617,7 +667,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         btnPlay.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_pause,0,0);
         LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(2);
         loopFragment.drawWaveForm(strPath);
-        adapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
     }
 
     public void stop()
@@ -631,7 +681,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_play, 0, 0);
         MainActivity activity = (MainActivity)getActivity();
         activity.clearLoop();
-        adapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
     }
 
     public void addSong(MainActivity activity, Uri uri)
@@ -644,6 +694,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         catch(Exception e) {
             bError = true;
         }
+        ArrayList<PlaylistItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         String strTitle = null;
         String strArtist = null;
         if(!bError) {
@@ -651,8 +702,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             strArtist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
         }
         if(strTitle != null) {
-            PlaylistItem item = new PlaylistItem(String.format("%d", listSongs.size()+1), strTitle, strArtist);
-            listSongs.add(item);
+            PlaylistItem item = new PlaylistItem(String.format("%d", arSongs.size()+1), strTitle, strArtist, uri.toString());
+            arSongs.add(item);
         }
         else
         {
@@ -661,10 +712,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 int startIndex = uri.toString().lastIndexOf('/');
                 strTitle = uri.toString().substring(startIndex + 1);
             }
-            PlaylistItem item = new PlaylistItem(String.format("%d", listSongs.size()+1), strTitle, "");
-            listSongs.add(item);
+            PlaylistItem item = new PlaylistItem(String.format("%d", arSongs.size()+1), strTitle, "", uri.toString());
+            arSongs.add(item);
         }
-        arSongsPath.add(uri.toString());
         arPlayed.add(false);
     }
 
@@ -702,5 +752,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 break;
         }
         return fileName;
+    }
+
+    public void selectPlaylist(int nSelect)
+    {
+        if(recyclerTab != null) recyclerTab.scrollToPosition(nSelect);
+        nSelectedPlaylist = nSelect;
+        ArrayList<PlaylistItem> arSongs = arPlaylists.get(nSelect);
+        if(tabAdapter != null) tabAdapter.notifyDataSetChanged();
+        if(listAdapter != null) {
+            listAdapter.changeItems(arSongs);
+            listAdapter.notifyDataSetChanged();
+        }
     }
 }

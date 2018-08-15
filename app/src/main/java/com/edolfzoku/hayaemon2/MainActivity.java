@@ -311,12 +311,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
         PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
+        ArrayList<ArrayList<PlaylistItem>> arPlaylists = gson.fromJson(preferences.getString("arPlaylists",""), new TypeToken<ArrayList<ArrayList<PlaylistItem>>>(){}.getType());
+        ArrayList<String> arPlaylistNames = gson.fromJson(preferences.getString("arPlaylistNames",""), new TypeToken<ArrayList<String>>(){}.getType());
         List<String> arSongsPath = gson.fromJson(preferences.getString("arSongsPath",""), new TypeToken<List<String>>(){}.getType());
-        if(arSongsPath != null)
-        {
+        if(arPlaylists != null && arPlaylistNames != null) {
+            for(int i = 0; i < arPlaylists.size(); i++) {
+                playlistFragment.setArPlaylists(arPlaylists);
+                playlistFragment.setArPlaylistNames(arPlaylistNames);
+            }
+        }
+        else if(arSongsPath != null) {
+            playlistFragment.addPlaylist("再生リスト 1");
+            playlistFragment.addPlaylist("再生リスト 2");
+            playlistFragment.addPlaylist("再生リスト 3");
+            playlistFragment.selectPlaylist(0);
             for(int i = 0; i < arSongsPath.size(); i++) {
                 playlistFragment.addSong(this, Uri.parse(arSongsPath.get(i)));
             }
+        }
+        else {
+            playlistFragment.addPlaylist("再生リスト 1");
+            playlistFragment.addPlaylist("再生リスト 2");
+            playlistFragment.addPlaylist("再生リスト 3");
+            playlistFragment.selectPlaylist(0);
         }
 
         String strVersionName = preferences.getString("versionname", null);

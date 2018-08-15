@@ -1,3 +1,21 @@
+/*
+ * PlaylistAdapter
+ *
+ * Copyright (c) 2018 Ryota Yamauchi. All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.edolfzoku.hayaemon2;
 
 import android.content.Context;
@@ -58,6 +76,11 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    public void changeItems(List<PlaylistItem> items)
+    {
+        this.items = items;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -78,7 +101,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         holder.textNumber.setText(item.getNumber());
         holder.textTitle.setText(item.getTitle());
         holder.textArtist.setText(item.getArtist());
-        if(nItem == playlistFragment.getPlaying()) {
+        if(playlistFragment.getPlayingPlaylist() == playlistFragment.getSelectedPlaylist() && nItem == playlistFragment.getPlaying()) {
             if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED)
                 holder.imgStatus.setImageResource(R.drawable.pause_circle);
             else
@@ -95,7 +118,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         holder.playlistItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playlistFragment.playSong(nItem);
+                playlistFragment.onClick(nItem);
             }
         });
         if(playlistFragment.isSorting()) {
@@ -121,7 +144,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             holder.imgSongMenu.setImageResource(R.drawable.ic_listmenu);
         }
 
-        if(nItem == playlistFragment.getPlaying())
+        if(playlistFragment.getPlayingPlaylist() == playlistFragment.getSelectedPlaylist() && nItem == playlistFragment.getPlaying())
             holder.playlistItem.setBackgroundColor(Color.argb(255, 224, 239, 255));
         else if(nItem % 2 == 0)
             holder.playlistItem.setBackgroundColor(Color.argb(255, 247, 247, 247));
