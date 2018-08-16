@@ -45,6 +45,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -402,6 +403,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             selectPlaylist(nPosition);
             String strPlaylist = arPlaylistNames.get(nPosition);
             menu.setHeaderTitle(strPlaylist);
+            menu.add("再生リスト名を変更");
             menu.add("再生リストを削除");
             menu.add("再生リストを空にする");
         }
@@ -444,6 +446,28 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         {
             bSorting = false;
             listAdapter.notifyDataSetChanged();
+        }
+        else if(item.getTitle().equals("再生リスト名を変更"))
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("再生リスト名を変更");
+            final EditText editText = new EditText (activity);
+            editText.setText(arPlaylistNames.get(tabAdapter.getPosition()));
+            builder.setView(editText);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    arPlaylistNames.set(tabAdapter.getPosition(), editText.getText().toString());
+
+                    tabAdapter.notifyDataSetChanged();
+
+                    SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                    Gson gson = new Gson();
+                    preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                    preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+                }
+            });
+            builder.setNegativeButton("キャンセル", null);
+            builder.show();
         }
         else if(item.getTitle().equals("再生リストを削除"))
         {
