@@ -35,6 +35,10 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
     private int resource;
     private List<String> items;
     private LayoutInflater inflater;
+    private int nPosition;
+
+    public void setPosition(int nPosition) { this.nPosition = nPosition; }
+    public int getPosition() { return nPosition; }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textPlaylistTab;
@@ -67,6 +71,9 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
         String item = items.get(position);
         final PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
 
+        holder.textPlaylistTab.setLongClickable(true);
+        playlistFragment.registerForContextMenu(holder.textPlaylistTab);
+
         holder.textPlaylistTab.setText(item);
         if(position == playlistFragment.getSelectedPlaylist()) {
             holder.textPlaylistTab.setTypeface(Typeface.DEFAULT_BOLD);
@@ -81,6 +88,14 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
             @Override
             public void onClick(View v) {
                 playlistFragment.selectPlaylist(position);
+            }
+        });
+
+        holder.textPlaylistTab.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                nPosition = position;
+                return false;
             }
         });
     }

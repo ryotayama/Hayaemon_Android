@@ -21,8 +21,10 @@ package com.edolfzoku.hayaemon2;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -33,6 +35,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -390,6 +393,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             if(bSorting) menu.add("並べ替えを終了する");
             else menu.add("曲順の並べ替え");
         }
+        else if(view instanceof TextView)
+        {
+            int nPosition = tabAdapter.getPosition();
+            selectPlaylist(nPosition);
+            String strPlaylist = arPlaylistNames.get(nPosition);
+            menu.setHeaderTitle(strPlaylist);
+            menu.add("再生リストを空にする");
+        }
     }
 
     @Override
@@ -429,6 +440,27 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         {
             bSorting = false;
             listAdapter.notifyDataSetChanged();
+        }
+        else if(item.getTitle().equals("再生リストを空にする"))
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("再生リストを空にする");
+            builder.setMessage("再生リストを空にしますが、よろしいでしょうか？");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    ArrayList<PlaylistItem> arSongs = arPlaylists.get(tabAdapter.getPosition());
+                    arSongs.clear();
+
+                    listAdapter.notifyDataSetChanged();
+
+                    SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                    Gson gson = new Gson();
+                    preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                    preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+                }
+            });
+            builder.setNegativeButton("キャンセル", null);
+            builder.show();
         }
         return super.onContextItemSelected(item);
     }
