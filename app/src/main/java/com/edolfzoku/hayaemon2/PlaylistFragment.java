@@ -119,7 +119,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
 
         tabAdapter = new PlaylistTabAdapter(activity, R.layout.playlist_tab_item, arPlaylistNames);
-        listAdapter = new PlaylistAdapter(activity, R.layout.playlist_item, arPlaylists.get(nSelectedPlaylist));
+        if(nSelectedPlaylist < arPlaylists.size())
+            listAdapter = new PlaylistAdapter(activity, R.layout.playlist_item, arPlaylists.get(nSelectedPlaylist));
+        else
+            listAdapter = new PlaylistAdapter(activity, R.layout.playlist_item);
     }
 
     @Override
@@ -399,6 +402,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             selectPlaylist(nPosition);
             String strPlaylist = arPlaylistNames.get(nPosition);
             menu.setHeaderTitle(strPlaylist);
+            menu.add("再生リストを削除");
             menu.add("再生リストを空にする");
         }
     }
@@ -440,6 +444,35 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         {
             bSorting = false;
             listAdapter.notifyDataSetChanged();
+        }
+        else if(item.getTitle().equals("再生リストを削除"))
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("再生リストを削除");
+            builder.setMessage("再生リストを削除しますが、よろしいでしょうか？");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    int nDelete = tabAdapter.getPosition();
+                    if(nDelete == nPlayingPlaylist) stop();
+                    else if(nDelete < nPlayingPlaylist) nPlayingPlaylist--;
+                    arPlaylists.remove(tabAdapter.getPosition());
+                    arPlaylistNames.remove(tabAdapter.getPosition());
+                    if(arPlaylists.size() == 0)
+                        addPlaylist("再生リスト 1");
+
+                    int nSelect = nDelete;
+                    if(nSelect >= arPlaylists.size()) nSelect = arPlaylists.size() - 1;
+
+                    selectPlaylist(nSelect);
+
+                    SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                    Gson gson = new Gson();
+                    preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                    preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+                }
+            });
+            builder.setNegativeButton("キャンセル", null);
+            builder.show();
         }
         else if(item.getTitle().equals("再生リストを空にする"))
         {

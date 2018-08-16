@@ -76,6 +76,13 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    public PlaylistAdapter(Context context, int resource)
+    {
+        this.activity = (MainActivity)context;
+        this.resource = resource;
+        this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
     public void changeItems(List<PlaylistItem> items)
     {
         this.items = items;
