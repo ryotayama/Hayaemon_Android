@@ -88,13 +88,13 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         textSpeedDown.setOnTouchListener(this);
         textSpeedDown.setOnLongClickListener(this);
 
-        TextView textPitchUp = (TextView)getActivity().findViewById(R.id.textPitchUp);
-        textPitchUp.setOnTouchListener(this);
-        textPitchUp.setOnLongClickListener(this);
+        ImageView imgPitchUp = (ImageView)getActivity().findViewById(R.id.imgPitchUp);
+        imgPitchUp.setOnTouchListener(this);
+        imgPitchUp.setOnLongClickListener(this);
 
-        TextView textPitchDown = (TextView)getActivity().findViewById(R.id.textPitchDown);
-        textPitchDown.setOnTouchListener(this);
-        textPitchDown.setOnLongClickListener(this);
+        ImageView imgPitchDown = (ImageView)getActivity().findViewById(R.id.imgPitchDown);
+        imgPitchDown.setOnTouchListener(this);
+        imgPitchDown.setOnLongClickListener(this);
 
         EditText textSpeedValue = (EditText)getActivity().findViewById(R.id.textSpeedValue);
         textSpeedValue.setOnFocusChangeListener(this);
@@ -304,13 +304,13 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             handler.post(repeatSpeedDown);
             return true;
         }
-        else if(v.getId() == R.id.textPitchUp)
+        else if(v.getId() == R.id.imgPitchUp)
         {
             isContinue = true;
             handler.post(repeatPitchUp);
             return true;
         }
-        else if(v.getId() == R.id.textPitchDown)
+        else if(v.getId() == R.id.imgPitchDown)
         {
             isContinue = true;
             handler.post(repeatPitchDown);
@@ -381,7 +381,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             }
             return false;
         }
-        else if(v.getId() == R.id.textPitchUp)
+        else if(v.getId() == R.id.imgPitchUp)
         {
             if(event.getAction() == MotionEvent.ACTION_UP) {
                 isContinue = false;
@@ -389,7 +389,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             }
             return false;
         }
-        else if(v.getId() == R.id.textPitchDown)
+        else if(v.getId() == R.id.imgPitchDown)
         {
             if(event.getAction() == MotionEvent.ACTION_UP) {
                 isContinue = false;
