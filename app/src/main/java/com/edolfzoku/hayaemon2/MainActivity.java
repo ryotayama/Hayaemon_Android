@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
         PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
-        ArrayList<ArrayList<PlaylistItem>> arPlaylists = gson.fromJson(preferences.getString("arPlaylists",""), new TypeToken<ArrayList<ArrayList<PlaylistItem>>>(){}.getType());
+        ArrayList<ArrayList<SongItem>> arPlaylists = gson.fromJson(preferences.getString("arPlaylists",""), new TypeToken<ArrayList<ArrayList<SongItem>>>(){}.getType());
         ArrayList<String> arPlaylistNames = gson.fromJson(preferences.getString("arPlaylistNames",""), new TypeToken<ArrayList<String>>(){}.getType());
         List<String> arSongsPath = gson.fromJson(preferences.getString("arSongsPath",""), new TypeToken<List<String>>(){}.getType());
         if(arPlaylists != null && arPlaylistNames != null) {

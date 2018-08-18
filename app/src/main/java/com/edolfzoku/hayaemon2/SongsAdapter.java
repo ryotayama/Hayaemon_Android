@@ -1,5 +1,5 @@
 /*
- * PlaylistAdapter
+ * SongsAdapter
  *
  * Copyright (c) 2018 Ryota Yamauchi. All rights reserved.
  *
@@ -34,21 +34,21 @@ import com.un4seen.bass.BASS;
 
 import java.util.List;
 
-public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHolder>
+public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
 {
     MainActivity activity;
     private int resource;
-    private List<PlaylistItem> items;
+    private List<SongItem> items;
     private LayoutInflater inflater;
 
     public String getTitle(int nPosition)
     {
-        PlaylistItem item = items.get(nPosition);
+        SongItem item = items.get(nPosition);
         return item.getTitle();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout playlistItem;
+        RelativeLayout songItem;
         TextView textNumber;
         TextView textTitle;
         TextView textArtist;
@@ -58,7 +58,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
 
         ViewHolder(View view) {
             super(view);
-            playlistItem = (RelativeLayout) view.findViewById(R.id.playlistItem);
+            songItem = (RelativeLayout) view.findViewById(R.id.songItem);
             textNumber = (TextView) view.findViewById(R.id.textNumber);
             textTitle = (TextView) view.findViewById(R.id.textTitle);
             textArtist = (TextView) view.findViewById(R.id.textArtist);
@@ -68,7 +68,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         }
     }
 
-    public PlaylistAdapter(Context context, int resource, List<PlaylistItem> items)
+    public SongsAdapter(Context context, int resource, List<SongItem> items)
     {
         this.activity = (MainActivity)context;
         this.resource = resource;
@@ -76,14 +76,14 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public PlaylistAdapter(Context context, int resource)
+    public SongsAdapter(Context context, int resource)
     {
         this.activity = (MainActivity)context;
         this.resource = resource;
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void changeItems(List<PlaylistItem> items)
+    public void changeItems(List<SongItem> items)
     {
         this.items = items;
     }
@@ -99,7 +99,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position)
     {
-        PlaylistItem item = items.get(position);
+        SongItem item = items.get(position);
         final int nItem = Integer.parseInt(item.getNumber()) - 1;
         final PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
 
@@ -120,12 +120,12 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             holder.textNumber.setVisibility(View.VISIBLE);
         }
 
-        playlistFragment.registerForContextMenu(holder.playlistItem);
+        playlistFragment.registerForContextMenu(holder.songItem);
         playlistFragment.registerForContextMenu(holder.frameSongMenu);
-        holder.playlistItem.setOnClickListener(new View.OnClickListener() {
+        holder.songItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playlistFragment.onClick(nItem);
+                playlistFragment.onSongItemClick(nItem);
             }
         });
         if(playlistFragment.isSorting()) {
@@ -134,7 +134,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
                 {
-                    playlistFragment.getItemTouchHelper().startDrag(holder);
+                    playlistFragment.getSongTouchHelper().startDrag(holder);
                     return true;
                 }
             });
@@ -152,11 +152,11 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         }
 
         if(playlistFragment.getPlayingPlaylist() == playlistFragment.getSelectedPlaylist() && nItem == playlistFragment.getPlaying())
-            holder.playlistItem.setBackgroundColor(Color.argb(255, 224, 239, 255));
+            holder.songItem.setBackgroundColor(Color.argb(255, 224, 239, 255));
         else if(nItem % 2 == 0)
-            holder.playlistItem.setBackgroundColor(Color.argb(255, 247, 247, 247));
+            holder.songItem.setBackgroundColor(Color.argb(255, 247, 247, 247));
         else
-            holder.playlistItem.setBackgroundColor(Color.argb(255, 240, 240, 240));
+            holder.songItem.setBackgroundColor(Color.argb(255, 240, 240, 240));
     }
 
     @Override

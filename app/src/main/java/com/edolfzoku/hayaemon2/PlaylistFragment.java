@@ -66,14 +66,17 @@ import static android.app.Activity.RESULT_OK;
 
 public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private ArrayList<String> arPlaylistNames;
-    private  ArrayList<ArrayList<PlaylistItem>> arPlaylists;
+    private  ArrayList<ArrayList<SongItem>> arPlaylists;
     private int hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20;
     private List<Boolean> arPlayed;
+    private RecyclerView recyclerPlaylists;
     private RecyclerView recyclerTab;
     private RecyclerView recyclerSongs;
+    private PlaylistsAdapter playlistsAdapter;
     private PlaylistTabAdapter tabAdapter;
-    private PlaylistAdapter listAdapter;
-    private ItemTouchHelper touchHelper;
+    private SongsAdapter songsAdapter;
+    private ItemTouchHelper playlistTouchHelper;
+    private ItemTouchHelper songTouchHelper;
     private MainActivity activity;
     private int nPlayingPlaylist = -1;
     private int nSelectedPlaylist = 0;
@@ -81,14 +84,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private int nDeleteItem;
     private boolean bSorting = false;
 
-    public void setArPlaylists(ArrayList<ArrayList<PlaylistItem>> arLists) { arPlaylists = arLists; }
+    public void setArPlaylists(ArrayList<ArrayList<SongItem>> arLists) { arPlaylists = arLists; }
     public void setArPlaylistNames(ArrayList<String> arNames) { arPlaylistNames = arNames; }
     public int getSelectedPlaylist() { return nSelectedPlaylist; }
     public int getPlaying() { return nPlaying; }
     public int getPlayingPlaylist() { return nPlayingPlaylist; }
-    public ItemTouchHelper getItemTouchHelper() { return touchHelper; }
+    public ItemTouchHelper getPlaylistTouchHelper() { return playlistTouchHelper; }
+    public ItemTouchHelper getSongTouchHelper() { return songTouchHelper; }
     public boolean isSorting() { return bSorting; }
     public void setPlayingPlaylist(int nPlaylist) { nPlayingPlaylist = nPlaylist; }
+    public int getSongCount(int nPlaylist) { return arPlaylists.get(nPlaylist).size(); }
 
     public PlaylistFragment()
     {
@@ -120,15 +125,101 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
 
         tabAdapter = new PlaylistTabAdapter(activity, R.layout.playlist_tab_item, arPlaylistNames);
-        if(nSelectedPlaylist < arPlaylists.size())
-            listAdapter = new PlaylistAdapter(activity, R.layout.playlist_item, arPlaylists.get(nSelectedPlaylist));
-        else
-            listAdapter = new PlaylistAdapter(activity, R.layout.playlist_item);
+        playlistsAdapter = new PlaylistsAdapter(activity, R.layout.playlist_item, arPlaylistNames);
+        if(nSelectedPlaylist < arPlaylists.size()) {
+            songsAdapter = new SongsAdapter(activity, R.layout.song_item, arPlaylists.get(nSelectedPlaylist));
+        }
+        else {
+            songsAdapter = new SongsAdapter(activity, R.layout.song_item);
+        }
     }
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.btnRewind)
+        if(v.getId() == R.id.btnSortPlaylist)
+        {
+            if(bSorting)
+            {
+                recyclerPlaylists.setPadding(0, 0, 0, (int)(80 * getResources().getDisplayMetrics().density + 0.5));
+                TextView textAddPlaylist = (TextView) activity.findViewById(R.id.textAddPlaylist);
+                textAddPlaylist.setVisibility(View.VISIBLE);
+                bSorting = false;
+                playlistsAdapter.notifyDataSetChanged();
+                Button btnSortPlaylist = (Button) activity.findViewById(R.id.btnSortPlaylist);
+                btnSortPlaylist.setText("並べ替え");
+
+                playlistTouchHelper.attachToRecyclerView(null);
+            }
+            else
+            {
+                recyclerPlaylists.setPadding(0, 0, 0, 0);
+                TextView textAddPlaylist = (TextView) activity.findViewById(R.id.textAddPlaylist);
+                textAddPlaylist.setVisibility(View.GONE);
+                bSorting = true;
+                playlistsAdapter.notifyDataSetChanged();
+                Button btnSortPlaylist = (Button) activity.findViewById(R.id.btnSortPlaylist);
+                btnSortPlaylist.setText("並べ替えを終了");
+
+                playlistTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
+                    @Override
+                    public boolean onMove(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                        final int fromPos = viewHolder.getAdapterPosition();
+                        final int toPos = target.getAdapterPosition();
+
+                        ArrayList<SongItem> arSongsTemp = arPlaylists.get(fromPos);
+                        arPlaylists.remove(fromPos);
+                        arPlaylists.add(toPos, arSongsTemp);
+
+                        String strTemp = arPlaylistNames.get(fromPos);
+                        arPlaylistNames.remove(fromPos);
+                        arPlaylistNames.add(toPos, strTemp);
+
+                        if(fromPos == nPlayingPlaylist) nPlayingPlaylist = toPos;
+                        else if(fromPos < nPlayingPlaylist && nPlayingPlaylist <= toPos) nPlayingPlaylist--;
+                        else if(fromPos > nPlayingPlaylist && nPlayingPlaylist >= toPos) nPlayingPlaylist++;
+
+                        tabAdapter.notifyItemMoved(fromPos, toPos);
+                        playlistsAdapter.notifyItemMoved(fromPos, toPos);
+
+                        return true;
+                    }
+
+                    @Override
+                    public void clearView(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder) {
+                        super.clearView(recyclerSongs, viewHolder);
+
+                        tabAdapter.notifyDataSetChanged();
+                        playlistsAdapter.notifyDataSetChanged();
+
+                        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                        Gson gson = new Gson();
+                        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                    }
+                });
+                playlistTouchHelper.attachToRecyclerView(recyclerPlaylists);
+            }
+        }
+        else if(v.getId() == R.id.textAddPlaylist)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("新しいリストを追加する");
+            final EditText editText = new EditText (activity);
+            editText.setText("再生リスト");
+            builder.setView(editText);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    addPlaylist(editText.getText().toString());
+                }
+            });
+            builder.setNegativeButton("キャンセル", null);
+            builder.show();
+        }
+        else if(v.getId() == R.id.btnRewind)
         {
             if(activity.hStream == 0) return;
             if(BASS.BASS_ChannelBytes2Seconds(activity.hStream, BASS.BASS_ChannelGetPosition(activity.hStream, BASS.BASS_POS_BYTE)) > activity.dLoopA + 1.0)
@@ -158,7 +249,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     if(activity.hStream == 0)
                     {
                         nPlayingPlaylist = nSelectedPlaylist;
-                        ArrayList<PlaylistItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+                        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
                         arPlayed = new ArrayList<Boolean>();
                         for(int i = 0; i < arSongs.size(); i++)
                             arPlayed.add(false);
@@ -208,10 +299,28 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 nPlayMode = 3;
             preferences.edit().putInt("playmode", nPlayMode).commit();
         }
-        else if(v.getId() == R.id.textAddPlaylist)
+        else if(v.getId() == R.id.textLeft)
         {
-            String strName = "再生リスト " + String.format("%d", arPlaylistNames.size() + 1);
-            addPlaylist(strName);
+            RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
+            relativeSongs.setVisibility(View.INVISIBLE);
+            playlistsAdapter.notifyDataSetChanged();
+            RelativeLayout relativePlaylists = (RelativeLayout)activity.findViewById(R.id.relativePlaylists);
+            relativePlaylists.setVisibility(View.VISIBLE);
+        }
+        else if(v.getId() == R.id.textAddPlaylist_small)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("新しいリストを追加する");
+            final EditText editText = new EditText (activity);
+            editText.setText("再生リスト");
+            builder.setView(editText);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    addPlaylist(editText.getText().toString());
+                }
+            });
+            builder.setNegativeButton("キャンセル", null);
+            builder.show();
         }
         else if(v.getId() == R.id.textAddSong)
         {
@@ -225,14 +334,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             TextView textAddSong = (TextView) activity.findViewById(R.id.textAddSong);
             textAddSong.setVisibility(View.VISIBLE);
             bSorting = false;
-            listAdapter.notifyDataSetChanged();
+            songsAdapter.notifyDataSetChanged();
         }
     }
 
     public void addPlaylist(String strName)
     {
         arPlaylistNames.add(strName);
-        ArrayList<PlaylistItem> arSongs = new ArrayList<>();
+        ArrayList<SongItem> arSongs = new ArrayList<>();
         arPlaylists.add(arSongs);
         if(activity != null)
         {
@@ -257,28 +366,34 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     {
         super.onActivityCreated(savedInstanceState);
 
+        recyclerPlaylists = (RecyclerView)activity.findViewById(R.id.recyclerPlaylists);
+        recyclerPlaylists.setHasFixedSize(false);
+        LinearLayoutManager playlistsManager = new LinearLayoutManager(activity);
+        recyclerPlaylists.setLayoutManager(playlistsManager);
+        recyclerPlaylists.setAdapter(playlistsAdapter);
+        recyclerPlaylists.setOnClickListener(this);
+
         recyclerTab = (RecyclerView)activity.findViewById(R.id.recyclerTab);
         recyclerTab.setHasFixedSize(false);
-        LinearLayoutManager managerTab = new LinearLayoutManager(activity);
-        managerTab.setOrientation(LinearLayoutManager.HORIZONTAL);
-        recyclerTab.setLayoutManager(managerTab);
+        LinearLayoutManager tabManager = new LinearLayoutManager(activity);
+        tabManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerTab.setLayoutManager(tabManager);
         recyclerTab.setAdapter(tabAdapter);
 
         recyclerSongs = (RecyclerView)activity.findViewById(R.id.recyclerSongs);
         recyclerSongs.setHasFixedSize(false);
-        LinearLayoutManager llm = new LinearLayoutManager(activity);
-        recyclerSongs.setLayoutManager(llm);
-        recyclerSongs.setAdapter(listAdapter);
+        LinearLayoutManager songsManager = new LinearLayoutManager(activity);
+        recyclerSongs.setLayoutManager(songsManager);
+        recyclerSongs.setAdapter(songsAdapter);
         recyclerSongs.setOnClickListener(this);
-        touchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
-                0) {
+        songTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
             @Override
             public boolean onMove(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 final int fromPos = viewHolder.getAdapterPosition();
                 final int toPos = target.getAdapterPosition();
 
-                ArrayList<PlaylistItem> arSongs = arPlaylists.get(nSelectedPlaylist);
-                PlaylistItem itemTemp = arSongs.get(fromPos);
+                ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+                SongItem itemTemp = arSongs.get(fromPos);
                 arSongs.remove(fromPos);
                 arSongs.add(toPos, itemTemp);
 
@@ -288,15 +403,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
                 int nStart = fromPos < toPos ? fromPos : toPos;
                 for(int i = nStart; i < arSongs.size(); i++) {
-                    PlaylistItem playlistItem = arSongs.get(i);
-                    playlistItem.setNumber(String.format("%d", i+1));
+                    SongItem songItem = arSongs.get(i);
+                    songItem.setNumber(String.format("%d", i+1));
                 }
 
                 if(fromPos == nPlaying) nPlaying = toPos;
                 else if(fromPos < nPlaying && nPlaying <= toPos) nPlaying--;
                 else if(fromPos > nPlaying && nPlaying >= toPos) nPlaying++;
 
-                listAdapter.notifyItemMoved(fromPos, toPos);
+                songsAdapter.notifyItemMoved(fromPos, toPos);
 
                 return true;
             }
@@ -305,7 +420,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             public void clearView(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder) {
                 super.clearView(recyclerSongs, viewHolder);
 
-                listAdapter.notifyDataSetChanged();
+                songsAdapter.notifyDataSetChanged();
 
                 SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 Gson gson = new Gson();
@@ -317,7 +432,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
             }
         });
-        touchHelper.attachToRecyclerView(recyclerSongs);
+        songTouchHelper.attachToRecyclerView(recyclerSongs);
 
         Button btnRewind = (Button) activity.findViewById(R.id.btnRewind);
         btnRewind.setOnClickListener(this);
@@ -334,8 +449,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         Button btnPlayMode = (Button) activity.findViewById(R.id.btnPlayMode);
         btnPlayMode.setOnClickListener(this);
 
+        Button btnSortPlaylist = (Button) activity.findViewById(R.id.btnSortPlaylist);
+        btnSortPlaylist.setOnClickListener(this);
+
         TextView textAddPlaylist = (TextView) activity.findViewById(R.id.textAddPlaylist);
         textAddPlaylist.setOnClickListener(this);
+
+        TextView textLeft = (TextView) activity.findViewById(R.id.textLeft);
+        textLeft.setOnClickListener(this);
+
+        TextView textAddPlaylist_small = (TextView) activity.findViewById(R.id.textAddPlaylist_small);
+        textAddPlaylist_small.setOnClickListener(this);
 
         TextView textAddSong = (TextView) activity.findViewById(R.id.textAddSong);
         textAddSong.setOnClickListener(this);
@@ -372,7 +496,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 }
-                listAdapter.notifyDataSetChanged();
+                songsAdapter.notifyDataSetChanged();
             }
         }
 
@@ -388,14 +512,25 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         super.onCreateContextMenu(menu, view, info);
         if(view instanceof RelativeLayout)
         {
-            RelativeLayout relative = (RelativeLayout)view;
-            TextView textNumber = (TextView)relative.getChildAt(0);
-            nDeleteItem = Integer.parseInt((String)textNumber.getText()) - 1;
-            String strSong = listAdapter.getTitle(nDeleteItem);
-            menu.setHeaderTitle(strSong);
-            menu.add("削除");
-            if(bSorting) menu.add("並べ替えを終了する");
-            else menu.add("曲順の並べ替え");
+            RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
+            if(relativeSongs.getVisibility() == View.VISIBLE) {
+                RelativeLayout relative = (RelativeLayout)view;
+                TextView textNumber = (TextView)relative.getChildAt(0);
+                nDeleteItem = Integer.parseInt((String)textNumber.getText()) - 1;
+                String strSong = songsAdapter.getTitle(nDeleteItem);
+                menu.setHeaderTitle(strSong);
+                menu.add("削除");
+                if(bSorting) menu.add("並べ替えを終了する");
+                else menu.add("曲順の並べ替え");
+            }
+            else {
+                int nPosition = playlistsAdapter.getPosition();
+                RelativeLayout relative = (RelativeLayout)view;
+                menu.setHeaderTitle(playlistsAdapter.getName(nPosition));
+                menu.add("再生リスト名を変更");
+                menu.add("再生リストを削除");
+                menu.add("再生リストを空にする");
+            }
         }
         else if(view instanceof TextView)
         {
@@ -416,16 +551,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         {
             if(nDeleteItem < nPlaying) nPlaying--;
 
-            ArrayList<PlaylistItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+            ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
             arSongs.remove(nDeleteItem);
             arPlayed.remove(nDeleteItem);
 
             for(int i = nDeleteItem; i < arSongs.size(); i++) {
-                PlaylistItem playlistItem = arSongs.get(i);
-                playlistItem.setNumber(String.format("%d", i+1));
+                SongItem songItem = arSongs.get(i);
+                songItem.setNumber(String.format("%d", i+1));
             }
 
-            listAdapter.notifyDataSetChanged();
+            songsAdapter.notifyDataSetChanged();
 
             SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
             Gson gson = new Gson();
@@ -440,25 +575,32 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             TextView textAddSong = (TextView) activity.findViewById(R.id.textAddSong);
             textAddSong.setVisibility(View.GONE);
             bSorting = true;
-            listAdapter.notifyDataSetChanged();
+            songsAdapter.notifyDataSetChanged();
         }
         else if(item.getTitle().equals("並べ替えを終了する"))
         {
             bSorting = false;
-            listAdapter.notifyDataSetChanged();
+            songsAdapter.notifyDataSetChanged();
         }
         else if(item.getTitle().equals("再生リスト名を変更"))
         {
+            final int nPlaylist;
+            RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
+            if(relativeSongs.getVisibility() == View.VISIBLE)
+                nPlaylist = tabAdapter.getPosition();
+            else
+                nPlaylist = playlistsAdapter.getPosition();
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("再生リスト名を変更");
             final EditText editText = new EditText (activity);
-            editText.setText(arPlaylistNames.get(tabAdapter.getPosition()));
+            editText.setText(arPlaylistNames.get(nPlaylist));
             builder.setView(editText);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    arPlaylistNames.set(tabAdapter.getPosition(), editText.getText().toString());
+                    arPlaylistNames.set(nPlaylist, editText.getText().toString());
 
                     tabAdapter.notifyDataSetChanged();
+                    playlistsAdapter.notifyDataSetChanged();
 
                     SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                     Gson gson = new Gson();
@@ -476,11 +618,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             builder.setMessage("再生リストを削除しますが、よろしいでしょうか？");
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    int nDelete = tabAdapter.getPosition();
+                    int nDelete;
+                    RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
+                    if(relativeSongs.getVisibility() == View.VISIBLE)
+                        nDelete = tabAdapter.getPosition();
+                    else
+                        nDelete = playlistsAdapter.getPosition();
                     if(nDelete == nPlayingPlaylist) stop();
                     else if(nDelete < nPlayingPlaylist) nPlayingPlaylist--;
-                    arPlaylists.remove(tabAdapter.getPosition());
-                    arPlaylistNames.remove(tabAdapter.getPosition());
+                    arPlaylists.remove(nDelete);
+                    arPlaylistNames.remove(nDelete);
                     if(arPlaylists.size() == 0)
                         addPlaylist("再生リスト 1");
 
@@ -505,10 +652,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             builder.setMessage("再生リストを空にしますが、よろしいでしょうか？");
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    ArrayList<PlaylistItem> arSongs = arPlaylists.get(tabAdapter.getPosition());
+                    ArrayList<SongItem> arSongs;
+                    RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
+                    if(relativeSongs.getVisibility() == View.VISIBLE)
+                        arSongs = arPlaylists.get(tabAdapter.getPosition());
+                    else
+                        arSongs = arPlaylists.get(playlistsAdapter.getPosition());
                     arSongs.clear();
 
-                    listAdapter.notifyDataSetChanged();
+                    songsAdapter.notifyDataSetChanged();
+                    playlistsAdapter.notifyDataSetChanged();
 
                     SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                     Gson gson = new Gson();
@@ -528,7 +681,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         BASS.BASS_ChannelPlay(MainActivity.hStream, false);
         Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
         btnPlay.setBackgroundColor(Color.argb(0, 0, 0, 0));
-        listAdapter.notifyDataSetChanged();
+        songsAdapter.notifyDataSetChanged();
     }
 
     public void pause()
@@ -537,7 +690,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         BASS.BASS_ChannelPause(MainActivity.hStream);
         Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
         btnPlay.setBackgroundColor(Color.argb(64, 0, 0, 0));
-        listAdapter.notifyDataSetChanged();
+        songsAdapter.notifyDataSetChanged();
     }
 
     public void playPrev()
@@ -552,7 +705,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     {
         MainActivity activity = (MainActivity)getActivity();
         Button btnPlayMode = (Button)activity.findViewById(R.id.btnPlayMode);
-        ArrayList<PlaylistItem> arSongs = arPlaylists.get(nPlayingPlaylist);
+        ArrayList<SongItem> arSongs = arPlaylists.get(nPlayingPlaylist);
         if(btnPlayMode.getText().equals("通常モード") || btnPlayMode.getText().equals("１曲ループ"))
         {
             nPlaying++;
@@ -606,9 +759,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         playSong(nPlaying);
     }
 
-    public void onClick(int nSong)
+    public void onPlaylistItemClick(int nPlaylist)
     {
-        ArrayList<PlaylistItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        selectPlaylist(nPlaylist);
+        RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
+        relativeSongs.setVisibility(View.VISIBLE);
+        RelativeLayout relativePlaylists = (RelativeLayout)activity.findViewById(R.id.relativePlaylists);
+        relativePlaylists.setVisibility(View.INVISIBLE);
+    }
+
+    public void onSongItemClick(int nSong)
+    {
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         if(nPlayingPlaylist != nSelectedPlaylist) {
             arPlayed = new ArrayList<Boolean>();
             for(int i = 0; i < arSongs.size(); i++)
@@ -623,7 +785,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         MainActivity activity = (MainActivity)getActivity();
         activity.clearLoop();
         nPlaying = nSong;
-        PlaylistItem item = arPlaylists.get(nPlayingPlaylist).get(nSong);
+        SongItem item = arPlaylists.get(nPlayingPlaylist).get(nSong);
         String strPath = item.getPath();
         if(MainActivity.hStream != 0)
         {
@@ -756,7 +918,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         btnPlay.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_pause,0,0);
         LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(2);
         loopFragment.drawWaveForm(strPath);
-        listAdapter.notifyDataSetChanged();
+        songsAdapter.notifyDataSetChanged();
     }
 
     public void stop()
@@ -770,7 +932,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_play, 0, 0);
         MainActivity activity = (MainActivity)getActivity();
         activity.clearLoop();
-        listAdapter.notifyDataSetChanged();
+        songsAdapter.notifyDataSetChanged();
     }
 
     public void addSong(MainActivity activity, Uri uri)
@@ -783,7 +945,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         catch(Exception e) {
             bError = true;
         }
-        ArrayList<PlaylistItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         String strTitle = null;
         String strArtist = null;
         if(!bError) {
@@ -791,7 +953,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             strArtist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
         }
         if(strTitle != null) {
-            PlaylistItem item = new PlaylistItem(String.format("%d", arSongs.size()+1), strTitle, strArtist, uri.toString());
+            SongItem item = new SongItem(String.format("%d", arSongs.size()+1), strTitle, strArtist, uri.toString());
             arSongs.add(item);
         }
         else
@@ -801,7 +963,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 int startIndex = uri.toString().lastIndexOf('/');
                 strTitle = uri.toString().substring(startIndex + 1);
             }
-            PlaylistItem item = new PlaylistItem(String.format("%d", arSongs.size()+1), strTitle, "", uri.toString());
+            SongItem item = new SongItem(String.format("%d", arSongs.size()+1), strTitle, "", uri.toString());
             arSongs.add(item);
         }
         arPlayed.add(false);
@@ -847,11 +1009,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     {
         if(recyclerTab != null) recyclerTab.scrollToPosition(nSelect);
         nSelectedPlaylist = nSelect;
-        ArrayList<PlaylistItem> arSongs = arPlaylists.get(nSelect);
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelect);
         if(tabAdapter != null) tabAdapter.notifyDataSetChanged();
-        if(listAdapter != null) {
-            listAdapter.changeItems(arSongs);
-            listAdapter.notifyDataSetChanged();
+        if(songsAdapter != null) {
+            songsAdapter.changeItems(arSongs);
+            songsAdapter.notifyDataSetChanged();
         }
+        if(playlistsAdapter != null) playlistsAdapter.notifyDataSetChanged();
     }
 }

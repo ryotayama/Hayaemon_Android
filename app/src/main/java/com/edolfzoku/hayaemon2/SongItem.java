@@ -1,5 +1,5 @@
 /*
- * PlaylistItem
+ * SongItem
  *
  * Copyright (c) 2018 Ryota Yamauchi. All rights reserved.
  *
@@ -18,7 +18,7 @@
  */
 package com.edolfzoku.hayaemon2;
 
-public class PlaylistItem {
+public class SongItem {
     private String strNumber = null;
     private String strTitle = null;
     private String strArtist = null;
@@ -33,9 +33,9 @@ public class PlaylistItem {
     public void setPath(String strPath) { this.strPath = strPath; }
     public String getPath() { return strPath; }
 
-    public PlaylistItem() {};
+    public SongItem() {};
 
-    public PlaylistItem(String strNumber, String strTitle, String strArtist, String strPath)
+    public SongItem(String strNumber, String strTitle, String strArtist, String strPath)
     {
         this.strNumber = strNumber;
         this.strTitle = strTitle;
