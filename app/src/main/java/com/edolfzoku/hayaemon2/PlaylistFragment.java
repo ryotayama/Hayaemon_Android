@@ -549,23 +549,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     {
         if(item.getTitle().equals("削除"))
         {
-            if(nDeleteItem < nPlaying) nPlaying--;
-
-            ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
-            arSongs.remove(nDeleteItem);
-            arPlayed.remove(nDeleteItem);
-
-            for(int i = nDeleteItem; i < arSongs.size(); i++) {
-                SongItem songItem = arSongs.get(i);
-                songItem.setNumber(String.format("%d", i+1));
-            }
-
-            songsAdapter.notifyDataSetChanged();
-
-            SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-            Gson gson = new Gson();
-            preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-            preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+            removeSong(nSelectedPlaylist, nDeleteItem);
         }
         else if(item.getTitle().equals("曲順の並べ替え"))
         {
@@ -858,7 +842,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     MainActivity.hStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
                 else
                     MainActivity.hStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-            } catch (IOException e) {
+            } catch (Exception e) {
+                removeSong(nPlayingPlaylist, nPlaying);
                 return;
             }
         }
@@ -967,6 +952,27 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             arSongs.add(item);
         }
         arPlayed.add(false);
+    }
+
+    public void removeSong(int nPlaylist, int nSong)
+    {
+        if(nSong < nPlaying) nPlaying--;
+
+        ArrayList<SongItem> arSongs = arPlaylists.get(nPlaylist);
+        arSongs.remove(nSong);
+        arPlayed.remove(nSong);
+
+        for(int i = nSong; i < arSongs.size(); i++) {
+            SongItem songItem = arSongs.get(i);
+            songItem.setNumber(String.format("%d", i+1));
+        }
+
+        songsAdapter.notifyDataSetChanged();
+
+        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        Gson gson = new Gson();
+        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
     }
 
     public String getFileNameFromUri(Context context, Uri uri) {
