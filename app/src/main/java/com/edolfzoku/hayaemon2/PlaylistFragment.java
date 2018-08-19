@@ -480,15 +480,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         {
             if(resultCode == RESULT_OK)
             {
+                final int takeFlags = data.getFlags()
+                        & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 if(Build.VERSION.SDK_INT < 19)
                 {
                     addSong(activity, data.getData());
+                    activity.getContentResolver().takePersistableUriPermission(data.getData(), takeFlags);
                 }
                 else
                 {
                     if(data.getClipData() == null)
                     {
                         addSong(activity, data.getData());
+                        activity.getContentResolver().takePersistableUriPermission(data.getData(), takeFlags);
                     }
                     else
                     {
@@ -496,6 +501,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         {
                             Uri uri = data.getClipData().getItemAt(i).getUri();
                             addSong(activity, uri);
+                            activity.getContentResolver().takePersistableUriPermission(uri, takeFlags);
                         }
                     }
                 }
@@ -839,6 +845,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             if(!bError)
                 strMimeType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
             ContentResolver cr = activity.getApplicationContext().getContentResolver();
+
             try {
                 AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
                 if(afd == null) return;
@@ -849,6 +856,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     MainActivity.hStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
             } catch (Exception e) {
                 removeSong(nPlayingPlaylist, nPlaying);
+                if(nPlaying >= arPlaylists.get(nPlayingPlaylist).size())
+                    nPlaying = 0;
+                if(arPlaylists.get(nPlayingPlaylist).size() != 0)
+                    playSong(nPlaying);
                 return;
             }
         }
