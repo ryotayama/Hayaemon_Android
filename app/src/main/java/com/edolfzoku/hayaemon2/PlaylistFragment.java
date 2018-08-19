@@ -397,9 +397,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 arSongs.remove(fromPos);
                 arSongs.add(toPos, itemTemp);
 
-                Boolean bTemp = arPlayed.get(fromPos);
-                arPlayed.remove(fromPos);
-                arPlayed.add(toPos, bTemp);
+                if(nPlayingPlaylist == nSelectedPlaylist)
+                {
+                    Boolean bTemp = arPlayed.get(fromPos);
+                    arPlayed.remove(fromPos);
+                    arPlayed.add(toPos, bTemp);
+                }
 
                 int nStart = fromPos < toPos ? fromPos : toPos;
                 for(int i = nStart; i < arSongs.size(); i++) {
