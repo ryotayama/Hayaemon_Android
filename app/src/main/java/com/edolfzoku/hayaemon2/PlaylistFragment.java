@@ -527,6 +527,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 else menu.add("曲順の並べ替え");
             }
             else {
+                if(!playlistsAdapter.isClicked()) return;
+                playlistsAdapter.setClicked(false);
                 int nPosition = playlistsAdapter.getPosition();
                 RelativeLayout relative = (RelativeLayout)view;
                 menu.setHeaderTitle(playlistsAdapter.getName(nPosition));
