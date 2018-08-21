@@ -486,7 +486,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 if(Build.VERSION.SDK_INT < 19)
                 {
                     addSong(activity, data.getData());
-                    activity.getContentResolver().takePersistableUriPermission(data.getData(), takeFlags);
                 }
                 else
                 {
