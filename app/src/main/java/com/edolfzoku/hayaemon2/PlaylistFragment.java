@@ -975,7 +975,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         ArrayList<SongItem> arSongs = arPlaylists.get(nPlaylist);
         arSongs.remove(nSong);
-        arPlayed.remove(nSong);
+        if(nPlaylist == nPlayingPlaylist) arPlayed.remove(nSong);
 
         for(int i = nSong; i < arSongs.size(); i++) {
             SongItem songItem = arSongs.get(i);
