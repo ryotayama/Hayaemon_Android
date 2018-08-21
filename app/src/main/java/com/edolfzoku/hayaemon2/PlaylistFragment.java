@@ -767,6 +767,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public void onSongItemClick(int nSong)
     {
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        if(nPlayingPlaylist == nSelectedPlaylist && nPlaying == nSong)
+        {
+            if(BASS.BASS_ChannelIsActive(activity.hStream) == BASS.BASS_ACTIVE_PLAYING)
+                pause();
+            else play();
+            return;
+        }
         if(nPlayingPlaylist != nSelectedPlaylist) {
             arPlayed = new ArrayList<Boolean>();
             for(int i = 0; i < arSongs.size(); i++)
