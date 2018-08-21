@@ -46,6 +46,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -81,7 +82,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private int nPlayingPlaylist = -1;
     private int nSelectedPlaylist = 0;
     private int nPlaying;
-    private int nDeleteItem;
+    private int nSelectedItem;
     private boolean bSorting = false;
 
     public void setArPlaylists(ArrayList<ArrayList<SongItem>> arLists) { arPlaylists = arLists; }
@@ -524,12 +525,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             if(relativeSongs.getVisibility() == View.VISIBLE) {
                 RelativeLayout relative = (RelativeLayout)view;
                 TextView textNumber = (TextView)relative.getChildAt(0);
-                nDeleteItem = Integer.parseInt((String)textNumber.getText()) - 1;
-                String strSong = songsAdapter.getTitle(nDeleteItem);
+                nSelectedItem = Integer.parseInt((String)textNumber.getText()) - 1;
+                String strSong = songsAdapter.getTitle(nSelectedItem);
                 menu.setHeaderTitle(strSong);
                 menu.add("削除");
                 if(bSorting) menu.add("並べ替えを終了する");
                 else menu.add("曲順の並べ替え");
+                menu.add("タイトルとアーティスト名を変更");
             }
             else {
                 if(!playlistsAdapter.isClicked()) return;
@@ -559,7 +561,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     {
         if(item.getTitle().equals("削除"))
         {
-            removeSong(nSelectedPlaylist, nDeleteItem);
+            removeSong(nSelectedPlaylist, nSelectedItem);
         }
         else if(item.getTitle().equals("曲順の並べ替え"))
         {
@@ -575,6 +577,40 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         {
             bSorting = false;
             songsAdapter.notifyDataSetChanged();
+        }
+        else if(item.getTitle().equals("タイトルとアーティスト名を変更"))
+        {
+            ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+            final SongItem songItem = arSongs.get(nSelectedItem);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("タイトルとアーティスト名を変更");
+            LinearLayout linearLayout = new LinearLayout(activity);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            final EditText editTitle = new EditText (activity);
+            editTitle.setHint("タイトル");
+            editTitle.setText(songItem.getTitle());
+            final EditText editArtist = new EditText (activity);
+            editArtist.setHint("アーティスト名");
+            editArtist.setText(songItem.getArtist());
+            linearLayout.addView(editTitle);
+            linearLayout.addView(editArtist);
+            builder.setView(linearLayout);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    songItem.setTitle(editTitle.getText().toString());
+                    songItem.setArtist(editArtist.getText().toString());
+
+                    songsAdapter.notifyDataSetChanged();
+
+                    SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                    Gson gson = new Gson();
+                    preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                    preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+                }
+            });
+            builder.setNegativeButton("キャンセル", null);
+            builder.show();
         }
         else if(item.getTitle().equals("再生リスト名を変更"))
         {
