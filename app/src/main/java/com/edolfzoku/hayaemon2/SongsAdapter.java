@@ -107,7 +107,16 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
 
         holder.textNumber.setText(item.getNumber());
         holder.textTitle.setText(item.getTitle());
-        holder.textArtist.setText(item.getArtist());
+        if(item.getArtist() == null || item.getArtist().equals(""))
+        {
+            holder.textArtist.setTextColor(Color.argb(255, 147, 156, 160));
+            holder.textArtist.setText("〈不明なアーティスト〉");
+        }
+        else
+        {
+            holder.textArtist.setTextColor(Color.argb(255, 102, 102, 102));
+            holder.textArtist.setText(item.getArtist());
+        }
         if(playlistFragment.getPlayingPlaylist() == playlistFragment.getSelectedPlaylist() && nItem == playlistFragment.getPlaying()) {
             if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED)
                 holder.imgStatus.setImageResource(R.drawable.pause_circle);
