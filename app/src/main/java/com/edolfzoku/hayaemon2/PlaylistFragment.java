@@ -674,7 +674,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         if(MainActivity.hStream == 0) return;
         BASS.BASS_ChannelPlay(MainActivity.hStream, false);
         Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
-        btnPlay.setBackgroundColor(Color.argb(0, 0, 0, 0));
+        btnPlay.setText("一時停止");
+        btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pause, 0, 0);
         songsAdapter.notifyDataSetChanged();
     }
 
@@ -683,7 +684,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         if(MainActivity.hStream == 0) return;
         BASS.BASS_ChannelPause(MainActivity.hStream);
         Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
-        btnPlay.setBackgroundColor(Color.argb(64, 0, 0, 0));
+        btnPlay.setText("再生");
+        btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_play, 0, 0);
         songsAdapter.notifyDataSetChanged();
     }
 
