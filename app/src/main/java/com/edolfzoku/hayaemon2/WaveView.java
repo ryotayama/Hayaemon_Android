@@ -152,7 +152,7 @@ public class WaveView extends View {
             AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
             FileChannel fc = afd.createInputStream().getChannel();
             if(strMimeType == "audio/mp4")
-                hTempStream = BASS_AAC.BASS_MP4_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                hTempStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
             else
                 hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
         } catch (IOException e) {
