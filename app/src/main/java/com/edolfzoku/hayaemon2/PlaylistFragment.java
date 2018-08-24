@@ -774,7 +774,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     arPlayed.set(i, false);
                 }
             }
-            if(arPlayed.size() != 1)
+            if(arPlayed.size() > 1)
             {
                 Random random = new Random();
                 if(arTemp.size() == 0 || arTemp.size() == arPlayed.size())
@@ -824,6 +824,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         MainActivity activity = (MainActivity)getActivity();
         activity.clearLoop();
         nPlaying = nSong;
+        if(arPlaylists.size() == 0 || nPlayingPlaylist >= arPlaylists.size() || arPlaylists.get(nPlayingPlaylist).size() == 0 || nSong >= arPlaylists.get(nPlayingPlaylist).size())
+            return;
         SongItem item = arPlaylists.get(nPlayingPlaylist).get(nSong);
         String strPath = item.getPath();
         if(MainActivity.hStream != 0)
@@ -1041,6 +1043,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         String scheme = uri.getScheme();
 
         String fileName = null;
+        if(scheme == null) return null;
         switch (scheme) {
             case "content":
                 String[] projection = {MediaStore.MediaColumns.DISPLAY_NAME};

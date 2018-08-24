@@ -38,7 +38,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
 {
     MainActivity activity;
     private int resource;
-    private List<SongItem> items;
+    private List<SongItem> items = null;
     private LayoutInflater inflater;
 
     public String getTitle(int nPosition)
@@ -171,6 +171,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
     @Override
     public int getItemCount()
     {
-        return items.size();
+        if(items == null) return 0;
+        else return items.size();
     }
 }
