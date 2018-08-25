@@ -18,6 +18,7 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -32,6 +33,8 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
@@ -39,6 +42,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -56,8 +60,11 @@ import com.un4seen.bass.BASS_AAC;
 import com.un4seen.bass.BASS_FX;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +91,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private int nPlaying;
     private int nSelectedItem;
     private boolean bSorting = false;
+    private int hRecord;
+    private ByteBuffer recbuf;
 
     public void setArPlaylists(ArrayList<ArrayList<SongItem>> arLists) { arPlaylists = arLists; }
     public void setArPlaylistNames(ArrayList<String> arNames) { arPlaylistNames = arNames; }
@@ -300,6 +309,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 nPlayMode = 3;
             preferences.edit().putInt("playmode", nPlayMode).commit();
         }
+        else if(v.getId() == R.id.btnRecord)
+        {
+            startRecord();
+        }
         else if(v.getId() == R.id.textLeft)
         {
             RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
@@ -337,6 +350,134 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             bSorting = false;
             songsAdapter.notifyDataSetChanged();
         }
+    }
+
+    public void startRecord()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("録音中…");
+        RelativeLayout relative = new RelativeLayout(activity);
+        final TextView text = new TextView (activity);
+        text.setText("00:00:00.00");
+        text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+
+        RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        param.addRule(RelativeLayout.CENTER_IN_PARENT);
+        param.topMargin = 32;
+        relative.addView(text, param);
+        builder.setView(relative);
+        builder.setPositiveButton("完了", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                stopRecord();
+            }
+        });
+        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                BASS.BASS_ChannelStop(hRecord);
+                hRecord = 0;
+            }
+        });
+
+        builder.show();
+
+        BASS.BASS_RecordInit(-1);
+        recbuf = ByteBuffer.allocateDirect(200000);
+        recbuf.order(ByteOrder.LITTLE_ENDIAN);
+        recbuf.put(new byte[]{'R','I','F','F',0,0,0,0,'W','A','V','E','f','m','t',' ',16,0,0,0});
+        recbuf.putShort((short)1);
+        recbuf.putShort((short)1);
+        recbuf.putInt(44100);
+        recbuf.putInt(44100 * 2);
+        recbuf.putShort((short)2);
+        recbuf.putShort((short)16);
+        recbuf.put(new byte[]{'d','a','t','a',0,0,0,0});
+        BASS.RECORDPROC RecordingCallback = new BASS.RECORDPROC() {
+            public boolean RECORDPROC(int handle, ByteBuffer buffer, int length, Object user) {
+                try {
+                    recbuf.put(buffer);
+                } catch (BufferOverflowException e) {
+                    ByteBuffer temp;
+                    try {
+                        temp = ByteBuffer.allocateDirect(recbuf.position() + length + 200000);
+                    } catch (Error e2) {
+                        activity.runOnUiThread(new Runnable() {
+                            public void run() {
+                                stopRecord();
+                            }
+                        });
+                        return false;
+                    }
+                    temp.order(ByteOrder.LITTLE_ENDIAN);
+                    recbuf.limit(recbuf.position());
+                    recbuf.position(0);
+                    temp.put(recbuf);
+                    recbuf = temp;
+                    recbuf.put(buffer);
+                }
+                return true;
+            }
+        };
+        if(hRecord != 0) {
+            BASS.BASS_ChannelStop(hRecord);
+            hRecord = 0;
+        }
+        if(Build.VERSION.SDK_INT >= 23) {
+            if (activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                activity.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 1);
+                return;
+            }
+        }
+        hRecord = BASS.BASS_RecordStart(44100, 1, 0, RecordingCallback, 0);
+
+        final Handler handler = new Handler();
+        Runnable timer=new Runnable() {
+            public void run()
+            {
+                if (hRecord == 0) return;
+                double dPos = BASS.BASS_ChannelBytes2Seconds(hRecord, BASS.BASS_ChannelGetPosition(hRecord, BASS.BASS_POS_BYTE));
+                int nHour = (int)(dPos / (60 * 60) % 60);
+                int nMinute = (int)(dPos / 60 % 60);
+                int nSecond = (int)(dPos % 60);
+                int nMillisecond = (int)(dPos * 100 % 100);
+                text.setText(String.format("%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nMillisecond));
+                handler.postDelayed(this, 50);
+            }
+        };
+        handler.postDelayed(timer, 50);
+    }
+
+    public void stopRecord()
+    {
+        BASS.BASS_ChannelStop(hRecord);
+        hRecord = 0;
+        recbuf.limit(recbuf.position());
+        recbuf.putInt(4, recbuf.position()-8);
+        recbuf.putInt(40, recbuf.position()-44);
+        int i = 0;
+        File file;
+        while(true) {
+            String strPath = activity.getFilesDir() + "/recorded" + String.format("%d", i) + ".wav";
+            file = new File(strPath);
+            if(!file.exists()) break;
+            i++;
+        }
+        try {
+            FileChannel fc = new FileOutputStream(file).getChannel();
+            recbuf.position(0);
+            fc.write(recbuf);
+            fc.close();
+        } catch (IOException e) {
+            return;
+        }
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        SongItem item = new SongItem(String.format("%d", arSongs.size()+1), "新規録音", "", file.getPath());
+        arSongs.add(item);
+        if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
+        songsAdapter.notifyDataSetChanged();
+        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        Gson gson = new Gson();
+        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
     }
 
     public void addPlaylist(String strName)
@@ -452,6 +593,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         Button btnPlayMode = (Button) activity.findViewById(R.id.btnPlayMode);
         btnPlayMode.setOnClickListener(this);
+
+        Button btnRecord = (Button) activity.findViewById(R.id.btnRecord);
+        btnRecord.setOnClickListener(this);
 
         Button btnSortPlaylist = (Button) activity.findViewById(R.id.btnSortPlaylist);
         btnSortPlaylist.setOnClickListener(this);
@@ -656,6 +800,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         nDelete = playlistsAdapter.getPosition();
                     if(nDelete == nPlayingPlaylist) stop();
                     else if(nDelete < nPlayingPlaylist) nPlayingPlaylist--;
+                    ArrayList<SongItem> arSongs = arPlaylists.get(nDelete);
+                    for(int i = 0; i < arSongs.size(); i++) {
+                        SongItem song = arSongs.get(i);
+                        File file = new File(song.getPath());
+                        if(file.getParent().equals(activity.getFilesDir())) {
+                            file.delete();
+                        }
+                    }
                     arPlaylists.remove(nDelete);
                     arPlaylistNames.remove(nDelete);
                     if(arPlaylists.size() == 0)
@@ -688,6 +840,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         arSongs = arPlaylists.get(tabAdapter.getPosition());
                     else
                         arSongs = arPlaylists.get(playlistsAdapter.getPosition());
+                    for(int i = 0; i < arSongs.size(); i++) {
+                        SongItem song = arSongs.get(i);
+                        File file = new File(song.getPath());
+                        if(file.getParent().equals(activity.getFilesDir())) {
+                            file.delete();
+                        }
+                    }
                     arSongs.clear();
 
                     songsAdapter.notifyDataSetChanged();
@@ -1013,7 +1172,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             SongItem item = new SongItem(String.format("%d", arSongs.size()+1), strTitle, "", uri.toString());
             arSongs.add(item);
         }
-        arPlayed.add(false);
+        if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
     }
 
     public void removeSong(int nPlaylist, int nSong)
@@ -1021,6 +1180,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         if(nSong < nPlaying) nPlaying--;
 
         ArrayList<SongItem> arSongs = arPlaylists.get(nPlaylist);
+        SongItem song = arSongs.get(nSong);
+        File file = new File(song.getPath());
+        if(file.getParent().equals(activity.getFilesDir())) {
+            file.delete();
+        }
+
         arSongs.remove(nSong);
         if(nPlaylist == nPlayingPlaylist) arPlayed.remove(nSong);
 

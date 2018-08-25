@@ -90,6 +90,16 @@
                 android:textStyle="bold"
                 android:background="@android:color/transparent"
                 android:id="@+id/btnPlayMode" />
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/ic_mic"
+                android:text="録音"
+                android:textSize="8sp"
+                android:textStyle="bold"
+                android:background="@android:color/transparent"
+                android:id="@+id/btnRecord" />
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
     <View

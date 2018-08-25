@@ -410,10 +410,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         if (requestCode == 1)
         {
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED)
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
-                System.err.println("外部ファイルの読み込み許可は降りませんでした。");
-                finish();
+                PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
+                playlistFragment.startRecord();
             }
         }
     }
