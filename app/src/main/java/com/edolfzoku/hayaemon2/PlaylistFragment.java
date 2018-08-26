@@ -481,11 +481,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         final EditText editTitle = new EditText (activity);
         editTitle.setHint("タイトル");
+        editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date(System.currentTimeMillis());
         editTitle.setText("新規録音(" + df.format(date) + ")");
         final EditText editArtist = new EditText (activity);
         editArtist.setHint("アーティスト名");
+        editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
         editArtist.setText("");
         linearLayout.addView(editTitle);
         linearLayout.addView(editArtist);
@@ -760,9 +762,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             linearLayout.setOrientation(LinearLayout.VERTICAL);
             final EditText editTitle = new EditText (activity);
             editTitle.setHint("タイトル");
+            editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
             editTitle.setText(songItem.getTitle());
             final EditText editArtist = new EditText (activity);
             editArtist.setHint("アーティスト名");
+            editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
             editArtist.setText(songItem.getArtist());
             linearLayout.addView(editTitle);
             linearLayout.addView(editArtist);
