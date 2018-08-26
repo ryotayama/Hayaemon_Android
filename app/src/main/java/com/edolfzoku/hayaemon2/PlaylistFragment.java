@@ -38,6 +38,7 @@ import android.os.Handler;
 import android.os.StatFs;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,6 +46,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.TypedValue;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -718,6 +720,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 nSelectedItem = Integer.parseInt((String)textNumber.getText()) - 1;
                 String strSong = songsAdapter.getTitle(nSelectedItem);
                 menu.setHeaderTitle(strSong);
+                menu.add("別の再生リストに移動");
                 menu.add("削除");
                 if(bSorting) menu.add("並べ替えを終了する");
                 else menu.add("曲順の並べ替え");
@@ -749,7 +752,79 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     @Override
     public boolean onContextItemSelected(MenuItem item)
     {
-        if(item.getTitle().equals("削除"))
+        if(item.getTitle().equals("別の再生リストに移動"))
+        {
+            if(arPlaylistNames.size() <= 1) return super.onContextItemSelected(item);
+            final BottomSheetDialog dialog = new BottomSheetDialog(activity);
+            LinearLayout linearLayout = new LinearLayout(activity);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            ArrayList<TextView> arTempText = new ArrayList<>();
+            for(int i = 0; i < arPlaylistNames.size(); i++) {
+                if(i == nSelectedPlaylist) continue;
+                TextView text = new TextView (activity);
+                text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                text.setGravity(Gravity.CENTER);
+                text.setText(arPlaylistNames.get(i).toString());
+                text.setTag(i);
+                arTempText.add(text);
+            }
+            TextView textCancel = new TextView (activity);
+            textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+            textCancel.setGravity(Gravity.CENTER);
+            textCancel.setText("キャンセル");
+            arTempText.add(textCancel);
+            final ArrayList<TextView> arText = arTempText;
+            for(int i = 0; i < arText.size(); i++) {
+                TextView text = arText.get(i);
+                text.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        for(int j = 0; j < arText.size(); j ++) {
+                            if(arText.get(j).equals(view))
+                            {
+                                if(view.getTag() != null) {
+                                    int nPlaylistTo = (int)view.getTag();
+                                    ArrayList<SongItem> arSongsFrom = arPlaylists.get(nSelectedPlaylist);
+                                    ArrayList<SongItem> arSongsTo = arPlaylists.get(nPlaylistTo);
+                                    SongItem item = arSongsFrom.get(nSelectedItem);
+                                    arSongsTo.add(item);
+                                    item.setNumber(String.format("%d", arSongsTo.size()));
+                                    arSongsFrom.remove(nSelectedItem);
+
+                                    if(nSelectedPlaylist == nPlayingPlaylist)
+                                        arPlayed.remove(nSelectedItem);
+                                    if(nPlaylistTo == nPlayingPlaylist)
+                                        arPlayed.add(false);
+
+                                    for(int i = nSelectedItem; i < arSongsFrom.size(); i++) {
+                                        SongItem songItem = arSongsFrom.get(i);
+                                        songItem.setNumber(String.format("%d", i+1));
+                                    }
+
+                                    if(nSelectedPlaylist == nPlayingPlaylist) {
+                                        if(nSelectedItem == nPlaying) {
+                                            nPlayingPlaylist = nPlaylistTo;
+                                            nPlaying = arSongsTo.size() - 1;
+                                        }
+                                        else if(nSelectedItem < nPlaying) nPlaying--;
+                                    }
+
+                                    songsAdapter.notifyDataSetChanged();
+                                }
+                                dialog.dismiss();
+                            }
+                        }
+                    }
+                });
+                LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                param.topMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
+                param.bottomMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
+                linearLayout.addView(text, param);
+            }
+            dialog.setContentView(linearLayout);
+            dialog.show();
+        }
+        else if(item.getTitle().equals("削除"))
         {
             removeSong(nSelectedPlaylist, nSelectedItem);
         }
