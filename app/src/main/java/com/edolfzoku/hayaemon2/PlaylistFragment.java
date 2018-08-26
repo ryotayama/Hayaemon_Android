@@ -35,6 +35,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.StatFs;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
@@ -361,6 +362,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
     public void startRecord()
     {
+        StatFs sf = new StatFs(activity.getFilesDir().toString());
+        int nFreeSpace = sf.getAvailableBlocks() * sf.getBlockSize();
+        if(nFreeSpace < 100) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("ディスクの空き容量が少なくなっています");
+            builder.setMessage("こんにちは♪\n\nハヤえもん開発者のりょーたです！\n\nディスクの空き容量が少なくなっています。\n\n不要なファイルを削除した上で、再度試してみてください。\n\nそれでは引き続き、Enjoy \"Your\" Music with Hayaemon!!");
+            builder.setPositiveButton("OK", null);
+            builder.show();
+            return;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("録音中…");
         RelativeLayout relative = new RelativeLayout(activity);
