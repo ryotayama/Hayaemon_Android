@@ -454,13 +454,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         recbuf.putInt(4, recbuf.position()-8);
         recbuf.putInt(40, recbuf.position()-44);
         int i = 0;
-        File file;
+        String strPath;
+        File fileForCheck;
         while(true) {
-            String strPath = activity.getFilesDir() + "/recorded" + String.format("%d", i) + ".wav";
-            file = new File(strPath);
-            if(!file.exists()) break;
+            strPath = activity.getFilesDir() + "/recorded" + String.format("%d", i) + ".wav";
+            fileForCheck = new File(strPath);
+            if(!fileForCheck.exists()) break;
             i++;
         }
+        final File file = new File(strPath);
         try {
             FileChannel fc = new FileOutputStream(file).getChannel();
             recbuf.position(0);
@@ -469,15 +471,35 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         } catch (IOException e) {
             return;
         }
-        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
-        SongItem item = new SongItem(String.format("%d", arSongs.size()+1), "新規録音", "", file.getPath());
-        arSongs.add(item);
-        if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
-        songsAdapter.notifyDataSetChanged();
-        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-        Gson gson = new Gson();
-        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("新規録音");
+        LinearLayout linearLayout = new LinearLayout(activity);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        final EditText editTitle = new EditText (activity);
+        editTitle.setHint("タイトル");
+        editTitle.setText("新規録音");
+        final EditText editArtist = new EditText (activity);
+        editArtist.setHint("アーティスト名");
+        editArtist.setText("");
+        linearLayout.addView(editTitle);
+        linearLayout.addView(editArtist);
+        builder.setView(linearLayout);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+                SongItem item = new SongItem(String.format("%d", arSongs.size()+1), editTitle.getText().toString(), editArtist.getText().toString(), file.getPath());
+                arSongs.add(item);
+                if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
+                songsAdapter.notifyDataSetChanged();
+                SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                Gson gson = new Gson();
+                preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+            }
+        });
+        builder.setNegativeButton("キャンセル", null);
+        builder.show();
     }
 
     public void addPlaylist(String strName)
