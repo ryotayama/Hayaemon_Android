@@ -66,9 +66,12 @@ import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.text.DateFormat;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -478,7 +481,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         final EditText editTitle = new EditText (activity);
         editTitle.setHint("タイトル");
-        editTitle.setText("新規録音");
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        editTitle.setText("新規録音(" + df.format(date) + ")");
         final EditText editArtist = new EditText (activity);
         editArtist.setHint("アーティスト名");
         editArtist.setText("");
