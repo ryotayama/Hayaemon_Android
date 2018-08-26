@@ -385,22 +385,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button btnPlayMode = (Button)findViewById(R.id.btnPlayMode);
         if(nPlayMode == 0)
         {
-            btnPlayMode.setText("通常モード");
+            btnPlayMode.setText("連続再生");
             btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_normal, 0, 0);
         }
         else if(nPlayMode == 1)
         {
-            btnPlayMode.setText("１曲ループ");
+            btnPlayMode.setText("１曲リピート");
             btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_sloop, 0, 0);
         }
         else if(nPlayMode == 2)
         {
-            btnPlayMode.setText("全曲ループ");
+            btnPlayMode.setText("全曲リピート");
             btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_aloop, 0, 0);
         }
         else if(nPlayMode == 3)
         {
-            btnPlayMode.setText("ランダム再生");
+            btnPlayMode.setText("シャッフル");
             btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_random, 0, 0);
         }
     }
@@ -730,10 +730,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     else
                     {
                         Button btnPlayMode = (Button) findViewById(R.id.btnPlayMode);
-                        if (btnPlayMode.getText().equals("通常モード") || btnPlayMode.getText().equals("全曲ループ") || btnPlayMode.getText().equals("ランダム再生")) {
+                        if (btnPlayMode.getText().equals("連続再生") || btnPlayMode.getText().equals("全曲リピート") || btnPlayMode.getText().equals("シャッフル")) {
                             PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
                             playlistFragment.playNext();
-                        } else if (btnPlayMode.getText().equals("１曲ループ")) {
+                        } else if (btnPlayMode.getText().equals("１曲リピート")) {
                             BASS.BASS_ChannelPlay(hStream, true);
                         }
                     }

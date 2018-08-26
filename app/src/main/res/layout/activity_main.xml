@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:drawableTop="@drawable/ic_normal"
-                android:text="通常モード"
+                android:text="連続再生"
                 android:textSize="8sp"
                 android:textStyle="bold"
                 android:background="@android:color/transparent"

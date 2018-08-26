@@ -282,36 +282,36 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         else if(v.getId() == R.id.btnPlayMode)
         {
             Button btnPlayMode = (Button)activity.findViewById(R.id.btnPlayMode);
-            if(btnPlayMode.getText().equals("通常モード"))
+            if(btnPlayMode.getText().equals("連続再生"))
             {
-                btnPlayMode.setText("１曲ループ");
+                btnPlayMode.setText("１曲リピート");
                 btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_sloop, 0, 0);
             }
-            else if(btnPlayMode.getText().equals("１曲ループ"))
+            else if(btnPlayMode.getText().equals("１曲リピート"))
             {
-                btnPlayMode.setText("全曲ループ");
+                btnPlayMode.setText("全曲リピート");
                 btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_aloop, 0, 0);
             }
-            else if(btnPlayMode.getText().equals("全曲ループ"))
+            else if(btnPlayMode.getText().equals("全曲リピート"))
             {
-                btnPlayMode.setText("ランダム再生");
+                btnPlayMode.setText("シャッフル");
                 btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_random, 0, 0);
             }
-            else if(btnPlayMode.getText().equals("ランダム再生"))
+            else if(btnPlayMode.getText().equals("シャッフル"))
             {
-                btnPlayMode.setText("通常モード");
+                btnPlayMode.setText("連続再生");
                 btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_normal, 0, 0);
             }
 
             SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
             int nPlayMode = 0;
-            if(btnPlayMode.getText().equals("通常モード"))
+            if(btnPlayMode.getText().equals("連続再生"))
                 nPlayMode = 0;
-            else if(btnPlayMode.getText().equals("１曲ループ"))
+            else if(btnPlayMode.getText().equals("１曲リピート"))
                 nPlayMode = 1;
-            else if(btnPlayMode.getText().equals("全曲ループ"))
+            else if(btnPlayMode.getText().equals("全曲リピート"))
                 nPlayMode = 2;
-            else if(btnPlayMode.getText().equals("ランダム再生"))
+            else if(btnPlayMode.getText().equals("シャッフル"))
                 nPlayMode = 3;
             preferences.edit().putInt("playmode", nPlayMode).commit();
         }
@@ -945,7 +945,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         MainActivity activity = (MainActivity)getActivity();
         Button btnPlayMode = (Button)activity.findViewById(R.id.btnPlayMode);
         ArrayList<SongItem> arSongs = arPlaylists.get(nPlayingPlaylist);
-        if(btnPlayMode.getText().equals("通常モード") || btnPlayMode.getText().equals("１曲ループ"))
+        if(btnPlayMode.getText().equals("連続再生") || btnPlayMode.getText().equals("１曲リピート"))
         {
             nPlaying++;
             if(nPlaying >= arSongs.size())
@@ -954,7 +954,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 return;
             }
         }
-        else if(btnPlayMode.getText().equals("全曲ループ"))
+        else if(btnPlayMode.getText().equals("全曲リピート"))
         {
             nPlaying++;
             if(nPlaying >= arSongs.size())
@@ -962,7 +962,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 nPlaying = 0;
             }
         }
-        else if(btnPlayMode.getText().equals("ランダム再生"))
+        else if(btnPlayMode.getText().equals("シャッフル"))
         {
             ArrayList<Integer> arTemp = new ArrayList<Integer>();
             for(int i = 0; i < arPlayed.size(); i++)
