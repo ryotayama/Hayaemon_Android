@@ -222,6 +222,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("新しいリストを追加する");
             final EditText editText = new EditText (activity);
+            editText.setHint("再生リスト");
+            editText.setHintTextColor(Color.argb(255, 192, 192, 192));
             editText.setText("再生リスト");
             builder.setView(editText);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -329,6 +331,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("新しいリストを追加する");
             final EditText editText = new EditText (activity);
+            editText.setHint("再生リスト");
+            editText.setHintTextColor(Color.argb(255, 192, 192, 192));
             editText.setText("再生リスト");
             builder.setView(editText);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -798,6 +802,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("再生リスト名を変更");
             final EditText editText = new EditText (activity);
+            editText.setHint("再生リスト");
+            editText.setHintTextColor(Color.argb(255, 192, 192, 192));
             editText.setText(arPlaylistNames.get(nPlaylist));
             builder.setView(editText);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
