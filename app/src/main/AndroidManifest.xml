@@ -35,6 +35,12 @@
                 <category android:name="android.intent.category.OPENABLE" />
                 <data android:mimeType="vnd.android.cursor.dir/audio"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <action android:name="android.intent.action.SEND_MULTIPLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="audio/*"/>
+            </intent-filter>
         </activity>
     </application>
 

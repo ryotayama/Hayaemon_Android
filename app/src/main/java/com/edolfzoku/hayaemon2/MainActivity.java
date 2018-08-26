@@ -75,6 +75,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
@@ -118,6 +119,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initialize();
         loadData();
 
+        Intent intent = getIntent();
+        if(intent != null && intent.getType() != null) {
+            if(intent.getType().indexOf("audio/") != -1) {
+                PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
+                if(Build.VERSION.SDK_INT < 19)
+                {
+                    Uri uri = copyFile(intent.getData());
+                    playlistFragment.addSong(this, uri);
+                }
+                else
+                {
+                    if(intent.getClipData() == null)
+                    {
+                        Uri uri = copyFile(intent.getData());
+                        playlistFragment.addSong(this, uri);
+                    }
+                    else
+                    {
+                        for(int i = 0; i < intent.getClipData().getItemCount(); i++)
+                        {
+                            Uri uri = copyFile(intent.getClipData().getItemAt(i).getUri());
+                            playlistFragment.addSong(this, uri);
+                        }
+                    }
+                }
+                playlistFragment.updateSongs();
+                SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                Gson gson = new Gson();
+                preferences.edit().putString("arPlaylists", gson.toJson(playlistFragment.getArPlaylists())).commit();
+                preferences.edit().putString("arPlaylistNames", gson.toJson(playlistFragment.getArPlaylistNames())).commit();
+            }
+        }
+
         mServiceConn = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
@@ -138,6 +172,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
             mBound = true;
         }
+    }
+
+    public Uri copyFile(Uri uri)
+    {
+        int i = 0;
+        String strPath;
+        File file;
+        while(true) {
+            strPath = getFilesDir() + "/imported" + String.format("%d", i);
+            file = new File(strPath);
+            if(!file.exists()) break;
+            i++;
+        }
+        try {
+            InputStream in = getContentResolver().openInputStream(uri);
+            FileOutputStream out = new FileOutputStream(file);
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            return null;
+        }
+        return Uri.parse(strPath);
     }
 
     @Override

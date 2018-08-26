@@ -98,7 +98,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private int hRecord;
     private ByteBuffer recbuf;
 
+    public ArrayList<ArrayList<SongItem>> getArPlaylists() { return arPlaylists; }
     public void setArPlaylists(ArrayList<ArrayList<SongItem>> arLists) { arPlaylists = arLists; }
+    public ArrayList<String> getArPlaylistNames() { return arPlaylistNames; }
     public void setArPlaylistNames(ArrayList<String> arNames) { arPlaylistNames = arNames; }
     public int getSelectedPlaylist() { return nSelectedPlaylist; }
     public int getPlaying() { return nPlaying; }
@@ -1298,5 +1300,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             songsAdapter.notifyDataSetChanged();
         }
         if(playlistsAdapter != null) playlistsAdapter.notifyDataSetChanged();
+    }
+
+    public void updateSongs()
+    {
+        if(songsAdapter != null)
+            songsAdapter.notifyDataSetChanged();
     }
 }
