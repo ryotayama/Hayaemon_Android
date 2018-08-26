@@ -55,6 +55,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -759,6 +760,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             final BottomSheetDialog dialog = new BottomSheetDialog(activity);
             LinearLayout linearLayout = new LinearLayout(activity);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
+            ScrollView scroll = new ScrollView(activity);
             ArrayList<TextView> arTempText = new ArrayList<>();
             for(int i = 0; i < arPlaylistNames.size(); i++) {
                 if(i == nSelectedPlaylist) continue;
@@ -822,7 +824,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 param.bottomMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
                 linearLayout.addView(text, param);
             }
-            dialog.setContentView(linearLayout);
+            scroll.addView(linearLayout);
+            dialog.setContentView(scroll);
             dialog.show();
         }
         else if(item.getTitle().equals("コピー"))
@@ -830,6 +833,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             final BottomSheetDialog dialog = new BottomSheetDialog(activity);
             LinearLayout linearLayout = new LinearLayout(activity);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
+            ScrollView scroll = new ScrollView(activity);
             ArrayList<TextView> arTempText = new ArrayList<>();
             for(int i = 0; i < arPlaylistNames.size(); i++) {
                 TextView text = new TextView (activity);
@@ -885,7 +889,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 param.bottomMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
                 linearLayout.addView(text, param);
             }
-            dialog.setContentView(linearLayout);
+            scroll.addView(linearLayout);
+            dialog.setContentView(scroll);
             dialog.show();
         }
         else if(item.getTitle().equals("削除"))
