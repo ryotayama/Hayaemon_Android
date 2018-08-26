@@ -415,6 +415,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
                 playlistFragment.startRecord();
             }
+            else
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("マイクへのアクセスが許可されていません");
+                builder.setMessage("こんにちは♪\n\nハヤえもん開発者のりょーたです！\n\nマイクへのアクセスが許可されていません。\n\nお手数をおかけしますが、設定→アプリと通知→アプリの権限→マイク（環境によって、メニューの場所は異なります）などからハヤえもんのアクセスを許可してください。\n\nそれでは引き続き、Enjoy \"Your\" Music with Hayaemon!!");
+                builder.setPositiveButton("OK", null);
+                builder.show();
+            }
         }
     }
 
