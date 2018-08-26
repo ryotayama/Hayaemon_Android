@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String strPath;
         File file;
         while(true) {
-            strPath = getFilesDir() + "/imported" + String.format("%d", i);
+            strPath = getFilesDir() + "/copied" + String.format("%d", i);
             file = new File(strPath);
             if(!file.exists()) break;
             i++;
