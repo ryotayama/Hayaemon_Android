@@ -40,14 +40,25 @@ public class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
     {
         int hTempStream = mWaveView.getTempSteam();
         long lLength = BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE);
+        BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
+        BASS.BASS_ChannelGetInfo(hTempStream, info);
+        Boolean bStereo = true;
+        if(info.chans == 1) bStereo = false;
         for(int i = 0; i < mWaveView.getWidth(); i++)
         {
             BASS.BASS_ChannelSetPosition(hTempStream, lLength * i / mWaveView.getWidth(), BASS.BASS_POS_BYTE);
             float[] arLevels = new float[2];
-            BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_STEREO);
+            if(bStereo)
+                BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_STEREO);
+            else
+                BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_MONO);
             int nHeight = mWaveView.getHeight() / 2;
             int nLeftHeight = (int)(nHeight * arLevels[0]);
-            int nRightHeight = (int)(nHeight * arLevels[1]);
+            int nRightHeight;
+            if(bStereo)
+                nRightHeight= (int)(nHeight * arLevels[1]);
+            else
+                nRightHeight= (int)(nHeight * arLevels[0]);
             mWaveView.getCanvas().drawLine(i, nHeight / 2 - nLeftHeight / 2, i+1, nHeight / 2 + nLeftHeight / 2, mWaveView.getPaint());
             mWaveView.getCanvas().drawLine(i, nHeight + nHeight / 2 - nRightHeight / 2, i + 1, nHeight + nHeight / 2 + nRightHeight / 2, mWaveView.getPaint());
             if (this.isCancelled()) break;

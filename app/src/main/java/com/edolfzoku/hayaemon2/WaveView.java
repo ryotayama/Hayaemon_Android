@@ -35,6 +35,7 @@ import android.view.View;
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_AAC;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -94,68 +95,76 @@ public class WaveView extends View {
             hTempStream = 0;
         }
 
-        BASS.BASS_FILEPROCS fileprocs=new BASS.BASS_FILEPROCS() {
-            @Override
-            public boolean FILESEEKPROC(long offset, Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    fc.position(offset);
-                    return true;
-                } catch (IOException e) {
-                }
-                return false;
-            }
-
-            @Override
-            public int FILEREADPROC(ByteBuffer buffer, int length, Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    return fc.read(buffer);
-                } catch (IOException e) {
-                }
-                return 0;
-            }
-
-            @Override
-            public long FILELENPROC(Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    return fc.size();
-                } catch (IOException e) {
-                }
-                return 0;
-            }
-
-            @Override
-            public void FILECLOSEPROC(Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    fc.close();
-                } catch (IOException e) {
-                }
-            }
-        };
-
-        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        boolean bError = false;
-        try {
-            mmr.setDataSource(getContext(), Uri.parse(strPath));
+        File file = new File(strPath);
+        if(file.getParent().equals(getContext().getFilesDir().toString()))
+        {
+            hTempStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE);
         }
-        catch(Exception e) {
-            bError = true;
-        }
-        String strMimeType = null;
-        if(!bError)
-            strMimeType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
-        ContentResolver cr = getContext().getContentResolver();
-        try {
-            AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
-            FileChannel fc = afd.createInputStream().getChannel();
-            if(strMimeType == "audio/mp4")
-                hTempStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-            else
-                hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-        } catch (IOException e) {
+        else
+        {
+            BASS.BASS_FILEPROCS fileprocs=new BASS.BASS_FILEPROCS() {
+                @Override
+                public boolean FILESEEKPROC(long offset, Object user) {
+                    FileChannel fc=(FileChannel)user;
+                    try {
+                        fc.position(offset);
+                        return true;
+                    } catch (IOException e) {
+                    }
+                    return false;
+                }
+
+                @Override
+                public int FILEREADPROC(ByteBuffer buffer, int length, Object user) {
+                    FileChannel fc=(FileChannel)user;
+                    try {
+                        return fc.read(buffer);
+                    } catch (IOException e) {
+                    }
+                    return 0;
+                }
+
+                @Override
+                public long FILELENPROC(Object user) {
+                    FileChannel fc=(FileChannel)user;
+                    try {
+                        return fc.size();
+                    } catch (IOException e) {
+                    }
+                    return 0;
+                }
+
+                @Override
+                public void FILECLOSEPROC(Object user) {
+                    FileChannel fc=(FileChannel)user;
+                    try {
+                        fc.close();
+                    } catch (IOException e) {
+                    }
+                }
+            };
+
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            boolean bError = false;
+            try {
+                mmr.setDataSource(getContext(), Uri.parse(strPath));
+            }
+            catch(Exception e) {
+                bError = true;
+            }
+            String strMimeType = null;
+            if(!bError)
+                strMimeType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
+            ContentResolver cr = getContext().getContentResolver();
+            try {
+                AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+                FileChannel fc = afd.createInputStream().getChannel();
+                if(strMimeType == "audio/mp4")
+                    hTempStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                else
+                    hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+            } catch (IOException e) {
+            }
         }
 
         if(mBitmap != null) {
