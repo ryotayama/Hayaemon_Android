@@ -48,6 +48,9 @@ public class EqualizerFragment extends Fragment implements AdapterView.OnItemCli
     private int[] arHFX;
     private int nLastChecked = 0;
 
+    public ArrayList<SeekBar> getArSeek() { return arSeek; }
+    public float[] getArCenters() { return arCenters; }
+
     public EqualizerFragment()
     {
         arHFX = null;

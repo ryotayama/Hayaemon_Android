@@ -131,7 +131,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
     {
         listView.setItemChecked(position, listView.isItemChecked(position));
         checkDuplicate(position);
-        applyEffect();
+        applyEffect(MainActivity.hStream);
     }
 
     public void checkDuplicate(int nSelect)
@@ -179,47 +179,47 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
         }
     }
 
-    public void applyEffect()
+    public void applyEffect(int hStream)
     {
         if(hDspVocalCancel != 0)
         {
-            BASS.BASS_ChannelRemoveDSP(MainActivity.hStream, hDspVocalCancel);
+            BASS.BASS_ChannelRemoveDSP(hStream, hDspVocalCancel);
             hDspVocalCancel = 0;
         }
         if(hDspMonoral != 0)
         {
-            BASS.BASS_ChannelRemoveDSP(MainActivity.hStream, hDspMonoral);
+            BASS.BASS_ChannelRemoveDSP(hStream, hDspMonoral);
             hDspMonoral = 0;
         }
         if(hDspLeft != 0)
         {
-            BASS.BASS_ChannelRemoveDSP(MainActivity.hStream, hDspLeft);
+            BASS.BASS_ChannelRemoveDSP(hStream, hDspLeft);
             hDspLeft = 0;
         }
         if(hDspRight != 0)
         {
-            BASS.BASS_ChannelRemoveDSP(MainActivity.hStream, hDspRight);
+            BASS.BASS_ChannelRemoveDSP(hStream, hDspRight);
             hDspRight = 0;
         }
         if(hDspExchange != 0)
         {
-            BASS.BASS_ChannelRemoveDSP(MainActivity.hStream, hDspExchange);
+            BASS.BASS_ChannelRemoveDSP(hStream, hDspExchange);
             hDspExchange = 0;
         }
         if(hFxEcho != 0) {
-            BASS.BASS_ChannelRemoveFX(MainActivity.hStream, hFxEcho);
+            BASS.BASS_ChannelRemoveFX(hStream, hFxEcho);
             hFxEcho = 0;
         }
         if(hFxReverb != 0) {
-            BASS.BASS_ChannelRemoveFX(MainActivity.hStream, hFxReverb);
+            BASS.BASS_ChannelRemoveFX(hStream, hFxReverb);
             hFxReverb = 0;
         }
         if(hFxChorus != 0) {
-            BASS.BASS_ChannelRemoveFX(MainActivity.hStream, hFxChorus);
+            BASS.BASS_ChannelRemoveFX(hStream, hFxChorus);
             hFxChorus = 0;
         }
         if(hFxDistortion != 0) {
-            BASS.BASS_ChannelRemoveFX(MainActivity.hStream, hFxDistortion);
+            BASS.BASS_ChannelRemoveFX(hStream, hFxDistortion);
             hFxDistortion = 0;
         }
         for(int i = 0; i < arPresetTitle.size(); i++)
@@ -231,18 +231,18 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             {
             }
             else if(strEffect.equals("ボーカルキャンセル"))
-                hDspVocalCancel = BASS.BASS_ChannelSetDSP(MainActivity.hStream, vocalCancelDSP, null, 0);
+                hDspVocalCancel = BASS.BASS_ChannelSetDSP(hStream, vocalCancelDSP, null, 0);
             else if(strEffect.equals("モノラル"))
-                hDspMonoral = BASS.BASS_ChannelSetDSP(MainActivity.hStream, monoralDSP, null, 0);
+                hDspMonoral = BASS.BASS_ChannelSetDSP(hStream, monoralDSP, null, 0);
             else if(strEffect.equals("左のみ再生"))
-                hDspLeft = BASS.BASS_ChannelSetDSP(MainActivity.hStream, leftDSP, null, 0);
+                hDspLeft = BASS.BASS_ChannelSetDSP(hStream, leftDSP, null, 0);
             else if(strEffect.equals("右のみ再生"))
-                hDspRight = BASS.BASS_ChannelSetDSP(MainActivity.hStream, rightDSP, null, 0);
+                hDspRight = BASS.BASS_ChannelSetDSP(hStream, rightDSP, null, 0);
             else if(strEffect.equals("左右入れ替え"))
-                hDspExchange = BASS.BASS_ChannelSetDSP(MainActivity.hStream, exchangeDSP, null, 0);
+                hDspExchange = BASS.BASS_ChannelSetDSP(hStream, exchangeDSP, null, 0);
             else if(strEffect.equals("スタジアムエコー"))
             {
-                hFxEcho = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS.BASS_FX_DX8_ECHO, 2);
+                hFxEcho = BASS.BASS_ChannelSetFX(hStream, BASS.BASS_FX_DX8_ECHO, 2);
                 BASS.BASS_DX8_ECHO echo = new BASS.BASS_DX8_ECHO();
                 echo.fFeedback = (float)55.0;
                 echo.fLeftDelay = (float)400.0;
@@ -253,7 +253,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("ホールエコー"))
             {
-                hFxEcho = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS.BASS_FX_DX8_ECHO, 2);
+                hFxEcho = BASS.BASS_ChannelSetFX(hStream, BASS.BASS_FX_DX8_ECHO, 2);
                 BASS.BASS_DX8_ECHO echo = new BASS.BASS_DX8_ECHO();
                 echo.fFeedback = (float)50.0;
                 echo.fLeftDelay = (float)300.0;
@@ -264,7 +264,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("ライブハウスエコー"))
             {
-                hFxEcho = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS.BASS_FX_DX8_ECHO, 2);
+                hFxEcho = BASS.BASS_ChannelSetFX(hStream, BASS.BASS_FX_DX8_ECHO, 2);
                 BASS.BASS_DX8_ECHO echo = new BASS.BASS_DX8_ECHO();
                 echo.fFeedback = (float)30.0;
                 echo.fLeftDelay = (float)200.0;
@@ -275,7 +275,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("ルームエコー"))
             {
-                hFxEcho = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS.BASS_FX_DX8_ECHO, 2);
+                hFxEcho = BASS.BASS_ChannelSetFX(hStream, BASS.BASS_FX_DX8_ECHO, 2);
                 BASS.BASS_DX8_ECHO echo = new BASS.BASS_DX8_ECHO();
                 echo.fFeedback = (float)50.0;
                 echo.fLeftDelay = (float)100.0;
@@ -286,7 +286,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("バスルームエコー"))
             {
-                hFxEcho = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS.BASS_FX_DX8_ECHO, 2);
+                hFxEcho = BASS.BASS_ChannelSetFX(hStream, BASS.BASS_FX_DX8_ECHO, 2);
                 BASS.BASS_DX8_ECHO echo = new BASS.BASS_DX8_ECHO();
                 echo.fFeedback = (float)60.0;
                 echo.fLeftDelay = (float)75.0;
@@ -297,7 +297,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("ボーカルエコー"))
             {
-                hFxEcho = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS.BASS_FX_DX8_ECHO, 2);
+                hFxEcho = BASS.BASS_ChannelSetFX(hStream, BASS.BASS_FX_DX8_ECHO, 2);
                 BASS.BASS_DX8_ECHO echo = new BASS.BASS_DX8_ECHO();
                 echo.fFeedback = (float)40.0;
                 echo.fLeftDelay = (float)350.0;
@@ -308,7 +308,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("やまびこエコー"))
             {
-                hFxEcho = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS.BASS_FX_DX8_ECHO, 2);
+                hFxEcho = BASS.BASS_ChannelSetFX(hStream, BASS.BASS_FX_DX8_ECHO, 2);
                 BASS.BASS_DX8_ECHO echo = new BASS.BASS_DX8_ECHO();
                 echo.fFeedback = (float)0.0;
                 echo.fLeftDelay = (float)1000.0;
@@ -319,7 +319,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("リバーブ（バスルーム）"))
             {
-                hFxReverb = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
+                hFxReverb = BASS.BASS_ChannelSetFX(hStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
                 BASS_FX.BASS_BFX_FREEVERB reverb = new BASS_FX.BASS_BFX_FREEVERB();
                 reverb.fDryMix = (float)1.0;
                 reverb.fWetMix = (float)2.0;
@@ -332,7 +332,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("リバーブ（狭い部屋）"))
             {
-                hFxReverb = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
+                hFxReverb = BASS.BASS_ChannelSetFX(hStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
                 BASS_FX.BASS_BFX_FREEVERB reverb = new BASS_FX.BASS_BFX_FREEVERB();
                 reverb.fDryMix = (float)0.95;
                 reverb.fWetMix = (float)0.995;
@@ -345,7 +345,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("リバーブ（普通の部屋）"))
             {
-                hFxReverb = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
+                hFxReverb = BASS.BASS_ChannelSetFX(hStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
                 BASS_FX.BASS_BFX_FREEVERB reverb = new BASS_FX.BASS_BFX_FREEVERB();
                 reverb.fDryMix = (float)0.95;
                 reverb.fWetMix = (float)0.995;
@@ -358,7 +358,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("リバーブ（広い部屋）"))
             {
-                hFxReverb = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
+                hFxReverb = BASS.BASS_ChannelSetFX(hStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
                 BASS_FX.BASS_BFX_FREEVERB reverb = new BASS_FX.BASS_BFX_FREEVERB();
                 reverb.fDryMix = (float)0.7;
                 reverb.fWetMix = (float)1.0;
@@ -371,7 +371,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("リバーブ（教会）"))
             {
-                hFxReverb = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
+                hFxReverb = BASS.BASS_ChannelSetFX(hStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
                 BASS_FX.BASS_BFX_FREEVERB reverb = new BASS_FX.BASS_BFX_FREEVERB();
                 reverb.fDryMix = (float)0.4;
                 reverb.fWetMix = (float)1.0;
@@ -384,7 +384,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("リバーブ（大聖堂）"))
             {
-                hFxReverb = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
+                hFxReverb = BASS.BASS_ChannelSetFX(hStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
                 BASS_FX.BASS_BFX_FREEVERB reverb = new BASS_FX.BASS_BFX_FREEVERB();
                 reverb.fDryMix = (float)0.0;
                 reverb.fWetMix = (float)1.0;
@@ -397,7 +397,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("コーラス"))
             {
-                hFxChorus = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_CHORUS, 2);
+                hFxChorus = BASS.BASS_ChannelSetFX(hStream, BASS_FX.BASS_FX_BFX_CHORUS, 2);
                 BASS_FX.BASS_BFX_CHORUS chorus = new BASS_FX.BASS_BFX_CHORUS();
                 chorus.fDryMix = (float)0.5;
                 chorus.fWetMix = (float)0.2;
@@ -410,7 +410,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("フランジャー"))
             {
-                hFxChorus = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_CHORUS, 2);
+                hFxChorus = BASS.BASS_ChannelSetFX(hStream, BASS_FX.BASS_FX_BFX_CHORUS, 2);
                 BASS_FX.BASS_BFX_CHORUS chorus = new BASS_FX.BASS_BFX_CHORUS();
                 chorus.fDryMix = (float)0.25;
                 chorus.fWetMix = (float)0.4;
@@ -423,7 +423,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("ディストーション（強）"))
             {
-                hFxDistortion = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
+                hFxDistortion = BASS.BASS_ChannelSetFX(hStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
                 BASS_FX.BASS_BFX_DISTORTION distortion = new BASS_FX.BASS_BFX_DISTORTION();
                 distortion.fDrive = (float)0.2;
                 distortion.fDryMix = (float)0.96;
@@ -435,7 +435,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("ディストーション（中）"))
             {
-                hFxDistortion = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
+                hFxDistortion = BASS.BASS_ChannelSetFX(hStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
                 BASS_FX.BASS_BFX_DISTORTION distortion = new BASS_FX.BASS_BFX_DISTORTION();
                 distortion.fDrive = (float)0.2;
                 distortion.fDryMix = (float)0.97;
@@ -447,7 +447,7 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             }
             else if(strEffect.equals("ディストーション（弱）"))
             {
-                hFxDistortion = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
+                hFxDistortion = BASS.BASS_ChannelSetFX(hStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
                 BASS_FX.BASS_BFX_DISTORTION distortion = new BASS_FX.BASS_BFX_DISTORTION();
                 distortion.fDrive = (float)0.2;
                 distortion.fDryMix = (float)0.98;

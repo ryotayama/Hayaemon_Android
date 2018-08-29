@@ -31,10 +31,12 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.StatFs;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
@@ -54,6 +56,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -62,13 +65,17 @@ import com.google.gson.Gson;
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_AAC;
 import com.un4seen.bass.BASS_FX;
+import com.un4seen.bass.BASSenc;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -100,6 +107,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private boolean bSorting = false;
     private int hRecord;
     private ByteBuffer recbuf;
+    private SongSavingTask task;
+    private boolean bFinish = false;
+    private ProgressBar progress;
 
     public ArrayList<ArrayList<SongItem>> getArPlaylists() { return arPlaylists; }
     public void setArPlaylists(ArrayList<ArrayList<SongItem>> arLists) { arPlaylists = arLists; }
@@ -113,6 +123,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public boolean isSorting() { return bSorting; }
     public void setPlayingPlaylist(int nPlaylist) { nPlayingPlaylist = nPlaylist; }
     public int getSongCount(int nPlaylist) { return arPlaylists.get(nPlaylist).size(); }
+    public boolean isFinish() { return bFinish; }
+    public void setProgress(int nProgress) { progress.setProgress(nProgress); }
 
     public PlaylistFragment()
     {
@@ -721,6 +733,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 nSelectedItem = Integer.parseInt((String)textNumber.getText()) - 1;
                 String strSong = songsAdapter.getTitle(nSelectedItem);
                 menu.setHeaderTitle(strSong);
+                menu.add("ローカルに保存");
                 menu.add("別の再生リストに移動");
                 menu.add("コピー");
                 menu.add("削除");
@@ -754,7 +767,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     @Override
     public boolean onContextItemSelected(MenuItem item)
     {
-        if(item.getTitle().equals("別の再生リストに移動"))
+        if(item.getTitle().equals("ローカルに保存"))
+        {
+            saveSongToLocal();
+        }
+        else if(item.getTitle().equals("別の再生リストに移動"))
         {
             if(arPlaylistNames.size() <= 1) return super.onContextItemSelected(item);
             final BottomSheetDialog dialog = new BottomSheetDialog(activity);
@@ -1037,7 +1054,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     for(int i = 0; i < arSongs.size(); i++) {
                         SongItem song = arSongs.get(i);
                         File file = new File(song.getPath());
-                        if(file.getParent().equals(activity.getFilesDir())) {
+                        if(file.getParent() != null && file.getParent().equals(activity.getFilesDir())) {
                             file.delete();
                         }
                     }
@@ -1056,6 +1073,250 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             builder.show();
         }
         return super.onContextItemSelected(item);
+    }
+
+    public void saveSongToLocal()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("セーブ中…");
+        LinearLayout linearLayout = new LinearLayout(activity);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        progress = new ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal);
+        progress.setMax(100);
+        progress.setProgress(0);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        param.topMargin = (int)(24 *  getResources().getDisplayMetrics().density + 0.5);
+        param.leftMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
+        param.rightMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
+        linearLayout.addView(progress, param);
+        builder.setView(linearLayout);
+
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        SongItem item = arSongs.get(nSelectedItem);
+        String strPath = item.getPath();
+        int _hTempStream = 0;
+        BASS.BASS_FILEPROCS fileprocs=new BASS.BASS_FILEPROCS() {
+            @Override
+            public boolean FILESEEKPROC(long offset, Object user) {
+                FileChannel fc=(FileChannel)user;
+                try {
+                    fc.position(offset);
+                    return true;
+                } catch (IOException e) {
+                }
+                return false;
+            }
+
+            @Override
+            public int FILEREADPROC(ByteBuffer buffer, int length, Object user) {
+                FileChannel fc=(FileChannel)user;
+                try {
+                    return fc.read(buffer);
+                } catch (IOException e) {
+                }
+                return 0;
+            }
+
+            @Override
+            public long FILELENPROC(Object user) {
+                FileChannel fc=(FileChannel)user;
+                try {
+                    return fc.size();
+                } catch (IOException e) {
+                }
+                return 0;
+            }
+
+            @Override
+            public void FILECLOSEPROC(Object user) {
+                FileChannel fc=(FileChannel)user;
+                try {
+                    fc.close();
+                } catch (IOException e) {
+                }
+            }
+        };
+        Uri uri = Uri.parse(strPath);
+        if(uri.getScheme() != null && uri.getScheme().equals("content")) {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            boolean bError = false;
+            try {
+                mmr.setDataSource(activity.getApplicationContext(), Uri.parse(strPath));
+            }
+            catch(Exception e) {
+                bError = true;
+            }
+            String strMimeType = null;
+            if(!bError)
+                strMimeType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
+            ContentResolver cr = activity.getApplicationContext().getContentResolver();
+
+            try {
+                AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+                if(afd == null) return;
+                FileChannel fc = afd.createInputStream().getChannel();
+                if(strMimeType == "audio/mp4")
+                    _hTempStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                else
+                    _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+            } catch (Exception e) {
+                return;
+            }
+        }
+        else {
+            _hTempStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE);
+        }
+        if(_hTempStream == 0) return;
+
+        _hTempStream = BASS_FX.BASS_FX_ReverseCreate(_hTempStream, 2, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+        _hTempStream = BASS_FX.BASS_FX_TempoCreate(_hTempStream, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+        final int hTempStream = _hTempStream;
+        int chan = BASS_FX.BASS_FX_TempoGetSource(hTempStream);
+        BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
+        int hTempFxVol = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_VOLUME, 0);
+        int hTempFx20K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx16K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx12_5K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx10K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx8K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx6_3K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx5K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx4K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx3_15K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx2_5K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx2K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx1_6K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx1_25K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx1K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx800 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx630 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx500 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx400 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx315 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx250 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx200 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx160 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx125 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx100 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx80 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx63 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx50 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx40 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx31_5 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx25 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hTempFx20 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+        BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed);
+        BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, controlFragment.fPitch);
+        EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+        int[] arHFX = new int[] {hTempFx20K, hTempFx16K, hTempFx12_5K, hTempFx10K, hTempFx8K, hTempFx6_3K, hTempFx5K, hTempFx4K, hTempFx3_15K, hTempFx2_5K, hTempFx2K, hTempFx1_6K, hTempFx1_25K, hTempFx1K, hTempFx800, hTempFx630, hTempFx500, hTempFx400, hTempFx315, hTempFx250, hTempFx200, hTempFx160, hTempFx125, hTempFx100, hTempFx80, hTempFx63, hTempFx50, hTempFx40, hTempFx31_5, hTempFx25, hTempFx20};
+        int nVol = equalizerFragment.getArSeek().get(0).getProgress() - 30;
+        float fLevel = nVol;
+        if(fLevel == 0) fLevel = 1.0f;
+        else if(fLevel < 0) fLevel = (fLevel + 30.0f) / 30.0f;
+        else fLevel += 1.0f;
+        BASS_FX.BASS_BFX_VOLUME vol = new BASS_FX.BASS_BFX_VOLUME();
+        vol.lChannel = 0;
+        vol.fVolume = fLevel;
+        BASS.BASS_FXSetParameters(hTempFxVol, vol);
+
+        for(int i = 0; i < 31; i++)
+        {
+            int nLevel = equalizerFragment.getArSeek().get(i+1).getProgress() - 30;
+            BASS_FX.BASS_BFX_PEAKEQ eq = new BASS_FX.BASS_BFX_PEAKEQ();
+            eq.fBandwidth = 0;
+            eq.fQ = 0.7f;
+            eq.lChannel = BASS_FX.BASS_BFX_CHANALL;
+            eq.fGain = nLevel;
+            eq.fCenter = equalizerFragment.getArCenters()[i];
+            BASS.BASS_FXSetParameters(arHFX[i], eq);
+        }
+        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+        effectFragment.applyEffect(hTempStream);
+        String strPathTo;
+        int i = 0;
+        File fileForCheck;
+        while(true) {
+            strPathTo = activity.getFilesDir() + "/recorded" + String.format("%d", i) + ".wav";
+            fileForCheck = new File(strPathTo);
+            if(!fileForCheck.exists()) break;
+            i++;
+        }
+
+        double _dEnd = BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE));
+        if(nSelectedPlaylist == nPlayingPlaylist && nSelectedItem == nPlaying)
+        {
+            if(activity.bLoopA)
+                BASS.BASS_ChannelSetPosition(hTempStream, BASS.BASS_ChannelSeconds2Bytes(hTempStream, activity.dLoopA), BASS.BASS_POS_BYTE);
+            if(activity.bLoopB)
+                _dEnd = activity.dLoopB;
+        }
+        final double dEnd = _dEnd;
+        final int hEncode = BASSenc.BASS_Encode_Start(hTempStream, strPathTo, BASSenc.BASS_ENCODE_PCM, null, null);
+        bFinish = false;
+        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                bFinish = true;
+            }
+        });
+        AlertDialog alert = builder.show();
+
+        if(task != null && task.getStatus() == AsyncTask.Status.RUNNING)
+            task.cancel(true);
+        task = new SongSavingTask(this, hTempStream, hEncode, strPathTo, alert, dEnd);
+        task.execute(0);
+    }
+
+    public void finishSaveSongToLocal(int hTempStream, int hEncode, String strPathTo, AlertDialog alert)
+    {
+        if(alert.isShowing()) alert.dismiss();
+
+        if(bFinish) {
+            BASSenc.BASS_Encode_Stop(hEncode);
+            BASS.BASS_StreamFree(hTempStream);
+            File file = new File(strPathTo);
+            file.delete();
+            bFinish = false;
+            return;
+        }
+
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        SongItem item = arSongs.get(nSelectedItem);
+
+        BASSenc.BASS_Encode_Stop(hEncode);
+        BASS.BASS_StreamFree(hTempStream);
+
+        String strTitle = item.getTitle();
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+        float fSpeed = controlFragment.fSpeed;
+        float fPitch = controlFragment.fPitch;
+        String strSpeed = String.format("%.1f%%", fSpeed + 100);
+        String strPitch = "";
+        if(fPitch >= 0.05f)
+            strPitch = String.format("♯%.1f", fPitch);
+        else if(fPitch <= -0.05f)
+            strPitch = String.format("♭%.1f", fPitch * -1);
+        else {
+            strPitch = String.format("%.1f", fPitch < 0.0f ? fPitch * -1 : fPitch);
+            if(strPitch.equals("-0.0")) strPitch = "0.0";
+        }
+
+        if(fSpeed != 0.0f && fPitch != 0.0f)
+            strTitle += "(速度" + strSpeed + ",音程" + strPitch + ")";
+        else if(fSpeed != 0.0f)
+            strTitle += "(速度" + strSpeed + ")";
+        else if(fPitch != 0.0f)
+            strTitle += "(音程" + strPitch + ")";
+
+        SongItem itemNew = new SongItem(String.format("%d", arSongs.size()+1), strTitle, item.getArtist(), strPathTo);
+        arSongs.add(itemNew);
+        if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
+        songsAdapter.notifyDataSetChanged();
+        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        Gson gson = new Gson();
+        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
     }
 
     public void play()
@@ -1310,7 +1571,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         equalizerFragment.setArHFX(new int[] {hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20});
         equalizerFragment.setEQ();
         EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-        effectFragment.applyEffect();
+        effectFragment.applyEffect(MainActivity.hStream);
         activity.setSync();
         BASS.BASS_ChannelPlay(MainActivity.hStream, false);
         Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
