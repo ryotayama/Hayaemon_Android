@@ -66,6 +66,7 @@ import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_AAC;
 import com.un4seen.bass.BASS_FX;
 import com.un4seen.bass.BASSenc;
+import com.un4seen.bass.BASSenc_MP3;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -1237,7 +1238,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         int i = 0;
         File fileForCheck;
         while(true) {
-            strPathTo = activity.getFilesDir() + "/recorded" + String.format("%d", i) + ".wav";
+            strPathTo = activity.getFilesDir() + "/recorded" + String.format("%d", i) + ".mp3";
             fileForCheck = new File(strPathTo);
             if(!fileForCheck.exists()) break;
             i++;
@@ -1252,7 +1253,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 _dEnd = activity.dLoopB;
         }
         final double dEnd = _dEnd;
-        final int hEncode = BASSenc.BASS_Encode_Start(hTempStream, strPathTo, BASSenc.BASS_ENCODE_PCM, null, null);
+        final int hEncode = BASSenc_MP3.BASS_Encode_MP3_StartFile(hTempStream, "", 0, strPathTo);
         bFinish = false;
         builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
             @Override
