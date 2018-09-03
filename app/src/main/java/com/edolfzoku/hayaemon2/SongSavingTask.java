@@ -29,6 +29,7 @@ import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 
 public class SongSavingTask extends AsyncTask<Integer, Integer, Integer> {
+    private int nPurpose; // 0: saveSongToLocal, 1: export
     private PlaylistFragment playlistFragment = null;
     private int hTempStream = 0;
     private int hEncode = 0;
@@ -36,8 +37,9 @@ public class SongSavingTask extends AsyncTask<Integer, Integer, Integer> {
     private AlertDialog alert;
     private double dEnd;
 
-    public SongSavingTask(PlaylistFragment playlistFragment, int hTempStream, int hEncode, String strPathTo, AlertDialog alert, double dEnd)
+    public SongSavingTask(int nPurpose, PlaylistFragment playlistFragment, int hTempStream, int hEncode, String strPathTo, AlertDialog alert, double dEnd)
     {
+        this.nPurpose = nPurpose;
         this.playlistFragment = playlistFragment;
         this.hTempStream = hTempStream;
         this.hEncode = hEncode;
@@ -71,6 +73,9 @@ public class SongSavingTask extends AsyncTask<Integer, Integer, Integer> {
     @Override
     protected void onPostExecute(Integer result)
     {
-        playlistFragment.finishSaveSongToLocal(hTempStream, hEncode, strPathTo, alert);
+        if(nPurpose == 0)
+            playlistFragment.finishSaveSongToLocal(hTempStream, hEncode, strPathTo, alert);
+        else
+            playlistFragment.finishExport(hTempStream, hEncode, strPathTo, alert);
     }
 }

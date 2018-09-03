@@ -26,6 +26,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -42,6 +43,8 @@ import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -70,6 +73,7 @@ import com.un4seen.bass.BASSenc_MP3;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -734,7 +738,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 nSelectedItem = Integer.parseInt((String)textNumber.getText()) - 1;
                 String strSong = songsAdapter.getTitle(nSelectedItem);
                 menu.setHeaderTitle(strSong);
-                menu.add("ローカルに保存");
+                menu.add("保存／エクスポート");
                 menu.add("別の再生リストに移動");
                 menu.add("コピー");
                 menu.add("削除");
@@ -768,9 +772,59 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     @Override
     public boolean onContextItemSelected(MenuItem item)
     {
-        if(item.getTitle().equals("ローカルに保存"))
+        if(item.getTitle().equals("保存／エクスポート"))
         {
-            saveSongToLocal();
+            final BottomSheetDialog dialog = new BottomSheetDialog(activity);
+            LinearLayout linearLayout = new LinearLayout(activity);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            ScrollView scroll = new ScrollView(activity);
+
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            param.topMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
+            param.bottomMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
+
+            TextView textLocal = new TextView (activity);
+            textLocal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+            textLocal.setGravity(Gravity.CENTER);
+            textLocal.setText("ローカルに保存");
+            textLocal.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    saveSongToLocal();
+                }
+            });
+            linearLayout.addView(textLocal, param);
+
+            TextView textExport = new TextView (activity);
+            textExport.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+            textExport.setGravity(Gravity.CENTER);
+            textExport.setText("他のアプリにエクスポート");
+            textExport.setTag(1);
+            textExport.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    export();
+                }
+            });
+            linearLayout.addView(textExport, param);
+
+            TextView textCancel = new TextView (activity);
+            textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+            textCancel.setGravity(Gravity.CENTER);
+            textCancel.setText("キャンセル");
+            textCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+            linearLayout.addView(textCancel, param);
+
+            scroll.addView(linearLayout);
+            dialog.setContentView(scroll);
+            dialog.show();
         }
         else if(item.getTitle().equals("別の再生リストに移動"))
         {
@@ -1076,7 +1130,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         return super.onContextItemSelected(item);
     }
 
-    public void saveSongToLocal()
+    public void saveSong(int nPurpose, String strFileName)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("セーブ中…");
@@ -1235,13 +1289,23 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
         effectFragment.applyEffect(hTempStream);
         String strPathTo;
-        int i = 0;
-        File fileForCheck;
-        while(true) {
-            strPathTo = activity.getFilesDir() + "/recorded" + String.format("%d", i) + ".mp3";
-            fileForCheck = new File(strPathTo);
-            if(!fileForCheck.exists()) break;
-            i++;
+        if(nPurpose == 0) {
+            int i = 0;
+            File fileForCheck;
+            while (true) {
+                strPathTo = activity.getFilesDir() + "/recorded" + String.format("%d", i) + ".mp3";
+                fileForCheck = new File(strPathTo);
+                if (!fileForCheck.exists()) break;
+                i++;
+            }
+        }
+        else {
+            File fileDir = new File(activity.getExternalCacheDir() + "/export");
+            if(!fileDir.exists()) fileDir.mkdir();
+            strPathTo = activity.getExternalCacheDir() + "/export/";
+            strPathTo += strFileName + ".mp3";
+            File file = new File(strPathTo);
+            if(file.exists()) file.delete();
         }
 
         double _dEnd = BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE));
@@ -1265,8 +1329,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         if(task != null && task.getStatus() == AsyncTask.Status.RUNNING)
             task.cancel(true);
-        task = new SongSavingTask(this, hTempStream, hEncode, strPathTo, alert, dEnd);
+        task = new SongSavingTask(nPurpose, this, hTempStream, hEncode, strPathTo, alert, dEnd);
         task.execute(0);
+    }
+
+    public void saveSongToLocal()
+    {
+        saveSong(0, null);
     }
 
     public void finishSaveSongToLocal(int hTempStream, int hEncode, String strPathTo, AlertDialog alert)
@@ -1318,6 +1387,81 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         Gson gson = new Gson();
         preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
         preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+    }
+
+    public void export()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("他のアプリにエクスポート");
+        LinearLayout linearLayout = new LinearLayout(activity);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        final EditText editTitle = new EditText (activity);
+        editTitle.setHint("ファイル名");
+        editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        SongItem item = arSongs.get(nSelectedItem);
+        String strTitle = item.getTitle();
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+        float fSpeed = controlFragment.fSpeed;
+        float fPitch = controlFragment.fPitch;
+        String strSpeed = String.format("%.1f%%", fSpeed + 100);
+        String strPitch = "";
+        if(fPitch >= 0.05f)
+            strPitch = String.format("♯%.1f", fPitch);
+        else if(fPitch <= -0.05f)
+            strPitch = String.format("♭%.1f", fPitch * -1);
+        else {
+            strPitch = String.format("%.1f", fPitch < 0.0f ? fPitch * -1 : fPitch);
+            if(strPitch.equals("-0.0")) strPitch = "0.0";
+        }
+        if(fSpeed != 0.0f && fPitch != 0.0f)
+            strTitle += "(速度" + strSpeed + ",音程" + strPitch + ")";
+        else if(fSpeed != 0.0f)
+            strTitle += "(速度" + strSpeed + ")";
+        else if(fPitch != 0.0f)
+            strTitle += "(音程" + strPitch + ")";
+        DateFormat df = new SimpleDateFormat("_yyyyMMdd_HHmmss");
+        Date date = new Date(System.currentTimeMillis());
+        editTitle.setText(strTitle + df.format(date));
+        linearLayout.addView(editTitle);
+        builder.setView(linearLayout);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                saveSong(1, editTitle.getText().toString());
+            }
+        });
+        builder.setNegativeButton("キャンセル", null);
+        builder.show();
+    }
+
+    public void finishExport(int hTempStream, int hEncode, String strPathTo, AlertDialog alert)
+    {
+        if(alert.isShowing()) alert.dismiss();
+
+        BASSenc.BASS_Encode_Stop(hEncode);
+        BASS.BASS_StreamFree(hTempStream);
+
+        if(bFinish) {
+            File file = new File(strPathTo);
+            file.delete();
+            bFinish = false;
+            return;
+        }
+
+        Intent share = new Intent();
+        share.setAction(Intent.ACTION_SEND);
+        share.setType("audio/mp3");
+        File file = new File(strPathTo);
+        Uri uri = FileProvider.getUriForFile(getContext(), "com.edolfzoku.hayaemon2", file);
+        List<ResolveInfo> resInfoList = getContext().getPackageManager().queryIntentActivities(share, PackageManager.MATCH_ALL);
+        for (ResolveInfo resolveInfo : resInfoList) {
+            String packageName = resolveInfo.activityInfo.packageName;
+            getContext().grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+        share.putExtra(Intent.EXTRA_STREAM, uri);
+        startActivityForResult(Intent.createChooser(share, "他のアプリにエクスポート"), 0);
+
+        file.deleteOnExit();
     }
 
     public void play()
