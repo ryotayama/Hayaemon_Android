@@ -385,7 +385,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public void startRecord()
     {
         StatFs sf = new StatFs(activity.getFilesDir().toString());
-        int nFreeSpace = sf.getAvailableBlocks() * sf.getBlockSize();
+        long nFreeSpace = 0;
+        if(Build.VERSION.SDK_INT >= 18)
+            nFreeSpace = sf.getAvailableBlocksLong() * sf.getBlockSizeLong();
+        else
+            nFreeSpace = (long)sf.getAvailableBlocks() * (long)sf.getBlockSize();
         if(nFreeSpace < 100) {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("ディスクの空き容量が少なくなっています");
