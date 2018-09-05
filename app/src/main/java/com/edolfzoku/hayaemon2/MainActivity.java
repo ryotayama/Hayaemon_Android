@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(intent != null && intent.getType() != null) {
             if(intent.getType().indexOf("audio/") != -1) {
                 PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
-                if(Build.VERSION.SDK_INT < 19)
+                if(Build.VERSION.SDK_INT < 16)
                 {
                     Uri uri = copyFile(intent.getData());
                     playlistFragment.addSong(this, uri);
