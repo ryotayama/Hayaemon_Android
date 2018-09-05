@@ -392,8 +392,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             nFreeSpace = (long)sf.getAvailableBlocks() * (long)sf.getBlockSize();
         if(nFreeSpace < 100) {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("ディスクの空き容量が少なくなっています");
-            builder.setMessage("こんにちは♪\n\nハヤえもん開発者のりょーたです！\n\nディスクの空き容量が少なくなっています。\n\n不要なファイルを削除した上で、再度試してみてください。\n\nそれでは引き続き、Enjoy \"Your\" Music with Hayaemon!!");
+            builder.setTitle("端末内の空き容量が少なくなっています");
+            builder.setMessage("こんにちは♪\n\nハヤえもん開発者のりょーたです！\n\n端末内の空き容量が少なくなっています。\n\n不要なファイルを削除した上で、再度試してみてください。\n\nそれでは引き続き、Enjoy \"Your\" Music with Hayaemon!!");
             builder.setPositiveButton("OK", null);
             builder.show();
             return;
