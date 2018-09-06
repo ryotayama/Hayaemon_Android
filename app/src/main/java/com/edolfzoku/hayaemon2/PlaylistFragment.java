@@ -788,13 +788,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             ScrollView scroll = new ScrollView(activity);
 
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            param.topMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
-            param.bottomMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
 
             TextView textLocal = new TextView (activity);
             textLocal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
             textLocal.setGravity(Gravity.CENTER);
             textLocal.setText("ローカルに保存");
+            textLocal.setHeight((int)(48 *  getResources().getDisplayMetrics().density + 0.5));
             textLocal.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -809,6 +808,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             textExport.setGravity(Gravity.CENTER);
             textExport.setText("他のアプリにエクスポート");
             textExport.setTag(1);
+            textExport.setHeight((int)(48 *  getResources().getDisplayMetrics().density + 0.5));
             textExport.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -822,6 +822,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
             textCancel.setGravity(Gravity.CENTER);
             textCancel.setText("キャンセル");
+            textCancel.setHeight((int)(48 *  getResources().getDisplayMetrics().density + 0.5));
             textCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -849,12 +850,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 text.setGravity(Gravity.CENTER);
                 text.setText(arPlaylistNames.get(i).toString());
                 text.setTag(i);
+                text.setHeight((int)(48 *  getResources().getDisplayMetrics().density + 0.5));
                 arTempText.add(text);
             }
             TextView textCancel = new TextView (activity);
             textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
             textCancel.setGravity(Gravity.CENTER);
             textCancel.setText("キャンセル");
+            textCancel.setHeight((int)(48 *  getResources().getDisplayMetrics().density + 0.5));
             arTempText.add(textCancel);
             final ArrayList<TextView> arText = arTempText;
             for(int i = 0; i < arText.size(); i++) {
@@ -900,8 +903,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     }
                 });
                 LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                param.topMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
-                param.bottomMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
                 linearLayout.addView(text, param);
             }
             scroll.addView(linearLayout);
@@ -921,12 +922,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 text.setGravity(Gravity.CENTER);
                 text.setText(arPlaylistNames.get(i).toString());
                 text.setTag(i);
+                text.setHeight((int)(48 *  getResources().getDisplayMetrics().density + 0.5));
                 arTempText.add(text);
             }
             TextView textCancel = new TextView (activity);
             textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
             textCancel.setGravity(Gravity.CENTER);
             textCancel.setText("キャンセル");
+            textCancel.setHeight((int)(48 *  getResources().getDisplayMetrics().density + 0.5));
             arTempText.add(textCancel);
             final ArrayList<TextView> arText = arTempText;
             for(int i = 0; i < arText.size(); i++) {
@@ -965,8 +968,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     }
                 });
                 LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                param.topMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
-                param.bottomMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
                 linearLayout.addView(text, param);
             }
             scroll.addView(linearLayout);
