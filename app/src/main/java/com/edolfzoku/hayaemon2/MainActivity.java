@@ -676,7 +676,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAdView.loadAd(adRequest);
 
         BASS.BASS_Init(-1, 44100, 0);
-        BASS.BASS_SetConfig(BASS.BASS_CONFIG_FLOATDSP, 0);
+        BASS.BASS_SetConfig(BASS.BASS_CONFIG_FLOATDSP, 1);
         BASS.BASS_SetConfig(BASS_CONFIG_AAC_MP4, 1);
 
         BASS.BASS_PluginLoad("libbass_aac.so", 0);

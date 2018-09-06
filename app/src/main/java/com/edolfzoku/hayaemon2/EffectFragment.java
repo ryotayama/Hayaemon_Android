@@ -55,35 +55,38 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private int hDspLeft = 0;
     private int hDspRight = 0;
     private int hDspExchange = 0;
+    private int hDspPan = 0;
     private int hFxEcho = 0;
     private int hFxReverb = 0;
     private int hFxChorus = 0;
     private int hFxDistortion = 0;
+    private float fPan = 0.0f;
     private float fFreq = 1.0f;
     private final int kEffectTypeVocalCancel = 1;
     private final int kEffectTypeMonoral = 2;
     private final int kEffectTypeLeftOnly = 3;
     private final int kEffectTypeRightOnly = 4;
     private final int kEffectTypeReplace = 5;
-    private final int kEffectTypeFrequency = 6;
-    private final int kEffectTypeStadiumEcho = 7;
-    private final int kEffectTypeHallEcho = 8;
-    private final int kEffectTypeLiveHouseEcho = 9;
-    private final int kEffectTypeRoomEcho = 10;
-    private final int kEffectTypeBathroomEcho = 11;
-    private final int kEffectTypeVocalEcho = 12;
-    private final int kEffectTypeMountainEcho = 13;
-    private final int kEffectTypeReverb_Bathroom = 14;
-    private final int kEffectTypeReverb_SmallRoom = 15;
-    private final int kEffectTypeReverb_MediumRoom = 16;
-    private final int kEffectTypeReverb_LargeRoom = 17;
-    private final int kEffectTypeReverb_Church = 18;
-    private final int kEffectTypeReverb_Cathedral = 19;
-    private final int kEffectTypeChorus = 20;
-    private final int kEffectTypeFlanger = 21;
-    private final int kEffectTypeDistortion_Strong = 22;
-    private final int kEffectTypeDistortion_Middle = 23;
-    private final int kEffectTypeDistortion_Weak = 24;
+    private final int kEffectTypePan = 6;
+    private final int kEffectTypeFrequency = 7;
+    private final int kEffectTypeStadiumEcho = 8;
+    private final int kEffectTypeHallEcho = 9;
+    private final int kEffectTypeLiveHouseEcho = 10;
+    private final int kEffectTypeRoomEcho = 11;
+    private final int kEffectTypeBathroomEcho = 12;
+    private final int kEffectTypeVocalEcho = 13;
+    private final int kEffectTypeMountainEcho = 14;
+    private final int kEffectTypeReverb_Bathroom = 15;
+    private final int kEffectTypeReverb_SmallRoom = 16;
+    private final int kEffectTypeReverb_MediumRoom = 17;
+    private final int kEffectTypeReverb_LargeRoom = 18;
+    private final int kEffectTypeReverb_Church = 19;
+    private final int kEffectTypeReverb_Cathedral = 20;
+    private final int kEffectTypeChorus = 21;
+    private final int kEffectTypeFlanger = 22;
+    private final int kEffectTypeDistortion_Strong = 23;
+    private final int kEffectTypeDistortion_Middle = 24;
+    private final int kEffectTypeDistortion_Weak = 25;
 
     public boolean isSelectedItem(int nItem) {
         EffectItem item = arEffectItems.get(nItem);
@@ -129,10 +132,20 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         }
         else if (v.getId() == R.id.relativeMinus) {
             TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
-            if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
+            SeekBar seek = (SeekBar) activity.findViewById(R.id.seekEffectDetail);
+            TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
+            if(textEffectName.getText().equals(arEffectItems.get(kEffectTypePan).getEffectName()))
             {
-                SeekBar seek = (SeekBar) activity.findViewById(R.id.seekEffectDetail);
-                TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
+                int nProgress = seek.getProgress();
+                nProgress -= 1;
+                if(nProgress < 0) nProgress = 0;
+                seek.setProgress(nProgress);
+                float fProgress = (nProgress - 100) / 100.0f;
+                textEffectDetail.setText(String.format("%d", nProgress - 100));
+                setPan(fProgress);
+            }
+            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
+            {
                 int nProgress = seek.getProgress();
                 nProgress -= 1;
                 if(nProgress < 0) nProgress = 0;
@@ -144,10 +157,20 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         }
         else if (v.getId() == R.id.relativePlus) {
             TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
-            if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
+            SeekBar seek = (SeekBar) activity.findViewById(R.id.seekEffectDetail);
+            TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
+            if(textEffectName.getText().equals(arEffectItems.get(kEffectTypePan).getEffectName()))
             {
-                SeekBar seek = (SeekBar) activity.findViewById(R.id.seekEffectDetail);
-                TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
+                int nProgress = seek.getProgress();
+                nProgress += 1;
+                if(nProgress > seek.getMax()) nProgress = seek.getMax();
+                seek.setProgress(nProgress);
+                float fProgress = (nProgress - 100) / 100.0f;
+                textEffectDetail.setText(String.format("%d", nProgress - 100));
+                setPan(fProgress);
+            }
+            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
+            {
                 int nProgress = seek.getProgress();
                 nProgress += 1;
                 if(nProgress > seek.getMax()) nProgress = seek.getMax();
@@ -181,6 +204,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         item = new EffectItem("右のみ再生", false);
         arEffectItems.add(item);
         item = new EffectItem("左右入れ替え", false);
+        arEffectItems.add(item);
+        item = new EffectItem("パン", true);
         arEffectItems.add(item);
         item = new EffectItem("再生周波数", true);
         arEffectItems.add(item);
@@ -254,11 +279,19 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
         TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
         SeekBar seek = (SeekBar) activity.findViewById(R.id.seekEffectDetail);
-        if(nEffect == kEffectTypeFrequency) {
-            textEffectName.setText(arEffectItems.get(nEffect).getEffectName());
+        textEffectName.setText(arEffectItems.get(nEffect).getEffectName());
+        if(nEffect == kEffectTypePan) {
+            int nPan = (int)(fPan * 100.0f);
+            textEffectDetail.setText(String.format("%d", nPan));
+            seek.setProgress(nPan + 100);
+            // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、最大値に200を設定（本来は-100～100にしたい）
+            seek.setMax(200);
+            seek.setOnSeekBarChangeListener(this);
+        }
+        else if(nEffect == kEffectTypeFrequency) {
             textEffectDetail.setText(String.format("%.1f", fFreq));
             seek.setProgress((int)(fFreq * 10.0f) - 1);
-            // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、39を設定（本来は1～40にしたい）
+            // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、最大値に39を設定（本来は1～40にしたい）
             seek.setMax(39);
             seek.setOnSeekBarChangeListener(this);
         }
@@ -273,12 +306,33 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch)
     {
         TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
-        if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
+        TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
+        if(textEffectName.getText().equals(arEffectItems.get(kEffectTypePan).getEffectName()))
         {
-            TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
+            float fPan = (progress - 100) / 100.0f;
+            textEffectDetail.setText(String.format("%d", progress - 100));
+            setPan(fPan);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
+        {
             double dProgress = (double)(progress + 1) / 10.0;
             textEffectDetail.setText(String.format("%.1f", dProgress));
             setFreq((float)dProgress);
+        }
+    }
+
+    public void setPan(float fPan)
+    {
+        if(fPan < -1.0f) fPan = -1.0f;
+        else if(fPan > 1.0f) fPan = 1.0f;
+        this.fPan = fPan;
+        if(arEffectItems.get(kEffectTypePan).isSelected() && MainActivity.hStream != 0) {
+            if(hDspPan != 0)
+            {
+                BASS.BASS_ChannelRemoveDSP(MainActivity.hStream, hDspPan);
+                hDspPan = 0;
+            }
+            hDspPan = BASS.BASS_ChannelSetDSP(MainActivity.hStream, panDSP, this, 0);
         }
     }
 
@@ -371,6 +425,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             BASS.BASS_ChannelRemoveDSP(hStream, hDspExchange);
             hDspExchange = 0;
         }
+        if(hDspPan != 0)
+        {
+            BASS.BASS_ChannelRemoveDSP(hStream, hDspPan);
+            hDspPan = 0;
+        }
         BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
         BASS.BASS_ChannelGetInfo(hStream, info);
         BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq);
@@ -408,6 +467,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 hDspRight = BASS.BASS_ChannelSetDSP(hStream, rightDSP, null, 0);
             else if(strEffect.equals("左右入れ替え"))
                 hDspExchange = BASS.BASS_ChannelSetDSP(hStream, exchangeDSP, null, 0);
+            else if(strEffect.equals("パン"))
+                hDspPan = BASS.BASS_ChannelSetDSP(hStream, panDSP, this, 0);
             else if(strEffect.equals("再生周波数"))
                 BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * fFreq);
             else if(strEffect.equals("スタジアムエコー"))
@@ -629,6 +690,22 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             }
         }
     }
+
+    private final BASS.DSPPROC panDSP = new BASS.DSPPROC() {
+        public void DSPPROC(int handle, int channel, ByteBuffer buffer, int length, Object user) {
+            EffectFragment effectFragment = (EffectFragment)user;
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
+            FloatBuffer ibuffer = buffer.asFloatBuffer();
+            float[] b = new float[length / 4];
+            ibuffer.get(b);
+            for(int a = 0; a < length / 4; a += 2) {
+                if(effectFragment.fPan > 0.0f) b[a] = b[a] * (1.0f - effectFragment.fPan);
+                else b[a + 1] = b[a + 1] * (1.0f + effectFragment.fPan);
+            }
+            ibuffer.rewind();
+            ibuffer.put(b);
+        }
+    };
 
     private final BASS.DSPPROC vocalCancelDSP = new BASS.DSPPROC() {
         public void DSPPROC(int handle, int channel, ByteBuffer buffer, int length, Object user) {
