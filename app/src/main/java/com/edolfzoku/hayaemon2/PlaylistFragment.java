@@ -546,7 +546,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
             }
         });
-        builder.setNegativeButton("キャンセル", null);
+        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                file.delete();
+            }
+        });
         builder.show();
     }
 
