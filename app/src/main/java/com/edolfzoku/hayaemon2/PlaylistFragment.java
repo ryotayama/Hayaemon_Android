@@ -69,6 +69,7 @@ import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_AAC;
 import com.un4seen.bass.BASS_FX;
 import com.un4seen.bass.BASSenc;
+import com.un4seen.bass.BASSenc_MP3;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -1296,7 +1297,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             int i = 0;
             File fileForCheck;
             while (true) {
-                strPathTo = activity.getFilesDir() + "/recorded" + String.format("%d", i) + ".wav";
+                strPathTo = activity.getFilesDir() + "/recorded" + String.format("%d", i) + ".mp3";
                 fileForCheck = new File(strPathTo);
                 if (!fileForCheck.exists()) break;
                 i++;
@@ -1306,7 +1307,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             File fileDir = new File(activity.getExternalCacheDir() + "/export");
             if(!fileDir.exists()) fileDir.mkdir();
             strPathTo = activity.getExternalCacheDir() + "/export/";
-            strPathTo += strFileName + ".wav";
+            strPathTo += strFileName + ".mp3";
             File file = new File(strPathTo);
             if(file.exists()) file.delete();
         }
@@ -1320,7 +1321,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 _dEnd = activity.dLoopB;
         }
         final double dEnd = _dEnd;
-        final int hEncode = BASSenc.BASS_Encode_Start(hTempStream, strPathTo, BASSenc.BASS_ENCODE_PCM | BASSenc.BASS_ENCODE_FP_16BIT, null, null);
+        final int hEncode = BASSenc_MP3.BASS_Encode_MP3_StartFile(hTempStream, "", 0, strPathTo);
         bFinish = false;
         builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
             @Override
@@ -1345,9 +1346,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     {
         if(alert.isShowing()) alert.dismiss();
 
+        BASSenc.BASS_Encode_Stop(hEncode);
+        BASS.BASS_StreamFree(hTempStream);
+
         if(bFinish) {
-            BASSenc.BASS_Encode_Stop(hEncode);
-            BASS.BASS_StreamFree(hTempStream);
             File file = new File(strPathTo);
             file.delete();
             bFinish = false;
@@ -1356,9 +1358,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         SongItem item = arSongs.get(nSelectedItem);
-
-        BASSenc.BASS_Encode_Stop(hEncode);
-        BASS.BASS_StreamFree(hTempStream);
 
         String strTitle = item.getTitle();
         ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
@@ -1453,7 +1452,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         Intent share = new Intent();
         share.setAction(Intent.ACTION_SEND);
-        share.setType("audio/wav");
+        share.setType("audio/mp3");
         File file = new File(strPathTo);
         Uri uri = FileProvider.getUriForFile(getContext(), "com.edolfzoku.hayaemon2", file);
         List<ResolveInfo> resInfoList = getContext().getPackageManager().queryIntentActivities(share, PackageManager.MATCH_ALL);
