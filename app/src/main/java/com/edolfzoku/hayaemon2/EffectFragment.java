@@ -18,15 +18,22 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_FX;
@@ -38,9 +45,11 @@ import java.util.ArrayList;
 
 import static java.lang.Boolean.FALSE;
 
-public class EffectFragment extends Fragment implements AdapterView.OnItemClickListener {
-    private ListView listView;
-    private ArrayList<String> arPresetTitle;
+public class EffectFragment extends Fragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+    private MainActivity activity = null;
+    private RecyclerView recyclerEffects;
+    private EffectsAdapter effectsAdapter;
+    private ArrayList<EffectItem> arEffectItems;
     private int hDspVocalCancel = 0;
     private int hDspMonoral = 0;
     private int hDspLeft = 0;
@@ -50,29 +59,41 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
     private int hFxReverb = 0;
     private int hFxChorus = 0;
     private int hFxDistortion = 0;
+    private float fFreq = 1.0f;
     private final int kEffectTypeVocalCancel = 1;
     private final int kEffectTypeMonoral = 2;
     private final int kEffectTypeLeftOnly = 3;
     private final int kEffectTypeRightOnly = 4;
     private final int kEffectTypeReplace = 5;
-    private final int kEffectTypeStadiumEcho = 6;
-    private final int kEffectTypeHallEcho = 7;
-    private final int kEffectTypeLiveHouseEcho = 8;
-    private final int kEffectTypeRoomEcho = 9;
-    private final int kEffectTypeBathroomEcho = 10;
-    private final int kEffectTypeVocalEcho = 11;
-    private final int kEffectTypeMountainEcho = 12;
-    private final int kEffectTypeReverb_Bathroom = 13;
-    private final int kEffectTypeReverb_SmallRoom = 14;
-    private final int kEffectTypeReverb_MediumRoom = 15;
-    private final int kEffectTypeReverb_LargeRoom = 16;
-    private final int kEffectTypeReverb_Church = 17;
-    private final int kEffectTypeReverb_Cathedral = 18;
-    private final int kEffectTypeChorus = 19;
-    private final int kEffectTypeFlanger = 20;
-    private final int kEffectTypeDistortion_Strong = 21;
-    private final int kEffectTypeDistortion_Middle = 22;
-    private final int kEffectTypeDistortion_Weak = 23;
+    private final int kEffectTypeFrequency = 6;
+    private final int kEffectTypeStadiumEcho = 7;
+    private final int kEffectTypeHallEcho = 8;
+    private final int kEffectTypeLiveHouseEcho = 9;
+    private final int kEffectTypeRoomEcho = 10;
+    private final int kEffectTypeBathroomEcho = 11;
+    private final int kEffectTypeVocalEcho = 12;
+    private final int kEffectTypeMountainEcho = 13;
+    private final int kEffectTypeReverb_Bathroom = 14;
+    private final int kEffectTypeReverb_SmallRoom = 15;
+    private final int kEffectTypeReverb_MediumRoom = 16;
+    private final int kEffectTypeReverb_LargeRoom = 17;
+    private final int kEffectTypeReverb_Church = 18;
+    private final int kEffectTypeReverb_Cathedral = 19;
+    private final int kEffectTypeChorus = 20;
+    private final int kEffectTypeFlanger = 21;
+    private final int kEffectTypeDistortion_Strong = 22;
+    private final int kEffectTypeDistortion_Middle = 23;
+    private final int kEffectTypeDistortion_Weak = 24;
+
+    public boolean isSelectedItem(int nItem) {
+        EffectItem item = arEffectItems.get(nItem);
+        return item.isSelected();
+    }
+
+    public EffectFragment()
+    {
+        arEffectItems = new ArrayList<>();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,97 +104,241 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
-        arPresetTitle = new ArrayList<>();
-        arPresetTitle.add("なし");
-        arPresetTitle.add("ボーカルキャンセル");
-        arPresetTitle.add("モノラル");
-        arPresetTitle.add("左のみ再生");
-        arPresetTitle.add("右のみ再生");
-        arPresetTitle.add("左右入れ替え");
-        arPresetTitle.add("スタジアムエコー");
-        arPresetTitle.add("ホールエコー");
-        arPresetTitle.add("ライブハウスエコー");
-        arPresetTitle.add("ルームエコー");
-        arPresetTitle.add("バスルームエコー");
-        arPresetTitle.add("ボーカルエコー");
-        arPresetTitle.add("やまびこエコー");
-        arPresetTitle.add("リバーブ（バスルーム）");
-        arPresetTitle.add("リバーブ（狭い部屋）");
-        arPresetTitle.add("リバーブ（普通の部屋）");
-        arPresetTitle.add("リバーブ（広い部屋）");
-        arPresetTitle.add("リバーブ（教会）");
-        arPresetTitle.add("リバーブ（大聖堂）");
-        arPresetTitle.add("コーラス");
-        arPresetTitle.add("フランジャー");
-        arPresetTitle.add("ディストーション（強）");
-        arPresetTitle.add("ディストーション（中）");
-        arPresetTitle.add("ディストーション（弱）");
-
-        listView = (ListView)getActivity().findViewById(R.id.effectPresets);
-
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(
-                        getActivity(),
-                        android.R.layout.simple_list_item_multiple_choice,
-                        arPresetTitle);
-
-        listView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
-        listView.setAdapter(adapter);
-        listView.setItemChecked(0, true);
-        listView.setOnItemClickListener(this);
+        if (context != null && context instanceof MainActivity) {
+            activity = (MainActivity) context;
+        }
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View v, int position, long id)
+    public void onDetach() {
+        super.onDetach();
+
+        activity = null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btnFinish) {
+            RelativeLayout relativeEffectDetail = (RelativeLayout) activity.findViewById(R.id.relativeEffectDetail);
+            relativeEffectDetail.setVisibility(View.GONE);
+            RelativeLayout relativeEffect = (RelativeLayout) activity.findViewById(R.id.relativeEffects);
+            relativeEffect.setVisibility(View.VISIBLE);
+        }
+        else if (v.getId() == R.id.relativeMinus) {
+            TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
+            if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
+            {
+                SeekBar seek = (SeekBar) activity.findViewById(R.id.seekEffectDetail);
+                TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
+                int nProgress = seek.getProgress();
+                nProgress -= 1;
+                if(nProgress < 0) nProgress = 0;
+                seek.setProgress(nProgress);
+                double dProgress = (double)(nProgress + 1) / 10.0;
+                textEffectDetail.setText(String.format("%.1f", dProgress));
+                setFreq((float)dProgress);
+            }
+        }
+        else if (v.getId() == R.id.relativePlus) {
+            TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
+            if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
+            {
+                SeekBar seek = (SeekBar) activity.findViewById(R.id.seekEffectDetail);
+                TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
+                int nProgress = seek.getProgress();
+                nProgress += 1;
+                if(nProgress > seek.getMax()) nProgress = seek.getMax();
+                seek.setProgress(nProgress);
+                double dProgress = (double)(nProgress + 1) / 10.0;
+                textEffectDetail.setText(String.format("%.1f", dProgress));
+                setFreq((float)dProgress);
+            }
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        effectsAdapter = new EffectsAdapter(activity, R.layout.effect_item, arEffectItems);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        EffectItem item = new EffectItem("なし", false);
+        arEffectItems.add(item);
+        item = new EffectItem("ボーカルキャンセル", false);
+        arEffectItems.add(item);
+        item = new EffectItem("モノラル", false);
+        arEffectItems.add(item);
+        item = new EffectItem("左のみ再生", false);
+        arEffectItems.add(item);
+        item = new EffectItem("右のみ再生", false);
+        arEffectItems.add(item);
+        item = new EffectItem("左右入れ替え", false);
+        arEffectItems.add(item);
+        item = new EffectItem("再生周波数", true);
+        arEffectItems.add(item);
+        item = new EffectItem("スタジアムエコー", false);
+        arEffectItems.add(item);
+        item = new EffectItem("ホールエコー", false);
+        arEffectItems.add(item);
+        item = new EffectItem("ライブハウスエコー", false);
+        arEffectItems.add(item);
+        item = new EffectItem("ルームエコー", false);
+        arEffectItems.add(item);
+        item = new EffectItem("バスルームエコー", false);
+        arEffectItems.add(item);
+        item = new EffectItem("ボーカルエコー", false);
+        arEffectItems.add(item);
+        item = new EffectItem("やまびこエコー", false);
+        arEffectItems.add(item);
+        item = new EffectItem("リバーブ（バスルーム）", false);
+        arEffectItems.add(item);
+        item = new EffectItem("リバーブ（狭い部屋）", false);
+        arEffectItems.add(item);
+        item = new EffectItem("リバーブ（普通の部屋）", false);
+        arEffectItems.add(item);
+        item = new EffectItem("リバーブ（広い部屋）", false);
+        arEffectItems.add(item);
+        item = new EffectItem("リバーブ（教会）", false);
+        arEffectItems.add(item);
+        item = new EffectItem("リバーブ（大聖堂）", false);
+        arEffectItems.add(item);
+        item = new EffectItem("コーラス", false);
+        arEffectItems.add(item);
+        item = new EffectItem("フランジャー", false);
+        arEffectItems.add(item);
+        item = new EffectItem("ディストーション（強）", false);
+        arEffectItems.add(item);
+        item = new EffectItem("ディストーション（中）", false);
+        arEffectItems.add(item);
+        item = new EffectItem("ディストーション（弱）", false);
+        arEffectItems.add(item);
+
+        MainActivity activity = (MainActivity)getActivity();
+        recyclerEffects = (RecyclerView)activity.findViewById(R.id.recyclerEffects);
+        recyclerEffects.setHasFixedSize(false);
+        LinearLayoutManager playlistsManager = new LinearLayoutManager(activity);
+        recyclerEffects.setLayoutManager(playlistsManager);
+        recyclerEffects.setAdapter(effectsAdapter);
+
+        Button btnFinith = (Button)activity.findViewById(R.id.btnFinish);
+        btnFinith.setOnClickListener(this);
+        RelativeLayout relativeMinus = (RelativeLayout) activity.findViewById(R.id.relativeMinus);
+        relativeMinus.setOnClickListener(this);
+        RelativeLayout relativePlus = (RelativeLayout) activity.findViewById(R.id.relativePlus);
+        relativePlus.setOnClickListener(this);
+    }
+
+    public void onEffectItemClick(int nEffect)
     {
-        listView.setItemChecked(position, listView.isItemChecked(position));
-        checkDuplicate(position);
+        EffectItem item = arEffectItems.get(nEffect);
+        item.setSelected(!item.isSelected());
+        checkDuplicate(nEffect);
         applyEffect(MainActivity.hStream);
+        effectsAdapter.notifyDataSetChanged();
+    }
+
+    public void onEffectDetailClick(int nEffect)
+    {
+        RelativeLayout relativeEffectDetail = (RelativeLayout) activity.findViewById(R.id.relativeEffectDetail);
+        relativeEffectDetail.setVisibility(View.VISIBLE);
+        RelativeLayout relativeEffect = (RelativeLayout) activity.findViewById(R.id.relativeEffects);
+        relativeEffect.setVisibility(View.GONE);
+        TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
+        TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
+        SeekBar seek = (SeekBar) activity.findViewById(R.id.seekEffectDetail);
+        if(nEffect == kEffectTypeFrequency) {
+            textEffectName.setText(arEffectItems.get(nEffect).getEffectName());
+            textEffectDetail.setText(String.format("%.1f", fFreq));
+            seek.setProgress((int)(fFreq * 10.0f) - 1);
+            // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、39を設定（本来は1～40にしたい）
+            seek.setMax(39);
+            seek.setOnSeekBarChangeListener(this);
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar)
+    {
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch)
+    {
+        TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
+        if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
+        {
+            TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
+            double dProgress = (double)(progress + 1) / 10.0;
+            textEffectDetail.setText(String.format("%.1f", dProgress));
+            setFreq((float)dProgress);
+        }
+    }
+
+    public void setFreq(float fFreq)
+    {
+        if(fFreq < 0.1f) fFreq = 0.1f;
+        else if(fFreq > 4.0f) fFreq = 4.0f;
+        this.fFreq = fFreq;
+        if(arEffectItems.get(kEffectTypeFrequency).isSelected() && MainActivity.hStream != 0) {
+            BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
+            BASS.BASS_ChannelGetInfo(MainActivity.hStream, info);
+            BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * fFreq);
+        }
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar)
+    {
     }
 
     public void checkDuplicate(int nSelect)
     {
         if(nSelect == 0)
         {
-            for(int i = 1; i < arPresetTitle.size(); i++)
+            for(int i = 1; i < arEffectItems.size(); i++)
             {
-                listView.setItemChecked(i, false);
+                arEffectItems.get(i).setSelected(false);
             }
         }
         else
         {
-            listView.setItemChecked(0, false);
+            arEffectItems.get(0).setSelected(false);
             if(kEffectTypeVocalCancel <= nSelect && nSelect <= kEffectTypeReplace) {
                 for (int i = kEffectTypeVocalCancel; i <= kEffectTypeReplace; i++) {
                     if(i != nSelect)
-                        listView.setItemChecked(i, false);
+                        arEffectItems.get(i).setSelected(false);
                 }
             }
             if(kEffectTypeStadiumEcho <= nSelect && nSelect <= kEffectTypeMountainEcho) {
                 for(int i = kEffectTypeStadiumEcho; i <= kEffectTypeMountainEcho; i++) {
                     if(i != nSelect)
-                        listView.setItemChecked(i, false);
+                        arEffectItems.get(i).setSelected(false);
                 }
             }
             if(kEffectTypeReverb_Bathroom <= nSelect && nSelect <= kEffectTypeReverb_Cathedral) {
                 for(int i = kEffectTypeReverb_Bathroom; i <= kEffectTypeReverb_Cathedral; i++) {
                     if(nSelect != i)
-                        listView.setItemChecked(i, false);
+                        arEffectItems.get(i).setSelected(false);
                 }
             }
             if(kEffectTypeChorus <= nSelect && nSelect <= kEffectTypeFlanger) {
                 for(int i = kEffectTypeChorus; i <= kEffectTypeFlanger; i++) {
                     if(nSelect != i)
-                        listView.setItemChecked(i, false);
+                        arEffectItems.get(i).setSelected(false);
                 }
             }
             if(kEffectTypeDistortion_Strong <= nSelect && nSelect <= kEffectTypeDistortion_Weak) {
                 for(int i = kEffectTypeDistortion_Strong; i <= kEffectTypeDistortion_Weak; i++) {
                     if(i != nSelect)
-                        listView.setItemChecked(i, false);
+                        arEffectItems.get(i).setSelected(false);
                 }
             }
         }
@@ -206,6 +371,9 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             BASS.BASS_ChannelRemoveDSP(hStream, hDspExchange);
             hDspExchange = 0;
         }
+        BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
+        BASS.BASS_ChannelGetInfo(hStream, info);
+        BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq);
         if(hFxEcho != 0) {
             BASS.BASS_ChannelRemoveFX(hStream, hFxEcho);
             hFxEcho = 0;
@@ -222,11 +390,11 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
             BASS.BASS_ChannelRemoveFX(hStream, hFxDistortion);
             hFxDistortion = 0;
         }
-        for(int i = 0; i < arPresetTitle.size(); i++)
+        for(int i = 0; i < arEffectItems.size(); i++)
         {
-            if(!listView.isItemChecked(i))
+            if(!arEffectItems.get(i).isSelected())
                 continue;
-            String strEffect = arPresetTitle.get(i);
+            String strEffect = arEffectItems.get(i).getEffectName();
             if(strEffect.equals("なし"))
             {
             }
@@ -240,6 +408,8 @@ public class EffectFragment extends Fragment implements AdapterView.OnItemClickL
                 hDspRight = BASS.BASS_ChannelSetDSP(hStream, rightDSP, null, 0);
             else if(strEffect.equals("左右入れ替え"))
                 hDspExchange = BASS.BASS_ChannelSetDSP(hStream, exchangeDSP, null, 0);
+            else if(strEffect.equals("再生周波数"))
+                BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * fFreq);
             else if(strEffect.equals("スタジアムエコー"))
             {
                 hFxEcho = BASS.BASS_ChannelSetFX(hStream, BASS.BASS_FX_DX8_ECHO, 2);

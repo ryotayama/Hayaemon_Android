@@ -7,11 +7,139 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp">
 
-    <ListView
-        android:layout_height="wrap_content"
-        android:id="@+id/effectPresets"
+    <RelativeLayout
+        android:id="@+id/relativeEffectDetail"
         android:layout_width="match_parent"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        >
 
-    </ListView>
+        <TextView
+            android:id="@+id/textEffectName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="エフェクト名"
+            android:textColor="#000000"
+            android:textSize="22dp"
+            android:textStyle="bold"
+            android:layout_margin="12dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            />
+
+        <Button
+            android:id="@+id/btnFinish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="完了"
+            android:layout_margin="2dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnFinish"
+            >
+
+            <SeekBar
+                android:id="@+id/seekEffectDetail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/textEffectDetail"
+                />
+
+            <TextView
+                android:id="@+id/textEffectDetail"
+                android:layout_width="32dp"
+                android:layout_height="wrap_content"
+                android:text="100"
+                android:textSize="15dp"
+                android:textColor="#000000"
+                android:layout_marginVertical="12dp"
+                android:layout_marginRight="8dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/relativeMinus"
+                />
+
+            <RelativeLayout
+                android:id="@+id/relativeMinus"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:clickable="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/relativePlus"
+                >
+
+                <TextView
+                    android:id="@+id/textMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relativePlus"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:clickable="true"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                >
+
+                <TextView
+                    android:id="@+id/textPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeEffects"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        >
+
+        <View
+            android:id="@+id/devider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#BFBFBF"
+            android:layout_alignParentTop="true"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerEffects"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:divider="#BFBFBF"
+            android:dividerHeight="0.5dp"
+            android:clipToPadding="false"
+            android:layout_below="@+id/devider"
+            />
+
+    </RelativeLayout>
+
 </RelativeLayout>

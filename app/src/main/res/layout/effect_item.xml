@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/effectItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <TextView
+        android:id="@+id/textEffect"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="タイトル"
+        android:textSize="13dp"
+        android:textColor="#000000"
+        android:singleLine="true"
+        android:layout_marginLeft="14dp"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/relativeEffectDetail"
+        android:layout_centerVertical="true"
+        />
+
+    <RelativeLayout
+        android:id="@+id/relativeEffectDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:clickable="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        >
+
+        <TextView
+            android:id="@+id/textEffectDetail"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:text="i"
+            android:textSize="15dp"
+            android:background="@drawable/circle2"
+            android:textColor="#007AFF"
+            android:gravity="center"
+            android:layout_marginVertical="12dp"
+            />
+
+        <ImageView
+            android:id="@+id/imgRight"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@null"
+            android:src="@drawable/ic_listright"
+            android:scaleType="centerInside"
+            android:layout_marginVertical="7dp"
+            android:layout_marginHorizontal="4dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/textEffectDetail"
+            />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#BFBFBF"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>
