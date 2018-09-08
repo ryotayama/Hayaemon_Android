@@ -19,6 +19,7 @@
 package com.edolfzoku.hayaemon2;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,6 +43,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.Timer;
 
 import static java.lang.Boolean.FALSE;
 
@@ -62,6 +64,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private int hFxDistortion = 0;
     private float fPan = 0.0f;
     private float fFreq = 1.0f;
+    private int nBPM = 120;
     private final int kEffectTypeVocalCancel = 1;
     private final int kEffectTypeMonoral = 2;
     private final int kEffectTypeLeftOnly = 3;
@@ -87,6 +90,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private final int kEffectTypeDistortion_Strong = 23;
     private final int kEffectTypeDistortion_Middle = 24;
     private final int kEffectTypeDistortion_Weak = 25;
+    private final int kEffectTypeMetronome = 26;
+    private Timer timer;
 
     public boolean isSelectedItem(int nItem) {
         EffectItem item = arEffectItems.get(nItem);
@@ -134,50 +139,54 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
             SeekBar seek = (SeekBar) activity.findViewById(R.id.seekEffectDetail);
             TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
+            int nProgress = seek.getProgress();
+            nProgress -= 1;
+            if(nProgress < 0) nProgress = 0;
+            seek.setProgress(nProgress);
             if(textEffectName.getText().equals(arEffectItems.get(kEffectTypePan).getEffectName()))
             {
-                int nProgress = seek.getProgress();
-                nProgress -= 1;
-                if(nProgress < 0) nProgress = 0;
-                seek.setProgress(nProgress);
                 float fProgress = (nProgress - 100) / 100.0f;
                 textEffectDetail.setText(String.format("%d", nProgress - 100));
                 setPan(fProgress);
             }
             else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
             {
-                int nProgress = seek.getProgress();
-                nProgress -= 1;
-                if(nProgress < 0) nProgress = 0;
-                seek.setProgress(nProgress);
                 double dProgress = (double)(nProgress + 1) / 10.0;
                 textEffectDetail.setText(String.format("%.1f", dProgress));
                 setFreq((float)dProgress);
+            }
+            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeMetronome).getEffectName()))
+            {
+                nBPM = nProgress + 10;
+                textEffectDetail.setText(String.format("%d", nBPM));
+                applyEffect(MainActivity.hStream);
             }
         }
         else if (v.getId() == R.id.relativePlus) {
             TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
             SeekBar seek = (SeekBar) activity.findViewById(R.id.seekEffectDetail);
             TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
+            int nProgress = seek.getProgress();
+            nProgress += 1;
+            if(nProgress > seek.getMax()) nProgress = seek.getMax();
+            seek.setProgress(nProgress);
             if(textEffectName.getText().equals(arEffectItems.get(kEffectTypePan).getEffectName()))
             {
-                int nProgress = seek.getProgress();
-                nProgress += 1;
-                if(nProgress > seek.getMax()) nProgress = seek.getMax();
-                seek.setProgress(nProgress);
                 float fProgress = (nProgress - 100) / 100.0f;
                 textEffectDetail.setText(String.format("%d", nProgress - 100));
                 setPan(fProgress);
             }
             else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
             {
-                int nProgress = seek.getProgress();
-                nProgress += 1;
-                if(nProgress > seek.getMax()) nProgress = seek.getMax();
-                seek.setProgress(nProgress);
                 double dProgress = (double)(nProgress + 1) / 10.0;
                 textEffectDetail.setText(String.format("%.1f", dProgress));
                 setFreq((float)dProgress);
+            }
+            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeMetronome).getEffectName()))
+            {
+                nBPM = nProgress + 10;
+                textEffectDetail.setText(String.format("%d", nBPM));
+                applyEffect(MainActivity.hStream);
             }
         }
     }
@@ -245,6 +254,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         arEffectItems.add(item);
         item = new EffectItem("ディストーション（弱）", false);
         arEffectItems.add(item);
+        item = new EffectItem("メトロノーム", true);
+        arEffectItems.add(item);
 
         MainActivity activity = (MainActivity)getActivity();
         recyclerEffects = (RecyclerView)activity.findViewById(R.id.recyclerEffects);
@@ -283,16 +294,23 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         if(nEffect == kEffectTypePan) {
             int nPan = (int)(fPan * 100.0f);
             textEffectDetail.setText(String.format("%d", nPan));
-            seek.setProgress(nPan + 100);
             // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、最大値に200を設定（本来は-100～100にしたい）
             seek.setMax(200);
+            seek.setProgress(nPan + 100);
             seek.setOnSeekBarChangeListener(this);
         }
         else if(nEffect == kEffectTypeFrequency) {
             textEffectDetail.setText(String.format("%.1f", fFreq));
-            seek.setProgress((int)(fFreq * 10.0f) - 1);
             // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、最大値に39を設定（本来は1～40にしたい）
             seek.setMax(39);
+            seek.setProgress((int)(fFreq * 10.0f) - 1);
+            seek.setOnSeekBarChangeListener(this);
+        }
+        else if(nEffect == kEffectTypeMetronome) {
+            textEffectDetail.setText(String.format("%d", nBPM));
+            // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、最大値に290を設定（本来は10～300にしたい）
+            seek.setMax(290);
+            seek.setProgress(nBPM - 10);
             seek.setOnSeekBarChangeListener(this);
         }
     }
@@ -318,6 +336,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             double dProgress = (double)(progress + 1) / 10.0;
             textEffectDetail.setText(String.format("%.1f", dProgress));
             setFreq((float)dProgress);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeMetronome).getEffectName()))
+        {
+            nBPM = progress + 10;
+            textEffectDetail.setText(String.format("%d", nBPM));
+            applyEffect(MainActivity.hStream);
         }
     }
 
@@ -448,6 +472,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         if(hFxDistortion != 0) {
             BASS.BASS_ChannelRemoveFX(hStream, hFxDistortion);
             hFxDistortion = 0;
+        }
+        if(timer != null) {
+            timer.cancel();
+            timer = null;
         }
         for(int i = 0; i < arEffectItems.size(); i++)
         {
@@ -688,7 +716,26 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 distortion.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(hFxDistortion, distortion);
             }
+            else if(strEffect.equals("メトロノーム"))
+            {
+                timer = new Timer();
+                MetronomeTask metronomeTask = new MetronomeTask(this);
+                long lPeriod = (long)((60.0 / nBPM) * 1000);
+                timer.schedule(metronomeTask, lPeriod, lPeriod);
+            }
         }
+    }
+
+    public void playMetronome()
+    {
+        final MediaPlayer mp = MediaPlayer.create(activity, R.raw.click);
+        mp.start();
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void onCompletion(MediaPlayer mp) {
+                mp.reset();
+                mp.release();
+            }
+        });
     }
 
     private final BASS.DSPPROC panDSP = new BASS.DSPPROC() {
