@@ -531,18 +531,30 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             if(strEffect.equals("なし"))
             {
             }
-            else if(strEffect.equals("ボーカルキャンセル"))
-                hDspVocalCancel = BASS.BASS_ChannelSetDSP(hStream, vocalCancelDSP, null, 0);
-            else if(strEffect.equals("モノラル"))
-                hDspMonoral = BASS.BASS_ChannelSetDSP(hStream, monoralDSP, null, 0);
-            else if(strEffect.equals("左のみ再生"))
-                hDspLeft = BASS.BASS_ChannelSetDSP(hStream, leftDSP, null, 0);
-            else if(strEffect.equals("右のみ再生"))
-                hDspRight = BASS.BASS_ChannelSetDSP(hStream, rightDSP, null, 0);
-            else if(strEffect.equals("左右入れ替え"))
-                hDspExchange = BASS.BASS_ChannelSetDSP(hStream, exchangeDSP, null, 0);
-            else if(strEffect.equals("パン"))
-                hDspPan = BASS.BASS_ChannelSetDSP(hStream, panDSP, this, 0);
+            else if(strEffect.equals("ボーカルキャンセル")) {
+                if(info.chans != 1)
+                    hDspVocalCancel = BASS.BASS_ChannelSetDSP(hStream, vocalCancelDSP, null, 0);
+            }
+            else if(strEffect.equals("モノラル")) {
+                if(info.chans != 1)
+                    hDspMonoral = BASS.BASS_ChannelSetDSP(hStream, monoralDSP, null, 0);
+            }
+            else if(strEffect.equals("左のみ再生")) {
+                if(info.chans != 1)
+                    hDspLeft = BASS.BASS_ChannelSetDSP(hStream, leftDSP, null, 0);
+            }
+            else if(strEffect.equals("右のみ再生")) {
+                if(info.chans != 1)
+                    hDspRight = BASS.BASS_ChannelSetDSP(hStream, rightDSP, null, 0);
+            }
+            else if(strEffect.equals("左右入れ替え")) {
+                if(info.chans != 1)
+                    hDspExchange = BASS.BASS_ChannelSetDSP(hStream, exchangeDSP, null, 0);
+            }
+            else if(strEffect.equals("パン")) {
+                if(info.chans != 1)
+                    hDspPan = BASS.BASS_ChannelSetDSP(hStream, panDSP, this, 0);
+            }
             else if(strEffect.equals("再生周波数"))
                 BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * fFreq);
             else if(strEffect.equals("スタジアムエコー"))
