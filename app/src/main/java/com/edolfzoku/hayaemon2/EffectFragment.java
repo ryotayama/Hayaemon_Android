@@ -27,11 +27,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -39,6 +35,8 @@ import android.widget.TextView;
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_FX;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -65,6 +63,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private float fPan = 0.0f;
     private float fFreq = 1.0f;
     private int nBPM = 120;
+    private float fVol2 = 1.0f;
     private final int kEffectTypeVocalCancel = 1;
     private final int kEffectTypeMonoral = 2;
     private final int kEffectTypeLeftOnly = 3;
@@ -91,7 +90,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private final int kEffectTypeDistortion_Middle = 24;
     private final int kEffectTypeDistortion_Weak = 25;
     private final int kEffectTypeMetronome = 26;
+    private final int kEffectTypeRoarOfWaves = 27;
     private Timer timer;
+    private int hSEStream;
+    private int hSEStream2;
+    private boolean bSE1Playing = false;
+    private int hSync = 0;
 
     public boolean isSelectedItem(int nItem) {
         EffectItem item = arEffectItems.get(nItem);
@@ -161,6 +165,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 textEffectDetail.setText(String.format("%d", nBPM));
                 applyEffect(MainActivity.hStream);
             }
+            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRoarOfWaves).getEffectName()))
+            {
+                fVol2 = nProgress / 100.0f;
+                textEffectDetail.setText(String.format("%d", nProgress));
+                applyEffect(MainActivity.hStream);
+            }
         }
         else if (v.getId() == R.id.relativePlus) {
             TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
@@ -186,6 +196,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             {
                 nBPM = nProgress + 10;
                 textEffectDetail.setText(String.format("%d", nBPM));
+                applyEffect(MainActivity.hStream);
+            }
+            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRoarOfWaves).getEffectName()))
+            {
+                fVol2 = nProgress / 100.0f;
+                textEffectDetail.setText(String.format("%d", nProgress));
                 applyEffect(MainActivity.hStream);
             }
         }
@@ -256,6 +272,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         arEffectItems.add(item);
         item = new EffectItem("メトロノーム", true);
         arEffectItems.add(item);
+        item = new EffectItem("波の音", true);
+        arEffectItems.add(item);
 
         MainActivity activity = (MainActivity)getActivity();
         recyclerEffects = (RecyclerView)activity.findViewById(R.id.recyclerEffects);
@@ -277,42 +295,60 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         EffectItem item = arEffectItems.get(nEffect);
         item.setSelected(!item.isSelected());
         checkDuplicate(nEffect);
+        if(hSEStream != 0) {
+            BASS.BASS_StreamFree(hSEStream);
+            hSEStream = 0;
+        }
+        if(hSEStream2 != 0) {
+            BASS.BASS_StreamFree(hSEStream2);
+            hSEStream2 = 0;
+        }
         applyEffect(MainActivity.hStream);
         effectsAdapter.notifyDataSetChanged();
     }
 
     public void onEffectDetailClick(int nEffect)
     {
-        RelativeLayout relativeEffectDetail = (RelativeLayout) activity.findViewById(R.id.relativeEffectDetail);
-        relativeEffectDetail.setVisibility(View.VISIBLE);
-        RelativeLayout relativeEffect = (RelativeLayout) activity.findViewById(R.id.relativeEffects);
-        relativeEffect.setVisibility(View.GONE);
         TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
+        TextView textEffectLabel = (TextView) activity.findViewById(R.id.textEffectLabel);
         TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
         SeekBar seek = (SeekBar) activity.findViewById(R.id.seekEffectDetail);
         textEffectName.setText(arEffectItems.get(nEffect).getEffectName());
+        seek.setOnSeekBarChangeListener(null);
         if(nEffect == kEffectTypePan) {
+            textEffectLabel.setText("パン");
             int nPan = (int)(fPan * 100.0f);
             textEffectDetail.setText(String.format("%d", nPan));
             // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、最大値に200を設定（本来は-100～100にしたい）
             seek.setMax(200);
             seek.setProgress(nPan + 100);
-            seek.setOnSeekBarChangeListener(this);
         }
         else if(nEffect == kEffectTypeFrequency) {
+            textEffectLabel.setText("再生周波数");
             textEffectDetail.setText(String.format("%.1f", fFreq));
             // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、最大値に39を設定（本来は1～40にしたい）
             seek.setMax(39);
             seek.setProgress((int)(fFreq * 10.0f) - 1);
-            seek.setOnSeekBarChangeListener(this);
         }
         else if(nEffect == kEffectTypeMetronome) {
+            textEffectLabel.setText("BPM");
             textEffectDetail.setText(String.format("%d", nBPM));
+            seek.setProgress(0);
             // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、最大値に290を設定（本来は10～300にしたい）
             seek.setMax(290);
             seek.setProgress(nBPM - 10);
-            seek.setOnSeekBarChangeListener(this);
         }
+        else if(nEffect == kEffectTypeRoarOfWaves) {
+            textEffectLabel.setText("音量");
+            textEffectDetail.setText(String.format("%d", (int)fVol2 * 100));
+            seek.setMax(100);
+            seek.setProgress((int)(fVol2 * 100));
+        }
+        seek.setOnSeekBarChangeListener(this);
+        RelativeLayout relativeEffectDetail = (RelativeLayout) activity.findViewById(R.id.relativeEffectDetail);
+        relativeEffectDetail.setVisibility(View.VISIBLE);
+        RelativeLayout relativeEffect = (RelativeLayout) activity.findViewById(R.id.relativeEffects);
+        relativeEffect.setVisibility(View.GONE);
     }
 
     @Override
@@ -342,6 +378,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             nBPM = progress + 10;
             textEffectDetail.setText(String.format("%d", nBPM));
             applyEffect(MainActivity.hStream);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRoarOfWaves).getEffectName()))
+        {
+            fVol2 = progress / 100.0f;
+            textEffectDetail.setText(String.format("%d", progress));
+            applyEffect(MainActivity.hStream);
+            if(arEffectItems.get(kEffectTypeRoarOfWaves).isSelected()) {
+                int hSETemp = bSE1Playing ? hSEStream : hSEStream2;
+                BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol2);
+            }
         }
     }
 
@@ -723,6 +769,95 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 long lPeriod = (long)((60.0 / nBPM) * 1000);
                 timer.schedule(metronomeTask, lPeriod, lPeriod);
             }
+            else if(strEffect.equals("波の音"))
+            {
+                if(hSEStream == 0) {
+                    bSE1Playing = true;
+                    InputStream is = getResources().openRawResource(R.raw.wave);
+                    hSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+                    hSync = BASS.BASS_ChannelSetSync(hSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hSEStream, 38.399), endWave, this);
+                    BASS.BASS_ChannelPlay(hSEStream, true);
+                }
+            }
+        }
+    }
+
+    private final BASS.BASS_FILEPROCS fileprocs = new BASS.BASS_FILEPROCS() {
+        @Override
+        public boolean FILESEEKPROC(long offset, Object user) {
+            return false;
+        }
+
+        @Override
+        public int FILEREADPROC(ByteBuffer buffer, int length, Object user) { if(length == 0) return 0;
+            InputStream is=(InputStream)user;
+            byte b[]=new byte[length];
+            int r=0;
+            try {
+                r=is.read(b);
+            } catch (Exception e) {
+                return 0;
+            }
+            if (r<=0) return 0;
+            buffer.put(b, 0, r);
+            return r;
+        }
+
+        @Override
+        public long FILELENPROC(Object user) {
+            return 0;
+        }
+
+        @Override
+        public void FILECLOSEPROC(Object user) {
+            InputStream is=(InputStream)user;
+            try {
+                is.close();
+            } catch (IOException e) {
+            }
+        }
+    };
+
+    private final BASS.SYNCPROC endWave = new BASS.SYNCPROC()
+    {
+        public void SYNCPROC(int handle, int channel, int data, final Object user)
+        {
+            EffectFragment effectFragment = (EffectFragment)user;
+            effectFragment.onWaveEnded();
+        }
+    };
+
+    public void onWaveEnded()
+    {
+        if(bSE1Playing) {
+            InputStream is = getResources().openRawResource(R.raw.wave);
+            hSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            BASS.BASS_ChannelSetAttribute(hSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f);
+            BASS.BASS_ChannelSetPosition(hSEStream2, BASS.BASS_ChannelSeconds2Bytes(hSEStream2, 0.283), BASS.BASS_POS_BYTE);
+            if(hSync != 0) {
+                BASS.BASS_ChannelRemoveSync(hSEStream, hSync);
+                hSync = 0;
+            }
+            hSync = BASS.BASS_ChannelSetSync(hSEStream2, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hSEStream2, 38.399), endWave, this);
+            BASS.BASS_ChannelPlay(hSEStream2, FALSE);
+            BASS.BASS_ChannelSlideAttribute(hSEStream, BASS.BASS_ATTRIB_VOL, 0.0f, 1000);
+            BASS.BASS_ChannelSlideAttribute(hSEStream2, BASS.BASS_ATTRIB_VOL, fVol2, 1000);
+            bSE1Playing = false;
+        }
+        else if(BASS.BASS_ChannelIsActive(hSEStream2) == BASS.BASS_ACTIVE_PLAYING) {
+            InputStream is = getResources().openRawResource(R.raw.wave);
+            hSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            BASS.BASS_ChannelSetAttribute(hSEStream, BASS.BASS_ATTRIB_VOL, 0.0f);
+            BASS.BASS_ChannelSetPosition(hSEStream, BASS.BASS_ChannelSeconds2Bytes(hSEStream, 0.283), BASS.BASS_POS_BYTE);
+            if(hSync != 0) {
+                BASS.BASS_ChannelRemoveSync(hSEStream2, hSync);
+                hSync = 0;
+            }
+            hSync = BASS.BASS_ChannelSetSync(hSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hSEStream, 38.399), endWave, this);
+            BASS.BASS_ChannelPlay(hSEStream, FALSE);
+            BASS.BASS_ChannelSlideAttribute(hSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f, 1000);
+            BASS.BASS_ChannelSlideAttribute(hSEStream, BASS.BASS_ATTRIB_VOL, fVol2, 1000);
+            bSE1Playing = true;
         }
     }
 
