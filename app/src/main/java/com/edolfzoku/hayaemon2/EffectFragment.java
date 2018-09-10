@@ -67,6 +67,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private float fVol2 = 1.0f;
     private float fVol3 = 1.0f;
     private float fVol4 = 1.0f;
+    private float fVol5 = 1.0f;
     private final int kEffectTypeVocalCancel = 1;
     private final int kEffectTypeMonoral = 2;
     private final int kEffectTypeLeftOnly = 3;
@@ -97,6 +98,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private final int kEffectTypeRoarOfWaves = 28;
     private final int kEffectTypeRain = 29;
     private final int kEffectTypeRiver = 30;
+    private final int kEffectTypeWar = 31;
     private Timer timer;
     private int hSEStream;
     private int hSEStream2;
@@ -246,6 +248,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 textEffectDetail.setText(String.format("%d", nProgress));
                 applyEffect(MainActivity.hStream);
             }
+            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeWar).getEffectName()))
+            {
+                fVol5 = nProgress / 100.0f;
+                textEffectDetail.setText(String.format("%d", nProgress));
+                applyEffect(MainActivity.hStream);
+            }
         }
     }
 
@@ -321,6 +329,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         item = new EffectItem("雨の音", true);
         arEffectItems.add(item);
         item = new EffectItem("川の音", true);
+        arEffectItems.add(item);
+        item = new EffectItem("戦の音", true);
         arEffectItems.add(item);
 
         MainActivity activity = (MainActivity)getActivity();
@@ -410,6 +420,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             seek.setMax(100);
             seek.setProgress((int)(fVol4 * 100));
         }
+        else if(nEffect == kEffectTypeWar) {
+            textEffectLabel.setText("音量");
+            textEffectDetail.setText(String.format("%d", (int)(fVol5 * 100)));
+            seek.setMax(100);
+            seek.setProgress((int)(fVol5 * 100));
+        }
         seek.setOnSeekBarChangeListener(this);
         RelativeLayout relativeEffectDetail = (RelativeLayout) activity.findViewById(R.id.relativeEffectDetail);
         relativeEffectDetail.setVisibility(View.VISIBLE);
@@ -483,6 +499,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             if(arEffectItems.get(kEffectTypeRiver).isSelected()) {
                 int hSETemp = bSE1Playing ? hSEStream : hSEStream2;
                 BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol4);
+            }
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeWar).getEffectName()))
+        {
+            fVol5 = progress / 100.0f;
+            textEffectDetail.setText(String.format("%d", progress));
+            applyEffect(MainActivity.hStream);
+            if(arEffectItems.get(kEffectTypeWar).isSelected()) {
+                int hSETemp = bSE1Playing ? hSEStream : hSEStream2;
+                BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol5);
             }
         }
     }
@@ -561,8 +587,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                         arEffectItems.get(i).setSelected(false);
                 }
             }
-            if(kEffectTypeRecordNoise <= nSelect && nSelect <= kEffectTypeRiver) {
-                for(int i = kEffectTypeRecordNoise; i <= kEffectTypeRiver; i++) {
+            if(kEffectTypeRecordNoise <= nSelect && nSelect <= kEffectTypeWar) {
+                for(int i = kEffectTypeRecordNoise; i <= kEffectTypeWar; i++) {
                     if(i != nSelect)
                         arEffectItems.get(i).setSelected(false);
                 }
@@ -927,6 +953,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                     BASS.BASS_ChannelPlay(hSEStream, true);
                 }
             }
+            else if(strEffect.equals("戦の音"))
+            {
+                if(hSEStream == 0) {
+                    bSE1Playing = true;
+                    InputStream is = getResources().openRawResource(R.raw.war);
+                    hSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+                    hSync = BASS.BASS_ChannelSetSync(hSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hSEStream, 30.000), endWar, this);
+                    BASS.BASS_ChannelSetAttribute(hSEStream, BASS.BASS_ATTRIB_VOL, fVol5);
+                    BASS.BASS_ChannelPlay(hSEStream, true);
+                }
+            }
         }
     }
 
@@ -1099,8 +1136,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     {
         public void SYNCPROC(int handle, int channel, int data, final Object user)
         {
-        EffectFragment effectFragment = (EffectFragment)user;
-        effectFragment.onRiverEnded();
+            EffectFragment effectFragment = (EffectFragment)user;
+            effectFragment.onRiverEnded();
         }
     };
 
@@ -1134,6 +1171,49 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             BASS.BASS_ChannelPlay(hSEStream, FALSE);
             BASS.BASS_ChannelSlideAttribute(hSEStream, BASS.BASS_ATTRIB_VOL, fVol4, 5000);
             BASS.BASS_ChannelSlideAttribute(hSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f, 5000);
+            bSE1Playing = true;
+        }
+    }
+
+    private final BASS.SYNCPROC endWar = new BASS.SYNCPROC()
+    {
+        public void SYNCPROC(int handle, int channel, int data, final Object user)
+        {
+            EffectFragment effectFragment = (EffectFragment)user;
+            effectFragment.onWarEnded();
+        }
+    };
+
+    public void onWarEnded()
+    {
+        if(bSE1Playing) {
+            InputStream is = getResources().openRawResource(R.raw.war);
+            hSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            BASS.BASS_ChannelSetAttribute(hSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f);
+            BASS.BASS_ChannelSetPosition(hSEStream2, BASS.BASS_ChannelSeconds2Bytes(hSEStream2, 0.0), BASS.BASS_POS_BYTE);
+            if(hSync != 0) {
+                BASS.BASS_ChannelRemoveSync(hSEStream, hSync);
+                hSync = 0;
+            }
+            hSync = BASS.BASS_ChannelSetSync(hSEStream2, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hSEStream2, 30.0), endWar, this);
+            BASS.BASS_ChannelPlay(hSEStream2, FALSE);
+            BASS.BASS_ChannelSlideAttribute(hSEStream2, BASS.BASS_ATTRIB_VOL, fVol5, 1000);
+            BASS.BASS_ChannelSlideAttribute(hSEStream, BASS.BASS_ATTRIB_VOL, 0.0f, 1000);
+            bSE1Playing = false;
+        }
+        else if(BASS.BASS_ChannelIsActive(hSEStream2) == BASS.BASS_ACTIVE_PLAYING) {
+            InputStream is = getResources().openRawResource(R.raw.war);
+            hSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            BASS.BASS_ChannelSetAttribute(hSEStream, BASS.BASS_ATTRIB_VOL, 0.0f);
+            BASS.BASS_ChannelSetPosition(hSEStream, BASS.BASS_ChannelSeconds2Bytes(hSEStream, 0.0), BASS.BASS_POS_BYTE);
+            if(hSync != 0) {
+                BASS.BASS_ChannelRemoveSync(hSEStream2, hSync);
+                hSync = 0;
+            }
+            hSync = BASS.BASS_ChannelSetSync(hSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hSEStream, 30.0), endWar, this);
+            BASS.BASS_ChannelPlay(hSEStream, FALSE);
+            BASS.BASS_ChannelSlideAttribute(hSEStream, BASS.BASS_ATTRIB_VOL, fVol5, 1000);
+            BASS.BASS_ChannelSlideAttribute(hSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f, 1000);
             bSE1Playing = true;
         }
     }
