@@ -197,6 +197,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 textEffectDetail.setText(String.format("%d", nProgress));
                 applyEffect(MainActivity.hStream);
             }
+            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeWar).getEffectName()))
+            {
+                fVol5 = nProgress / 100.0f;
+                textEffectDetail.setText(String.format("%d", nProgress));
+                applyEffect(MainActivity.hStream);
+            }
         }
         else if (v.getId() == R.id.relativePlus) {
             TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
