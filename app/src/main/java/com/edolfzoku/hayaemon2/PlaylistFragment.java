@@ -551,6 +551,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 file.delete();
             }
         });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                file.delete();
+            }
+        });
         builder.show();
     }
 
