@@ -97,14 +97,15 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private final int kEffectTypeDistortion_Strong = 23;
     private final int kEffectTypeDistortion_Middle = 24;
     private final int kEffectTypeDistortion_Weak = 25;
-    private final int kEffectTypeMetronome = 26;
-    private final int kEffectTypeRecordNoise = 27;
-    private final int kEffectTypeRoarOfWaves = 28;
-    private final int kEffectTypeRain = 29;
-    private final int kEffectTypeRiver = 30;
-    private final int kEffectTypeWar = 31;
-    private final int kEffectTypeFire = 32;
-    private final int kEffectTypeConcertHall = 33;
+    private final int kEffectTypeOldRecord = 26;
+    private final int kEffectTypeMetronome = 27;
+    private final int kEffectTypeRecordNoise = 28;
+    private final int kEffectTypeRoarOfWaves = 29;
+    private final int kEffectTypeRain = 30;
+    private final int kEffectTypeRiver = 31;
+    private final int kEffectTypeWar = 32;
+    private final int kEffectTypeFire = 33;
+    private final int kEffectTypeConcertHall = 34;
     private Timer timer;
     private int hSEStream;
     private int hSEStream2;
@@ -112,6 +113,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private int hSync = 0;
     private Handler handler;
     private float fAccel = 0.0f;
+    private float fVelo1 = 0.0f;
 
     public boolean isSelectedItem(int nItem) {
         EffectItem item = arEffectItems.get(nItem);
@@ -358,6 +360,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         arEffectItems.add(item);
         item = new EffectItem("ディストーション（弱）", false);
         arEffectItems.add(item);
+        item = new EffectItem("古びたレコード再生", false);
+        arEffectItems.add(item);
         item = new EffectItem("メトロノーム", true);
         arEffectItems.add(item);
         item = new EffectItem("レコードノイズ", true);
@@ -394,6 +398,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     {
         EffectItem item = arEffectItems.get(nEffect);
         item.setSelected(!item.isSelected());
+        if(nEffect == kEffectTypeOldRecord && !item.isSelected())
+        {
+            EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+            equalizerFragment.setEQ(0);
+        }
         checkDuplicate(nEffect);
         if(hSEStream != 0) {
             BASS.BASS_StreamFree(hSEStream);
@@ -629,6 +638,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         {
             for(int i = 1; i < arEffectItems.size(); i++)
             {
+                if(i == kEffectTypeOldRecord && arEffectItems.get(i).isSelected()) {
+                    EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+                    equalizerFragment.setEQ(0);
+                }
                 arEffectItems.get(i).setSelected(false);
             }
         }
@@ -665,8 +678,26 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                         arEffectItems.get(i).setSelected(false);
                 }
             }
-            if(kEffectTypeRecordNoise <= nSelect && nSelect <= kEffectTypeConcertHall) {
-                for(int i = kEffectTypeRecordNoise; i <= kEffectTypeConcertHall; i++) {
+            if(kEffectTypeOldRecord <= nSelect && nSelect <= kEffectTypeMetronome) {
+                for(int i = kEffectTypeOldRecord; i <= kEffectTypeMetronome; i++) {
+                    if(i != nSelect) {
+                        if(i == kEffectTypeOldRecord && arEffectItems.get(i).isSelected()) {
+                            EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+                            equalizerFragment.setEQ(0);
+                        }
+                        arEffectItems.get(i).setSelected(false);
+                    }
+                }
+            }
+            if(nSelect == kEffectTypeOldRecord || (kEffectTypeMetronome <= nSelect && nSelect <= kEffectTypeConcertHall)) {
+                if(nSelect != kEffectTypeOldRecord) {
+                    if(arEffectItems.get(kEffectTypeOldRecord).isSelected()) {
+                        EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+                        equalizerFragment.setEQ(0);
+                    }
+                    arEffectItems.get(kEffectTypeOldRecord).setSelected(false);
+                }
+                for(int i = kEffectTypeMetronome; i <= kEffectTypeConcertHall; i++) {
                     if(i != nSelect)
                         arEffectItems.get(i).setSelected(false);
                 }
@@ -980,6 +1011,30 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 distortion.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(hFxDistortion, distortion);
             }
+            else if(strEffect.equals("古びたレコード再生"))
+            {
+                EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+                int[] array = new int[] {2,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12};
+                for(int j = 0; j < 32; j++)
+                {
+                    int nLevel = array[j];
+                    if(j == 0)
+                        equalizerFragment.setVol(nLevel);
+                    else
+                        equalizerFragment.setEQ(j, nLevel);
+                }
+                if(hSEStream == 0) {
+                    bSE1Playing = true;
+                    InputStream is = getResources().openRawResource(R.raw.recordnoise);
+                    hSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+                    hSync = BASS.BASS_ChannelSetSync(hSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hSEStream, 4.653), endRecordNoise, this);
+                    BASS.BASS_ChannelSetAttribute(hSEStream, BASS.BASS_ATTRIB_VOL, fVol1);
+                    BASS.BASS_ChannelPlay(hSEStream, true);
+                }
+
+                handler = new Handler();
+                handler.post(onTimer);
+            }
             else if(strEffect.equals("メトロノーム"))
             {
                 timer = new Timer();
@@ -1074,50 +1129,76 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         @Override
         public void run()
         {
-            int hSETemp = bSE1Playing ? hSEStream : hSEStream2;
-            if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
-                if(BASS.BASS_ChannelIsActive(hSETemp) == BASS.BASS_ACTIVE_PAUSED || BASS.BASS_ChannelIsActive(hSETemp) == BASS.BASS_ACTIVE_STOPPED) {
-                    BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol7);
-                    BASS.BASS_ChannelPlay(hSETemp, true);
+            if(arEffectItems.get(kEffectTypeOldRecord).isSelected()) {
+                Float fFreq = new Float(0.0f);
+                BASS.BASS_ChannelGetAttribute(MainActivity.hStream, BASS.BASS_ATTRIB_FREQ, fFreq);
+                Float fTempoFreq = new Float(0.0f);
+                BASS.BASS_ChannelGetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, fTempoFreq);
+                fTempoFreq = fTempoFreq * 100.0f / fFreq;
+                // 加速度の設定
+                // 周波数が98以上の場合 : -0.1
+                // 　　　　98未満の場合 : +0.1
+                float fAccel = fTempoFreq.floatValue() >= 98.0f ? -0.1f : 0.1f;
+
+                // 周波数の差分に加速度を加える
+                fVelo1 += fAccel;
+
+                // 周波数に差分を加える
+                fTempoFreq += fVelo1;
+
+                if(fTempoFreq <= 90.0) fTempoFreq = 90.0f;
+                if(fTempoFreq >= 100.0) fTempoFreq = 100.0f;
+
+                BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, fFreq * fTempoFreq / 100.0f);
+                handler.postDelayed(this, 750);
+                return;
+            }
+            else if(arEffectItems.get(kEffectTypeConcertHall).isSelected()) {
+                int hSETemp = bSE1Playing ? hSEStream : hSEStream2;
+                if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
+                    if(BASS.BASS_ChannelIsActive(hSETemp) == BASS.BASS_ACTIVE_PAUSED || BASS.BASS_ChannelIsActive(hSETemp) == BASS.BASS_ACTIVE_STOPPED) {
+                        BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol7);
+                        BASS.BASS_ChannelPlay(hSETemp, true);
+                        handler.postDelayed(this, 100);
+                        return;
+                    }
+                }
+                if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED || BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_STOPPED) {
+                    if(BASS.BASS_ChannelIsActive(hSETemp) == BASS.BASS_ACTIVE_PLAYING)
+                        BASS.BASS_ChannelPause(hSETemp);
                     handler.postDelayed(this, 100);
                     return;
                 }
-            }
-            if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED || BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_STOPPED) {
-                if(BASS.BASS_ChannelIsActive(hSETemp) == BASS.BASS_ACTIVE_PLAYING)
-                    BASS.BASS_ChannelPause(hSETemp);
-                handler.postDelayed(this, 100);
-                return;
-            }
-            if(BASS.BASS_ChannelIsActive(hSETemp) == BASS.BASS_ACTIVE_PAUSED) {
-                handler.postDelayed(this, 100);
-                return;
-            }
-            if(BASS.BASS_ChannelIsSliding(hSETemp, BASS.BASS_ATTRIB_VOL)) {
-                handler.postDelayed(this, 100);
-                return;
-            }
-            double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
-            double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
-            if(dLength - dPos < 5.0) {
-                BASS.BASS_ChannelSlideAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, 0.0f, 5000);
-                handler.postDelayed(this, 100);
-                return;
-            }
+                if(BASS.BASS_ChannelIsActive(hSETemp) == BASS.BASS_ACTIVE_PAUSED) {
+                    handler.postDelayed(this, 100);
+                    return;
+                }
+                if(BASS.BASS_ChannelIsSliding(hSETemp, BASS.BASS_ATTRIB_VOL)) {
+                    handler.postDelayed(this, 100);
+                    return;
+                }
+                double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
+                double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
+                if(dLength - dPos < 5.0) {
+                    BASS.BASS_ChannelSlideAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, 0.0f, 5000);
+                    handler.postDelayed(this, 100);
+                    return;
+                }
 
-            Float fVol = new Float(0.0f);
-            BASS.BASS_ChannelGetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol);
-            Random random = new Random();
-            float fRand = random.nextFloat();
-            fRand = (fRand / 200.0f) - 0.0025f;
-            if(fVol > 1.0f - 0.01f) fRand = -0.0005f;
-            else if(fVol <= 0.5f) fRand = 0.0005f;
-            fAccel += fRand;
-            fVol += fAccel;
-            if(fVol > 1.0f) fVol = 1.0f;
-            else if(fVol < 0.5f) fVol = 0.5f;
-            BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol.floatValue() * fVol7);
-            handler.postDelayed(this, 100);
+                Float fVol = new Float(0.0f);
+                BASS.BASS_ChannelGetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol);
+                Random random = new Random();
+                float fRand = random.nextFloat();
+                fRand = (fRand / 200.0f) - 0.0025f;
+                if(fVol > 1.0f - 0.01f) fRand = -0.0005f;
+                else if(fVol <= 0.5f) fRand = 0.0005f;
+                fAccel += fRand;
+                fVol += fAccel;
+                if(fVol > 1.0f) fVol = 1.0f;
+                else if(fVol < 0.5f) fVol = 0.5f;
+                BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol.floatValue() * fVol7);
+                handler.postDelayed(this, 100);
+            }
         }
     };
 

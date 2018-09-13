@@ -50,6 +50,7 @@ public class EqualizerFragment extends Fragment implements AdapterView.OnItemCli
 
     public ArrayList<SeekBar> getArSeek() { return arSeek; }
     public float[] getArCenters() { return arCenters; }
+    public int[] getArHFX() { return arHFX; }
 
     public EqualizerFragment()
     {
@@ -472,6 +473,45 @@ public class EqualizerFragment extends Fragment implements AdapterView.OnItemCli
             textView = arTextValue.get(i + 1);
             textView.setText(String.valueOf(nLevel));
         }
+    }
+
+    public void setVol(int nLevel)
+    {
+        float fLevel = nLevel;
+        if(fLevel == 0) fLevel = 1.0f;
+        else if(fLevel < 0) fLevel = (fLevel + 30.0f) / 30.0f;
+        else fLevel += 1.0f;
+        if(MainActivity.hStream != 0)
+        {
+            BASS_FX.BASS_BFX_VOLUME vol = new BASS_FX.BASS_BFX_VOLUME();
+            vol.lChannel = 0;
+            vol.fVolume = fLevel;
+            BASS.BASS_FXSetParameters(MainActivity.hFxVol, vol);
+        }
+
+        SeekBar seekBar = arSeek.get(0);
+        seekBar.setProgress(nLevel + 30);
+        TextView textView = arTextValue.get(0);
+        textView.setText(String.valueOf(nLevel));
+    }
+
+    public void setEQ(int i, int nLevel)
+    {
+        if(MainActivity.hStream != 0)
+        {
+            BASS_FX.BASS_BFX_PEAKEQ eq = new BASS_FX.BASS_BFX_PEAKEQ();
+            eq.fBandwidth = 0;
+            eq.fQ = 0.7f;
+            eq.lChannel = BASS_FX.BASS_BFX_CHANALL;
+            eq.fGain = nLevel;
+            eq.fCenter = arCenters[i-1];
+            BASS.BASS_FXSetParameters(arHFX[i-1], eq);
+        }
+
+        SeekBar seekBar = arSeek.get(i);
+        seekBar.setProgress(nLevel + 30);
+        TextView textView = arTextValue.get(i);
+        textView.setText(String.valueOf(nLevel));
     }
 
     void setArHFX(int[] arHFX) {
