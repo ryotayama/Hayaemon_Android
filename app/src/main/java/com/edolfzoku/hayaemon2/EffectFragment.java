@@ -98,14 +98,15 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private final int kEffectTypeDistortion_Middle = 24;
     private final int kEffectTypeDistortion_Weak = 25;
     private final int kEffectTypeOldRecord = 26;
-    private final int kEffectTypeMetronome = 27;
-    private final int kEffectTypeRecordNoise = 28;
-    private final int kEffectTypeRoarOfWaves = 29;
-    private final int kEffectTypeRain = 30;
-    private final int kEffectTypeRiver = 31;
-    private final int kEffectTypeWar = 32;
-    private final int kEffectTypeFire = 33;
-    private final int kEffectTypeConcertHall = 34;
+    private final int kEffectTypeLowBattery = 27;
+    private final int kEffectTypeMetronome = 28;
+    private final int kEffectTypeRecordNoise = 29;
+    private final int kEffectTypeRoarOfWaves = 30;
+    private final int kEffectTypeRain = 31;
+    private final int kEffectTypeRiver = 32;
+    private final int kEffectTypeWar = 33;
+    private final int kEffectTypeFire = 34;
+    private final int kEffectTypeConcertHall = 35;
     private Timer timer;
     private int hSEStream;
     private int hSEStream2;
@@ -361,6 +362,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         item = new EffectItem("ディストーション（弱）", false);
         arEffectItems.add(item);
         item = new EffectItem("古びたレコード再生", false);
+        arEffectItems.add(item);
+        item = new EffectItem("電池切れ", false);
         arEffectItems.add(item);
         item = new EffectItem("メトロノーム", true);
         arEffectItems.add(item);
@@ -672,11 +675,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                         arEffectItems.get(i).setSelected(false);
                 }
             }
-            if(kEffectTypeDistortion_Strong <= nSelect && nSelect <= kEffectTypeDistortion_Weak) {
+            if((kEffectTypeDistortion_Strong <= nSelect && nSelect <= kEffectTypeDistortion_Weak) || nSelect == kEffectTypeLowBattery) {
                 for(int i = kEffectTypeDistortion_Strong; i <= kEffectTypeDistortion_Weak; i++) {
                     if(i != nSelect)
                         arEffectItems.get(i).setSelected(false);
                 }
+                if(nSelect != kEffectTypeLowBattery)
+                    arEffectItems.get(kEffectTypeLowBattery).setSelected(false);
             }
             if(kEffectTypeOldRecord <= nSelect && nSelect <= kEffectTypeMetronome) {
                 for(int i = kEffectTypeOldRecord; i <= kEffectTypeMetronome; i++) {
@@ -1035,6 +1040,32 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 handler = new Handler();
                 handler.post(onTimer);
             }
+            else if(strEffect.equals("電池切れ"))
+            {
+                hFxDistortion = BASS.BASS_ChannelSetFX(hStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
+                BASS_FX.BASS_BFX_DISTORTION distortion = new BASS_FX.BASS_BFX_DISTORTION();
+                distortion.fDrive = (float)0.2;
+                distortion.fDryMix = (float)0.9;
+                distortion.fWetMix = (float)0.1;
+                distortion.fFeedback = (float)0.1;
+                distortion.fVolume = (float)1.0;
+                distortion.lChannel = BASS_FX.BASS_BFX_CHANALL;
+                BASS.BASS_FXSetParameters(hFxDistortion, distortion);
+
+                EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+                int[] array = new int[] {2,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12};
+                for(int j = 0; j < 32; j++)
+                {
+                    int nLevel = array[j];
+                    if(j == 0)
+                        equalizerFragment.setVol(nLevel);
+                    else
+                        equalizerFragment.setEQ(j, nLevel);
+                }
+
+                handler = new Handler();
+                handler.post(onTimer);
+            }
             else if(strEffect.equals("メトロノーム"))
             {
                 timer = new Timer();
@@ -1152,6 +1183,28 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, fFreq * fTempoFreq / 100.0f);
                 handler.postDelayed(this, 750);
                 return;
+            }
+            if(arEffectItems.get(kEffectTypeLowBattery).isSelected()) {
+                Float fFreq = new Float(0.0f);
+                BASS.BASS_ChannelGetAttribute(MainActivity.hStream, BASS.BASS_ATTRIB_FREQ, fFreq);
+                Float fTempoFreq = new Float(0.0f);
+                BASS.BASS_ChannelGetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, fTempoFreq);
+                fTempoFreq = fTempoFreq * 100.0f / fFreq;
+                // 加速度の設定
+                // 周波数が68以上の場合 : -0.02
+                // 　　　　68未満の場合 : +0.01
+                float fAccel = fTempoFreq.floatValue() >= 68.0f ? -0.02f : 0.01f;
+
+                // 周波数の差分に加速度を加える
+                fVelo1 += fAccel;
+
+                // 周波数に差分を加える
+                fTempoFreq += fVelo1;
+
+                if(fTempoFreq <= 65.0) fTempoFreq = 65.0f;
+                if(fTempoFreq >= 70.0) fTempoFreq = 70.0f;
+
+                BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, fFreq * fTempoFreq / 100.0f);
             }
             else if(arEffectItems.get(kEffectTypeConcertHall).isSelected()) {
                 int hSETemp = bSE1Playing ? hSEStream : hSEStream2;
