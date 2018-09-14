@@ -99,14 +99,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private final int kEffectTypeDistortion_Weak = 25;
     private final int kEffectTypeOldRecord = 26;
     private final int kEffectTypeLowBattery = 27;
-    private final int kEffectTypeMetronome = 28;
-    private final int kEffectTypeRecordNoise = 29;
-    private final int kEffectTypeRoarOfWaves = 30;
-    private final int kEffectTypeRain = 31;
-    private final int kEffectTypeRiver = 32;
-    private final int kEffectTypeWar = 33;
-    private final int kEffectTypeFire = 34;
-    private final int kEffectTypeConcertHall = 35;
+    private final int kEffectTypeNoSense_Strong = 28;
+    private final int kEffectTypeNoSense_Middle = 29;
+    private final int kEffectTypeNoSense_Weak = 30;
+    private final int kEffectTypeMetronome = 31;
+    private final int kEffectTypeRecordNoise = 32;
+    private final int kEffectTypeRoarOfWaves = 33;
+    private final int kEffectTypeRain = 34;
+    private final int kEffectTypeRiver = 35;
+    private final int kEffectTypeWar = 36;
+    private final int kEffectTypeFire = 37;
+    private final int kEffectTypeConcertHall = 38;
     private Timer timer;
     private int hSEStream;
     private int hSEStream2;
@@ -115,6 +118,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private Handler handler;
     private float fAccel = 0.0f;
     private float fVelo1 = 0.0f;
+    private float fVelo2 = 0.0f;
 
     public boolean isSelectedItem(int nItem) {
         EffectItem item = arEffectItems.get(nItem);
@@ -364,6 +368,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         item = new EffectItem("古びたレコード再生", false);
         arEffectItems.add(item);
         item = new EffectItem("電池切れ", false);
+        arEffectItems.add(item);
+        item = new EffectItem("歌へた（強）", false);
+        arEffectItems.add(item);
+        item = new EffectItem("歌へた（中）", false);
+        arEffectItems.add(item);
+        item = new EffectItem("歌へた（弱）", false);
         arEffectItems.add(item);
         item = new EffectItem("メトロノーム", true);
         arEffectItems.add(item);
@@ -645,6 +655,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                     EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
                     equalizerFragment.setEQ(0);
                 }
+                else if((i == kEffectTypeNoSense_Strong && arEffectItems.get(i).isSelected()) ||
+                        (i == kEffectTypeNoSense_Middle && arEffectItems.get(i).isSelected()) ||
+                        (i == kEffectTypeNoSense_Weak && arEffectItems.get(i).isSelected())) {
+                    ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                    controlFragment.setSpeed(0.0f);
+                    controlFragment.setPitch(0.0f);
+                }
                 arEffectItems.get(i).setSelected(false);
             }
         }
@@ -689,6 +706,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                         if(i == kEffectTypeOldRecord && arEffectItems.get(i).isSelected()) {
                             EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
                             equalizerFragment.setEQ(0);
+                        }
+                        else if((i == kEffectTypeNoSense_Strong && arEffectItems.get(i).isSelected()) ||
+                                (i == kEffectTypeNoSense_Middle && arEffectItems.get(i).isSelected()) ||
+                                (i == kEffectTypeNoSense_Weak && arEffectItems.get(i).isSelected())) {
+                            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                            controlFragment.setSpeed(0.0f);
+                            controlFragment.setPitch(0.0f);
                         }
                         arEffectItems.get(i).setSelected(false);
                     }
@@ -1066,6 +1090,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 handler = new Handler();
                 handler.post(onTimer);
             }
+            else if(strEffect.equals("歌へた（強）") || strEffect.equals("歌へた（中）") || strEffect.equals("歌へた（弱）"))
+            {
+                fVelo1 = fVol2 = 0.0f;
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                controlFragment.setSpeed(0.0f);
+                controlFragment.setPitch(0.0f);
+
+                handler = new Handler();
+                handler.post(onTimer);
+            }
             else if(strEffect.equals("メトロノーム"))
             {
                 timer = new Timer();
@@ -1184,7 +1218,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 handler.postDelayed(this, 750);
                 return;
             }
-            if(arEffectItems.get(kEffectTypeLowBattery).isSelected()) {
+            else if(arEffectItems.get(kEffectTypeLowBattery).isSelected()) {
                 Float fFreq = new Float(0.0f);
                 BASS.BASS_ChannelGetAttribute(MainActivity.hStream, BASS.BASS_ATTRIB_FREQ, fFreq);
                 Float fTempoFreq = new Float(0.0f);
@@ -1205,6 +1239,62 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 if(fTempoFreq >= 70.0) fTempoFreq = 70.0f;
 
                 BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, fFreq * fTempoFreq / 100.0f);
+
+                handler.postDelayed(this, 50);
+                return;
+            }
+            else if(arEffectItems.get(kEffectTypeNoSense_Strong).isSelected() || arEffectItems.get(kEffectTypeNoSense_Middle).isSelected() || arEffectItems.get(kEffectTypeNoSense_Weak).isSelected()) {
+                Float fSpeed = 0.0f;
+                BASS.BASS_ChannelGetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, fSpeed);
+                float fAccel;
+                Random random = new Random();
+                float fRand = random.nextFloat();
+                if(arEffectItems.get(kEffectTypeNoSense_Strong).isSelected()) {
+                    fAccel = (fRand * 400.0f) / 10000.0f - 0.02f; // 加速度の設定
+                    if(fSpeed < -20.0f) fAccel = 0.01f;
+                    else if(fSpeed > 20.0f) fAccel = -0.01f;
+                }
+                else if(arEffectItems.get(kEffectTypeNoSense_Middle).isSelected()) {
+                    fAccel = (fRand * 200.0f) / 10000.0f - 0.01f; // 加速度の設定
+                    if(fSpeed < -10.0f) fAccel = 0.01f;
+                    else if(fSpeed > 10.0f) fAccel = -0.01f;
+                }
+                else {
+                    fAccel = (fRand * 100.0f) / 10000.0f - 0.005f; // 加速度の設定
+                    if(fSpeed < -5.0f) fAccel = 0.01f;
+                    else if(fSpeed > 5.0f) fAccel = -0.01f;
+                }
+                fVelo1 += fAccel; // 速度の差分に加速度を加える
+                fSpeed += fVelo1; // 速度に差分を加える
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PAUSED)
+                    controlFragment.setSpeed(fSpeed);
+
+                Float fPitch = 0.0f;
+                fRand = random.nextFloat();
+                BASS.BASS_ChannelGetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, fPitch);
+                if(arEffectItems.get(kEffectTypeNoSense_Strong).isSelected()) {
+                    fAccel = (fRand * 400.0f) / 10000.0f - 0.02f; // 加速度の設定
+                    if(fPitch < -4.0f) fAccel = 0.01f;
+                    else if(fPitch > 4.0f) fAccel = -0.01f;
+                }
+                if(arEffectItems.get(kEffectTypeNoSense_Middle).isSelected()) {
+                    fAccel = (fRand * 200.0f) / 10000.0f - 0.01f; // 加速度の設定
+                    if(fPitch < -2.0f) fAccel = 0.01f;
+                    else if(fPitch > 2.0f) fAccel = -0.01f;
+                }
+                else {
+                    fAccel = (fRand * 100.0f) / 10000.0f - 0.005f; // 加速度の設定
+                    if(fPitch < -1.0f) fAccel = 0.01f;
+                    else if(fPitch > 1.0f) fAccel = -0.01f;
+                }
+                fVelo2 += fAccel; // 音程の差分に加速度を加える
+                fPitch += fVelo2; // 音程に差分を加える
+                if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PAUSED)
+                    controlFragment.setPitch(fPitch);
+
+                handler.postDelayed(this, 80);
+                return;
             }
             else if(arEffectItems.get(kEffectTypeConcertHall).isSelected()) {
                 int hSETemp = bSE1Playing ? hSEStream : hSEStream2;
