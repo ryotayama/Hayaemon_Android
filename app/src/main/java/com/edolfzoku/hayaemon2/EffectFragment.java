@@ -72,45 +72,46 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private float fVol5 = 1.0f;
     private float fVol6 = 1.0f;
     private float fVol7 = 1.0f;
-    private final int kEffectTypeVocalCancel = 1;
-    private final int kEffectTypeMonoral = 2;
-    private final int kEffectTypeLeftOnly = 3;
-    private final int kEffectTypeRightOnly = 4;
-    private final int kEffectTypeReplace = 5;
-    private final int kEffectTypePan = 6;
-    private final int kEffectTypeFrequency = 7;
-    private final int kEffectTypeStadiumEcho = 8;
-    private final int kEffectTypeHallEcho = 9;
-    private final int kEffectTypeLiveHouseEcho = 10;
-    private final int kEffectTypeRoomEcho = 11;
-    private final int kEffectTypeBathroomEcho = 12;
-    private final int kEffectTypeVocalEcho = 13;
-    private final int kEffectTypeMountainEcho = 14;
-    private final int kEffectTypeReverb_Bathroom = 15;
-    private final int kEffectTypeReverb_SmallRoom = 16;
-    private final int kEffectTypeReverb_MediumRoom = 17;
-    private final int kEffectTypeReverb_LargeRoom = 18;
-    private final int kEffectTypeReverb_Church = 19;
-    private final int kEffectTypeReverb_Cathedral = 20;
-    private final int kEffectTypeChorus = 21;
-    private final int kEffectTypeFlanger = 22;
-    private final int kEffectTypeDistortion_Strong = 23;
-    private final int kEffectTypeDistortion_Middle = 24;
-    private final int kEffectTypeDistortion_Weak = 25;
-    private final int kEffectTypeOldRecord = 26;
-    private final int kEffectTypeLowBattery = 27;
-    private final int kEffectTypeNoSense_Strong = 28;
-    private final int kEffectTypeNoSense_Middle = 29;
-    private final int kEffectTypeNoSense_Weak = 30;
-    private final int kEffectTypeEarTraining = 31;
-    private final int kEffectTypeMetronome = 32;
-    private final int kEffectTypeRecordNoise = 33;
-    private final int kEffectTypeRoarOfWaves = 34;
-    private final int kEffectTypeRain = 35;
-    private final int kEffectTypeRiver = 36;
-    private final int kEffectTypeWar = 37;
-    private final int kEffectTypeFire = 38;
-    private final int kEffectTypeConcertHall = 39;
+    private final int kEffectTypeRandom = 1;
+    private final int kEffectTypeVocalCancel = 2;
+    private final int kEffectTypeMonoral = 3;
+    private final int kEffectTypeLeftOnly = 4;
+    private final int kEffectTypeRightOnly = 5;
+    private final int kEffectTypeReplace = 6;
+    private final int kEffectTypePan = 7;
+    private final int kEffectTypeFrequency = 8;
+    private final int kEffectTypeStadiumEcho = 9;
+    private final int kEffectTypeHallEcho = 10;
+    private final int kEffectTypeLiveHouseEcho = 11;
+    private final int kEffectTypeRoomEcho = 12;
+    private final int kEffectTypeBathroomEcho = 13;
+    private final int kEffectTypeVocalEcho = 14;
+    private final int kEffectTypeMountainEcho = 15;
+    private final int kEffectTypeReverb_Bathroom = 16;
+    private final int kEffectTypeReverb_SmallRoom = 17;
+    private final int kEffectTypeReverb_MediumRoom = 18;
+    private final int kEffectTypeReverb_LargeRoom = 19;
+    private final int kEffectTypeReverb_Church = 20;
+    private final int kEffectTypeReverb_Cathedral = 21;
+    private final int kEffectTypeChorus = 22;
+    private final int kEffectTypeFlanger = 23;
+    private final int kEffectTypeDistortion_Strong = 24;
+    private final int kEffectTypeDistortion_Middle = 25;
+    private final int kEffectTypeDistortion_Weak = 26;
+    private final int kEffectTypeOldRecord = 27;
+    private final int kEffectTypeLowBattery = 28;
+    private final int kEffectTypeNoSense_Strong = 29;
+    private final int kEffectTypeNoSense_Middle = 30;
+    private final int kEffectTypeNoSense_Weak = 31;
+    private final int kEffectTypeEarTraining = 32;
+    private final int kEffectTypeMetronome = 33;
+    private final int kEffectTypeRecordNoise = 34;
+    private final int kEffectTypeRoarOfWaves = 35;
+    private final int kEffectTypeRain = 36;
+    private final int kEffectTypeRiver = 37;
+    private final int kEffectTypeWar = 38;
+    private final int kEffectTypeFire = 39;
+    private final int kEffectTypeConcertHall = 40;
     private Timer timer;
     private int hSEStream;
     private int hSEStream2;
@@ -316,6 +317,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
 
         EffectItem item = new EffectItem("なし", false);
         arEffectItems.add(item);
+        item = new EffectItem("ランダム", false);
+        arEffectItems.add(item);
         item = new EffectItem("ボーカルキャンセル", false);
         arEffectItems.add(item);
         item = new EffectItem("モノラル", false);
@@ -414,10 +417,15 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     {
         EffectItem item = arEffectItems.get(nEffect);
         item.setSelected(!item.isSelected());
-        if(!item.isSelected() && (nEffect == kEffectTypeOldRecord || nEffect == kEffectTypeLowBattery || nEffect == kEffectTypeEarTraining))
+        if(!item.isSelected() && (nEffect == kEffectTypeRandom || nEffect == kEffectTypeOldRecord || nEffect == kEffectTypeLowBattery || nEffect == kEffectTypeEarTraining))
         {
             EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
             equalizerFragment.setEQ(0);
+        }
+        if(!item.isSelected() && (nEffect == kEffectTypeRandom || nEffect == kEffectTypeNoSense_Strong || nEffect == kEffectTypeNoSense_Middle || nEffect == kEffectTypeNoSense_Weak)) {
+            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+            controlFragment.setSpeed(0.0f);
+            controlFragment.setPitch(0.0f);
         }
         checkDuplicate(nEffect);
         if(hSEStream != 0) {
@@ -654,13 +662,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         {
             for(int i = 1; i < arEffectItems.size(); i++)
             {
-                if(arEffectItems.get(i).isSelected() && (i == kEffectTypeOldRecord || i == kEffectTypeLowBattery || i == kEffectTypeEarTraining)) {
+                if(arEffectItems.get(i).isSelected() && (i == kEffectTypeRandom || i == kEffectTypeOldRecord || i == kEffectTypeLowBattery || i == kEffectTypeEarTraining)) {
                     EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
                     equalizerFragment.setEQ(0);
                 }
-                else if((i == kEffectTypeNoSense_Strong && arEffectItems.get(i).isSelected()) ||
-                        (i == kEffectTypeNoSense_Middle && arEffectItems.get(i).isSelected()) ||
-                        (i == kEffectTypeNoSense_Weak && arEffectItems.get(i).isSelected())) {
+                if(arEffectItems.get(i).isSelected() && (i == kEffectTypeRandom || i == kEffectTypeNoSense_Strong || i == kEffectTypeNoSense_Middle || i == kEffectTypeNoSense_Weak)) {
                     ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
                     controlFragment.setSpeed(0.0f);
                     controlFragment.setPitch(0.0f);
@@ -799,6 +805,24 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             String strEffect = arEffectItems.get(i).getEffectName();
             if(strEffect.equals("なし"))
             {
+            }
+            else if(strEffect.equals("ランダム")) {
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                float fMaxSpeed = 1.5f;
+                float fMinSpeed = 0.75f;
+                fMaxSpeed = (fMaxSpeed - 1.0f) * 100.0f;
+                fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
+                Random random = new Random();
+                float fRand = random.nextFloat();
+                float fSpeed = (fRand * (fMaxSpeed - fMinSpeed) * 10.0f) / 10.0f + fMinSpeed;
+                controlFragment.setSpeed(fSpeed);
+                float fMaxPitch = 3.0f;
+                float fMinPitch = -3.0f;
+                fRand = random.nextFloat();
+                float fPitch = (fRand * (fMaxPitch - fMinPitch) * 10.0f) / 10.0f + fMinPitch;
+                controlFragment.setPitch(fPitch);
+                EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+                equalizerFragment.setEQRandom();
             }
             else if(strEffect.equals("ボーカルキャンセル")) {
                 if(info.chans != 1)
