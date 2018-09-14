@@ -58,6 +58,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private int hDspRight = 0;
     private int hDspExchange = 0;
     private int hDspPan = 0;
+    private int hDspPhaseReversal = 0;
     private int hFxEcho = 0;
     private int hFxReverb = 0;
     private int hFxChorus = 0;
@@ -80,39 +81,40 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private final int kEffectTypeReplace = 6;
     private final int kEffectTypePan = 7;
     private final int kEffectTypeFrequency = 8;
-    private final int kEffectTypeStadiumEcho = 9;
-    private final int kEffectTypeHallEcho = 10;
-    private final int kEffectTypeLiveHouseEcho = 11;
-    private final int kEffectTypeRoomEcho = 12;
-    private final int kEffectTypeBathroomEcho = 13;
-    private final int kEffectTypeVocalEcho = 14;
-    private final int kEffectTypeMountainEcho = 15;
-    private final int kEffectTypeReverb_Bathroom = 16;
-    private final int kEffectTypeReverb_SmallRoom = 17;
-    private final int kEffectTypeReverb_MediumRoom = 18;
-    private final int kEffectTypeReverb_LargeRoom = 19;
-    private final int kEffectTypeReverb_Church = 20;
-    private final int kEffectTypeReverb_Cathedral = 21;
-    private final int kEffectTypeChorus = 22;
-    private final int kEffectTypeFlanger = 23;
-    private final int kEffectTypeDistortion_Strong = 24;
-    private final int kEffectTypeDistortion_Middle = 25;
-    private final int kEffectTypeDistortion_Weak = 26;
-    private final int kEffectTypeReverse = 27;
-    private final int kEffectTypeOldRecord = 28;
-    private final int kEffectTypeLowBattery = 29;
-    private final int kEffectTypeNoSense_Strong = 30;
-    private final int kEffectTypeNoSense_Middle = 31;
-    private final int kEffectTypeNoSense_Weak = 32;
-    private final int kEffectTypeEarTraining = 33;
-    private final int kEffectTypeMetronome = 34;
-    private final int kEffectTypeRecordNoise = 35;
-    private final int kEffectTypeRoarOfWaves = 36;
-    private final int kEffectTypeRain = 37;
-    private final int kEffectTypeRiver = 38;
-    private final int kEffectTypeWar = 39;
-    private final int kEffectTypeFire = 40;
-    private final int kEffectTypeConcertHall = 41;
+    private final int kEffectTypePhaseReversal = 9;
+    private final int kEffectTypeStadiumEcho = 10;
+    private final int kEffectTypeHallEcho = 11;
+    private final int kEffectTypeLiveHouseEcho = 12;
+    private final int kEffectTypeRoomEcho = 13;
+    private final int kEffectTypeBathroomEcho = 14;
+    private final int kEffectTypeVocalEcho = 15;
+    private final int kEffectTypeMountainEcho = 16;
+    private final int kEffectTypeReverb_Bathroom = 17;
+    private final int kEffectTypeReverb_SmallRoom = 18;
+    private final int kEffectTypeReverb_MediumRoom = 19;
+    private final int kEffectTypeReverb_LargeRoom = 20;
+    private final int kEffectTypeReverb_Church = 21;
+    private final int kEffectTypeReverb_Cathedral = 22;
+    private final int kEffectTypeChorus = 23;
+    private final int kEffectTypeFlanger = 24;
+    private final int kEffectTypeDistortion_Strong = 25;
+    private final int kEffectTypeDistortion_Middle = 26;
+    private final int kEffectTypeDistortion_Weak = 27;
+    private final int kEffectTypeReverse = 28;
+    private final int kEffectTypeOldRecord = 29;
+    private final int kEffectTypeLowBattery = 30;
+    private final int kEffectTypeNoSense_Strong = 31;
+    private final int kEffectTypeNoSense_Middle = 32;
+    private final int kEffectTypeNoSense_Weak = 33;
+    private final int kEffectTypeEarTraining = 34;
+    private final int kEffectTypeMetronome = 35;
+    private final int kEffectTypeRecordNoise = 36;
+    private final int kEffectTypeRoarOfWaves = 37;
+    private final int kEffectTypeRain = 38;
+    private final int kEffectTypeRiver = 39;
+    private final int kEffectTypeWar = 40;
+    private final int kEffectTypeFire = 41;
+    private final int kEffectTypeConcertHall = 42;
     private Timer timer;
     private int hSEStream;
     private int hSEStream2;
@@ -337,6 +339,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         item = new EffectItem("パン", true);
         arEffectItems.add(item);
         item = new EffectItem("再生周波数", true);
+        arEffectItems.add(item);
+        item = new EffectItem("位相反転", false);
         arEffectItems.add(item);
         item = new EffectItem("スタジアムエコー", false);
         arEffectItems.add(item);
@@ -786,6 +790,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             BASS.BASS_ChannelRemoveDSP(hStream, hDspPan);
             hDspPan = 0;
         }
+        if(hDspPhaseReversal != 0)
+        {
+            BASS.BASS_ChannelRemoveDSP(hStream, hDspPhaseReversal);
+            hDspPhaseReversal = 0;
+        }
         BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
         BASS.BASS_ChannelGetInfo(hStream, info);
         BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq);
@@ -861,6 +870,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             }
             else if(strEffect.equals("再生周波数"))
                 BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * fFreq);
+            else if(strEffect.equals("位相反転"))
+                hDspPhaseReversal = BASS.BASS_ChannelSetDSP(hStream, phaseReversalDSP, null, 0);
             else if(strEffect.equals("スタジアムエコー"))
             {
                 hFxEcho = BASS.BASS_ChannelSetFX(hStream, BASS.BASS_FX_DX8_ECHO, 2);
@@ -1755,22 +1766,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         });
     }
 
-    private final BASS.DSPPROC panDSP = new BASS.DSPPROC() {
-        public void DSPPROC(int handle, int channel, ByteBuffer buffer, int length, Object user) {
-            EffectFragment effectFragment = (EffectFragment)user;
-            buffer.order(ByteOrder.LITTLE_ENDIAN);
-            FloatBuffer ibuffer = buffer.asFloatBuffer();
-            float[] b = new float[length / 4];
-            ibuffer.get(b);
-            for(int a = 0; a < length / 4; a += 2) {
-                if(effectFragment.fPan > 0.0f) b[a] = b[a] * (1.0f - effectFragment.fPan);
-                else b[a + 1] = b[a + 1] * (1.0f + effectFragment.fPan);
-            }
-            ibuffer.rewind();
-            ibuffer.put(b);
-        }
-    };
-
     private final BASS.DSPPROC vocalCancelDSP = new BASS.DSPPROC() {
         public void DSPPROC(int handle, int channel, ByteBuffer buffer, int length, Object user) {
             buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -1837,6 +1832,36 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 float fTemp = b[a];
                 b[a] = b[a + 1];
                 b[a + 1] = fTemp;
+            }
+            ibuffer.rewind();
+            ibuffer.put(b);
+        }
+    };
+
+    private final BASS.DSPPROC panDSP = new BASS.DSPPROC() {
+        public void DSPPROC(int handle, int channel, ByteBuffer buffer, int length, Object user) {
+            EffectFragment effectFragment = (EffectFragment)user;
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
+            FloatBuffer ibuffer = buffer.asFloatBuffer();
+            float[] b = new float[length / 4];
+            ibuffer.get(b);
+            for(int a = 0; a < length / 4; a += 2) {
+                if(effectFragment.fPan > 0.0f) b[a] = b[a] * (1.0f - effectFragment.fPan);
+                else b[a + 1] = b[a + 1] * (1.0f + effectFragment.fPan);
+            }
+            ibuffer.rewind();
+            ibuffer.put(b);
+        }
+    };
+
+    private final BASS.DSPPROC phaseReversalDSP = new BASS.DSPPROC() {
+        public void DSPPROC(int handle, int channel, ByteBuffer buffer, int length, Object user) {
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
+            FloatBuffer ibuffer = buffer.asFloatBuffer();
+            float[] b = new float[length / 4];
+            ibuffer.get(b);
+            for(int a = 0; a < length / 4; a++) {
+                b[a] = -b[a];
             }
             ibuffer.rewind();
             ibuffer.put(b);
