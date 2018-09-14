@@ -102,14 +102,15 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private final int kEffectTypeNoSense_Strong = 28;
     private final int kEffectTypeNoSense_Middle = 29;
     private final int kEffectTypeNoSense_Weak = 30;
-    private final int kEffectTypeMetronome = 31;
-    private final int kEffectTypeRecordNoise = 32;
-    private final int kEffectTypeRoarOfWaves = 33;
-    private final int kEffectTypeRain = 34;
-    private final int kEffectTypeRiver = 35;
-    private final int kEffectTypeWar = 36;
-    private final int kEffectTypeFire = 37;
-    private final int kEffectTypeConcertHall = 38;
+    private final int kEffectTypeEarTraining = 31;
+    private final int kEffectTypeMetronome = 32;
+    private final int kEffectTypeRecordNoise = 33;
+    private final int kEffectTypeRoarOfWaves = 34;
+    private final int kEffectTypeRain = 35;
+    private final int kEffectTypeRiver = 36;
+    private final int kEffectTypeWar = 37;
+    private final int kEffectTypeFire = 38;
+    private final int kEffectTypeConcertHall = 39;
     private Timer timer;
     private int hSEStream;
     private int hSEStream2;
@@ -375,6 +376,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         arEffectItems.add(item);
         item = new EffectItem("歌へた（弱）", false);
         arEffectItems.add(item);
+        item = new EffectItem("聴覚トレーニング", false);
+        arEffectItems.add(item);
         item = new EffectItem("メトロノーム", true);
         arEffectItems.add(item);
         item = new EffectItem("レコードノイズ", true);
@@ -411,7 +414,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     {
         EffectItem item = arEffectItems.get(nEffect);
         item.setSelected(!item.isSelected());
-        if(nEffect == kEffectTypeOldRecord && !item.isSelected())
+        if(!item.isSelected() && (nEffect == kEffectTypeOldRecord || nEffect == kEffectTypeLowBattery || nEffect == kEffectTypeEarTraining))
         {
             EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
             equalizerFragment.setEQ(0);
@@ -651,7 +654,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         {
             for(int i = 1; i < arEffectItems.size(); i++)
             {
-                if(i == kEffectTypeOldRecord && arEffectItems.get(i).isSelected()) {
+                if(arEffectItems.get(i).isSelected() && (i == kEffectTypeOldRecord || i == kEffectTypeLowBattery || i == kEffectTypeEarTraining)) {
                     EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
                     equalizerFragment.setEQ(0);
                 }
@@ -703,7 +706,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             if(kEffectTypeOldRecord <= nSelect && nSelect <= kEffectTypeMetronome) {
                 for(int i = kEffectTypeOldRecord; i <= kEffectTypeMetronome; i++) {
                     if(i != nSelect) {
-                        if(i == kEffectTypeOldRecord && arEffectItems.get(i).isSelected()) {
+                        if(arEffectItems.get(i).isSelected() && (i == kEffectTypeOldRecord || i == kEffectTypeLowBattery || i == kEffectTypeEarTraining)) {
                             EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
                             equalizerFragment.setEQ(0);
                         }
@@ -1100,6 +1103,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 handler = new Handler();
                 handler.post(onTimer);
             }
+            else if(strEffect.equals("聴覚トレーニング"))
+            {
+                handler = new Handler();
+                handler.post(onTimer);
+            }
             else if(strEffect.equals("メトロノーム"))
             {
                 timer = new Timer();
@@ -1294,6 +1302,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                     controlFragment.setPitch(fPitch);
 
                 handler.postDelayed(this, 80);
+                return;
+            }
+            else if(arEffectItems.get(kEffectTypeEarTraining).isSelected()) {
+                EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+                equalizerFragment.setEQRandom();
+                handler.postDelayed(this, 3000);
                 return;
             }
             else if(arEffectItems.get(kEffectTypeConcertHall).isSelected()) {
