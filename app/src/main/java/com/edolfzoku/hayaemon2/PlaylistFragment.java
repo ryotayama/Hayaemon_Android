@@ -260,8 +260,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         else if(v.getId() == R.id.btnRewind)
         {
             if(activity.hStream == 0) return;
-            if(BASS.BASS_ChannelBytes2Seconds(activity.hStream, BASS.BASS_ChannelGetPosition(activity.hStream, BASS.BASS_POS_BYTE)) > activity.dLoopA + 1.0)
+            EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+            if(!effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(activity.hStream, BASS.BASS_ChannelGetPosition(activity.hStream, BASS.BASS_POS_BYTE)) > activity.dLoopA + 1.0)
                 BASS.BASS_ChannelSetPosition(activity.hStream, BASS.BASS_ChannelSeconds2Bytes(activity.hStream, activity.dLoopA), BASS.BASS_POS_BYTE);
+            else if(effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(activity.hStream, BASS.BASS_ChannelGetPosition(activity.hStream, BASS.BASS_POS_BYTE)) < activity.dLoopA - 1.0)
+                BASS.BASS_ChannelSetPosition(activity.hStream, BASS.BASS_ChannelSeconds2Bytes(activity.hStream, activity.dLoopB), BASS.BASS_POS_BYTE);
             else
                 playPrev();
         }
@@ -1242,7 +1245,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         _hTempStream = BASS_FX.BASS_FX_TempoCreate(_hTempStream, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
         final int hTempStream = _hTempStream;
         int chan = BASS_FX.BASS_FX_TempoGetSource(hTempStream);
-        BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
+        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+        if(effectFragment.isReverse())
+            BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
+        else
+            BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
         int hTempFxVol = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_VOLUME, 0);
         int hTempFx20K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
         int hTempFx16K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
@@ -1301,7 +1308,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             eq.fCenter = equalizerFragment.getArCenters()[i];
             BASS.BASS_FXSetParameters(arHFX[i], eq);
         }
-        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
         effectFragment.applyEffect(hTempStream);
         String strPathTo;
         if(nPurpose == 0) {
@@ -1689,7 +1695,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         MainActivity.hStream = BASS_FX.BASS_FX_ReverseCreate(MainActivity.hStream, 2, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
         MainActivity.hStream = BASS_FX.BASS_FX_TempoCreate(MainActivity.hStream, BASS_FX.BASS_FX_FREESOURCE);
         int chan = BASS_FX.BASS_FX_TempoGetSource(MainActivity.hStream);
-        BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
+        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+        if(effectFragment.isReverse())
+            BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
+        else
+            BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
         MainActivity.hFxVol = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_VOLUME, 0);
         hFx20K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
         hFx16K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
@@ -1728,7 +1738,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
         equalizerFragment.setArHFX(new int[] {hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20});
         equalizerFragment.setEQ();
-        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
         effectFragment.applyEffect(MainActivity.hStream);
         activity.setSync();
         BASS.BASS_ChannelPlay(MainActivity.hStream, false);

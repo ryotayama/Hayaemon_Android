@@ -492,7 +492,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             if(hStream == 0) return false;
             int chan = BASS_FX.BASS_FX_TempoGetSource(hStream);
-            BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
+            EffectFragment effectFragment = (EffectFragment)mSectionsPagerAdapter.getItem(4);
+            if(effectFragment.isReverse())
+                BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
+            else
+                BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
             ControlFragment controlFragment = (ControlFragment)mSectionsPagerAdapter.getItem(1);
             BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed + 100);
             return true;
@@ -516,7 +520,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             {
                 if(hStream == 0) return false;
                 int chan = BASS_FX.BASS_FX_TempoGetSource(hStream);
-                BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
+                EffectFragment effectFragment = (EffectFragment)mSectionsPagerAdapter.getItem(4);
+                if(effectFragment.isReverse())
+                    BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
+                else
+                    BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
                 ControlFragment controlFragment = (ControlFragment)mSectionsPagerAdapter.getItem(1);
                 BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed);
             }
@@ -746,18 +754,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         LinearLayout MarkerButton = (LinearLayout)findViewById(R.id.MarkerButton);
         ImageButton btnLoopmarker = (ImageButton)findViewById(R.id.btnLoopmarker);
 
-        if(ABButton.getVisibility() == View.VISIBLE && bLoopB) // ABループ中でB位置が設定されている
-        {
-            hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopB), EndSync, null);
+        EffectFragment effectFragment = (EffectFragment)mSectionsPagerAdapter.getItem(4);
+        if(effectFragment.isReverse()) {
+            if(ABButton.getVisibility() == View.VISIBLE && bLoopA) // ABループ中でA位置が設定されている
+                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopA), EndSync, null);
+            else if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) // マーカー再生中
+            {
+                LoopFragment loopFragment = (LoopFragment)mSectionsPagerAdapter.getItem(2);
+                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, loopFragment.getMarkerDstPos()), EndSync, null);
+            }
+            else
+                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_END, 0, EndSync, null);
         }
-        else if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) // マーカー再生中
-        {
-            LoopFragment loopFragment = (LoopFragment)mSectionsPagerAdapter.getItem(2);
-            hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, loopFragment.getMarkerDstPos()), EndSync, null);
-        }
-        else
-        {
-            hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_END, 0, EndSync, null);
+        else {
+            if(ABButton.getVisibility() == View.VISIBLE && bLoopB) // ABループ中でB位置が設定されている
+                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopB), EndSync, null);
+            else if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) // マーカー再生中
+            {
+                LoopFragment loopFragment = (LoopFragment)mSectionsPagerAdapter.getItem(2);
+                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, loopFragment.getMarkerDstPos()), EndSync, null);
+            }
+            else
+                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_END, 0, EndSync, null);
         }
     }
 
@@ -769,13 +787,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void run() {
                     LoopFragment loopFragment = (LoopFragment)mSectionsPagerAdapter.getItem(2);
+                    EffectFragment effectFragment = (EffectFragment)mSectionsPagerAdapter.getItem(4);
                     LinearLayout ABButton = (LinearLayout)findViewById(R.id.ABButton);
                     LinearLayout MarkerButton = (LinearLayout)findViewById(R.id.MarkerButton);
                     ImageButton btnLoopmarker = (ImageButton)findViewById(R.id.btnLoopmarker);
 
                     if(ABButton.getVisibility() == View.VISIBLE && (bLoopA || bLoopB))
                     {
-                        BASS.BASS_ChannelSetPosition(hStream, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopA), BASS.BASS_POS_BYTE);
+                        if(effectFragment.isReverse())
+                            BASS.BASS_ChannelSetPosition(hStream, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopB), BASS.BASS_POS_BYTE);
+                        else
+                            BASS.BASS_ChannelSetPosition(hStream, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopA), BASS.BASS_POS_BYTE);
+                        setSync();
                         if(BASS.BASS_ChannelIsActive(hStream) != BASS.BASS_ACTIVE_PLAYING)
                             BASS.BASS_ChannelPlay(hStream, false);
                     }

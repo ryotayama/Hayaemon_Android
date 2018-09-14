@@ -98,20 +98,21 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private final int kEffectTypeDistortion_Strong = 24;
     private final int kEffectTypeDistortion_Middle = 25;
     private final int kEffectTypeDistortion_Weak = 26;
-    private final int kEffectTypeOldRecord = 27;
-    private final int kEffectTypeLowBattery = 28;
-    private final int kEffectTypeNoSense_Strong = 29;
-    private final int kEffectTypeNoSense_Middle = 30;
-    private final int kEffectTypeNoSense_Weak = 31;
-    private final int kEffectTypeEarTraining = 32;
-    private final int kEffectTypeMetronome = 33;
-    private final int kEffectTypeRecordNoise = 34;
-    private final int kEffectTypeRoarOfWaves = 35;
-    private final int kEffectTypeRain = 36;
-    private final int kEffectTypeRiver = 37;
-    private final int kEffectTypeWar = 38;
-    private final int kEffectTypeFire = 39;
-    private final int kEffectTypeConcertHall = 40;
+    private final int kEffectTypeReverse = 27;
+    private final int kEffectTypeOldRecord = 28;
+    private final int kEffectTypeLowBattery = 29;
+    private final int kEffectTypeNoSense_Strong = 30;
+    private final int kEffectTypeNoSense_Middle = 31;
+    private final int kEffectTypeNoSense_Weak = 32;
+    private final int kEffectTypeEarTraining = 33;
+    private final int kEffectTypeMetronome = 34;
+    private final int kEffectTypeRecordNoise = 35;
+    private final int kEffectTypeRoarOfWaves = 36;
+    private final int kEffectTypeRain = 37;
+    private final int kEffectTypeRiver = 38;
+    private final int kEffectTypeWar = 39;
+    private final int kEffectTypeFire = 40;
+    private final int kEffectTypeConcertHall = 41;
     private Timer timer;
     private int hSEStream;
     private int hSEStream2;
@@ -125,6 +126,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     public boolean isSelectedItem(int nItem) {
         EffectItem item = arEffectItems.get(nItem);
         return item.isSelected();
+    }
+
+    public boolean isReverse() {
+        return arEffectItems.get(kEffectTypeReverse).isSelected();
     }
 
     public EffectFragment()
@@ -369,6 +374,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         arEffectItems.add(item);
         item = new EffectItem("ディストーション（弱）", false);
         arEffectItems.add(item);
+        item = new EffectItem("逆回転再生", false);
+        arEffectItems.add(item);
         item = new EffectItem("古びたレコード再生", false);
         arEffectItems.add(item);
         item = new EffectItem("電池切れ", false);
@@ -417,8 +424,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     {
         EffectItem item = arEffectItems.get(nEffect);
         item.setSelected(!item.isSelected());
-        if(!item.isSelected() && (nEffect == kEffectTypeRandom || nEffect == kEffectTypeOldRecord || nEffect == kEffectTypeLowBattery || nEffect == kEffectTypeEarTraining))
-        {
+        if(!item.isSelected() && nEffect == kEffectTypeReverse) {
+            int chan = BASS_FX.BASS_FX_TempoGetSource(MainActivity.hStream);
+            BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
+            activity.setSync();
+        }
+        if(!item.isSelected() && (nEffect == kEffectTypeRandom || nEffect == kEffectTypeOldRecord || nEffect == kEffectTypeLowBattery || nEffect == kEffectTypeEarTraining)) {
             EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
             equalizerFragment.setEQ(0);
         }
@@ -1066,6 +1077,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 distortion.fVolume = (float)1.0;
                 distortion.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(hFxDistortion, distortion);
+            }
+            else if(strEffect.equals("逆回転再生"))
+            {
+                if(hStream != 0) {
+                    int chan = BASS_FX.BASS_FX_TempoGetSource(hStream);
+                    BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
+                    activity.setSync();
+                }
             }
             else if(strEffect.equals("古びたレコード再生"))
             {

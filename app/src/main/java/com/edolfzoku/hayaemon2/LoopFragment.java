@@ -44,7 +44,7 @@ import java.util.ArrayList;
 public class LoopFragment extends Fragment implements View.OnTouchListener, View.OnFocusChangeListener {
     private int nMarker; // マーカー再生時のループ位置
     private Handler handler;
-    private MainActivity mainActivity;
+    private MainActivity activity;
 
     private View viewCurPos;
     private WaveView waveView;
@@ -63,13 +63,13 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mainActivity = (MainActivity)context;
+        activity = (MainActivity)context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mainActivity = null;
+        activity = null;
     }
 
     @Override
@@ -96,10 +96,14 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             @Override
             public void run() {
                 double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
-                if (mainActivity != null) {
-                    LinearLayout ABButton = (LinearLayout)mainActivity.findViewById(R.id.ABButton);
-                    if(ABButton.getVisibility() == View.VISIBLE && ((mainActivity.bLoopA && dPos < mainActivity.dLoopA) || (mainActivity.bLoopB && mainActivity.dLoopB < dPos))) {
-                        dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, mainActivity.dLoopA));
+                if (activity != null) {
+                    LinearLayout ABButton = (LinearLayout)activity.findViewById(R.id.ABButton);
+                    EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+                    if(ABButton.getVisibility() == View.VISIBLE && ((activity.bLoopA && dPos < activity.dLoopA) || (activity.bLoopB && activity.dLoopB < dPos))) {
+                        if(effectFragment.isReverse())
+                            dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB));
+                        else
+                            dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA));
                         BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dPos), BASS.BASS_POS_BYTE);
                     }
                     long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
@@ -466,6 +470,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         viewMaskA.getLayoutParams().width = nLeft;
                         viewMaskA.setVisibility(View.VISIBLE);
                         viewMaskA.requestLayout();
+                        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+                        if(effectFragment.isReverse())
+                            BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB), BASS.BASS_POS_BYTE);
 
                         int nMinute = (int)(activity.dLoopA / 60);
                         int nSecond = (int)(activity.dLoopA % 60);
@@ -510,7 +517,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         viewMaskB.getLayoutParams().width = nBkWidth - nLeft;
                         viewMaskB.setVisibility(View.VISIBLE);
                         viewMaskB.requestLayout();
-                        BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA), BASS.BASS_POS_BYTE);
+                        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+                        if(!effectFragment.isReverse())
+                            BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA), BASS.BASS_POS_BYTE);
 
                         int nMinute = (int)(activity.dLoopB / 60);
                         int nSecond = (int)(activity.dLoopB % 60);
@@ -530,12 +539,14 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             {
                 if(MainActivity.hStream != 0)
                 {
+                    EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+                    boolean bReverse = effectFragment.isReverse();
                     double dCurPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     int i = arMarkerTime.size() - 1;
                     for( ; i >= 0; i--)
                     {
                         double dPos = arMarkerTime.get(i);
-                        if(dCurPos >= dPos + 1.0)
+                        if((!bReverse && dCurPos >= dPos + 1.0) || (bReverse && dCurPos >= dPos))
                         {
                             BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dPos), BASS.BASS_POS_BYTE);
                             break;
@@ -552,12 +563,14 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             {
                 if(MainActivity.hStream != 0)
                 {
+                    EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+                    boolean bReverse = effectFragment.isReverse();
                     double dCurPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     int i = 0;
                     for( ; i < arMarkerTime.size(); i++)
                     {
                         double dPos = arMarkerTime.get(i);
-                        if(dCurPos < dPos)
+                        if((!bReverse && dCurPos < dPos) || (bReverse && dCurPos < dPos - 1.0))
                         {
                             BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dPos), BASS.BASS_POS_BYTE);
                             break;
@@ -687,12 +700,12 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
             double dCurPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, nPos);
             int i = 0;
+            EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+            boolean bReverse = effectFragment.isReverse();
             for( ; i < arMarkerTime.size(); i++) {
                 dPos = arMarkerTime.get(i);
-                if(dCurPos < dPos)
-                {
+                if((!bReverse && dCurPos < dPos) || (bReverse && dCurPos < dPos - 1.0))
                     break;
-                }
             }
             nMarker = i - 1;
 
@@ -763,10 +776,23 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         LinearLayout MarkerButton = (LinearLayout)getActivity().findViewById(R.id.MarkerButton);
         ImageButton btnLoopmarker = (ImageButton)getActivity().findViewById(R.id.btnLoopmarker);
 
-        if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) // マーカー再生中
-        {
-            if(nMarker >= 0 && nMarker < arMarkerTime.size()) {
-                dPos = arMarkerTime.get(nMarker);
+        MainActivity activity = (MainActivity)getActivity();
+        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+        if(effectFragment.isReverse()) {
+            if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) // マーカー再生中
+            {
+                dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
+                if(nMarker >= 0 && nMarker < arMarkerTime.size()) {
+                    dPos = arMarkerTime.get(nMarker);
+                }
+            }
+        }
+        else {
+            if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) // マーカー再生中
+            {
+                if(nMarker >= 0 && nMarker < arMarkerTime.size()) {
+                    dPos = arMarkerTime.get(nMarker);
+                }
             }
         }
         return dPos;
@@ -778,10 +804,23 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         LinearLayout MarkerButton = (LinearLayout)getActivity().findViewById(R.id.MarkerButton);
         ImageButton btnLoopmarker = (ImageButton)getActivity().findViewById(R.id.btnLoopmarker);
 
-        if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) // マーカー再生中
-        {
-            if(nMarker + 1 >= 0 && nMarker + 1 < arMarkerTime.size()) {
-                dPos = arMarkerTime.get(nMarker + 1);
+        MainActivity activity = (MainActivity)getActivity();
+        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+        if(effectFragment.isReverse()) {
+            if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) // マーカー再生中
+            {
+                if(nMarker - 1 >= 0 && nMarker - 1 < arMarkerTime.size()) {
+                    dPos = arMarkerTime.get(nMarker - 1);
+                }
+            }
+        }
+        else {
+            if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) // マーカー再生中
+            {
+                dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
+                if(nMarker + 1 >= 0 && nMarker + 1 < arMarkerTime.size()) {
+                    dPos = arMarkerTime.get(nMarker + 1);
+                }
             }
         }
         return dPos;

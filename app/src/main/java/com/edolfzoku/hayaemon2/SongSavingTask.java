@@ -59,7 +59,12 @@ public class SongSavingTask extends AsyncTask<Integer, Integer, Integer> {
             if(dPos >= dEnd) break;
             if(playlistFragment.isFinish()) break;
 
-            publishProgress((int)(dPos / dEnd * 100.0));
+            MainActivity activity = (MainActivity)playlistFragment.getActivity();
+            EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+            if(effectFragment.isReverse())
+                publishProgress((int)((dEnd - dPos) / dEnd * 100.0));
+            else
+                publishProgress((int)(dPos / dEnd * 100.0));
         }
         return 0;
     }
