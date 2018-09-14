@@ -150,6 +150,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         ImageButton btnForward5Sec2 = (ImageButton)getActivity().findViewById(R.id.btnForward5Sec2);
         btnForward5Sec2.setOnTouchListener(this);
 
+        final LinearLayout ABLabel = (LinearLayout)getActivity().findViewById(R.id.ABLabel);
         final LinearLayout ABButton = (LinearLayout)getActivity().findViewById(R.id.ABButton);
         final LinearLayout MarkerButton = (LinearLayout)getActivity().findViewById(R.id.MarkerButton);
         final View viewMaskA = getActivity().findViewById(R.id.viewMaskA);
@@ -160,6 +161,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if(tab.getText()=="ABループ"){
+                    ABLabel.setVisibility(View.VISIBLE);
                     ABButton.setVisibility(View.VISIBLE);
                     if(activity.bLoopA) viewMaskA.setVisibility(View.VISIBLE);
                     if(activity.bLoopB) viewMaskB.setVisibility(View.VISIBLE);
@@ -179,6 +181,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 if(tab.getText()=="ABループ"){
+                    ABLabel.setVisibility(View.INVISIBLE);
                     ABButton.setVisibility(View.INVISIBLE);
                     viewMaskA.setVisibility(View.INVISIBLE);
                     viewMaskB.setVisibility(View.INVISIBLE);
