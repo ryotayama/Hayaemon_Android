@@ -83,7 +83,7 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
         holder.textEffect.setText(name);
 
         if(effectFragment.isSelectedItem(position))
-            holder.itemView.setBackgroundColor(Color.argb(255, 170, 170, 170));
+            holder.itemView.setBackgroundColor(Color.argb(255, 221, 221, 221));
         else
             holder.itemView.setBackgroundColor(Color.argb(255, 255, 255, 255));
         holder.effectItem.setOnClickListener(new View.OnClickListener() {

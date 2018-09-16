@@ -21,14 +21,19 @@ package com.edolfzoku.hayaemon2;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -56,7 +61,10 @@ public class EqualizerFragment extends Fragment {
     public ArrayList<SeekBar> getArSeek() { return arSeek; }
     public float[] getArCenters() { return arCenters; }
     public int[] getArHFX() { return arHFX; }
-    public void setArEqualizerItems(ArrayList<EqualizerItem> arLists) { arEqualizerItems = arLists; }
+    public void setArEqualizerItems(ArrayList<EqualizerItem> arLists) {
+        arEqualizerItems = arLists;
+        equalizersAdapter.changeItems(arEqualizerItems);
+    }
 
     public boolean isSelectedItem(int nItem) {
         EqualizerItem item = arEqualizerItems.get(nItem);
@@ -522,5 +530,61 @@ public class EqualizerFragment extends Fragment {
 
     void setArHFX(int[] arHFX) {
         this.arHFX = arHFX;
+    }
+
+    public void showMenu(final int nItem) {
+        final BottomSheetDialog dialog = new BottomSheetDialog(activity);
+        LinearLayout linearLayout = new LinearLayout(activity);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        ScrollView scroll = new ScrollView(activity);
+
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        TextView textTitle = new TextView (activity);
+        textTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+        textTitle.setGravity(Gravity.CENTER);
+        textTitle.setText(arEqualizerItems.get(nItem).getEqualizerName());
+        textTitle.setTextColor(Color.argb(255, 192, 192, 192));
+        textTitle.setHeight((int)(40 *  getResources().getDisplayMetrics().density + 0.5));
+        linearLayout.addView(textTitle, param);
+
+        TextView textRemove = new TextView (activity);
+        textRemove.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        textRemove.setGravity(Gravity.CENTER);
+        textRemove.setText("削除");
+        textRemove.setTextColor(Color.argb(255, 255, 0, 0));
+        textRemove.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+        textRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                removeItem(nItem);
+            }
+        });
+        linearLayout.addView(textRemove, param);
+
+        TextView textCancel = new TextView (activity);
+        textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        textCancel.setGravity(Gravity.CENTER);
+        textCancel.setText("キャンセル");
+        textCancel.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+        textCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        linearLayout.addView(textCancel, param);
+
+        scroll.addView(linearLayout);
+        dialog.setContentView(scroll);
+        dialog.show();
+    }
+
+    public void removeItem(int nItem)
+    {
+        arEqualizerItems.remove(nItem);
+        equalizersAdapter.notifyDataSetChanged();
+        saveData();
     }
 }

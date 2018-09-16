@@ -24,6 +24,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,19 +37,21 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
     private int resource;
     private List<EqualizerItem> items = null;
     private LayoutInflater inflater;
-    private int nPosition;
+    private boolean bClicked = false;
 
-    public void setPosition(int nPosition) { this.nPosition = nPosition; }
-    public int getPosition() { return nPosition; }
+    public void setClicked(boolean bClicked) { this.bClicked = bClicked; }
+    public boolean isClicked() { return bClicked; }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout equalizerItem;
         TextView textEqualizer;
+        FrameLayout frameEqualizerMenu;
 
         ViewHolder(View view) {
             super(view);
             equalizerItem = (RelativeLayout) view.findViewById(R.id.equalizerItem);
             textEqualizer = (TextView) view.findViewById(R.id.textEqualizer);
+            frameEqualizerMenu = (FrameLayout) view.findViewById(R.id.frameEqualizerMenu);
         }
     }
 
@@ -58,6 +61,11 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
         this.resource = resource;
         this.items = items;
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public void changeItems(List<EqualizerItem> items)
+    {
+        this.items = items;
     }
 
     @Override
@@ -77,13 +85,21 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
         holder.textEqualizer.setText(name);
 
         if(equalizerFragment.isSelectedItem(position))
-            holder.itemView.setBackgroundColor(Color.argb(255, 170, 170, 170));
+            holder.itemView.setBackgroundColor(Color.argb(255, 221, 221, 221));
         else
             holder.itemView.setBackgroundColor(Color.argb(255, 255, 255, 255));
         holder.equalizerItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             equalizerFragment.onEqualizerItemClick(position);
+            }
+        });
+
+        holder.frameEqualizerMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bClicked = true;
+                equalizerFragment.showMenu(position);
             }
         });
     }
