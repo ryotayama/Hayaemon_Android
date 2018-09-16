@@ -22,6 +22,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -46,12 +47,14 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
         RelativeLayout equalizerItem;
         TextView textEqualizer;
         FrameLayout frameEqualizerMenu;
+        ImageView imgEqualizerMenu;
 
         ViewHolder(View view) {
             super(view);
             equalizerItem = (RelativeLayout) view.findViewById(R.id.equalizerItem);
             textEqualizer = (TextView) view.findViewById(R.id.textEqualizer);
             frameEqualizerMenu = (FrameLayout) view.findViewById(R.id.frameEqualizerMenu);
+            imgEqualizerMenu = (ImageView) view.findViewById(R.id.imgEqualizerMenu);
         }
     }
 
@@ -95,13 +98,29 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
             }
         });
 
-        holder.frameEqualizerMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bClicked = true;
-                equalizerFragment.showMenu(position);
-            }
-        });
+        if(equalizerFragment.isSorting()) {
+            holder.frameEqualizerMenu.setOnClickListener(null);
+            holder.frameEqualizerMenu.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event)
+                {
+                    equalizerFragment.getEqualizerTouchHelper().startDrag(holder);
+                    return true;
+                }
+            });
+            holder.imgEqualizerMenu.setImageResource(R.drawable.ic_sort);
+        }
+        else {
+            holder.frameEqualizerMenu.setOnTouchListener(null);
+            holder.frameEqualizerMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bClicked = true;
+                    equalizerFragment.showMenu(position);
+                }
+            });
+            holder.imgEqualizerMenu.setImageResource(R.drawable.ic_listmenu);
+        }
     }
 
     @Override

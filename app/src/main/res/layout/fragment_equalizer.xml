@@ -1373,4 +1373,26 @@
 
     </ScrollView>
 
+    <RelativeLayout
+        android:id="@+id/relativeBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        >
+
+        <TextView
+            android:id="@+id/textFinishSortEqualizer"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:text="並べ替えを終了する"
+            android:textColor="#FFFFFF"
+            android:textSize="22dp"
+            android:background="#007AFF"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            />
+
+    </RelativeLayout>
+
 </RelativeLayout>

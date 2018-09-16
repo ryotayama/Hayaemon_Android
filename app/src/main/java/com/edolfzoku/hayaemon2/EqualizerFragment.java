@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.audiofx.Equalizer;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TabLayout;
@@ -30,6 +31,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -58,11 +60,13 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     private RecyclerView recyclerEqualizers;
     private EqualizersAdapter equalizersAdapter;
     private ArrayList<EqualizerItem> arEqualizerItems;
+    private ItemTouchHelper equalizerTouchHelper;
     private float[] arCenters;
     private ArrayList<TextView> arTextValue;
     private ArrayList<SeekBar> arSeek;
     private int[] arHFX;
     private int nLastChecked = 0;
+    private boolean bSorting = false;
 
     public ArrayList<SeekBar> getArSeek() { return arSeek; }
     public float[] getArCenters() { return arCenters; }
@@ -71,11 +75,12 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         arEqualizerItems = arLists;
         equalizersAdapter.changeItems(arEqualizerItems);
     }
-
+    public ItemTouchHelper getEqualizerTouchHelper() { return equalizerTouchHelper; }
     public boolean isSelectedItem(int nItem) {
         EqualizerItem item = arEqualizerItems.get(nItem);
         return item.isSelected();
     }
+    public boolean isSorting() { return bSorting; }
 
     public EqualizerFragment()
     {
@@ -157,9 +162,37 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         MainActivity activity = (MainActivity)getActivity();
         recyclerEqualizers = (RecyclerView)activity.findViewById(R.id.recyclerEqualizers);
         recyclerEqualizers.setHasFixedSize(false);
-        LinearLayoutManager equalizersManager = new LinearLayoutManager(activity);
+        final LinearLayoutManager equalizersManager = new LinearLayoutManager(activity);
         recyclerEqualizers.setLayoutManager(equalizersManager);
         recyclerEqualizers.setAdapter(equalizersAdapter);
+        equalizerTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
+            @Override
+            public boolean onMove(RecyclerView recyclerEqualizers, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                final int fromPos = viewHolder.getAdapterPosition();
+                final int toPos = target.getAdapterPosition();
+
+                EqualizerItem itemTemp = arEqualizerItems.get(fromPos);
+                arEqualizerItems.remove(fromPos);
+                arEqualizerItems.add(toPos, itemTemp);
+
+                equalizersAdapter.notifyItemMoved(fromPos, toPos);
+
+                return true;
+            }
+
+            @Override
+            public void clearView(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder) {
+                super.clearView(recyclerSongs, viewHolder);
+
+                equalizersAdapter.notifyDataSetChanged();
+                saveData();
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            }
+        });
+        equalizerTouchHelper.attachToRecyclerView(recyclerEqualizers);
 
         arTextValue = new ArrayList<TextView>();
         arTextValue.add((TextView)getActivity().findViewById(R.id.textVolValue));
@@ -283,6 +316,9 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
         Button btnAddEqualizer = (Button) activity.findViewById(R.id.btnAddEqualizer);
         btnAddEqualizer.setOnClickListener(this);
+
+        TextView textFinishSortEqualizer = (TextView) activity.findViewById(R.id.textFinishSortEqualizer);
+        textFinishSortEqualizer.setOnClickListener(this);
     }
 
     @Override
@@ -312,6 +348,13 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             builder.setNegativeButton("キャンセル", null);
             builder.show();
         }
+        else if (v.getId() == R.id.textFinishSortEqualizer) {
+            recyclerEqualizers.setPadding(0, 0, 0, 0);
+            TextView textFinishSortEqualizer = (TextView) activity.findViewById(R.id.textFinishSortEqualizer);
+            textFinishSortEqualizer.setVisibility(View.GONE);
+            bSorting = false;
+            equalizersAdapter.notifyDataSetChanged();
+        }
     }
 
     public void onEqualizerItemClick(int nEqualizer)
@@ -334,6 +377,9 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         ArrayList<EqualizerItem> arEqualizerItems = gson.fromJson(preferences.getString("arEqualizerItems",""), new TypeToken<ArrayList<EqualizerItem>>(){}.getType());
         if(arEqualizerItems != null) setArEqualizerItems(arEqualizerItems);
         else resetPresets();
+        for(int i = 0; i < arEqualizerItems.size(); i++) {
+            arEqualizerItems.get(i).setSelected(false);
+        }
     }
 
     public void saveData()
@@ -603,6 +649,25 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             }
         });
         linearLayout.addView(textRemove, param);
+
+        TextView textSort = new TextView (activity);
+        textSort.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        textSort.setGravity(Gravity.CENTER);
+        textSort.setText("プリセットの並べ替え");
+        textSort.setTextColor(Color.argb(255, 0, 0, 0));
+        textSort.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+        textSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                recyclerEqualizers.setPadding(0, 0, 0, (int)(64 * getResources().getDisplayMetrics().density + 0.5));
+                TextView textFinishSortEqualizer = (TextView) activity.findViewById(R.id.textFinishSortEqualizer);
+                textFinishSortEqualizer.setVisibility(View.VISIBLE);
+                bSorting = true;
+                equalizersAdapter.notifyDataSetChanged();
+            }
+        });
+        linearLayout.addView(textSort, param);
 
         TextView textChange = new TextView (activity);
         textChange.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
