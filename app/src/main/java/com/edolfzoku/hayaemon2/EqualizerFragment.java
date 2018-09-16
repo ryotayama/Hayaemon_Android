@@ -35,6 +35,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -52,7 +53,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class EqualizerFragment extends Fragment {
+public class EqualizerFragment extends Fragment implements View.OnClickListener {
     private MainActivity activity = null;
     private RecyclerView recyclerEqualizers;
     private EqualizersAdapter equalizersAdapter;
@@ -278,6 +279,38 @@ public class EqualizerFragment extends Fragment {
                         }
                     }
             );
+        }
+
+        Button btnAddEqualizer = (Button) activity.findViewById(R.id.btnAddEqualizer);
+        btnAddEqualizer.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btnAddEqualizer) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("プリセットの保存");
+            LinearLayout linearLayout = new LinearLayout(activity);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            final EditText editPreset = new EditText (activity);
+            editPreset.setHint("プリセット名");
+            editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
+            editPreset.setText("新規プリセット");
+            linearLayout.addView(editPreset);
+            builder.setView(linearLayout);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    ArrayList<Integer> arPresets = new ArrayList<Integer>();
+                    for(int i = 0; i < 32; i++) {
+                        arPresets.add(Integer.parseInt((String)arTextValue.get(i).getText()));
+                    }
+                    arEqualizerItems.add(new EqualizerItem(editPreset.getText().toString(), arPresets));
+                    saveData();
+                    equalizersAdapter.notifyDataSetChanged();
+                }
+            });
+            builder.setNegativeButton("キャンセル", null);
+            builder.show();
         }
     }
 
