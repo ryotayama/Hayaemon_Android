@@ -35,6 +35,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -569,6 +570,39 @@ public class EqualizerFragment extends Fragment {
             }
         });
         linearLayout.addView(textRemove, param);
+
+        TextView textChange = new TextView (activity);
+        textChange.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        textChange.setGravity(Gravity.CENTER);
+        textChange.setText("プリセット名を変更");
+        textChange.setTextColor(Color.argb(255, 0, 0, 0));
+        textChange.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+        textChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle("プリセット名を変更");
+                LinearLayout linearLayout = new LinearLayout(activity);
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+                final EditText editPreset = new EditText (activity);
+                editPreset.setHint("プリセット名");
+                editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
+                editPreset.setText(arEqualizerItems.get(nItem).getEqualizerName());
+                linearLayout.addView(editPreset);
+                builder.setView(linearLayout);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        arEqualizerItems.get(nItem).setEqualizerName(editPreset.getText().toString());
+                        equalizersAdapter.notifyDataSetChanged();
+                        saveData();
+                    }
+                });
+                builder.setNegativeButton("キャンセル", null);
+                builder.show();
+            }
+        });
+        linearLayout.addView(textChange, param);
 
         TextView textReset = new TextView (activity);
         textReset.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
