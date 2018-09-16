@@ -20,12 +20,14 @@ package com.edolfzoku.hayaemon2;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -34,6 +36,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -43,6 +46,7 @@ import com.google.gson.reflect.TypeToken;
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_FX;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -308,6 +312,7 @@ public class EqualizerFragment extends Fragment {
 
     public void resetPresets()
     {
+        if(arEqualizerItems.size() > 0) arEqualizerItems.clear();
         arEqualizerItems.add(new EqualizerItem("フラット",                          new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
         arEqualizerItems.add(new EqualizerItem("ランダム",                          new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
         arEqualizerItems.add(new EqualizerItem("ベースの耳コピ",                    new ArrayList<Integer>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
@@ -355,6 +360,8 @@ public class EqualizerFragment extends Fragment {
         arEqualizerItems.add(new EqualizerItem("Jazz",                               new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -5, -6, -6, -6, -6, -3, -2, -1, -2, -2, -2, -2, -2, -1, -1, -1,  0,  0,  0))));
         arEqualizerItems.add(new EqualizerItem("Electronic",                        new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -3, -2, -1, -3, -5, -7, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
         arEqualizerItems.add(new EqualizerItem("Acoustic",                          new ArrayList<Integer>(Arrays.asList(  0, -2, -2, -2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -2, -3, -3, -3, -3, -3, -4, -4, -3, -2, -1, -1, -1,  0,  0,  0,  0,  0,  0))));
+        saveData();
+        equalizersAdapter.notifyDataSetChanged();
     }
 
     public void setEQ()
@@ -563,10 +570,35 @@ public class EqualizerFragment extends Fragment {
         });
         linearLayout.addView(textRemove, param);
 
+        TextView textReset = new TextView (activity);
+        textReset.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        textReset.setGravity(Gravity.CENTER);
+        textReset.setText("デフォルトに戻す");
+        textReset.setTextColor(Color.argb(255, 0, 0, 0));
+        textReset.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+        textReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle("デフォルトに戻す");
+                builder.setMessage("デフォルトを復元すると、現在の設定内容が消えてしまいますが、よろしいでしょうか？");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        resetPresets();
+                    }
+                });
+                builder.setNegativeButton("キャンセル", null);
+                builder.show();
+            }
+        });
+        linearLayout.addView(textReset, param);
+
         TextView textCancel = new TextView (activity);
         textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         textCancel.setGravity(Gravity.CENTER);
         textCancel.setText("キャンセル");
+        textCancel.setTextColor(Color.argb(255, 0, 0, 0));
         textCancel.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
         textCancel.setOnClickListener(new View.OnClickListener() {
             @Override
