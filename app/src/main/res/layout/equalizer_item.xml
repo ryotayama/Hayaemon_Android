@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/equalizerItem"
+    android:layout_width="match_parent"
+    android:layout_height="44dp"
+    >
+
+    <TextView
+        android:id="@+id/textEqualizer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="タイトル"
+        android:textSize="13dp"
+        android:textColor="#000000"
+        android:singleLine="true"
+        android:layout_marginLeft="14dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#BFBFBF"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>
