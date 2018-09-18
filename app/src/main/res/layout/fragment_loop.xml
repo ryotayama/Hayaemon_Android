@@ -8,24 +8,67 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp">
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/abTab_Layout"
+    <RelativeLayout
+        android:id="@+id/relativeTabLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        />
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/abTab_Layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/relativeZoomIn"
+            />
+
+        <RelativeLayout
+            android:id="@+id/relativeZoomIn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_toLeftOf="@+id/relativeZoomOut"
+            >
+
+            <ImageView
+                android:id="@+id/imgZoomIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/zoomin"
+                android:layout_centerInParent="true"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeZoomOut"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            >
+
+            <ImageView
+                android:id="@+id/imgZoomOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/zoomout"
+                android:layout_centerInParent="true"
+                />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textViewMarker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/abTab_Layout"
+        android:layout_below="@+id/relativeTabLayout"
         />
 
     <LinearLayout
         android:id="@+id/ABLabel"
         android:orientation="horizontal"
-        android:layout_below="@+id/abTab_Layout"
+        android:layout_below="@+id/relativeTabLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         >

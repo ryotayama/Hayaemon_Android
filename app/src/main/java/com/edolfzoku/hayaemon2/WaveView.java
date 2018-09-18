@@ -24,10 +24,10 @@ import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.opengl.GLES10;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.View;
@@ -39,6 +39,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+
+import javax.microedition.khronos.opengles.GL10;
 
 /**
  * Created by yamauchiryouta on 2017/10/03.
@@ -46,49 +49,157 @@ import java.nio.channels.FileChannel;
 
 public class WaveView extends View {
 
-    private int hTempStream;
-    private Bitmap mBitmap = null;
-    private Canvas mCanvas = null;
-    private Paint mPaint = null;
-
-    private WaveViewTask task;
+    private int hTempStream = 0;
+    private ArrayList<Bitmap> arBitmaps = null;
+    private ArrayList<Canvas> arCanvases = null;
+    private String strPath = null;
+    private float fZoom = 1.0f;
+    private WaveViewTask task = null;
 
     public int getTempSteam() { return hTempStream; }
-    public Canvas getCanvas() { return mCanvas; }
-    public Paint getPaint() { return mPaint; }
+    public ArrayList<Bitmap> getBitmaps() { return arBitmaps; }
+    public ArrayList<Canvas> getCanvases() { return arCanvases; }
+    public float getZoom() { return fZoom; }
+    public void setZoom(float fZoom) {
+        if(this.fZoom == fZoom) return;
+        if(fZoom < 1.0f) fZoom = 1.0f;
+        else if(fZoom > 10.0f) fZoom = 10.0f;
+        this.fZoom = fZoom;
+    }
 
     public WaveView(Context context) {
         super(context);
         setWillNotDraw(false);
-        task = new WaveViewTask(this);
+        arBitmaps = new ArrayList<>();
+        arCanvases = new ArrayList<>();
     }
 
     public WaveView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         setWillNotDraw(false);
-        task = new WaveViewTask(this);
+        arBitmaps = new ArrayList<>();
+        arCanvases = new ArrayList<>();
     }
 
     public WaveView(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
-        task = new WaveViewTask(this);
     }
 
     // 描画処理を記述
     @Override
     protected void onDraw(Canvas canvas)
     {
-        if(mBitmap == null) mBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        canvas.drawBitmap( mBitmap, 0, 0, null );
+        if(arBitmaps.size() == 0) {
+            return;
+        }
+        long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
+        long nPos = BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE);
+        int nScreenWidth = getWidth();
+        int nMaxWidth = (int)(nScreenWidth * fZoom);
+        int nLeft = (int) (nMaxWidth * nPos / nLength);
+        if(nLeft < nScreenWidth / 2)
+            canvas.drawBitmap(arBitmaps.get(0), new Rect(0, 0, getWidth(), getHeight()), new Rect(0, 0, getWidth(), getHeight()), null);
+        else if(nScreenWidth / 2 <= nLeft && nLeft < nMaxWidth - nScreenWidth / 2) {
+            int nStart = nLeft - nScreenWidth / 2;
+            int nEnd = nLeft + nScreenWidth / 2;
+            int nTotalWidth = 0;
+            int nPaintLeft = 0;
+            for(int i = 0; i < arBitmaps.size(); i++) {
+                Bitmap bitmap = arBitmaps.get(i);
+                int nBitmapStart = nTotalWidth;
+                int nBitmapEnd = nTotalWidth + bitmap.getWidth();
+                if(nStart <= nBitmapEnd && nBitmapStart <= nEnd) {
+                    int nX = 0;
+                    int nWidth = getWidth();
+                    if(nPaintLeft == 0) {
+                        nX = nStart - nTotalWidth;
+                        if(nX + nWidth > bitmap.getWidth()) nWidth = bitmap.getWidth() - nX;
+                        canvas.drawBitmap(bitmap, new Rect(nX, 0, nX + nWidth, getHeight()), new Rect(nPaintLeft, 0, nPaintLeft + nWidth, getHeight()), null);
+                    }
+                    else
+                        nWidth -= nPaintLeft;
+                    canvas.drawBitmap(bitmap, new Rect(nX, 0, nX + nWidth, getHeight()), new Rect(nPaintLeft, 0, nPaintLeft + nWidth, getHeight()), null);
+                    nPaintLeft += nWidth;
+                }
+                nTotalWidth += bitmap.getWidth();
+            }
+        }
+        else {
+            nLeft = nMaxWidth - nScreenWidth / 2;
+            int nStart = nLeft - nScreenWidth / 2;
+            int nEnd = nLeft + nScreenWidth / 2;
+            int nTotalWidth = 0;
+            int nPaintLeft = 0;
+            for(int i = 0; i < arBitmaps.size(); i++) {
+                Bitmap bitmap = arBitmaps.get(i);
+                int nBitmapStart = nTotalWidth;
+                int nBitmapEnd = nTotalWidth + bitmap.getWidth();
+                if(nStart <= nBitmapEnd && nBitmapStart <= nEnd) {
+                    int nX = 0;
+                    int nWidth = getWidth();
+                    if(nPaintLeft == 0) {
+                        nX = nStart - nTotalWidth;
+                        if(nX + nWidth > bitmap.getWidth()) nWidth = bitmap.getWidth() - nX;
+                        canvas.drawBitmap(bitmap, new Rect(nX, 0, nX + nWidth, getHeight()), new Rect(nPaintLeft, 0, nPaintLeft + nWidth, getHeight()), null);
+                    }
+                    else
+                        nWidth -= nPaintLeft;
+                    canvas.drawBitmap(bitmap, new Rect(nX, 0, nX + nWidth, getHeight()), new Rect(nPaintLeft, 0, nPaintLeft + nWidth, getHeight()), null);
+                    nPaintLeft += nWidth;
+                }
+                nTotalWidth += bitmap.getWidth();
+            }
+        }
+        if(getScaleX() != 1.0f) setScaleX(1.0f);
     }
 
     public void drawWaveForm(String strPath)
     {
-        if(task.getStatus() == AsyncTask.Status.RUNNING)
+        if(task != null && task.getStatus() == AsyncTask.Status.RUNNING)
             task.cancel(true);
+        this.strPath = strPath;
+        streamCreate();
+        if(arBitmaps.size() > 0) {
+            for(int i = 0; i < arBitmaps.size(); i++) {
+                Bitmap bitmap = arBitmaps.get(i);
+                bitmap.recycle();
+                bitmap = null;
+            }
+            arBitmaps.clear();
+        }
+        if(arCanvases.size() > 0) {
+            for(int i = 0; i < arCanvases.size(); i++) {
+                Canvas canvas = arCanvases.get(i);
+                canvas = null;
+            }
+            arCanvases.clear();
+        }
+        int[] maxSize = new int[1];
+        GLES10.glGetIntegerv(GL10.GL_MAX_TEXTURE_SIZE, maxSize, 0);
+        int nMaxTextureSize = maxSize[0];
+        int nMaxWidth = (int)(getWidth() * fZoom);
+        int nTotalWidth = 0;
+        clearWaveForm(false);
+        while(nTotalWidth < nMaxWidth) {
+            int nWidth = nMaxTextureSize;
+            if(nTotalWidth + nWidth > nMaxWidth)
+                nWidth = nMaxWidth - nTotalWidth;
+            Bitmap bitmap = Bitmap.createBitmap(nWidth, getHeight(), Bitmap.Config.RGB_565);
+            Canvas canvas = new Canvas(bitmap);
+            canvas.drawColor(Color.WHITE);
+            arBitmaps.add(bitmap);
+            arCanvases.add(canvas);
+            nTotalWidth += nWidth;
+        }
+        task = new WaveViewTask(this);
+        task.execute(0);
+    }
+
+    public void streamCreate()
+    {
         if(hTempStream != 0)
         {
             BASS.BASS_StreamFree(hTempStream);
@@ -166,34 +277,69 @@ public class WaveView extends View {
             } catch (IOException e) {
             }
         }
+    }
 
-        if(mBitmap != null) {
-            mBitmap.recycle();
-            mBitmap = null;
+    public void redrawWaveForm()
+    {
+        if(task != null && task.getStatus() == AsyncTask.Status.RUNNING)
+            task.cancel(true);
+        this.strPath = strPath;
+        streamCreate();
+        if(arBitmaps.size() > 0) {
+            for(int i = 0; i < arBitmaps.size(); i++) {
+                Bitmap bitmap = arBitmaps.get(i);
+                bitmap.recycle();
+                bitmap = null;
+            }
+            arBitmaps.clear();
         }
-        mBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        if(mCanvas != null)
-        {
-            mCanvas = null;
+        if(arCanvases.size() > 0) {
+            for(int i = 0; i < arCanvases.size(); i++) {
+                Canvas canvas = arCanvases.get(i);
+                canvas = null;
+            }
+            arCanvases.clear();
         }
-        mCanvas = new Canvas(mBitmap);
-        if(mPaint != null)
-        {
-            mPaint = null;
+        int[] maxSize = new int[1];
+        GLES10.glGetIntegerv(GL10.GL_MAX_TEXTURE_SIZE, maxSize, 0);
+        int nMaxTextureSize = maxSize[0];
+        int nMaxWidth = (int)(getWidth() * fZoom);
+        int nTotalWidth = 0;
+        while(nTotalWidth < nMaxWidth) {
+            int nWidth = nMaxTextureSize;
+            if(nTotalWidth + nWidth > nMaxWidth)
+                nWidth = nMaxWidth - nTotalWidth;
+            Bitmap bitmap = Bitmap.createBitmap(nWidth, getHeight(), Bitmap.Config.RGB_565);
+            Canvas canvas = new Canvas(bitmap);
+            canvas.drawColor(Color.WHITE);
+            arBitmaps.add(bitmap);
+            arCanvases.add(canvas);
+            nTotalWidth += nWidth;
         }
-        mPaint = new Paint();
-        clearWaveForm();
-        mPaint.setColor(Color.argb(255, 128, 166, 199));
-        mPaint.setStrokeWidth(1);
         task = new WaveViewTask(this);
         task.execute(0);
     }
 
-    public void clearWaveForm()
+    public void clearWaveForm(boolean bInvalidate)
     {
-        if(mBitmap == null) mBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        if(mCanvas == null) mCanvas = new Canvas(mBitmap);
-        mCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
-        invalidate();
+        if(arBitmaps.size() > 0) {
+            for(int i = 0; i < arBitmaps.size(); i++) {
+                Bitmap bitmap = arBitmaps.get(i);
+                bitmap.recycle();
+                bitmap = null;
+            }
+            arBitmaps.clear();
+        }
+        if(arCanvases.size() > 0) {
+            for(int i = 0; i < arCanvases.size(); i++) {
+                Canvas canvas = arCanvases.get(i);
+                canvas = null;
+            }
+            arCanvases.clear();
+        }
+        // if(mBitmap == null) mBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        // if(mCanvas == null) mCanvas = new Canvas(mBitmap);
+        // mCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+        if(bInvalidate) invalidate();
     }
 }

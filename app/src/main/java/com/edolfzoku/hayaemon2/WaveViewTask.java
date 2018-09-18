@@ -18,9 +18,15 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 
 import com.un4seen.bass.BASS;
+
+import java.util.ArrayList;
 
 /**
  * Created by yamauchiryouta on 2018/01/16.
@@ -38,30 +44,50 @@ public class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
     @Override
     protected Integer doInBackground(Integer... params)
     {
+        Paint paint = new Paint();
+        paint.setStrokeWidth(mWaveView.getContext().getResources().getDisplayMetrics().density);
         int hTempStream = mWaveView.getTempSteam();
-        long lLength = BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE);
+        long lMaxLength = BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE);
+        int nMaxWidth = (int)(mWaveView.getWidth() * mWaveView.getZoom());
+        int nTotalWidth = 0;
+        int nStart = 0;
+        int nEnd = 0;
         BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
         BASS.BASS_ChannelGetInfo(hTempStream, info);
         Boolean bStereo = true;
         if(info.chans == 1) bStereo = false;
-        for(int i = 0; i < mWaveView.getWidth(); i++)
-        {
-            BASS.BASS_ChannelSetPosition(hTempStream, lLength * i / mWaveView.getWidth(), BASS.BASS_POS_BYTE);
-            float[] arLevels = new float[2];
-            if(bStereo)
-                BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_STEREO);
-            else
-                BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_MONO);
-            int nHeight = mWaveView.getHeight() / 2;
-            int nLeftHeight = (int)(nHeight * arLevels[0]);
-            int nRightHeight;
-            if(bStereo)
-                nRightHeight= (int)(nHeight * arLevels[1]);
-            else
-                nRightHeight= (int)(nHeight * arLevels[0]);
-            mWaveView.getCanvas().drawLine(i, nHeight / 2 - nLeftHeight / 2, i+1, nHeight / 2 + nLeftHeight / 2, mWaveView.getPaint());
-            mWaveView.getCanvas().drawLine(i, nHeight + nHeight / 2 - nRightHeight / 2, i + 1, nHeight + nHeight / 2 + nRightHeight / 2, mWaveView.getPaint());
-            if (this.isCancelled()) break;
+        ArrayList<Canvas> arCanvases = mWaveView.getCanvases();
+        ArrayList<Bitmap> arBitmaps = mWaveView.getBitmaps();
+        for(int i = 0; i < arCanvases.size(); i++) {
+            Canvas canvas = arCanvases.get(i);
+            Bitmap bitmap = arBitmaps.get(i);
+            int nWidth = bitmap.getWidth();
+            nTotalWidth += nWidth;
+            nStart = nEnd;
+            nEnd = (int)(lMaxLength * nTotalWidth / nMaxWidth);
+            long lLength = nEnd - nStart;
+            for(int j = 0; j < nWidth; j += mWaveView.getContext().getResources().getDisplayMetrics().density)
+            {
+                BASS.BASS_ChannelSetPosition(hTempStream, nStart + lLength * j / nWidth, BASS.BASS_POS_BYTE);
+                float[] arLevels = new float[2];
+                if(bStereo)
+                    BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_STEREO);
+                else
+                    BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_MONO);
+                int nHeight = mWaveView.getHeight() / 2;
+                int nLeftHeight = (int)(nHeight * arLevels[0]);
+                int nRightHeight;
+                if(bStereo)
+                    nRightHeight= (int)(nHeight * arLevels[1]);
+                else
+                    nRightHeight= (int)(nHeight * arLevels[0]);
+                paint.setColor(Color.argb(255, 255, 255, 255));
+                canvas.drawLine(j, 0, j, nHeight * 2, paint);
+                paint.setColor(Color.argb(255, 128, 166, 199));
+                canvas.drawLine(j, nHeight / 2 - nLeftHeight / 2, j, nHeight / 2 + nLeftHeight / 2, paint);
+                canvas.drawLine(j, nHeight + nHeight / 2 - nRightHeight / 2, j, nHeight + nHeight / 2 + nRightHeight / 2, paint);
+                if (this.isCancelled()) break;
+            }
         }
         return 0;
     }
