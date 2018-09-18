@@ -377,8 +377,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         ArrayList<EqualizerItem> arEqualizerItems = gson.fromJson(preferences.getString("arEqualizerItems",""), new TypeToken<ArrayList<EqualizerItem>>(){}.getType());
         if(arEqualizerItems != null) setArEqualizerItems(arEqualizerItems);
         else resetPresets();
-        for(int i = 0; i < arEqualizerItems.size(); i++) {
-            arEqualizerItems.get(i).setSelected(false);
+        for(int i = 0; i < this.arEqualizerItems.size(); i++) {
+            this.arEqualizerItems.get(i).setSelected(false);
         }
     }
 
