@@ -636,7 +636,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else
         {
             final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
-            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("audio/*");
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
