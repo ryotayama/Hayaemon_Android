@@ -53,6 +53,33 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     private ArrayList<TextView> arMarkerText;
     private boolean bContinue = false;
 
+    public ArrayList<Double>  getArMarkerTime() { return arMarkerTime; }
+    public void setArMarkerTime(ArrayList<Double> arMarkerTime) {
+        this.arMarkerTime = new ArrayList<>();
+        int nScreenWidth = waveView.getWidth();
+        int nMaxWidth = (int)(nScreenWidth * waveView.getZoom());
+        double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
+        for(int i = 0; i < arMarkerTime.size(); i++) {
+            double dPos = arMarkerTime.get(i).doubleValue();
+            this.arMarkerTime.add(dPos);
+
+            TextView textView = new TextView(getActivity());
+            textView.setText("▼");
+            RelativeLayout layout = (RelativeLayout)getActivity().findViewById(R.id.relative_loop);
+            layout.addView(textView);
+            final TabLayout tabLayout = (TabLayout)getActivity().findViewById(R.id.abTab_Layout);
+            textView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            int nLeft = (int) (viewCurPos.getX() - nMaxWidth * dPos / dLength - textView.getMeasuredWidth() / 2);
+            int nTop = waveView.getTop() - textView.getMeasuredHeight();
+            textView.setTranslationX(nLeft);
+            textView.setTranslationY(nTop);
+            textView.requestLayout();
+            arMarkerText.add(i, textView);
+        }
+    }
+    public int getMarker() { return nMarker; }
+    public void setMarker(int nMarker) { this.nMarker = nMarker; }
+
     public LoopFragment()
     {
         nMarker = 0;
@@ -223,6 +250,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     if(activity.bLoopA) viewMaskA.setVisibility(View.VISIBLE);
                     if(activity.bLoopB) viewMaskB.setVisibility(View.VISIBLE);
                     activity.setSync();
+                    MainActivity activity = (MainActivity)getActivity();
+                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+                    playlistFragment.updateSavingEffect();
                 }
                 else{
                     MarkerButton.setVisibility(View.VISIBLE);
@@ -232,6 +262,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         textView.setVisibility(View.VISIBLE);
                     }
                     activity.setSync();
+                    MainActivity activity = (MainActivity)getActivity();
+                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+                    playlistFragment.updateSavingEffect();
                 }
             }
 
@@ -457,6 +490,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
     public void setLoopA(double dLoopA)
     {
+        setLoopA(dLoopA, true);
+    }
+
+    public void setLoopA(double dLoopA, boolean bSave)
+    {
         if(MainActivity.hStream == 0) return;
 
         MainActivity activity = (MainActivity)getActivity();
@@ -493,9 +531,19 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         int nDec = (int)((activity.dLoopA * 100) % 100);
         EditText textAValue = (EditText)getActivity().findViewById(R.id.textAValue);
         textAValue.setText(String.format("%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
+
+        if(bSave) {
+            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+            playlistFragment.updateSavingEffect();
+        }
     }
 
     public void setLoopB(double dLoopB)
+    {
+        setLoopB(dLoopB, true);
+    }
+
+    public void setLoopB(double dLoopB, boolean bSave)
     {
         if(MainActivity.hStream == 0) return;
 
@@ -537,6 +585,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         textBValue.setText(String.format("%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
 
         activity.setSync();
+
+        if(bSave) {
+            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+            playlistFragment.updateSavingEffect();
+        }
     }
 
     @Override
@@ -636,6 +689,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         EditText textAValue = (EditText)getActivity().findViewById(R.id.textAValue);
                         textAValue.setText(String.format("%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
                     }
+                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+                    playlistFragment.updateSavingEffect();
                 }
             }
         }
@@ -684,6 +739,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         textBValue.setText(String.format("%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
                     }
                     activity.setSync();
+
+                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+                    playlistFragment.updateSavingEffect();
                 }
             }
         }
@@ -708,6 +766,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     }
                     nMarker = i;
                     activity.setSync();
+
+                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+                    playlistFragment.updateSavingEffect();
                 }
             }
         }
@@ -732,6 +793,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     }
                     nMarker = i;
                     activity.setSync();
+
+                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+                    playlistFragment.updateSavingEffect();
                 }
             }
         }
@@ -775,6 +839,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         arMarkerText.add(textView);
                     }
                     nMarker = i;
+
+                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+                    playlistFragment.updateSavingEffect();
                 }
             }
         }
@@ -798,6 +865,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                             break;
                         }
                     }
+                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+                    playlistFragment.updateSavingEffect();
                 }
             }
         }
@@ -831,6 +900,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     nMarker = i - 1;
 
                     activity.setSync();
+
+                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+                    playlistFragment.updateSavingEffect();
                 }
             }
         }
@@ -862,6 +934,10 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             nMarker = i - 1;
 
             activity.setSync();
+
+            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+            playlistFragment.updateSavingEffect();
+
             return true;
         }
 
@@ -869,6 +945,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     }
 
     public void clearLoop()
+    {
+        clearLoop(true);
+    }
+
+    public void clearLoop(boolean bSave)
     {
         if(getActivity() == null) return;
 
@@ -915,6 +996,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         arMarkerText.clear();
 
         waveView.clearWaveForm(true);
+
+        if(bSave) {
+            PlaylistFragment playlistFragment = (PlaylistFragment) activity.mSectionsPagerAdapter.getItem(0);
+            playlistFragment.updateSavingEffect();
+        }
     }
 
     public void drawWaveForm(String strPath)

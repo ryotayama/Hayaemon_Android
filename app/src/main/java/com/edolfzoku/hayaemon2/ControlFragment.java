@@ -149,6 +149,11 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
 
     public void setSpeed(float fSpeed)
     {
+        setSpeed(fSpeed, true);
+    }
+
+    public void setSpeed(float fSpeed, boolean bSave)
+    {
         this.fSpeed = fSpeed;
         if(MainActivity.hStream != 0)
             BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, fSpeed);
@@ -178,6 +183,12 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 .y(fY - nPtHeight / 2)
                 .setDuration(0)
                 .start();
+
+        if(bSave) {
+            MainActivity activity = (MainActivity)getActivity();
+            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+            playlistFragment.updateSavingEffect();
+        }
     }
 
     public void setPitchUp()
@@ -197,6 +208,11 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     }
 
     public void setPitch(float fPitch)
+    {
+        setPitch(fPitch, true);
+    }
+
+    public void setPitch(float fPitch, boolean bSave)
     {
         this.fPitch = fPitch;
         if(MainActivity.hStream != 0)
@@ -230,6 +246,12 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 .y(fY)
                 .setDuration(0)
                 .start();
+
+        if(bSave) {
+            MainActivity activity = (MainActivity)getActivity();
+            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+            playlistFragment.updateSavingEffect();
+        }
     }
 
     public void clearFocus()
@@ -462,6 +484,10 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                     .y(fY)
                     .setDuration(0)
                     .start();
+
+            MainActivity activity = (MainActivity)getActivity();
+            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+            playlistFragment.updateSavingEffect();
 
             return true;
         }

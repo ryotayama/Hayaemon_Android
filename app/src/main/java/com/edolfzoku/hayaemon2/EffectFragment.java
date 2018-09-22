@@ -133,6 +133,37 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     public boolean isReverse() {
         return arEffectItems.get(kEffectTypeReverse).isSelected();
     }
+    public ArrayList<EffectItem> getEffectItems() { return arEffectItems; }
+    public void setEffectItems(ArrayList<EffectItem> arEffectItems) {
+        this.arEffectItems = new ArrayList<>();
+        for(int i = 0; i < arEffectItems.size(); i++) {
+            EffectItem itemFrom = arEffectItems.get(i);
+            EffectItem itemTo = new EffectItem();
+            itemTo.setEffectName(itemFrom.getEffectName());
+            itemTo.setSelected(itemFrom.isSelected());
+            itemTo.setbEditEnabled(itemFrom.isEditEnabled());
+            this.arEffectItems.add(itemTo);
+        }
+        effectsAdapter.notifyDataSetChanged();
+    }
+    public float getPan() { return fPan; }
+    public float getFreq() { return fFreq; }
+    public int getBPM() { return nBPM; }
+    public void setBPM(int nBPM) { this.nBPM = nBPM; }
+    public float getVol1() { return fVol1; }
+    public void setVol1(float fVol1) { this.fVol1 = fVol1; }
+    public float getVol2() { return fVol2; }
+    public void setVol2(float fVol1) { this.fVol2 = fVol2; }
+    public float getVol3() { return fVol3; }
+    public void setVol3(float fVol1) { this.fVol3 = fVol3; }
+    public float getVol4() { return fVol4; }
+    public void setVol4(float fVol1) { this.fVol4 = fVol4; }
+    public float getVol5() { return fVol5; }
+    public void setVol5(float fVol1) { this.fVol5 = fVol5; }
+    public float getVol6() { return fVol6; }
+    public void setVol6(float fVol1) { this.fVol6 = fVol6; }
+    public float getVol7() { return fVol7; }
+    public void setVol7(float fVol1) { this.fVol7 = fVol7; }
 
     public EffectFragment()
     {
@@ -239,6 +270,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 textEffectDetail.setText(String.format("%d", nProgress));
                 applyEffect(MainActivity.hStream);
             }
+            MainActivity activity = (MainActivity)getActivity();
+            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+            playlistFragment.updateSavingEffect();
         }
         else if (v.getId() == R.id.relativePlus) {
             TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
@@ -308,6 +342,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 textEffectDetail.setText(String.format("%d", nProgress));
                 applyEffect(MainActivity.hStream);
             }
+            MainActivity activity = (MainActivity)getActivity();
+            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+            playlistFragment.updateSavingEffect();
         }
     }
 
@@ -456,6 +493,33 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             handler = null;
         }
         applyEffect(MainActivity.hStream);
+        effectsAdapter.notifyDataSetChanged();
+        MainActivity activity = (MainActivity)getActivity();
+        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+        playlistFragment.updateSavingEffect();
+    }
+
+    public void resetEffect()
+    {
+        EffectItem item = arEffectItems.get(0);
+        item.setSelected(true);
+        for(int i = 1; i < arEffectItems.size(); i++)
+        {
+            if(arEffectItems.get(i).isSelected() && (i == kEffectTypeRandom || i == kEffectTypeOldRecord || i == kEffectTypeLowBattery || i == kEffectTypeEarTraining)) {
+                EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+                equalizerFragment.setEQ(0);
+            }
+            if(arEffectItems.get(i).isSelected() && (i == kEffectTypeRandom || i == kEffectTypeNoSense_Strong || i == kEffectTypeNoSense_Middle || i == kEffectTypeNoSense_Weak)) {
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                controlFragment.setSpeed(0.0f);
+                controlFragment.setPitch(0.0f);
+            }
+            arEffectItems.get(i).setSelected(false);
+        }
+
+        fPan = 0.0f;
+        fFreq = 1.0f;
+
         effectsAdapter.notifyDataSetChanged();
     }
 
@@ -637,9 +701,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol7);
             }
         }
+        MainActivity activity = (MainActivity)getActivity();
+        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+        playlistFragment.updateSavingEffect();
     }
 
     public void setPan(float fPan)
+    {
+        setPan(fPan, true);
+    }
+
+    public void setPan(float fPan, boolean bSave)
     {
         if(fPan < -1.0f) fPan = -1.0f;
         else if(fPan > 1.0f) fPan = 1.0f;
@@ -652,9 +724,19 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             }
             hDspPan = BASS.BASS_ChannelSetDSP(MainActivity.hStream, panDSP, this, 0);
         }
+        if(bSave) {
+            MainActivity activity = (MainActivity)getActivity();
+            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+            playlistFragment.updateSavingEffect();
+        }
     }
 
     public void setFreq(float fFreq)
+    {
+        setFreq(fFreq, true);
+    }
+
+    public void setFreq(float fFreq, boolean bSave)
     {
         if(fFreq < 0.1f) fFreq = 0.1f;
         else if(fFreq > 4.0f) fFreq = 4.0f;
@@ -663,6 +745,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
             BASS.BASS_ChannelGetInfo(MainActivity.hStream, info);
             BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * fFreq);
+        }
+        if(bSave) {
+            MainActivity activity = (MainActivity)getActivity();
+            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+            playlistFragment.updateSavingEffect();
         }
     }
 
@@ -756,6 +843,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 }
             }
         }
+        MainActivity activity = (MainActivity)getActivity();
+        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+        playlistFragment.updateSavingEffect();
     }
 
     public void applyEffect(int hStream)

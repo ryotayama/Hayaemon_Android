@@ -53,6 +53,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         TextView textTitle;
         TextView textArtist;
         ImageView imgStatus;
+        ImageView imgLock;
         FrameLayout frameSongMenu;
         ImageView imgSongMenu;
 
@@ -63,6 +64,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             textTitle = (TextView) view.findViewById(R.id.textTitle);
             textArtist = (TextView) view.findViewById(R.id.textArtist);
             imgStatus = (ImageView) view.findViewById(R.id.imgStatus);
+            imgLock = (ImageView) view.findViewById(R.id.imgLock);
             frameSongMenu = (FrameLayout) view.findViewById(R.id.frameSongMenu);
             imgSongMenu = (ImageView) view.findViewById(R.id.imgSongMenu);
         }
@@ -102,6 +104,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         SongItem item = items.get(position);
         final int nItem = Integer.parseInt(item.getNumber()) - 1;
         final PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+        boolean bLock = playlistFragment.isLock(nItem);
 
         holder.itemView.setLongClickable(true);
 
@@ -128,6 +131,9 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             holder.imgStatus.setImageDrawable(null);
             holder.textNumber.setVisibility(View.VISIBLE);
         }
+
+        if(bLock) holder.imgLock.setVisibility(View.VISIBLE);
+        else holder.imgLock.setVisibility(View.GONE);
 
         playlistFragment.registerForContextMenu(holder.songItem);
         playlistFragment.registerForContextMenu(holder.frameSongMenu);

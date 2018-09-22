@@ -71,6 +71,9 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     public ArrayList<SeekBar> getArSeek() { return arSeek; }
     public float[] getArCenters() { return arCenters; }
     public int[] getArHFX() { return arHFX; }
+    ArrayList<EqualizerItem> getArEqualizerItems() {
+        return arEqualizerItems;
+    }
     public void setArEqualizerItems(ArrayList<EqualizerItem> arLists) {
         arEqualizerItems = arLists;
         equalizersAdapter.changeItems(arEqualizerItems);
@@ -81,6 +84,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         return item.isSelected();
     }
     public boolean isSorting() { return bSorting; }
+    public EqualizersAdapter getEqualizersAdapter() { return equalizersAdapter; }
 
     public EqualizerFragment()
     {
@@ -535,6 +539,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 textView.setText(String.valueOf(nLevel));
             }
         }
+        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+        playlistFragment.updateSavingEffect();
     }
 
     public void setEQRandom()
@@ -574,9 +580,17 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             textView = arTextValue.get(i + 1);
             textView.setText(String.valueOf(nLevel));
         }
+        MainActivity activity = (MainActivity)getActivity();
+        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+        playlistFragment.updateSavingEffect();
     }
 
     public void setVol(int nLevel)
+    {
+        setVol(nLevel, true);
+    }
+
+    public void setVol(int nLevel, boolean bSave)
     {
         float fLevel = nLevel;
         if(fLevel == 0) fLevel = 1.0f;
@@ -594,9 +608,20 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         seekBar.setProgress(nLevel + 30);
         TextView textView = arTextValue.get(0);
         textView.setText(String.valueOf(nLevel));
+
+        if(bSave) {
+            MainActivity activity = (MainActivity)getActivity();
+            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+            playlistFragment.updateSavingEffect();
+        }
     }
 
     public void setEQ(int i, int nLevel)
+    {
+        setEQ(i, nLevel, true);
+    }
+
+    public void setEQ(int i, int nLevel, boolean bSave)
     {
         if(MainActivity.hStream != 0)
         {
@@ -613,6 +638,12 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         seekBar.setProgress(nLevel + 30);
         TextView textView = arTextValue.get(i);
         textView.setText(String.valueOf(nLevel));
+
+        if (bSave) {
+            MainActivity activity = (MainActivity)getActivity();
+            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+            playlistFragment.updateSavingEffect();
+        }
     }
 
     void setArHFX(int[] arHFX) {

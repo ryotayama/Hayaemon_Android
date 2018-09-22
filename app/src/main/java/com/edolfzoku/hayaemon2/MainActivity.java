@@ -33,6 +33,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.effect.Effect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -148,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 Gson gson = new Gson();
                 preferences.edit().putString("arPlaylists", gson.toJson(playlistFragment.getArPlaylists())).commit();
+                preferences.edit().putString("arEffects", gson.toJson(playlistFragment.getArEffects())).commit();
                 preferences.edit().putString("arPlaylistNames", gson.toJson(playlistFragment.getArPlaylistNames())).commit();
             }
         }
@@ -376,12 +378,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Gson gson = new Gson();
         PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
         ArrayList<ArrayList<SongItem>> arPlaylists = gson.fromJson(preferences.getString("arPlaylists",""), new TypeToken<ArrayList<ArrayList<SongItem>>>(){}.getType());
+        ArrayList<ArrayList<EffectSaver>> arEffects = gson.fromJson(preferences.getString("arEffects",""), new TypeToken<ArrayList<ArrayList<EffectSaver>>>(){}.getType());
         ArrayList<String> arPlaylistNames = gson.fromJson(preferences.getString("arPlaylistNames",""), new TypeToken<ArrayList<String>>(){}.getType());
         List<String> arSongsPath = gson.fromJson(preferences.getString("arSongsPath",""), new TypeToken<List<String>>(){}.getType());
         if(arPlaylists != null && arPlaylistNames != null) {
             for(int i = 0; i < arPlaylists.size(); i++) {
                 playlistFragment.setArPlaylists(arPlaylists);
                 playlistFragment.setArPlaylistNames(arPlaylistNames);
+            }
+            if(arEffects != null && arPlaylists.size() == arEffects.size())
+                playlistFragment.setArEffects(arEffects);
+            else {
+                arEffects = playlistFragment.getArEffects();
+                for(int i = 0; i < arPlaylists.size(); i++) {
+                    ArrayList<EffectSaver> arEffectSavers = new ArrayList<>();
+                    ArrayList<SongItem> arSongs = arPlaylists.get(i);
+                    for(int j = 0; j < arSongs.size(); j++) {
+                        EffectSaver saver = new EffectSaver();
+                        arEffectSavers.add(saver);
+                    }
+                    arEffects.add(arEffectSavers);
+                }
             }
         }
         else if(arSongsPath != null) {
@@ -830,12 +847,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void clearLoop()
     {
+        clearLoop(true);
+    }
+
+    public void clearLoop(boolean bSave)
+    {
         dLoopA = 0.0;
         bLoopA = false;
         dLoopB = 0.0;
         bLoopB = false;
         LoopFragment loopFragment = (LoopFragment)mSectionsPagerAdapter.getItem(2);
-        loopFragment.clearLoop();
+        loopFragment.clearLoop(bSave);
     }
 
     @Override

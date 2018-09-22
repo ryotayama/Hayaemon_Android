@@ -31,6 +31,8 @@ import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
+import android.media.audiofx.Equalizer;
+import android.media.effect.Effect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -42,6 +44,7 @@ import android.os.StatFs;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -58,6 +61,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -94,6 +98,7 @@ import static android.app.Activity.RESULT_OK;
 public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private ArrayList<String> arPlaylistNames;
     private  ArrayList<ArrayList<SongItem>> arPlaylists;
+    private ArrayList<ArrayList<EffectSaver>> arEffects;
     private int hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20;
     private List<Boolean> arPlayed;
     private RecyclerView recyclerPlaylists;
@@ -118,6 +123,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
     public ArrayList<ArrayList<SongItem>> getArPlaylists() { return arPlaylists; }
     public void setArPlaylists(ArrayList<ArrayList<SongItem>> arLists) { arPlaylists = arLists; }
+    public ArrayList<ArrayList<EffectSaver>> getArEffects() { return arEffects; }
+    public void setArEffects(ArrayList<ArrayList<EffectSaver>> arEffects) { this.arEffects = arEffects; }
     public ArrayList<String> getArPlaylistNames() { return arPlaylistNames; }
     public void setArPlaylistNames(ArrayList<String> arNames) { arPlaylistNames = arNames; }
     public int getSelectedPlaylist() { return nSelectedPlaylist; }
@@ -130,6 +137,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public int getSongCount(int nPlaylist) { return arPlaylists.get(nPlaylist).size(); }
     public boolean isFinish() { return bFinish; }
     public void setProgress(int nProgress) { progress.setProgress(nProgress); }
+    public boolean isLock(int nSong) {
+        ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
+        EffectSaver saver = arEffectSavers.get(nSong);
+        return saver.isSave();
+    }
 
     public PlaylistFragment()
     {
@@ -137,6 +149,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         nPlaying = -1;
         arPlaylistNames = new ArrayList<>();
         arPlaylists = new ArrayList<>();
+        arEffects = new ArrayList<>();
         arPlayed = new ArrayList<>();
     }
 
@@ -206,6 +219,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         arPlaylists.remove(fromPos);
                         arPlaylists.add(toPos, arSongsTemp);
 
+                        ArrayList<EffectSaver> arEffectSavers = arEffects.get(fromPos);
+                        arEffects.remove(fromPos);
+                        arEffects.add(toPos, arEffectSavers);
+
                         String strTemp = arPlaylistNames.get(fromPos);
                         arPlaylistNames.remove(fromPos);
                         arPlaylistNames.add(toPos, strTemp);
@@ -230,6 +247,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                         Gson gson = new Gson();
                         preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
                         preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
                     }
 
@@ -541,11 +559,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
                 SongItem item = new SongItem(String.format("%d", arSongs.size()+1), editTitle.getText().toString(), editArtist.getText().toString(), file.getPath());
                 arSongs.add(item);
+                ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
+                EffectSaver saver = new EffectSaver();
+                arEffectSavers.add(saver);
                 if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
                 songsAdapter.notifyDataSetChanged();
                 SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 Gson gson = new Gson();
                 preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
                 preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
             }
         });
@@ -568,11 +590,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         arPlaylistNames.add(strName);
         ArrayList<SongItem> arSongs = new ArrayList<>();
         arPlaylists.add(arSongs);
+        ArrayList<EffectSaver> arEffectSavers = new ArrayList<>();
+        arEffects.add(arEffectSavers);
         if(activity != null)
         {
             SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
             Gson gson = new Gson();
             preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+            preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
             preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
         }
         selectPlaylist(arPlaylists.size() - 1);
@@ -622,6 +647,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 arSongs.remove(fromPos);
                 arSongs.add(toPos, itemTemp);
 
+                ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
+                EffectSaver saver = arEffectSavers.get(fromPos);
+                arEffectSavers.remove(fromPos);
+                arEffectSavers.add(toPos, saver);
+
                 if(nPlayingPlaylist == nSelectedPlaylist)
                 {
                     Boolean bTemp = arPlayed.get(fromPos);
@@ -653,6 +683,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 Gson gson = new Gson();
                 preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
                 preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
             }
 
@@ -739,6 +770,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
         preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
         preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
     }
 
@@ -762,6 +794,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 if(bSorting) menu.add("並べ替えを終了する");
                 else menu.add("曲順の並べ替え");
                 menu.add("タイトルとアーティスト名を変更");
+                ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
+                EffectSaver saver = arEffectSavers.get(nSelectedItem);
+                if(saver.isSave()) menu.add("エフェクトの設定保持を解除");
+                else menu.add("エフェクトの設定状態を保持");
             }
             else {
                 if(!playlistsAdapter.isClicked()) return;
@@ -886,6 +922,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                                     item.setNumber(String.format("%d", arSongsTo.size()));
                                     arSongsFrom.remove(nSelectedItem);
 
+                                    ArrayList<EffectSaver> arEffectSaversFrom = arEffects.get(nSelectedPlaylist);
+                                    ArrayList<EffectSaver> arEffectSaversTo = arEffects.get(nPlaylistTo);
+                                    EffectSaver saver = arEffectSaversFrom.get(nSelectedItem);
+                                    arEffectSaversTo.add(saver);
+                                    arEffectSaversFrom.remove(nSelectedItem);
+
                                     if(nSelectedPlaylist == nPlayingPlaylist)
                                         arPlayed.remove(nSelectedItem);
                                     if(nPlaylistTo == nPlayingPlaylist)
@@ -961,6 +1003,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                                     SongItem itemTo = new SongItem(String.format("%d", arSongsTo.size()+1), itemFrom.getTitle(), itemFrom.getArtist(), strPath);
                                     arSongsTo.add(itemTo);
 
+                                    ArrayList<EffectSaver> arEffectSaversFrom = arEffects.get(nSelectedPlaylist);
+                                    ArrayList<EffectSaver> arEffectSaversTo = arEffects.get(nPlaylistTo);
+                                    EffectSaver saverFrom = arEffectSaversFrom.get(nSelectedItem);
+                                    if(saverFrom.isSave()) {
+                                        EffectSaver saverTo = new EffectSaver(saverFrom);
+                                        arEffectSaversTo.add(saverTo);
+                                    }
+                                    else {
+                                        EffectSaver saverTo = new EffectSaver();
+                                        arEffectSaversTo.add(saverTo);
+                                    }
+
                                     if(nPlaylistTo == nPlayingPlaylist)
                                         arPlayed.add(false);
 
@@ -1032,11 +1086,24 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                     Gson gson = new Gson();
                     preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                    preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
                     preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
                 }
             });
             builder.setNegativeButton("キャンセル", null);
             builder.show();
+        }
+        else if(item.getTitle().equals("エフェクトの設定状態を保持"))
+        {
+            setSavingEffect();
+            songsAdapter.notifyDataSetChanged();
+        }
+        else if(item.getTitle().equals("エフェクトの設定保持を解除"))
+        {
+            ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
+            EffectSaver saver = arEffectSavers.get(nSelectedItem);
+            saver.setSave(false);
+            songsAdapter.notifyDataSetChanged();
         }
         else if(item.getTitle().equals("再生リスト名を変更"))
         {
@@ -1063,6 +1130,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                     Gson gson = new Gson();
                     preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                    preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
                     preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
                 }
             });
@@ -1093,6 +1161,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                     arPlaylists.remove(nDelete);
+                    arEffects.remove(nDelete);
                     arPlaylistNames.remove(nDelete);
                     if(arPlaylists.size() == 0)
                         addPlaylist("再生リスト 1");
@@ -1105,6 +1174,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                     Gson gson = new Gson();
                     preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                    preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
                     preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
                 }
             });
@@ -1119,11 +1189,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     ArrayList<SongItem> arSongs;
+                    ArrayList<EffectSaver> arEffectSavers;
                     RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
-                    if(relativeSongs.getVisibility() == View.VISIBLE)
+                    if(relativeSongs.getVisibility() == View.VISIBLE) {
                         arSongs = arPlaylists.get(tabAdapter.getPosition());
-                    else
+                        arEffectSavers = arEffects.get(tabAdapter.getPosition());
+                    }
+                    else {
                         arSongs = arPlaylists.get(playlistsAdapter.getPosition());
+                        arEffectSavers = arEffects.get(playlistsAdapter.getPosition());
+                    }
                     for(int i = 0; i < arSongs.size(); i++) {
                         SongItem song = arSongs.get(i);
                         File file = new File(song.getPath());
@@ -1132,6 +1207,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                     arSongs.clear();
+                    arEffectSavers.clear();
 
                     songsAdapter.notifyDataSetChanged();
                     playlistsAdapter.notifyDataSetChanged();
@@ -1139,6 +1215,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                     Gson gson = new Gson();
                     preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                    preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
                     preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
                 }
             });
@@ -1146,6 +1223,232 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             builder.show();
         }
         return super.onContextItemSelected(item);
+    }
+
+    public void setSavingEffect()
+    {
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+        LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(2);
+        EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+        ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
+        EffectSaver saver = arEffectSavers.get(nSelectedItem);
+        saver.setSave(true);
+        saver.setSpeed(controlFragment.fSpeed);
+        saver.setPitch(controlFragment.fPitch);
+        saver.setVol(equalizerFragment.getArSeek().get(0).getProgress() - 30);
+        saver.setEQ20K(equalizerFragment.getArSeek().get(1).getProgress() - 30);
+        saver.setEQ16K(equalizerFragment.getArSeek().get(2).getProgress() - 30);
+        saver.setEQ12_5K(equalizerFragment.getArSeek().get(3).getProgress() - 30);
+        saver.setEQ10K(equalizerFragment.getArSeek().get(4).getProgress() - 30);
+        saver.setEQ8K(equalizerFragment.getArSeek().get(5).getProgress() - 30);
+        saver.setEQ6_3K(equalizerFragment.getArSeek().get(6).getProgress() - 30);
+        saver.setEQ5K(equalizerFragment.getArSeek().get(7).getProgress() - 30);
+        saver.setEQ4K(equalizerFragment.getArSeek().get(8).getProgress() - 30);
+        saver.setEQ3_15K(equalizerFragment.getArSeek().get(9).getProgress() - 30);
+        saver.setEQ2_5K(equalizerFragment.getArSeek().get(10).getProgress() - 30);
+        saver.setEQ2K(equalizerFragment.getArSeek().get(11).getProgress() - 30);
+        saver.setEQ1_6K(equalizerFragment.getArSeek().get(12).getProgress() - 30);
+        saver.setEQ1_25K(equalizerFragment.getArSeek().get(13).getProgress() - 30);
+        saver.setEQ1K(equalizerFragment.getArSeek().get(14).getProgress() - 30);
+        saver.setEQ800(equalizerFragment.getArSeek().get(15).getProgress() - 30);
+        saver.setEQ630(equalizerFragment.getArSeek().get(16).getProgress() - 30);
+        saver.setEQ500(equalizerFragment.getArSeek().get(17).getProgress() - 30);
+        saver.setEQ400(equalizerFragment.getArSeek().get(18).getProgress() - 30);
+        saver.setEQ315(equalizerFragment.getArSeek().get(19).getProgress() - 30);
+        saver.setEQ250(equalizerFragment.getArSeek().get(20).getProgress() - 30);
+        saver.setEQ200(equalizerFragment.getArSeek().get(21).getProgress() - 30);
+        saver.setEQ160(equalizerFragment.getArSeek().get(22).getProgress() - 30);
+        saver.setEQ125(equalizerFragment.getArSeek().get(23).getProgress() - 30);
+        saver.setEQ100(equalizerFragment.getArSeek().get(24).getProgress() - 30);
+        saver.setEQ80(equalizerFragment.getArSeek().get(25).getProgress() - 30);
+        saver.setEQ63(equalizerFragment.getArSeek().get(26).getProgress() - 30);
+        saver.setEQ50(equalizerFragment.getArSeek().get(27).getProgress() - 30);
+        saver.setEQ40(equalizerFragment.getArSeek().get(28).getProgress() - 30);
+        saver.setEQ31_5(equalizerFragment.getArSeek().get(29).getProgress() - 30);
+        saver.setEQ25(equalizerFragment.getArSeek().get(30).getProgress() - 30);
+        saver.setEQ20(equalizerFragment.getArSeek().get(31).getProgress() - 30);
+        saver.setEffectItems(effectFragment.getEffectItems());
+        ArrayList<EffectItem> arItems = effectFragment.getEffectItems();
+        saver.setPan(effectFragment.getPan());
+        saver.setFreq(effectFragment.getFreq());
+        saver.setBPM(effectFragment.getBPM());
+        saver.setVol1(effectFragment.getVol1());
+        saver.setVol2(effectFragment.getVol2());
+        saver.setVol3(effectFragment.getVol3());
+        saver.setVol4(effectFragment.getVol4());
+        saver.setVol5(effectFragment.getVol5());
+        saver.setVol6(effectFragment.getVol6());
+        saver.setVol7(effectFragment.getVol7());
+        if(nSelectedPlaylist == nPlayingPlaylist && nSelectedItem == nPlaying) {
+            LinearLayout ABButton = (LinearLayout)activity.findViewById(R.id.ABButton);
+            LinearLayout MarkerButton = (LinearLayout)activity.findViewById(R.id.MarkerButton);
+            ImageButton btnLoopmarker = (ImageButton)activity.findViewById(R.id.btnLoopmarker);
+            if(ABButton.getVisibility() == View.VISIBLE) saver.setIsABLoop(true);
+            else saver.setIsABLoop(false);
+            saver.setIsLoop(true);
+            saver.setIsLoopA(activity.bLoopA);
+            saver.setLoopA(activity.dLoopA);
+            saver.setIsLoopB(activity.bLoopB);
+            saver.setLoopB(activity.dLoopB);
+            saver.setArMarkerTime(loopFragment.getArMarkerTime());
+            saver.setIsLoopMarker(btnLoopmarker.isSelected());
+            saver.setMarker(loopFragment.getMarker());
+        }
+        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        Gson gson = new Gson();
+        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+    }
+
+    public void updateSavingEffect()
+    {
+        if(MainActivity.hStream == 0 || nPlaying == -1) return;
+        ArrayList<EffectSaver> arEffectSavers = arEffects.get(nPlayingPlaylist);
+        EffectSaver saver = arEffectSavers.get(nPlaying);
+        if(saver.isSave()) {
+            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+            LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(2);
+            EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+            EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+            saver.setSpeed(controlFragment.fSpeed);
+            saver.setPitch(controlFragment.fPitch);
+            saver.setVol(equalizerFragment.getArSeek().get(0).getProgress() - 30);
+            saver.setEQ20K(equalizerFragment.getArSeek().get(1).getProgress() - 30);
+            saver.setEQ16K(equalizerFragment.getArSeek().get(2).getProgress() - 30);
+            saver.setEQ12_5K(equalizerFragment.getArSeek().get(3).getProgress() - 30);
+            saver.setEQ10K(equalizerFragment.getArSeek().get(4).getProgress() - 30);
+            saver.setEQ8K(equalizerFragment.getArSeek().get(5).getProgress() - 30);
+            saver.setEQ6_3K(equalizerFragment.getArSeek().get(6).getProgress() - 30);
+            saver.setEQ5K(equalizerFragment.getArSeek().get(7).getProgress() - 30);
+            saver.setEQ4K(equalizerFragment.getArSeek().get(8).getProgress() - 30);
+            saver.setEQ3_15K(equalizerFragment.getArSeek().get(9).getProgress() - 30);
+            saver.setEQ2_5K(equalizerFragment.getArSeek().get(10).getProgress() - 30);
+            saver.setEQ2K(equalizerFragment.getArSeek().get(11).getProgress() - 30);
+            saver.setEQ1_6K(equalizerFragment.getArSeek().get(12).getProgress() - 30);
+            saver.setEQ1_25K(equalizerFragment.getArSeek().get(13).getProgress() - 30);
+            saver.setEQ1K(equalizerFragment.getArSeek().get(14).getProgress() - 30);
+            saver.setEQ800(equalizerFragment.getArSeek().get(15).getProgress() - 30);
+            saver.setEQ630(equalizerFragment.getArSeek().get(16).getProgress() - 30);
+            saver.setEQ500(equalizerFragment.getArSeek().get(17).getProgress() - 30);
+            saver.setEQ400(equalizerFragment.getArSeek().get(18).getProgress() - 30);
+            saver.setEQ315(equalizerFragment.getArSeek().get(19).getProgress() - 30);
+            saver.setEQ250(equalizerFragment.getArSeek().get(20).getProgress() - 30);
+            saver.setEQ200(equalizerFragment.getArSeek().get(21).getProgress() - 30);
+            saver.setEQ160(equalizerFragment.getArSeek().get(22).getProgress() - 30);
+            saver.setEQ125(equalizerFragment.getArSeek().get(23).getProgress() - 30);
+            saver.setEQ100(equalizerFragment.getArSeek().get(24).getProgress() - 30);
+            saver.setEQ80(equalizerFragment.getArSeek().get(25).getProgress() - 30);
+            saver.setEQ63(equalizerFragment.getArSeek().get(26).getProgress() - 30);
+            saver.setEQ50(equalizerFragment.getArSeek().get(27).getProgress() - 30);
+            saver.setEQ40(equalizerFragment.getArSeek().get(28).getProgress() - 30);
+            saver.setEQ31_5(equalizerFragment.getArSeek().get(29).getProgress() - 30);
+            saver.setEQ25(equalizerFragment.getArSeek().get(30).getProgress() - 30);
+            saver.setEQ20(equalizerFragment.getArSeek().get(31).getProgress() - 30);
+            saver.setEffectItems(effectFragment.getEffectItems());
+            saver.setPan(effectFragment.getPan());
+            saver.setFreq(effectFragment.getFreq());
+            saver.setBPM(effectFragment.getBPM());
+            saver.setVol1(effectFragment.getVol1());
+            saver.setVol2(effectFragment.getVol2());
+            saver.setVol3(effectFragment.getVol3());
+            saver.setVol4(effectFragment.getVol4());
+            saver.setVol5(effectFragment.getVol5());
+            saver.setVol6(effectFragment.getVol6());
+            saver.setVol7(effectFragment.getVol7());
+            LinearLayout ABButton = (LinearLayout)activity.findViewById(R.id.ABButton);
+            LinearLayout MarkerButton = (LinearLayout)activity.findViewById(R.id.MarkerButton);
+            ImageButton btnLoopmarker = (ImageButton)activity.findViewById(R.id.btnLoopmarker);
+            if(ABButton.getVisibility() == View.VISIBLE) saver.setIsABLoop(true);
+            else saver.setIsABLoop(false);
+            saver.setIsLoop(true);
+            saver.setIsLoopA(activity.bLoopA);
+            saver.setLoopA(activity.dLoopA);
+            saver.setIsLoopB(activity.bLoopB);
+            saver.setLoopB(activity.dLoopB);
+            saver.setArMarkerTime(loopFragment.getArMarkerTime());
+            saver.setIsLoopMarker(btnLoopmarker.isSelected());
+            saver.setMarker(loopFragment.getMarker());
+            SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+            Gson gson = new Gson();
+            preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+        }
+    }
+
+    public void restoreEffect()
+    {
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+        LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(2);
+        EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+        ArrayList<EffectSaver> arEffectSavers = arEffects.get(nPlayingPlaylist);
+        EffectSaver saver = arEffectSavers.get(nPlaying);
+        controlFragment.setSpeed(saver.getSpeed(), false);
+        controlFragment.setPitch(saver.getPitch(), false);
+        equalizerFragment.setVol(saver.getVol(), false);
+        equalizerFragment.setEQ(1, saver.getEQ20K(), false);
+        equalizerFragment.setEQ(2, saver.getEQ16K(), false);
+        equalizerFragment.setEQ(3, saver.getEQ12_5K(), false);
+        equalizerFragment.setEQ(4, saver.getEQ10K(), false);
+        equalizerFragment.setEQ(5, saver.getEQ8K(), false);
+        equalizerFragment.setEQ(6, saver.getEQ6_3K(), false);
+        equalizerFragment.setEQ(7, saver.getEQ5K(), false);
+        equalizerFragment.setEQ(8, saver.getEQ4K(), false);
+        equalizerFragment.setEQ(9, saver.getEQ3_15K(), false);
+        equalizerFragment.setEQ(10, saver.getEQ2_5K(), false);
+        equalizerFragment.setEQ(11, saver.getEQ2K(), false);
+        equalizerFragment.setEQ(12, saver.getEQ1_6K(), false);
+        equalizerFragment.setEQ(13, saver.getEQ1_25K(), false);
+        equalizerFragment.setEQ(14, saver.getEQ1K(), false);
+        equalizerFragment.setEQ(15, saver.getEQ800(), false);
+        equalizerFragment.setEQ(16, saver.getEQ630(), false);
+        equalizerFragment.setEQ(17, saver.getEQ500(), false);
+        equalizerFragment.setEQ(18, saver.getEQ400(), false);
+        equalizerFragment.setEQ(19, saver.getEQ315(), false);
+        equalizerFragment.setEQ(20, saver.getEQ250(), false);
+        equalizerFragment.setEQ(21, saver.getEQ200(), false);
+        equalizerFragment.setEQ(22, saver.getEQ160(), false);
+        equalizerFragment.setEQ(23, saver.getEQ125(), false);
+        equalizerFragment.setEQ(24, saver.getEQ100(), false);
+        equalizerFragment.setEQ(25, saver.getEQ80(), false);
+        equalizerFragment.setEQ(26, saver.getEQ63(), false);
+        equalizerFragment.setEQ(27, saver.getEQ50(), false);
+        equalizerFragment.setEQ(28, saver.getEQ40(), false);
+        equalizerFragment.setEQ(29, saver.getEQ31_5(), false);
+        equalizerFragment.setEQ(30, saver.getEQ25(), false);
+        equalizerFragment.setEQ(31, saver.getEQ20(), false);
+        ArrayList<EqualizerItem> arEqualizerItems = equalizerFragment.getArEqualizerItems();
+        for(int i = 0; i < arEqualizerItems.size(); i++) {
+            EqualizerItem item = arEqualizerItems.get(i);
+            item.setSelected(false);
+        }
+        equalizerFragment.getEqualizersAdapter().notifyDataSetChanged();
+        effectFragment.setEffectItems(saver.getEffectItems());
+        effectFragment.setPan(saver.getPan(), false);
+        effectFragment.setFreq(saver.getFreq(), false);
+        effectFragment.setBPM(saver.getBPM());
+        effectFragment.setVol1(saver.getVol1());
+        effectFragment.setVol2(saver.getVol2());
+        effectFragment.setVol3(saver.getVol3());
+        effectFragment.setVol4(saver.getVol4());
+        effectFragment.setVol5(saver.getVol5());
+        effectFragment.setVol6(saver.getVol6());
+        effectFragment.setVol7(saver.getVol7());
+        ImageButton btnLoopmarker = (ImageButton)activity.findViewById(R.id.btnLoopmarker);
+        TabLayout tabLayout = (TabLayout)getActivity().findViewById(R.id.abTab_Layout);
+        if(saver.isABLoop()) tabLayout.getTabAt(0).select();
+        else tabLayout.getTabAt(1).select();
+        if(saver.isLoopA()) loopFragment.setLoopA(saver.getLoopA(), false);
+        if(saver.isLoopB()) loopFragment.setLoopB(saver.getLoopB(), false);
+        loopFragment.setArMarkerTime(saver.getArMarkerTime());
+        if(saver.isLoopMarker()) {
+            btnLoopmarker.setSelected(true);
+            btnLoopmarker.setAlpha(0.3f);
+        }
+        else {
+            btnLoopmarker.setSelected(false);
+            btnLoopmarker.setAlpha(1.0f);
+        }
+        loopFragment.setMarker(saver.getMarker());
     }
 
     public void saveSong(int nPurpose, String strFileName)
@@ -1375,6 +1678,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         SongItem item = arSongs.get(nSelectedItem);
+        ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
+        EffectSaver saver = arEffectSavers.get(nSelectedItem);
 
         String strTitle = item.getTitle();
         ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
@@ -1400,11 +1705,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         SongItem itemNew = new SongItem(String.format("%d", arSongs.size()+1), strTitle, item.getArtist(), strPathTo);
         arSongs.add(itemNew);
+        EffectSaver saverNew = new EffectSaver(saver);
+        arEffectSavers.add(saverNew);
         if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
         songsAdapter.notifyDataSetChanged();
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
         preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
         preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
     }
 
@@ -1600,7 +1908,30 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public void playSong(int nSong)
     {
         MainActivity activity = (MainActivity)getActivity();
-        activity.clearLoop();
+        activity.clearLoop(false);
+        ArrayList<EffectSaver> arEffectSavers = arEffects.get(nPlayingPlaylist);
+        if(0 <= nPlaying && nPlaying < arEffectSavers.size() && 0 <= nSong && nSong < arEffectSavers.size()) {
+            EffectSaver saverBefore = arEffectSavers.get(nPlaying);
+            EffectSaver saverAfter = arEffectSavers.get(nSong);
+            if(saverBefore.isSave() && !saverAfter.isSave()) {
+                ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(1);
+                controlFragment.setSpeed(0.0f, false);
+                controlFragment.setPitch(0.0f, false);
+                EqualizerFragment equalizerFragment = (EqualizerFragment) activity.mSectionsPagerAdapter.getItem(3);
+                equalizerFragment.setVol(0, false);
+                for (int i = 1; i <= 31; i++) {
+                    equalizerFragment.setEQ(i, 0, false);
+                }
+                ArrayList<EqualizerItem> arEqualizerItems = equalizerFragment.getArEqualizerItems();
+                for(int i = 0; i < arEqualizerItems.size(); i++) {
+                    EqualizerItem item = arEqualizerItems.get(i);
+                    item.setSelected(false);
+                }
+                equalizerFragment.getEqualizersAdapter().notifyDataSetChanged();
+                EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+                effectFragment.resetEffect();
+            }
+        }
         nPlaying = nSong;
         if(arPlaylists.size() == 0 || nPlayingPlaylist >= arPlaylists.size() || arPlaylists.get(nPlayingPlaylist).size() == 0 || nSong >= arPlaylists.get(nPlayingPlaylist).size())
             return;
@@ -1732,11 +2063,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         hFx31_5 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
         hFx25 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
         hFx20 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+        EqualizerFragment equalizerFragment = (EqualizerFragment) activity.mSectionsPagerAdapter.getItem(3);
+        equalizerFragment.setArHFX(new int[]{hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20});
+        EffectSaver saver = arEffectSavers.get(nPlaying);
+        if(saver.isSave()) restoreEffect();
+        ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(1);
         BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed);
         BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, controlFragment.fPitch);
-        EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
-        equalizerFragment.setArHFX(new int[] {hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20});
         equalizerFragment.setEQ();
         effectFragment.applyEffect(MainActivity.hStream);
         activity.setSync();
@@ -1794,6 +2127,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             SongItem item = new SongItem(String.format("%d", arSongs.size()+1), strTitle, "", uri.toString());
             arSongs.add(item);
         }
+        ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
+        EffectSaver saver = new EffectSaver();
+        arEffectSavers.add(saver);
         if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
     }
 
@@ -1818,9 +2154,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         songsAdapter.notifyDataSetChanged();
 
+        ArrayList<EffectSaver> arEffectSavers = arEffects.get(nPlaylist);
+        arEffectSavers.remove(nSong);
+
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
         preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
         preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
     }
 
