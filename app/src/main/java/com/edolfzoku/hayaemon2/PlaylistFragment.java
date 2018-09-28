@@ -19,8 +19,10 @@
 package com.edolfzoku.hayaemon2;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,22 +33,19 @@ import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
-import android.media.audiofx.Equalizer;
-import android.media.effect.Effect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.StatFs;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -59,9 +58,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -69,22 +70,21 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.Mp3File;
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_AAC;
 import com.un4seen.bass.BASS_FX;
 import com.un4seen.bass.BASSenc;
 import com.un4seen.bass.BASSenc_MP3;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -99,6 +99,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private ArrayList<String> arPlaylistNames;
     private  ArrayList<ArrayList<SongItem>> arPlaylists;
     private ArrayList<ArrayList<EffectSaver>> arEffects;
+    private ArrayList<ArrayList<String>> arLyrics;
     private int hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20;
     private List<Boolean> arPlayed;
     private RecyclerView recyclerPlaylists;
@@ -125,6 +126,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public void setArPlaylists(ArrayList<ArrayList<SongItem>> arLists) { arPlaylists = arLists; }
     public ArrayList<ArrayList<EffectSaver>> getArEffects() { return arEffects; }
     public void setArEffects(ArrayList<ArrayList<EffectSaver>> arEffects) { this.arEffects = arEffects; }
+    public ArrayList<ArrayList<String>> getArLyrics() { return arLyrics; }
+    public void setArLyrics(ArrayList<ArrayList<String>> arLyrics) { this.arLyrics = arLyrics; }
     public ArrayList<String> getArPlaylistNames() { return arPlaylistNames; }
     public void setArPlaylistNames(ArrayList<String> arNames) { arPlaylistNames = arNames; }
     public int getSelectedPlaylist() { return nSelectedPlaylist; }
@@ -150,6 +153,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         arPlaylistNames = new ArrayList<>();
         arPlaylists = new ArrayList<>();
         arEffects = new ArrayList<>();
+        arLyrics = new ArrayList<>();
         arPlayed = new ArrayList<>();
     }
 
@@ -223,6 +227,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         arEffects.remove(fromPos);
                         arEffects.add(toPos, arEffectSavers);
 
+                        ArrayList<String> arTempLyrics = arLyrics.get(fromPos);
+                        arLyrics.remove(fromPos);
+                        arLyrics.add(toPos, arTempLyrics);
+
                         String strTemp = arPlaylistNames.get(fromPos);
                         arPlaylistNames.remove(fromPos);
                         arPlaylistNames.add(toPos, strTemp);
@@ -248,6 +256,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         Gson gson = new Gson();
                         preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
                         preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+                        preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
                         preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
                     }
 
@@ -400,6 +409,92 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             textAddSong.setVisibility(View.VISIBLE);
             bSorting = false;
             songsAdapter.notifyDataSetChanged();
+        }
+        else if(v.getId() == R.id.btnFinishLyrics)
+        {
+            Button btnFinishLyrics = (Button)activity.findViewById(R.id.btnFinishLyrics);
+            if(btnFinishLyrics.getText().equals("閉じる")) {
+                RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
+                relativeSongs.setVisibility(View.VISIBLE);
+                RelativeLayout relativeLyrics = (RelativeLayout)activity.findViewById(R.id.relativeLyrics);
+                relativeLyrics.setVisibility(View.INVISIBLE);
+            }
+            else {
+                TextView textLyrics = (TextView)activity.findViewById(R.id.textLyrics);
+                EditText editLyrics = (EditText)activity.findViewById(R.id.editLyrics);
+                ImageButton btnEdit = (ImageButton)activity.findViewById(R.id.btnEdit);
+                TextView textNoLyrics = (TextView)activity.findViewById(R.id.textNoLyrics);
+                ImageView imgEdit = (ImageView)activity.findViewById(R.id.imgEdit);
+                TextView textTapEdit = (TextView)activity.findViewById(R.id.textTapEdit);
+                String strLyrics = editLyrics.getText().toString();
+                ArrayList<String> arTempLyrics = arLyrics.get(nSelectedPlaylist);
+                arTempLyrics.set(nSelectedItem, strLyrics);
+                textLyrics.setText(strLyrics);
+                btnFinishLyrics.setText("閉じる");
+                textLyrics.setText(strLyrics);
+                if(strLyrics == null || strLyrics.equals("")) {
+                    editLyrics.setVisibility(View.INVISIBLE);
+                    textNoLyrics.setVisibility(View.VISIBLE);
+                    textLyrics.setVisibility(View.INVISIBLE);
+                    btnEdit.setVisibility(View.INVISIBLE);
+                    imgEdit.setVisibility(View.VISIBLE);
+                    textTapEdit.setVisibility(View.VISIBLE);
+                }
+                else {
+                    editLyrics.setVisibility(View.INVISIBLE);
+                    textNoLyrics.setVisibility(View.INVISIBLE);
+                    textLyrics.setVisibility(View.VISIBLE);
+                    btnEdit.setVisibility(View.VISIBLE);
+                    imgEdit.setVisibility(View.INVISIBLE);
+                    textTapEdit.setVisibility(View.INVISIBLE);
+                }
+                editLyrics.clearFocus();
+                InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(editLyrics.getWindowToken(), 0);
+
+                SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                Gson gson = new Gson();
+                preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
+            }
+        }
+        else if(v.getId() == R.id.btnEdit)
+        {
+            TextView textLyrics = (TextView)activity.findViewById(R.id.textLyrics);
+            textLyrics.setVisibility(View.INVISIBLE);
+            Button btnFinishLyrics = (Button)activity.findViewById(R.id.btnFinishLyrics);
+            btnFinishLyrics.setText("完了");
+            ImageButton btnEdit = (ImageButton)activity.findViewById(R.id.btnEdit);
+            btnEdit.setVisibility(View.INVISIBLE);
+            EditText editLyrics = (EditText)activity.findViewById(R.id.editLyrics);
+            editLyrics.setText(textLyrics.getText());
+            editLyrics.setVisibility(View.VISIBLE);
+            editLyrics.requestFocus();
+            InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(editLyrics, InputMethodManager.SHOW_IMPLICIT);
+            int nPos = editLyrics.getText().length();
+            editLyrics.setSelection(nPos);
+        }
+        else if(v.getId() == R.id.textNoLyrics)
+        {
+            TextView textNoLyrics = (TextView)activity.findViewById(R.id.textNoLyrics);
+            textNoLyrics.setVisibility(View.INVISIBLE);
+            ImageView imgEdit = (ImageView)activity.findViewById(R.id.imgEdit);
+            imgEdit.setVisibility(View.INVISIBLE);
+            TextView textTapEdit = (TextView)activity.findViewById(R.id.textTapEdit);
+            textTapEdit.setVisibility(View.INVISIBLE);
+
+            TextView textLyrics = (TextView)activity.findViewById(R.id.textLyrics);
+            textLyrics.setVisibility(View.INVISIBLE);
+            Button btnFinishLyrics = (Button)activity.findViewById(R.id.btnFinishLyrics);
+            btnFinishLyrics.setText("完了");
+            ImageButton btnEdit = (ImageButton)activity.findViewById(R.id.btnEdit);
+            btnEdit.setVisibility(View.INVISIBLE);
+            EditText editLyrics = (EditText)activity.findViewById(R.id.editLyrics);
+            editLyrics.setText("");
+            editLyrics.setVisibility(View.VISIBLE);
+            editLyrics.requestFocus();
+            InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(editLyrics, InputMethodManager.SHOW_IMPLICIT);
         }
     }
 
@@ -562,12 +657,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
                 EffectSaver saver = new EffectSaver();
                 arEffectSavers.add(saver);
+                ArrayList<String> arTempLyrics = arLyrics.get(nSelectedPlaylist);
+                arTempLyrics.add(null);
                 if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
                 songsAdapter.notifyDataSetChanged();
                 SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 Gson gson = new Gson();
                 preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
                 preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+                preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
                 preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
             }
         });
@@ -592,12 +690,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         arPlaylists.add(arSongs);
         ArrayList<EffectSaver> arEffectSavers = new ArrayList<>();
         arEffects.add(arEffectSavers);
+        ArrayList<String> arTempLyrics = new ArrayList<>();
+        arLyrics.add(arTempLyrics);
         if(activity != null)
         {
             SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
             Gson gson = new Gson();
             preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
             preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+            preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
             preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
         }
         selectPlaylist(arPlaylists.size() - 1);
@@ -652,6 +753,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 arEffectSavers.remove(fromPos);
                 arEffectSavers.add(toPos, saver);
 
+                ArrayList<String> arTempLyrics = arLyrics.get(nSelectedPlaylist);
+                String strLyrics = arTempLyrics.get(fromPos);
+                arTempLyrics.remove(fromPos);
+                arTempLyrics.add(toPos, strLyrics);
+
                 if(nPlayingPlaylist == nSelectedPlaylist)
                 {
                     Boolean bTemp = arPlayed.get(fromPos);
@@ -684,6 +790,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 Gson gson = new Gson();
                 preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
                 preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+                preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
                 preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
             }
 
@@ -728,6 +835,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         TextView textFinishSort = (TextView) activity.findViewById(R.id.textFinishSort);
         textFinishSort.setOnClickListener(this);
+
+        Button btnFinishLyrics = (Button) activity.findViewById(R.id.btnFinishLyrics);
+        btnFinishLyrics.setOnClickListener(this);
+
+        ImageButton btnEdit = (ImageButton)activity.findViewById(R.id.btnEdit);
+        btnEdit.setOnClickListener(this);
+
+        TextView textNoLyrics = (TextView)activity.findViewById(R.id.textNoLyrics);
+        textNoLyrics.setOnClickListener(this);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -771,6 +887,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         Gson gson = new Gson();
         preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
         preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+        preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
         preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
     }
 
@@ -794,6 +911,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 if(bSorting) menu.add("並べ替えを終了する");
                 else menu.add("曲順の並べ替え");
                 menu.add("タイトルとアーティスト名を変更");
+                menu.add("歌詞を表示");
                 ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
                 EffectSaver saver = arEffectSavers.get(nSelectedItem);
                 if(saver.isSave()) menu.add("エフェクトの設定保持を解除");
@@ -928,6 +1046,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                                     arEffectSaversTo.add(saver);
                                     arEffectSaversFrom.remove(nSelectedItem);
 
+                                    ArrayList<String> arTempLyricsFrom = arLyrics.get(nSelectedPlaylist);
+                                    ArrayList<String> arTempLyricsTo = arLyrics.get(nPlaylistTo);
+                                    String strLyrics = arTempLyricsFrom.get(nSelectedItem);
+                                    arTempLyricsTo.add(strLyrics);
+                                    arTempLyricsFrom.remove(nSelectedItem);
+
                                     if(nSelectedPlaylist == nPlayingPlaylist)
                                         arPlayed.remove(nSelectedItem);
                                     if(nPlaylistTo == nPlayingPlaylist)
@@ -1015,6 +1139,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                                         arEffectSaversTo.add(saverTo);
                                     }
 
+                                    ArrayList<String> arTempLyricsFrom = arLyrics.get(nSelectedPlaylist);
+                                    ArrayList<String> arTempLyricsTo = arLyrics.get(nPlaylistTo);
+                                    String strLyrics = arTempLyricsFrom.get(nSelectedItem);
+                                    arTempLyricsTo.add(strLyrics);
+
                                     if(nPlaylistTo == nPlayingPlaylist)
                                         arPlayed.add(false);
 
@@ -1087,11 +1216,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     Gson gson = new Gson();
                     preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
                     preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+                    preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
                     preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
                 }
             });
             builder.setNegativeButton("キャンセル", null);
             builder.show();
+        }
+        else if(item.getTitle().equals("歌詞を表示"))
+        {
+            showLyrics();
         }
         else if(item.getTitle().equals("エフェクトの設定状態を保持"))
         {
@@ -1131,6 +1265,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     Gson gson = new Gson();
                     preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
                     preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+                    preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
                     preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
                 }
             });
@@ -1163,6 +1298,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     arPlaylists.remove(nDelete);
                     arEffects.remove(nDelete);
                     arPlaylistNames.remove(nDelete);
+                    arLyrics.remove(nDelete);
                     if(arPlaylists.size() == 0)
                         addPlaylist("再生リスト 1");
 
@@ -1175,6 +1311,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     Gson gson = new Gson();
                     preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
                     preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+                    preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
                     preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
                 }
             });
@@ -1190,14 +1327,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 public void onClick(DialogInterface dialog, int id) {
                     ArrayList<SongItem> arSongs;
                     ArrayList<EffectSaver> arEffectSavers;
+                    ArrayList<String> arTempLyrics;
                     RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
                     if(relativeSongs.getVisibility() == View.VISIBLE) {
                         arSongs = arPlaylists.get(tabAdapter.getPosition());
                         arEffectSavers = arEffects.get(tabAdapter.getPosition());
+                        arTempLyrics = arLyrics.get(tabAdapter.getPosition());
                     }
                     else {
                         arSongs = arPlaylists.get(playlistsAdapter.getPosition());
                         arEffectSavers = arEffects.get(playlistsAdapter.getPosition());
+                        arTempLyrics = arLyrics.get(playlistsAdapter.getPosition());
                     }
                     for(int i = 0; i < arSongs.size(); i++) {
                         SongItem song = arSongs.get(i);
@@ -1208,6 +1348,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     }
                     arSongs.clear();
                     arEffectSavers.clear();
+                    arTempLyrics.clear();
 
                     songsAdapter.notifyDataSetChanged();
                     playlistsAdapter.notifyDataSetChanged();
@@ -1216,6 +1357,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     Gson gson = new Gson();
                     preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
                     preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+                    preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
                     preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
                 }
             });
@@ -1223,6 +1365,49 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             builder.show();
         }
         return super.onContextItemSelected(item);
+    }
+
+    public void showLyrics()
+    {
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        SongItem songItem = arSongs.get(nSelectedItem);
+
+        ArrayList<String> arTempLyrics = arLyrics.get(nSelectedPlaylist);
+        String strLyrics = arTempLyrics.get(nSelectedItem);
+
+        TextView textLyricsTitle = (TextView)activity.findViewById(R.id.textLyricsTitle);
+        String strTitle = songItem.getTitle();
+        if(songItem.getArtist() != null && !songItem.getArtist().equals(""))
+            strTitle += " - " + songItem.getArtist();
+        textLyricsTitle.setText(strTitle);
+
+        TextView textNoLyrics = (TextView)activity.findViewById(R.id.textNoLyrics);
+        TextView textLyrics = (TextView)activity.findViewById(R.id.textLyrics);
+        ImageButton btnEdit = (ImageButton)activity.findViewById(R.id.btnEdit);
+        ImageView imgEdit = (ImageView)activity.findViewById(R.id.imgEdit);
+        TextView textTapEdit = (TextView)activity.findViewById(R.id.textTapEdit);
+        if(strLyrics == null || strLyrics.equals(""))
+            strLyrics = getLyrics(nSelectedPlaylist, nSelectedItem);
+        if(strLyrics == null || strLyrics.equals("")) {
+            textNoLyrics.setVisibility(View.VISIBLE);
+            textLyrics.setVisibility(View.INVISIBLE);
+            btnEdit.setVisibility(View.INVISIBLE);
+            imgEdit.setVisibility(View.VISIBLE);
+            textTapEdit.setVisibility(View.VISIBLE);
+        }
+        else {
+            textLyrics.setText(strLyrics);
+            textNoLyrics.setVisibility(View.INVISIBLE);
+            textLyrics.setVisibility(View.VISIBLE);
+            btnEdit.setVisibility(View.VISIBLE);
+            imgEdit.setVisibility(View.INVISIBLE);
+            textTapEdit.setVisibility(View.INVISIBLE);
+        }
+
+        RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
+        relativeSongs.setVisibility(View.INVISIBLE);
+        RelativeLayout relativeLyrics = (RelativeLayout)activity.findViewById(R.id.relativeLyrics);
+        relativeLyrics.setVisibility(View.VISIBLE);
     }
 
     public void setSavingEffect()
@@ -1680,6 +1865,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         SongItem item = arSongs.get(nSelectedItem);
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
         EffectSaver saver = arEffectSavers.get(nSelectedItem);
+        ArrayList<String> arTempLyrics = arLyrics.get(nSelectedPlaylist);
+        String strLyrics = arTempLyrics.get(nSelectedItem);
 
         String strTitle = item.getTitle();
         ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
@@ -1707,12 +1894,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         arSongs.add(itemNew);
         EffectSaver saverNew = new EffectSaver(saver);
         arEffectSavers.add(saverNew);
+        arTempLyrics.add(strLyrics);
         if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
         songsAdapter.notifyDataSetChanged();
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
         preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
         preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+        preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
         preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
     }
 
@@ -1821,13 +2010,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
     public void playNext()
     {
+        int nTempPlaying = nPlaying;
         MainActivity activity = (MainActivity)getActivity();
         Button btnPlayMode = (Button)activity.findViewById(R.id.btnPlayMode);
         ArrayList<SongItem> arSongs = arPlaylists.get(nPlayingPlaylist);
         if(btnPlayMode.getText().equals("連続再生") || btnPlayMode.getText().equals("１曲リピート"))
         {
-            nPlaying++;
-            if(nPlaying >= arSongs.size())
+            nTempPlaying++;
+            if(nTempPlaying >= arSongs.size())
             {
                 stop();
                 return;
@@ -1835,10 +2025,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         }
         else if(btnPlayMode.getText().equals("全曲リピート"))
         {
-            nPlaying++;
-            if(nPlaying >= arSongs.size())
+            nTempPlaying++;
+            if(nTempPlaying >= arSongs.size())
             {
-                nPlaying = 0;
+                nTempPlaying = 0;
             }
         }
         else if(btnPlayMode.getText().equals("シャッフル"))
@@ -1846,7 +2036,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             ArrayList<Integer> arTemp = new ArrayList<Integer>();
             for(int i = 0; i < arPlayed.size(); i++)
             {
-                if(i == nPlaying) continue;
+                if(i == nTempPlaying) continue;
                 Boolean bPlayed = arPlayed.get(i);
                 if(!bPlayed.booleanValue())
                 {
@@ -1865,16 +2055,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 Random random = new Random();
                 if(arTemp.size() == 0 || arTemp.size() == arPlayed.size())
                 {
-                    nPlaying = random.nextInt(arPlayed.size());
+                    nTempPlaying = random.nextInt(arPlayed.size());
                 }
                 else
                 {
                     int nRandom = random.nextInt(arTemp.size());
-                    nPlaying = arTemp.get(nRandom);
+                    nTempPlaying = arTemp.get(nRandom);
                 }
             }
         }
-        playSong(nPlaying);
+        playSong(nTempPlaying);
     }
 
     public void onPlaylistItemClick(int nPlaylist)
@@ -1909,6 +2099,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     {
         MainActivity activity = (MainActivity)getActivity();
         activity.clearLoop(false);
+
+        boolean bReloadLyrics = false;
+        RelativeLayout relativeLyrics = (RelativeLayout)activity.findViewById(R.id.relativeLyrics);
+        TextView textLyrics = (TextView)activity.findViewById(R.id.textLyrics);
+        if(relativeLyrics.getVisibility() == View.VISIBLE && textLyrics.getVisibility() == View.VISIBLE && nPlayingPlaylist == nSelectedPlaylist && nPlaying == nSelectedItem) {
+            bReloadLyrics = true;
+            nSelectedItem = nSong;
+        }
+
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nPlayingPlaylist);
         if(0 <= nPlaying && nPlaying < arEffectSavers.size() && 0 <= nSong && nSong < arEffectSavers.size()) {
             EffectSaver saverBefore = arEffectSavers.get(nPlaying);
@@ -2080,6 +2279,89 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(2);
         loopFragment.drawWaveForm(strPath);
         songsAdapter.notifyDataSetChanged();
+        if(bReloadLyrics) showLyrics();
+    }
+
+    public String getLyrics(int nPlaylist, int nSong) {
+        ArrayList<SongItem> arSongs = arPlaylists.get(nPlaylist);
+        final SongItem songItem = arSongs.get(nSong);
+
+        try {
+            File file = new File(getFilePath(getContext(), Uri.parse(songItem.getPath())));
+            Mp3File mp3file = new Mp3File(file);
+            ID3v2 id3v2Tag;
+            if (mp3file.hasId3v2Tag()) {
+                id3v2Tag = mp3file.getId3v2Tag();
+                return id3v2Tag.getLyrics();
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @SuppressLint("NewApi")
+    public static String getFilePath(Context context, Uri uri) throws URISyntaxException {
+        String selection = null;
+        String[] selectionArgs = null;
+        // Uri is different in versions after KITKAT (Android 4.4), we need to
+        if (Build.VERSION.SDK_INT >= 19 && DocumentsContract.isDocumentUri(context.getApplicationContext(), uri)) {
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                return Environment.getExternalStorageDirectory() + "/" + split[1];
+            } else if (isDownloadsDocument(uri)) {
+                final String id = DocumentsContract.getDocumentId(uri);
+                uri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+            } else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                if ("image".equals(type)) {
+                    uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+                selection = "_id=?";
+                selectionArgs = new String[]{
+                        split[1]
+                };
+            }
+        }
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = {
+                    MediaStore.Images.Media.DATA
+            };
+            Cursor cursor = null;
+            try {
+                cursor = context.getContentResolver()
+                        .query(uri, projection, selection, selectionArgs, null);
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                if (cursor.moveToFirst()) {
+                    return cursor.getString(column_index);
+                }
+            } catch (Exception e) {
+            }
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+        return null;
+    }
+
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
     public void stop()
@@ -2130,6 +2412,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
         EffectSaver saver = new EffectSaver();
         arEffectSavers.add(saver);
+
+        ArrayList<String> arTempLyrics = arLyrics.get(nSelectedPlaylist);
+        arTempLyrics.add(null);
+
         if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
     }
 
@@ -2157,10 +2443,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nPlaylist);
         arEffectSavers.remove(nSong);
 
+        ArrayList<String> arTempLyrics = arLyrics.get(nPlaylist);
+        arTempLyrics.remove(nSong);
+
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
         preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
         preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+        preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
         preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
     }
 

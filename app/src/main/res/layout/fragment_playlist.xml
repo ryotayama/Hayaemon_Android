@@ -207,4 +207,134 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/relativeLyrics"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        >
+
+        <TextView
+            android:id="@+id/textLyricsTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="タイトル"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textSize="22dp"
+            android:textStyle="bold"
+            android:layout_margin="12dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/btnFinishLyrics"
+            />
+
+        <Button
+            android:id="@+id/btnFinishLyrics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="閉じる"
+            android:layout_margin="2dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            />
+
+        <ScrollView
+            android:id="@+id/scrollLyrics"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_below="@+id/textLyricsTitle"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            >
+
+            <TextView
+                android:id="@+id/textLyrics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="歌詞"
+                android:textColor="#000000"
+                android:textSize="15dp"
+                android:paddingHorizontal="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="96dp"
+                />
+
+        </ScrollView>
+
+        <EditText
+            android:id="@+id/editLyrics"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="歌詞"
+            android:inputType="textMultiLine"
+            android:textColor="#000000"
+            android:textSize="15dp"
+            android:padding="10dp"
+            android:visibility="invisible"
+            android:layout_below="@+id/textLyricsTitle"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            />
+
+        <ImageButton
+            android:id="@+id/btnEdit"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@null"
+            android:src="@drawable/edit1"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:layout_margin="16dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            >
+
+            <ImageView
+                android:id="@+id/imgEdit"
+                android:layout_width="76dp"
+                android:layout_height="66dp"
+                android:background="@null"
+                android:src="@drawable/bg_edit"
+                android:scaleType="centerInside"
+                android:clickable="true"
+                android:layout_centerHorizontal="true"
+                />
+
+            <TextView
+                android:id="@+id/textTapEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="タップして編集"
+                android:textColor="#939CA0"
+                android:textSize="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/imgEdit"
+                android:layout_centerHorizontal="true"
+                />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/textNoLyrics"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="歌詞データが見つかりませんでした。"
+            android:textColor="#939CA0"
+            android:textSize="15dp"
+            android:padding="10dp"
+            android:clickable="true"
+            android:layout_below="@+id/textLyricsTitle"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            />
+
+    </RelativeLayout>
+
 </RelativeLayout>

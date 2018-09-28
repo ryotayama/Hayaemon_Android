@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Gson gson = new Gson();
                 preferences.edit().putString("arPlaylists", gson.toJson(playlistFragment.getArPlaylists())).commit();
                 preferences.edit().putString("arEffects", gson.toJson(playlistFragment.getArEffects())).commit();
+                preferences.edit().putString("arLyrics", gson.toJson(playlistFragment.getArLyrics())).commit();
                 preferences.edit().putString("arPlaylistNames", gson.toJson(playlistFragment.getArPlaylistNames())).commit();
             }
         }
@@ -299,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             textViewBlog.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
 
             TextView textViewArticle = (TextView)layout.findViewById(R.id.textViewArticle);
-            String strArticle = "<a href=\"http://hayaemon.jp/blog/archives/5609\">→該当記事へ</a>";
+            String strArticle = "<a href=\"http://hayaemon.jp/blog/archives/5640\">→該当記事へ</a>";
             CharSequence blogChar2 = Html.fromHtml(strArticle);
             textViewArticle.setText(blogChar2);
             textViewArticle.setMovementMethod(mMethod);
@@ -379,6 +380,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
         ArrayList<ArrayList<SongItem>> arPlaylists = gson.fromJson(preferences.getString("arPlaylists",""), new TypeToken<ArrayList<ArrayList<SongItem>>>(){}.getType());
         ArrayList<ArrayList<EffectSaver>> arEffects = gson.fromJson(preferences.getString("arEffects",""), new TypeToken<ArrayList<ArrayList<EffectSaver>>>(){}.getType());
+        ArrayList<ArrayList<String>> arLyrics = gson.fromJson(preferences.getString("arLyrics",""), new TypeToken<ArrayList<ArrayList<String>>>(){}.getType());
         ArrayList<String> arPlaylistNames = gson.fromJson(preferences.getString("arPlaylistNames",""), new TypeToken<ArrayList<String>>(){}.getType());
         List<String> arSongsPath = gson.fromJson(preferences.getString("arSongsPath",""), new TypeToken<List<String>>(){}.getType());
         if(arPlaylists != null && arPlaylistNames != null) {
@@ -398,6 +400,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         arEffectSavers.add(saver);
                     }
                     arEffects.add(arEffectSavers);
+                }
+            }
+            if(arLyrics != null && arPlaylists.size() == arLyrics.size())
+                playlistFragment.setArLyrics(arLyrics);
+            else {
+                arLyrics = playlistFragment.getArLyrics();
+                for(int i = 0; i < arPlaylists.size(); i++) {
+                    ArrayList<String> arTempLyrics = new ArrayList<>();
+                    ArrayList<SongItem> arSongs = arPlaylists.get(i);
+                    for(int j = 0; j < arSongs.size(); j++) {
+                        arTempLyrics.add(null);
+                    }
+                    arLyrics.add(arTempLyrics);
                 }
             }
         }
