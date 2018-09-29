@@ -80,6 +80,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     }
     public ItemTouchHelper getEqualizerTouchHelper() { return equalizerTouchHelper; }
     public boolean isSelectedItem(int nItem) {
+        if(nItem >= arEqualizerItems.size()) return false;
         EqualizerItem item = arEqualizerItems.get(nItem);
         return item.isSelected();
     }
