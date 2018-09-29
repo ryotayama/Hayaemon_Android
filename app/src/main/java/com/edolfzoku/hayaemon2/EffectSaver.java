@@ -238,7 +238,10 @@ public class EffectSaver {
         nEQ31_5 = saver.nEQ31_5;
         nEQ25 = saver.nEQ25;
         nEQ20 = saver.nEQ20;
-        arEffectItems = (ArrayList<EffectItem>)saver.arEffectItems.clone();
+        if(saver.arEffectItems == null)
+            arEffectItems = null;
+        else
+            arEffectItems = (ArrayList<EffectItem>)saver.arEffectItems.clone();
         fPan = saver.fPan;
         fFreq = saver.fFreq;
         nBPM = saver.nBPM;
