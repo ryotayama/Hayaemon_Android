@@ -316,6 +316,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 {
                     if(activity.hStream == 0)
                     {
+                        if(nSelectedPlaylist < 0) nSelectedPlaylist = 0;
+                        else if(nSelectedPlaylist >= arPlaylists.size()) nSelectedPlaylist = arPlaylists.size() - 1;
                         nPlayingPlaylist = nSelectedPlaylist;
                         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
                         arPlayed = new ArrayList<Boolean>();
@@ -427,6 +429,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 ImageView imgEdit = (ImageView)activity.findViewById(R.id.imgEdit);
                 TextView textTapEdit = (TextView)activity.findViewById(R.id.textTapEdit);
                 String strLyrics = editLyrics.getText().toString();
+                if(nSelectedPlaylist < 0) nSelectedPlaylist = 0;
+                else if(nSelectedPlaylist >= arLyrics.size()) nSelectedPlaylist = arLyrics.size() - 1;
                 ArrayList<String> arTempLyrics = arLyrics.get(nSelectedPlaylist);
                 arTempLyrics.set(nSelectedItem, strLyrics);
                 textLyrics.setText(strLyrics);
