@@ -2388,6 +2388,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         catch(Exception e) {
             bError = true;
         }
+        if(nSelectedPlaylist < 0) nSelectedPlaylist = 0;
+        else if(nSelectedPlaylist >= arPlaylists.size()) nSelectedPlaylist = arPlaylists.size() - 1;
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         String strTitle = null;
         String strArtist = null;
