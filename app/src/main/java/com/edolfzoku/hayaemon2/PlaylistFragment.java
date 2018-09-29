@@ -2112,8 +2112,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             nSelectedItem = nSong;
         }
 
+        if(nPlayingPlaylist < 0) nPlayingPlaylist = 0;
+        else if(nPlayingPlaylist >= arEffects.size()) nPlayingPlaylist = arEffects.size() - 1;
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nPlayingPlaylist);
         if(0 <= nPlaying && nPlaying < arEffectSavers.size() && 0 <= nSong && nSong < arEffectSavers.size()) {
+            if(nPlaying < 0) nPlaying = 0;
+            else if(nPlaying >= arEffectSavers.size()) nPlaying = arEffectSavers.size() - 1;
+            if(nSong < 0) nSong = 0;
+            else if(nSong >= arEffectSavers.size()) nSong = arEffectSavers.size() - 1;
             EffectSaver saverBefore = arEffectSavers.get(nPlaying);
             EffectSaver saverAfter = arEffectSavers.get(nSong);
             if(saverBefore.isSave() && !saverAfter.isSave()) {
@@ -2138,6 +2144,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         nPlaying = nSong;
         if(arPlaylists.size() == 0 || nPlayingPlaylist >= arPlaylists.size() || arPlaylists.get(nPlayingPlaylist).size() == 0 || nSong >= arPlaylists.get(nPlayingPlaylist).size())
             return;
+        if(nSong < 0) nSong = 0;
+        else if(nSong >= arPlaylists.get(nPlayingPlaylist).size()) nSong = arPlaylists.get(nPlayingPlaylist).size() - 1;
         SongItem item = arPlaylists.get(nPlayingPlaylist).get(nSong);
         String strPath = item.getPath();
         if(MainActivity.hStream != 0)
@@ -2268,6 +2276,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         hFx20 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
         EqualizerFragment equalizerFragment = (EqualizerFragment) activity.mSectionsPagerAdapter.getItem(3);
         equalizerFragment.setArHFX(new int[]{hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20});
+        if(nPlaying < 0) nPlaying = 0;
+        else if(nPlaying >= arEffectSavers.size()) nPlaying = arEffectSavers.size() - 1;
         EffectSaver saver = arEffectSavers.get(nPlaying);
         if(saver.isSave()) restoreEffect();
         ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(1);
