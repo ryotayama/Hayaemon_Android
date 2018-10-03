@@ -101,6 +101,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BroadcastReceiver myPromoReceiver;
     private AdView mAdView;
     private boolean mBound = false;
+    private ForegroundService foregroundService = null;
+    private ServiceConnection connection = new ServiceConnection() {
+
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            foregroundService = ((ForegroundService.ForegroundServiceBinder)service).getService();
+        }
+
+        public void onServiceDisconnected(ComponentName name) {
+            foregroundService = null;
+        }
+    };
+
+    public ForegroundService getForegroundService() { return foregroundService; }
 
     public MainActivity() {
         bLoopA = false;
@@ -114,6 +127,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        startService(new Intent(this, ForegroundService.class));
+        Intent in = new Intent(getApplicationContext(), ForegroundService.class);
+        bindService(in, connection, Context.BIND_AUTO_CREATE);
 
         setContentView(R.layout.activity_main);
 
@@ -854,6 +871,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         } else if (btnPlayMode.getText().equals("１曲リピート")) {
                             BASS.BASS_ChannelPlay(hStream, true);
                         }
+                        else {
+                            PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
+                            playlistFragment.stop();
+                        }
                     }
                 }
             });
@@ -879,6 +900,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onDestroy() {
         BASS.BASS_Free();
 
+        foregroundService.stopForeground();
+        unbindService(connection);
         unbindService(mServiceConn);
         mBound = false;
         super.onDestroy();

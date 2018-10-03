@@ -2294,6 +2294,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         loopFragment.drawWaveForm(strPath);
         songsAdapter.notifyDataSetChanged();
         if(bReloadLyrics) showLyrics();
+
+        activity.getForegroundService().startForeground(item.getTitle(), item.getArtist());
     }
 
     public String getLyrics(int nPlaylist, int nSong) {
@@ -2390,6 +2392,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         MainActivity activity = (MainActivity)getActivity();
         activity.clearLoop();
         songsAdapter.notifyDataSetChanged();
+
+        activity.getForegroundService().stopForeground();
     }
 
     public void addSong(MainActivity activity, Uri uri)
