@@ -2295,6 +2295,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         songsAdapter.notifyDataSetChanged();
         if(bReloadLyrics) showLyrics();
 
+        activity.getForegroundService().setMainActivity(activity);
         activity.getForegroundService().startForeground(item.getTitle(), item.getArtist());
     }
 
