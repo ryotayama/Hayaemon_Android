@@ -81,6 +81,8 @@ public class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
                     nRightHeight= (int)(nHeight * arLevels[1]);
                 else
                     nRightHeight= (int)(nHeight * arLevels[0]);
+                if(nLeftHeight < 2) nLeftHeight = 2;
+                if(nRightHeight < 2) nRightHeight = 2;
                 paint.setColor(Color.argb(255, 255, 255, 255));
                 canvas.drawLine(j, 0, j, nHeight * 2, paint);
                 paint.setColor(Color.argb(255, 128, 166, 199));
