@@ -816,7 +816,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     final TabLayout tabLayout = (TabLayout)getActivity().findViewById(R.id.abTab_Layout);
                     textView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
                     int nLeft = (int) (viewCurPos.getX() - nMaxWidth * dCurPos / dLength - textView.getMeasuredWidth() / 2);
-                    int nTop = waveView.getTop() - textView.getMeasuredHeight();
+                    RelativeLayout relativeWave = (RelativeLayout)getActivity().findViewById(R.id.relativeWave);
+                    int nTop = relativeWave.getTop() - textView.getMeasuredHeight();
                     textView.setTranslationX(nLeft);
                     textView.setTranslationY(nTop);
                     textView.requestLayout();
