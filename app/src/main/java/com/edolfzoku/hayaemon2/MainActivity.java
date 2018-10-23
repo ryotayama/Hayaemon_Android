@@ -303,7 +303,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 title.setText("ハヤえもんAndroid版が\nアップデートされました！");
             }
             title.setGravity(Gravity.CENTER);
-            title.setTextSize(20);
+            title.setTextSize(18);
+            LinearLayout.LayoutParams lp = new LinearLayout. LayoutParams(LinearLayout. LayoutParams. WRAP_CONTENT, LinearLayout. LayoutParams. WRAP_CONTENT);
+            title. setPadding(0,16,0,16);
+            title. setLayoutParams(lp);
             builder.setCustomTitle(title);
             title.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
             builder.setView(layout);
