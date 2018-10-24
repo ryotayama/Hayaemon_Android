@@ -208,11 +208,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         btnRewind5Sec.setOnTouchListener(this);
         ImageButton btnA = (ImageButton)getActivity().findViewById(R.id.btnA);
         btnA.setSelected(false);
-        btnA.setAlpha(1.0f);
+        btnA.setImageResource(R.drawable.ic_abloop_a);
         btnA.setOnTouchListener(this);
         ImageButton btnB = (ImageButton)getActivity().findViewById(R.id.btnB);
         btnB.setSelected(false);
-        btnB.setAlpha(1.0f);
+        btnB.setImageResource(R.drawable.ic_abloop_b);
         btnB.setOnTouchListener(this);
         ImageButton btnForward5Sec = (ImageButton)getActivity().findViewById(R.id.btnForward5Sec);
         btnForward5Sec.setOnTouchListener(this);
@@ -229,7 +229,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         btnNextmarker.setOnTouchListener(this);
         ImageButton btnLoopmarker = (ImageButton)getActivity().findViewById(R.id.btnLoopmarker);
         btnLoopmarker.setSelected(false);
-        btnLoopmarker.setAlpha(1.0f);
+        btnLoopmarker.setImageResource(R.drawable.ic_abloop_marker_loop);
         btnLoopmarker.setOnTouchListener(this);
         ImageButton btnForward5Sec2 = (ImageButton)getActivity().findViewById(R.id.btnForward5Sec2);
         btnForward5Sec2.setOnTouchListener(this);
@@ -511,7 +511,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         activity.bLoopA = true;
         ImageButton btnA = (ImageButton)getActivity().findViewById(R.id.btnA);
         btnA.setSelected(true);
-        btnA.setAlpha(0.3f);
+        btnA.setImageResource(R.drawable.ic_abloop_a_on);
 
         long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
         long nPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dLoopA);
@@ -561,7 +561,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         activity.bLoopB = true;
         ImageButton btnB = (ImageButton)getActivity().findViewById(R.id.btnB);
         btnB.setSelected(true);
-        btnB.setAlpha(0.3f);
+        btnB.setImageResource(R.drawable.ic_abloop_b_on);
         long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
         long nPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dLoopB);
         int nScreenWidth = waveView.getWidth();
@@ -658,7 +658,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         activity.dLoopA = 0.0;
                         activity.bLoopA = false;
                         btnA.setSelected(false);
-                        btnA.setAlpha(1.0f);
+                        btnA.setImageResource(R.drawable.ic_abloop_a);
                         View viewMaskA = getActivity().findViewById(R.id.viewMaskA);
                         viewMaskA.setVisibility(View.INVISIBLE);
                         EditText textAValue  = (EditText)getActivity().findViewById(R.id.textAValue);
@@ -668,7 +668,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         activity.dLoopA = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                         activity.bLoopA = true;
                         btnA.setSelected(true);
-                        btnA.setAlpha(0.3f);
+                        btnA.setImageResource(R.drawable.ic_abloop_a_on);
                         long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
                         long nPos = BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE);
                         int nBkWidth = waveView.getWidth();
@@ -705,7 +705,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         activity.dLoopB = 0.0;
                         activity.bLoopB = false;
                         btnB.setSelected(false);
-                        btnB.setAlpha(1.0f);
+                        btnB.setImageResource(R.drawable.ic_abloop_b);
                         View viewMaskB = getActivity().findViewById(R.id.viewMaskB);
                         viewMaskB.setVisibility(View.INVISIBLE);
 
@@ -716,7 +716,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         activity.dLoopB = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                         activity.bLoopB = true;
                         btnB.setSelected(true);
-                        btnB.setAlpha(0.3f);
+                        btnB.setImageResource(R.drawable.ic_abloop_b_on);
                         long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
                         long nPos = BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE);
                         int nBkWidth = waveView.getWidth();
@@ -875,20 +875,20 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         {
             if(event.getAction() == MotionEvent.ACTION_UP)
             {
+                ImageButton btnLoopmarker = (ImageButton)getActivity().findViewById(R.id.btnLoopmarker);
+                if(btnLoopmarker.isSelected())
+                {
+                    btnLoopmarker.setSelected(false);
+                    btnLoopmarker.setImageResource(R.drawable.ic_abloop_marker_loop);
+                }
+                else
+                {
+                    btnLoopmarker.setSelected(true);
+                    btnLoopmarker.setImageResource(R.drawable.ic_abloop_marker_loop_on);
+                }
+
                 if(MainActivity.hStream != 0)
                 {
-                    ImageButton btnLoopmarker = (ImageButton)getActivity().findViewById(R.id.btnLoopmarker);
-                    if(btnLoopmarker.isSelected())
-                    {
-                        btnLoopmarker.setSelected(false);
-                        btnLoopmarker.setAlpha(1.0f);
-                    }
-                    else
-                    {
-                        btnLoopmarker.setSelected(true);
-                        btnLoopmarker.setAlpha(0.3f);
-                    }
-
                     double dCurPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     int i = 0;
                     for( ; i < arMarkerTime.size(); i++) {
@@ -958,7 +958,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         {
             ImageButton btnA = (ImageButton)getActivity().findViewById(R.id.btnA);
             btnA.setSelected(false);
-            btnA.setAlpha(1.0f);
+            btnA.setImageResource(R.drawable.ic_abloop_a);
         }
 
         if(getActivity().findViewById(R.id.viewMaskA) != null)
@@ -971,7 +971,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         {
             ImageButton btnB = (ImageButton)getActivity().findViewById(R.id.btnB);
             btnB.setSelected(false);
-            btnB.setAlpha(1.0f);
+            btnB.setImageResource(R.drawable.ic_abloop_b);
         }
 
         if(getActivity().findViewById(R.id.viewMaskB) != null)

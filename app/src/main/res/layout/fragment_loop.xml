@@ -190,6 +190,8 @@
         android:id="@+id/ABButton"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
@@ -197,6 +199,7 @@
         <ImageButton
             android:id="@+id/btnRewind5Sec"
             android:src="@drawable/ic_rewind5sec"
+            android:background="#00000000"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -205,7 +208,8 @@
 
         <ImageButton
             android:id="@+id/btnA"
-            android:src="@drawable/ic_a"
+            android:src="@drawable/ic_abloop_a"
+            android:background="#00000000"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -214,7 +218,8 @@
 
         <ImageButton
             android:id="@+id/btnB"
-            android:src="@drawable/ic_b"
+            android:src="@drawable/ic_abloop_b"
+            android:background="#00000000"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -224,6 +229,7 @@
         <ImageButton
             android:id="@+id/btnForward5Sec"
             android:src="@drawable/ic_forward5sec"
+            android:background="#00000000"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -238,6 +244,8 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:visibility="invisible"
         >
 
@@ -245,6 +253,7 @@
         <ImageButton
             android:id="@+id/btnRewind5Sec2"
             android:src="@drawable/ic_rewind5sec"
+            android:background="#00000000"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -254,6 +263,7 @@
         <ImageButton
             android:id="@+id/btnPrevmarker"
             android:src="@drawable/ic_prevmarker"
+            android:background="#00000000"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -263,6 +273,7 @@
         <ImageButton
             android:id="@+id/btnDelmarker"
             android:src="@drawable/ic_delmarker"
+            android:background="#00000000"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -272,6 +283,7 @@
         <ImageButton
             android:id="@+id/btnAddmarker"
             android:src="@drawable/ic_addmarker"
+            android:background="#00000000"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -281,6 +293,7 @@
         <ImageButton
             android:id="@+id/btnNextmarker"
             android:src="@drawable/ic_nextmarker"
+            android:background="#00000000"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -289,9 +302,10 @@
 
         <ImageButton
             android:id="@+id/btnLoopmarker"
-            android:src="@drawable/ic_loopmarker"
+            android:src="@drawable/ic_abloop_marker_loop"
+            android:background="#00000000"
             android:layout_width="0px"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             />
@@ -299,6 +313,7 @@
         <ImageButton
             android:id="@+id/btnForward5Sec2"
             android:src="@drawable/ic_forward5sec"
+            android:background="#00000000"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
