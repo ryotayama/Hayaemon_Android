@@ -57,6 +57,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private int hDspLeft = 0;
     private int hDspRight = 0;
     private int hDspExchange = 0;
+    private int hDspDoubling = 0;
     private int hDspPan = 0;
     private int hDspPhaseReversal = 0;
     private int hFxEcho = 0;
@@ -79,42 +80,43 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private final int kEffectTypeLeftOnly = 4;
     private final int kEffectTypeRightOnly = 5;
     private final int kEffectTypeReplace = 6;
-    private final int kEffectTypePan = 7;
-    private final int kEffectTypeFrequency = 8;
-    private final int kEffectTypePhaseReversal = 9;
-    private final int kEffectTypeStadiumEcho = 10;
-    private final int kEffectTypeHallEcho = 11;
-    private final int kEffectTypeLiveHouseEcho = 12;
-    private final int kEffectTypeRoomEcho = 13;
-    private final int kEffectTypeBathroomEcho = 14;
-    private final int kEffectTypeVocalEcho = 15;
-    private final int kEffectTypeMountainEcho = 16;
-    private final int kEffectTypeReverb_Bathroom = 17;
-    private final int kEffectTypeReverb_SmallRoom = 18;
-    private final int kEffectTypeReverb_MediumRoom = 19;
-    private final int kEffectTypeReverb_LargeRoom = 20;
-    private final int kEffectTypeReverb_Church = 21;
-    private final int kEffectTypeReverb_Cathedral = 22;
-    private final int kEffectTypeChorus = 23;
-    private final int kEffectTypeFlanger = 24;
-    private final int kEffectTypeDistortion_Strong = 25;
-    private final int kEffectTypeDistortion_Middle = 26;
-    private final int kEffectTypeDistortion_Weak = 27;
-    private final int kEffectTypeReverse = 28;
-    private final int kEffectTypeOldRecord = 29;
-    private final int kEffectTypeLowBattery = 30;
-    private final int kEffectTypeNoSense_Strong = 31;
-    private final int kEffectTypeNoSense_Middle = 32;
-    private final int kEffectTypeNoSense_Weak = 33;
-    private final int kEffectTypeEarTraining = 34;
-    private final int kEffectTypeMetronome = 35;
-    private final int kEffectTypeRecordNoise = 36;
-    private final int kEffectTypeRoarOfWaves = 37;
-    private final int kEffectTypeRain = 38;
-    private final int kEffectTypeRiver = 39;
-    private final int kEffectTypeWar = 40;
-    private final int kEffectTypeFire = 41;
-    private final int kEffectTypeConcertHall = 42;
+    private final int kEffectTypeDoubling = 7;
+    private final int kEffectTypePan = 8;
+    private final int kEffectTypeFrequency = 9;
+    private final int kEffectTypePhaseReversal = 10;
+    private final int kEffectTypeStadiumEcho = 11;
+    private final int kEffectTypeHallEcho = 12;
+    private final int kEffectTypeLiveHouseEcho = 13;
+    private final int kEffectTypeRoomEcho = 14;
+    private final int kEffectTypeBathroomEcho = 15;
+    private final int kEffectTypeVocalEcho = 16;
+    private final int kEffectTypeMountainEcho = 17;
+    private final int kEffectTypeReverb_Bathroom = 18;
+    private final int kEffectTypeReverb_SmallRoom = 19;
+    private final int kEffectTypeReverb_MediumRoom = 20;
+    private final int kEffectTypeReverb_LargeRoom = 21;
+    private final int kEffectTypeReverb_Church = 22;
+    private final int kEffectTypeReverb_Cathedral = 23;
+    private final int kEffectTypeChorus = 24;
+    private final int kEffectTypeFlanger = 25;
+    private final int kEffectTypeDistortion_Strong = 26;
+    private final int kEffectTypeDistortion_Middle = 27;
+    private final int kEffectTypeDistortion_Weak = 28;
+    private final int kEffectTypeReverse = 29;
+    private final int kEffectTypeOldRecord = 30;
+    private final int kEffectTypeLowBattery = 31;
+    private final int kEffectTypeNoSense_Strong = 32;
+    private final int kEffectTypeNoSense_Middle = 33;
+    private final int kEffectTypeNoSense_Weak = 34;
+    private final int kEffectTypeEarTraining = 35;
+    private final int kEffectTypeMetronome = 36;
+    private final int kEffectTypeRecordNoise = 37;
+    private final int kEffectTypeRoarOfWaves = 38;
+    private final int kEffectTypeRain = 39;
+    private final int kEffectTypeRiver = 40;
+    private final int kEffectTypeWar = 41;
+    private final int kEffectTypeFire = 42;
+    private final int kEffectTypeConcertHall = 43;
     private Timer timer;
     private int hSEStream;
     private int hSEStream2;
@@ -372,6 +374,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         item = new EffectItem("右のみ再生", false);
         arEffectItems.add(item);
         item = new EffectItem("左右入れ替え", false);
+        arEffectItems.add(item);
+        item = new EffectItem("ダブリング", false);
         arEffectItems.add(item);
         item = new EffectItem("パン", true);
         arEffectItems.add(item);
@@ -779,8 +783,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         else
         {
             arEffectItems.get(0).setSelected(false);
-            if(kEffectTypeVocalCancel <= nSelect && nSelect <= kEffectTypeReplace) {
-                for (int i = kEffectTypeVocalCancel; i <= kEffectTypeReplace; i++) {
+            if(kEffectTypeVocalCancel <= nSelect && nSelect <= kEffectTypeDoubling) {
+                for (int i = kEffectTypeVocalCancel; i <= kEffectTypeDoubling; i++) {
                     if(i != nSelect)
                         arEffectItems.get(i).setSelected(false);
                 }
@@ -875,6 +879,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             BASS.BASS_ChannelRemoveDSP(hStream, hDspExchange);
             hDspExchange = 0;
         }
+        if(hDspDoubling != 0)
+        {
+            BASS.BASS_ChannelRemoveDSP(hStream, hDspDoubling);
+            hDspDoubling = 0;
+        }
         if(hDspPan != 0)
         {
             BASS.BASS_ChannelRemoveDSP(hStream, hDspPan);
@@ -953,6 +962,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             else if(strEffect.equals("左右入れ替え")) {
                 if(info.chans != 1)
                     hDspExchange = BASS.BASS_ChannelSetDSP(hStream, exchangeDSP, null, 0);
+            }
+            else if(strEffect.equals("ダブリング")) {
+                if(info.chans != 1) {
+                    for(int j = 0; j < ECHBUFLEN; j++) {
+                        echbuf[j][0] = 0;
+                        echbuf[j][1] = 0;
+                    }
+                    echpos = 0;
+                    hDspDoubling = BASS.BASS_ChannelSetDSP(hStream, doublingDSP, null, 0);
+                }
             }
             else if(strEffect.equals("パン")) {
                 if(info.chans != 1)
@@ -1922,6 +1941,30 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                 float fTemp = b[a];
                 b[a] = b[a + 1];
                 b[a + 1] = fTemp;
+            }
+            ibuffer.rewind();
+            ibuffer.put(b);
+        }
+    };
+
+    int ECHBUFLEN = 1200;
+    float[][] echbuf = new float[ECHBUFLEN][2];
+    int echpos;
+    private final BASS.DSPPROC doublingDSP = new BASS.DSPPROC() {
+        public void DSPPROC(int handle, int channel, ByteBuffer buffer, int length, Object user) {
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
+            FloatBuffer ibuffer = buffer.asFloatBuffer();
+            float[] b = new float[length / 4];
+            ibuffer.get(b);
+            for(int a = 0; a < length / 4; a += 2) {
+                float l = echbuf[echpos][0];
+                float r = (b[a] + b[a+1]) * 0.5f;
+                echbuf[echpos][0]=(b[a] + b[a+1]) * 0.5f;
+                echbuf[echpos][1]=(b[a] + b[a+1]) * 0.5f;
+                b[a] = l;
+                b[a + 1] = r;
+                echpos++;
+                if (echpos==ECHBUFLEN) echpos=0;
             }
             ibuffer.rewind();
             ibuffer.put(b);
