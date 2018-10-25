@@ -33,6 +33,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
 import android.media.effect.Effect;
 import android.net.Uri;
 import android.os.Build;
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private IInAppBillingService mService;
     private ServiceConnection mServiceConn;
     private boolean bShowUpdateLog;
-    private BroadcastReceiver myPromoReceiver;
+    private BroadcastReceiver receiver;
     private AdView mAdView;
     private boolean mBound = false;
     private ForegroundService foregroundService = null;
@@ -228,9 +229,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
 
-        myPromoReceiver = new BroadcastReceiver() {
+        receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                if(intent.getAction() == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
+                    if(BASS.BASS_ChannelIsActive(hStream) == BASS.BASS_ACTIVE_PLAYING) {
+                        PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
+                        playlistFragment.pause();
+                    }
+                    return;
+                }
                 try {
                     Bundle ownedItems = mService.getPurchases(3, getPackageName(), "inapp", null);
                     if(ownedItems != null && ownedItems.getInt("RESPONSE_CODE") == 0) {
@@ -253,9 +261,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         };
-        IntentFilter promoFilter =
-                new IntentFilter("com.android.vending.billing.PURCHASES_UPDATED");
-        registerReceiver(myPromoReceiver, promoFilter);
+        registerReceiver(receiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
+        registerReceiver(receiver, new IntentFilter("com.android.vending.billing.PURCHASES_UPDATED"));
 
         try {
             Bundle ownedItems = mService.getPurchases(3, getPackageName(), "inapp", null);
@@ -280,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(myPromoReceiver);
+        unregisterReceiver(receiver);
     }
 
     @Override
