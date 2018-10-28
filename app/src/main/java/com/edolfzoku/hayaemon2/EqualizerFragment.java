@@ -663,7 +663,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         textTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
         textTitle.setGravity(Gravity.CENTER);
         textTitle.setText(arEqualizerItems.get(nItem).getEqualizerName());
-        textTitle.setTextColor(Color.argb(255, 192, 192, 192));
         textTitle.setHeight((int)(40 *  getResources().getDisplayMetrics().density + 0.5));
         linearLayout.addView(textTitle, param);
 
@@ -762,7 +761,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         textCancel.setGravity(Gravity.CENTER);
         textCancel.setText("キャンセル");
-        textCancel.setTextColor(Color.argb(255, 0, 0, 0));
         textCancel.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
         textCancel.setOnClickListener(new View.OnClickListener() {
             @Override

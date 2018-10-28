@@ -957,9 +957,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
             TextView textLocal = new TextView (activity);
-            textLocal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+            textLocal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
             textLocal.setGravity(Gravity.CENTER);
             textLocal.setText("ローカルに保存");
+            textLocal.setTextColor(Color.argb(255, 0, 0, 0));
             textLocal.setHeight((int)(48 *  getResources().getDisplayMetrics().density + 0.5));
             textLocal.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -971,11 +972,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             linearLayout.addView(textLocal, param);
 
             TextView textExport = new TextView (activity);
-            textExport.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+            textExport.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
             textExport.setGravity(Gravity.CENTER);
             textExport.setText("他のアプリにエクスポート");
+            textExport.setTextColor(Color.argb(255, 0, 0, 0));
             textExport.setTag(1);
-            textExport.setHeight((int)(48 *  getResources().getDisplayMetrics().density + 0.5));
+            textExport.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
             textExport.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -986,10 +988,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             linearLayout.addView(textExport, param);
 
             TextView textCancel = new TextView (activity);
-            textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+            textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
             textCancel.setGravity(Gravity.CENTER);
             textCancel.setText("キャンセル");
-            textCancel.setHeight((int)(48 *  getResources().getDisplayMetrics().density + 0.5));
+            textCancel.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
             textCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1013,18 +1015,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             for(int i = 0; i < arPlaylistNames.size(); i++) {
                 if(i == nSelectedPlaylist) continue;
                 TextView text = new TextView (activity);
-                text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
                 text.setGravity(Gravity.CENTER);
                 text.setText(arPlaylistNames.get(i).toString());
                 text.setTag(i);
-                text.setHeight((int)(48 *  getResources().getDisplayMetrics().density + 0.5));
+                text.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
                 arTempText.add(text);
             }
             TextView textCancel = new TextView (activity);
-            textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+            textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
             textCancel.setGravity(Gravity.CENTER);
             textCancel.setText("キャンセル");
-            textCancel.setHeight((int)(48 *  getResources().getDisplayMetrics().density + 0.5));
+            textCancel.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
             arTempText.add(textCancel);
             final ArrayList<TextView> arText = arTempText;
             for(int i = 0; i < arText.size(); i++) {
@@ -1097,7 +1099,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             ArrayList<TextView> arTempText = new ArrayList<>();
             for(int i = 0; i < arPlaylistNames.size(); i++) {
                 TextView text = new TextView (activity);
-                text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
                 text.setGravity(Gravity.CENTER);
                 text.setText(arPlaylistNames.get(i).toString());
                 text.setTag(i);
@@ -1105,7 +1107,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 arTempText.add(text);
             }
             TextView textCancel = new TextView (activity);
-            textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+            textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
             textCancel.setGravity(Gravity.CENTER);
             textCancel.setText("キャンセル");
             textCancel.setHeight((int)(48 *  getResources().getDisplayMetrics().density + 0.5));
