@@ -961,7 +961,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             textLocal.setGravity(Gravity.CENTER);
             textLocal.setText("ローカルに保存");
             textLocal.setTextColor(Color.argb(255, 0, 0, 0));
-            textLocal.setHeight((int)(48 *  getResources().getDisplayMetrics().density + 0.5));
+            textLocal.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
             textLocal.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
