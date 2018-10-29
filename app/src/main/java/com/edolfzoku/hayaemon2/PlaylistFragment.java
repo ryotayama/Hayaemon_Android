@@ -955,6 +955,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             ScrollView scroll = new ScrollView(activity);
 
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            
+            ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+            final SongItem songItem = arSongs.get(nSelectedItem);
+            String strTitle = songItem.getTitle();
+            TextView textTitle = new TextView (activity);
+            textTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+            textTitle.setGravity(Gravity.CENTER);
+            textTitle.setText(strTitle);
+            textTitle.setHeight((int)(40 *  getResources().getDisplayMetrics().density + 0.5));
+            linearLayout.addView(textTitle, param);
 
             TextView textLocal = new TextView (activity);
             textLocal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
