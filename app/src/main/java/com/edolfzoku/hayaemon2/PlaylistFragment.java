@@ -1344,7 +1344,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         textRemove.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         textRemove.setGravity(Gravity.CENTER);
         textRemove.setText("削除");
-        textRemove.setTextColor(Color.argb(255, 0, 0, 0));
+        textRemove.setTextColor(Color.argb(255, 255, 0, 0));
         textRemove.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
         textRemove.setOnClickListener(new View.OnClickListener() {
             @Override
