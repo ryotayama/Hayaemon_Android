@@ -99,7 +99,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position)
+    public void onBindViewHolder(final ViewHolder holder, final int position)
     {
         SongItem item = items.get(position);
         final int nItem = Integer.parseInt(item.getNumber()) - 1;
@@ -135,8 +135,6 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         if(bLock) holder.imgLock.setVisibility(View.VISIBLE);
         else holder.imgLock.setVisibility(View.GONE);
 
-        playlistFragment.registerForContextMenu(holder.songItem);
-        playlistFragment.registerForContextMenu(holder.frameSongMenu);
         holder.songItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,6 +143,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         });
         if(playlistFragment.isSorting()) {
             holder.frameSongMenu.setOnClickListener(null);
+            holder.frameSongMenu.setOnLongClickListener(null);
             holder.frameSongMenu.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
@@ -160,7 +159,14 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             holder.frameSongMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    holder.frameSongMenu.showContextMenu();
+                    playlistFragment.showMenu(position);
+                }
+            });
+            holder.frameSongMenu.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    playlistFragment.showMenu(position);
+                    return true;
                 }
             });
             holder.imgSongMenu.setImageResource(R.drawable.ic_listmenu);
