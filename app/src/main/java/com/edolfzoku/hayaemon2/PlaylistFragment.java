@@ -1144,7 +1144,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     }
                 });
                 linearLayout.addView(textCancel, param);
-                
+
                 scroll.addView(linearLayout);
                 dialog.setContentView(scroll);
                 dialog.show();
@@ -1502,6 +1502,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             });
             linearLayout.addView(textEffect, param);
         }
+
+        TextView textCancel = new TextView (activity);
+        textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        textCancel.setGravity(Gravity.CENTER);
+        textCancel.setText("キャンセル");
+        textCancel.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+        textCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        linearLayout.addView(textCancel, param);
 
         scroll.addView(linearLayout);
         dialog.setContentView(scroll);
