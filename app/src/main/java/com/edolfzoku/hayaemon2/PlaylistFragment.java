@@ -52,7 +52,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.TypedValue;
-import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -895,150 +894,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo info)
-    {
-        super.onCreateContextMenu(menu, view, info);
-        int nPosition = tabAdapter.getPosition();
-        selectPlaylist(nPosition);
-        String strPlaylist = arPlaylistNames.get(nPosition);
-        menu.setHeaderTitle(strPlaylist);
-        menu.add("再生リスト名を変更");
-        menu.add("再生リストを削除");
-        menu.add("再生リストを空にする");
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item)
-    {
-        if(item.getTitle().equals("再生リスト名を変更"))
-        {
-            final int nPlaylist;
-            RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
-            if(relativeSongs.getVisibility() == View.VISIBLE)
-                nPlaylist = tabAdapter.getPosition();
-            else
-                nPlaylist = playlistsAdapter.getPosition();
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("再生リスト名を変更");
-            final EditText editText = new EditText (activity);
-            editText.setHint("再生リスト");
-            editText.setHintTextColor(Color.argb(255, 192, 192, 192));
-            editText.setText(arPlaylistNames.get(nPlaylist));
-            builder.setView(editText);
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    arPlaylistNames.set(nPlaylist, editText.getText().toString());
-
-                    tabAdapter.notifyDataSetChanged();
-                    playlistsAdapter.notifyDataSetChanged();
-
-                    SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                    Gson gson = new Gson();
-                    preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-                    preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
-                    preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
-                    preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
-                }
-            });
-            builder.setNegativeButton("キャンセル", null);
-            builder.show();
-        }
-        else if(item.getTitle().equals("再生リストを削除"))
-        {
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("再生リストを削除");
-            builder.setMessage("再生リストを削除しますが、よろしいでしょうか？");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    int nDelete;
-                    RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
-                    if(relativeSongs.getVisibility() == View.VISIBLE)
-                        nDelete = tabAdapter.getPosition();
-                    else
-                        nDelete = playlistsAdapter.getPosition();
-                    if(nDelete == nPlayingPlaylist) stop();
-                    else if(nDelete < nPlayingPlaylist) nPlayingPlaylist--;
-                    ArrayList<SongItem> arSongs = arPlaylists.get(nDelete);
-                    for(int i = 0; i < arSongs.size(); i++) {
-                        SongItem song = arSongs.get(i);
-                        File file = new File(song.getPath());
-                        if(file.getParent().equals(activity.getFilesDir())) {
-                            file.delete();
-                        }
-                    }
-                    arPlaylists.remove(nDelete);
-                    arEffects.remove(nDelete);
-                    arPlaylistNames.remove(nDelete);
-                    arLyrics.remove(nDelete);
-                    if(arPlaylists.size() == 0)
-                        addPlaylist("再生リスト 1");
-
-                    int nSelect = nDelete;
-                    if(nSelect >= arPlaylists.size()) nSelect = arPlaylists.size() - 1;
-
-                    selectPlaylist(nSelect);
-
-                    SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                    Gson gson = new Gson();
-                    preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-                    preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
-                    preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
-                    preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
-                }
-            });
-            builder.setNegativeButton("キャンセル", null);
-            builder.show();
-        }
-        else if(item.getTitle().equals("再生リストを空にする"))
-        {
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("再生リストを空にする");
-            builder.setMessage("再生リストを空にしますが、よろしいでしょうか？");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    ArrayList<SongItem> arSongs;
-                    ArrayList<EffectSaver> arEffectSavers;
-                    ArrayList<String> arTempLyrics;
-                    RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
-                    if(relativeSongs.getVisibility() == View.VISIBLE) {
-                        arSongs = arPlaylists.get(tabAdapter.getPosition());
-                        arEffectSavers = arEffects.get(tabAdapter.getPosition());
-                        arTempLyrics = arLyrics.get(tabAdapter.getPosition());
-                    }
-                    else {
-                        arSongs = arPlaylists.get(playlistsAdapter.getPosition());
-                        arEffectSavers = arEffects.get(playlistsAdapter.getPosition());
-                        arTempLyrics = arLyrics.get(playlistsAdapter.getPosition());
-                    }
-                    for(int i = 0; i < arSongs.size(); i++) {
-                        SongItem song = arSongs.get(i);
-                        File file = new File(song.getPath());
-                        if(file.getParent() != null && file.getParent().equals(activity.getFilesDir())) {
-                            file.delete();
-                        }
-                    }
-                    arSongs.clear();
-                    arEffectSavers.clear();
-                    arTempLyrics.clear();
-
-                    songsAdapter.notifyDataSetChanged();
-                    playlistsAdapter.notifyDataSetChanged();
-
-                    SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                    Gson gson = new Gson();
-                    preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-                    preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
-                    preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
-                    preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
-                }
-            });
-            builder.setNegativeButton("キャンセル", null);
-            builder.show();
-        }
-        return super.onContextItemSelected(item);
-    }
-
     public void showSongMenu(final int nItem)
     {
         final BottomSheetDialog dialog = new BottomSheetDialog(activity);
@@ -1507,7 +1362,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         dialog.show();
     }
 
-    public void showPlaylistMenu(final int Position)
+    public void showPlaylistMenu(final int nPosition)
     {
         final BottomSheetDialog dialog = new BottomSheetDialog(activity);
         LinearLayout linearLayout = new LinearLayout(activity);
@@ -1516,7 +1371,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        int nPosition = Position;
         selectPlaylist(nPosition);
         String strPlaylist = arPlaylistNames.get(nPosition);
 
@@ -1537,22 +1391,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                final int nPlaylist;
-                RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
-                if(relativeSongs.getVisibility() == View.VISIBLE)
-                    nPlaylist = tabAdapter.getPosition();
-                else
-                    nPlaylist = playlistsAdapter.getPosition();
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setTitle("再生リスト名を変更");
                 final EditText editText = new EditText (activity);
                 editText.setHint("再生リスト");
                 editText.setHintTextColor(Color.argb(255, 192, 192, 192));
-                editText.setText(arPlaylistNames.get(nPlaylist));
+                editText.setText(arPlaylistNames.get(nPosition));
                 builder.setView(editText);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        arPlaylistNames.set(nPlaylist, editText.getText().toString());
+                        arPlaylistNames.set(nPosition, editText.getText().toString());
 
                         tabAdapter.notifyDataSetChanged();
                         playlistsAdapter.notifyDataSetChanged();
@@ -1586,15 +1434,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 builder.setMessage("再生リストを削除しますが、よろしいでしょうか？");
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        int nDelete;
                         RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
-                        if(relativeSongs.getVisibility() == View.VISIBLE)
-                            nDelete = tabAdapter.getPosition();
-                        else
-                            nDelete = playlistsAdapter.getPosition();
-                        if(nDelete == nPlayingPlaylist) stop();
-                        else if(nDelete < nPlayingPlaylist) nPlayingPlaylist--;
-                        ArrayList<SongItem> arSongs = arPlaylists.get(nDelete);
+                        if(nPosition == nPlayingPlaylist) stop();
+                        else if(nPosition < nPlayingPlaylist) nPlayingPlaylist--;
+                        ArrayList<SongItem> arSongs = arPlaylists.get(nPosition);
                         for(int i = 0; i < arSongs.size(); i++) {
                             SongItem song = arSongs.get(i);
                             File file = new File(song.getPath());
@@ -1602,14 +1445,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                                 file.delete();
                             }
                         }
-                        arPlaylists.remove(nDelete);
-                        arEffects.remove(nDelete);
-                        arPlaylistNames.remove(nDelete);
-                        arLyrics.remove(nDelete);
+                        arPlaylists.remove(nPosition);
+                        arEffects.remove(nPosition);
+                        arPlaylistNames.remove(nPosition);
+                        arLyrics.remove(nPosition);
                         if(arPlaylists.size() == 0)
                             addPlaylist("再生リスト 1");
 
-                        int nSelect = nDelete;
+                        int nSelect = nPosition;
                         if(nSelect >= arPlaylists.size()) nSelect = arPlaylists.size() - 1;
 
                         selectPlaylist(nSelect);
@@ -1647,16 +1490,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         ArrayList<EffectSaver> arEffectSavers;
                         ArrayList<String> arTempLyrics;
                         RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
-                        if(relativeSongs.getVisibility() == View.VISIBLE) {
-                            arSongs = arPlaylists.get(tabAdapter.getPosition());
-                            arEffectSavers = arEffects.get(tabAdapter.getPosition());
-                            arTempLyrics = arLyrics.get(tabAdapter.getPosition());
-                        }
-                        else {
-                            arSongs = arPlaylists.get(playlistsAdapter.getPosition());
-                            arEffectSavers = arEffects.get(playlistsAdapter.getPosition());
-                            arTempLyrics = arLyrics.get(playlistsAdapter.getPosition());
-                        }
+                        arSongs = arPlaylists.get(nPosition);
+                        arEffectSavers = arEffects.get(nPosition);
+                        arTempLyrics = arLyrics.get(nPosition);
                         for(int i = 0; i < arSongs.size(); i++) {
                             SongItem song = arSongs.get(i);
                             File file = new File(song.getPath());
