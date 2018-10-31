@@ -102,8 +102,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
         holder.textName.setText(item);
         holder.textSongCount.setText(String.format("%d曲", playlistFragment.getSongCount(position)));
 
-        playlistFragment.registerForContextMenu(holder.playlistItem);
-        playlistFragment.registerForContextMenu(holder.framePlaylistMenu);
         holder.playlistItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,7 +128,16 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
                 public void onClick(View v) {
                     bClicked = true;
                     nPosition = position;
-                    holder.framePlaylistMenu.showContextMenu();
+                    playlistFragment.showPlaylistMenu(position);
+                }
+            });
+            holder.framePlaylistMenu.setOnLongClickListener(new View.OnLongClickListener()
+            {
+                public boolean onLongClick(View v) {
+                    bClicked = true;
+                    nPosition = position;
+                    playlistFragment.showPlaylistMenu(position);
+                    return true;
                 }
             });
             holder.imgPlaylistMenu.setImageResource(R.drawable.ic_listmenu);

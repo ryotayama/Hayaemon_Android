@@ -159,13 +159,13 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             holder.frameSongMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    playlistFragment.showMenu(position);
+                    playlistFragment.showSongMenu(position);
                 }
             });
             holder.frameSongMenu.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    playlistFragment.showMenu(position);
+                    playlistFragment.showSongMenu(position);
                     return true;
                 }
             });

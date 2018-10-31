@@ -899,27 +899,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo info)
     {
         super.onCreateContextMenu(menu, view, info);
-        if(view instanceof RelativeLayout)
-        {
-            if(!playlistsAdapter.isClicked()) return;
-            playlistsAdapter.setClicked(false);
-            int nPosition = playlistsAdapter.getPosition();
-            RelativeLayout relative = (RelativeLayout)view;
-            menu.setHeaderTitle(playlistsAdapter.getName(nPosition));
-            menu.add("再生リスト名を変更");
-            menu.add("再生リストを削除");
-            menu.add("再生リストを空にする");
-        }
-        else if(view instanceof TextView)
-        {
-            int nPosition = tabAdapter.getPosition();
-            selectPlaylist(nPosition);
-            String strPlaylist = arPlaylistNames.get(nPosition);
-            menu.setHeaderTitle(strPlaylist);
-            menu.add("再生リスト名を変更");
-            menu.add("再生リストを削除");
-            menu.add("再生リストを空にする");
-        }
+        int nPosition = tabAdapter.getPosition();
+        selectPlaylist(nPosition);
+        String strPlaylist = arPlaylistNames.get(nPosition);
+        menu.setHeaderTitle(strPlaylist);
+        menu.add("再生リスト名を変更");
+        menu.add("再生リストを削除");
+        menu.add("再生リストを空にする");
     }
 
     @Override
@@ -1053,7 +1039,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         return super.onContextItemSelected(item);
     }
 
-    public void showMenu(final int nItem)
+    public void showSongMenu(final int nItem)
     {
         final BottomSheetDialog dialog = new BottomSheetDialog(activity);
         LinearLayout linearLayout = new LinearLayout(activity);
@@ -1502,6 +1488,202 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             });
             linearLayout.addView(textEffect, param);
         }
+
+        TextView textCancel = new TextView (activity);
+        textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        textCancel.setGravity(Gravity.CENTER);
+        textCancel.setText("キャンセル");
+        textCancel.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+        textCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        linearLayout.addView(textCancel, param);
+
+        scroll.addView(linearLayout);
+        dialog.setContentView(scroll);
+        dialog.show();
+    }
+
+    public void showPlaylistMenu(final int Position)
+    {
+        final BottomSheetDialog dialog = new BottomSheetDialog(activity);
+        LinearLayout linearLayout = new LinearLayout(activity);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        ScrollView scroll = new ScrollView(activity);
+
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        int nPosition = Position;
+        selectPlaylist(nPosition);
+        String strPlaylist = arPlaylistNames.get(nPosition);
+
+        TextView textTitle = new TextView (activity);
+        textTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+        textTitle.setGravity(Gravity.CENTER);
+        textTitle.setText(strPlaylist);
+        textTitle.setHeight((int)(40 *  getResources().getDisplayMetrics().density + 0.5));
+        linearLayout.addView(textTitle, param);
+
+        TextView textRename = new TextView (activity);
+        textRename.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        textRename.setGravity(Gravity.CENTER);
+        textRename.setText("再生リスト名を変更");
+        textRename.setTextColor(Color.argb(255, 0, 0, 0));
+        textRename.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+        textRename.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                final int nPlaylist;
+                RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
+                if(relativeSongs.getVisibility() == View.VISIBLE)
+                    nPlaylist = tabAdapter.getPosition();
+                else
+                    nPlaylist = playlistsAdapter.getPosition();
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle("再生リスト名を変更");
+                final EditText editText = new EditText (activity);
+                editText.setHint("再生リスト");
+                editText.setHintTextColor(Color.argb(255, 192, 192, 192));
+                editText.setText(arPlaylistNames.get(nPlaylist));
+                builder.setView(editText);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        arPlaylistNames.set(nPlaylist, editText.getText().toString());
+
+                        tabAdapter.notifyDataSetChanged();
+                        playlistsAdapter.notifyDataSetChanged();
+
+                        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                        Gson gson = new Gson();
+                        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+                        preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
+                        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+                    }
+                });
+                builder.setNegativeButton("キャンセル", null);
+                builder.show();
+            }
+        });
+        linearLayout.addView(textRename, param);
+
+        TextView textListRemove = new TextView (activity);
+        textListRemove.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        textListRemove.setGravity(Gravity.CENTER);
+        textListRemove.setText("再生リストを削除");
+        textListRemove.setTextColor(Color.argb(255, 255, 0, 0));
+        textListRemove.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+        textListRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle("再生リストを削除");
+                builder.setMessage("再生リストを削除しますが、よろしいでしょうか？");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        int nDelete;
+                        RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
+                        if(relativeSongs.getVisibility() == View.VISIBLE)
+                            nDelete = tabAdapter.getPosition();
+                        else
+                            nDelete = playlistsAdapter.getPosition();
+                        if(nDelete == nPlayingPlaylist) stop();
+                        else if(nDelete < nPlayingPlaylist) nPlayingPlaylist--;
+                        ArrayList<SongItem> arSongs = arPlaylists.get(nDelete);
+                        for(int i = 0; i < arSongs.size(); i++) {
+                            SongItem song = arSongs.get(i);
+                            File file = new File(song.getPath());
+                            if(file.getParent().equals(activity.getFilesDir())) {
+                                file.delete();
+                            }
+                        }
+                        arPlaylists.remove(nDelete);
+                        arEffects.remove(nDelete);
+                        arPlaylistNames.remove(nDelete);
+                        arLyrics.remove(nDelete);
+                        if(arPlaylists.size() == 0)
+                            addPlaylist("再生リスト 1");
+
+                        int nSelect = nDelete;
+                        if(nSelect >= arPlaylists.size()) nSelect = arPlaylists.size() - 1;
+
+                        selectPlaylist(nSelect);
+
+                        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                        Gson gson = new Gson();
+                        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+                        preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
+                        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+                    }
+                });
+                builder.setNegativeButton("キャンセル", null);
+                builder.show();
+            }
+        });
+        linearLayout.addView(textListRemove, param);
+
+        TextView textEmpty = new TextView (activity);
+        textEmpty.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        textEmpty.setGravity(Gravity.CENTER);
+        textEmpty.setText("再生リストを空にする");
+        textEmpty.setTextColor(Color.argb(255, 255, 0, 0));
+        textEmpty.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+        textEmpty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle("再生リストを空にする");
+                builder.setMessage("再生リストを空にしますが、よろしいでしょうか？");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ArrayList<SongItem> arSongs;
+                        ArrayList<EffectSaver> arEffectSavers;
+                        ArrayList<String> arTempLyrics;
+                        RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
+                        if(relativeSongs.getVisibility() == View.VISIBLE) {
+                            arSongs = arPlaylists.get(tabAdapter.getPosition());
+                            arEffectSavers = arEffects.get(tabAdapter.getPosition());
+                            arTempLyrics = arLyrics.get(tabAdapter.getPosition());
+                        }
+                        else {
+                            arSongs = arPlaylists.get(playlistsAdapter.getPosition());
+                            arEffectSavers = arEffects.get(playlistsAdapter.getPosition());
+                            arTempLyrics = arLyrics.get(playlistsAdapter.getPosition());
+                        }
+                        for(int i = 0; i < arSongs.size(); i++) {
+                            SongItem song = arSongs.get(i);
+                            File file = new File(song.getPath());
+                            if(file.getParent() != null && file.getParent().equals(activity.getFilesDir())) {
+                                file.delete();
+                            }
+                        }
+                        arSongs.clear();
+                        arEffectSavers.clear();
+                        arTempLyrics.clear();
+
+                        songsAdapter.notifyDataSetChanged();
+                        playlistsAdapter.notifyDataSetChanged();
+
+                        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                        Gson gson = new Gson();
+                        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+                        preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
+                        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+                    }
+                });
+                builder.setNegativeButton("キャンセル", null);
+                builder.show();
+            }
+        });
+        linearLayout.addView(textEmpty, param);
 
         TextView textCancel = new TextView (activity);
         textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
