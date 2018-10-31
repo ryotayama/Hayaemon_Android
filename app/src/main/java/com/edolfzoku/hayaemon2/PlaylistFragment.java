@@ -1066,6 +1066,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         final SongItem songItem = arSongs.get(nItem);
         String strTitle = songItem.getTitle();
+
         TextView textTitle = new TextView (activity);
         textTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
         textTitle.setGravity(Gravity.CENTER);

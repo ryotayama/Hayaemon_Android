@@ -13,6 +13,8 @@
         android:layout_weight="1"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
+        android:textSize="18dp"
+        android:textColor="#000000"
         android:text="曲を追加"
         android:id="@+id/menuOpen"/>
 
@@ -23,6 +25,8 @@
         android:layout_weight="1"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
+        android:textSize="18dp"
+        android:textColor="#000000"
         android:text="不具合報告・機能要望"
         android:id="@+id/menuTwitter"/>
 
@@ -33,6 +37,8 @@
         android:layout_weight="1"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
+        android:textSize="18dp"
+        android:textColor="#000000"
         android:text="レビュー投稿"
         android:id="@+id/menuReview"/>
 
@@ -43,6 +49,8 @@
         android:layout_weight="1"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
+        android:textSize="18dp"
+        android:textColor="#000000"
         android:text="広告を非表示にする"
         android:id="@+id/menuHideAds"/>
 
@@ -53,6 +61,8 @@
         android:layout_weight="1"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
+        android:textSize="18dp"
+        android:textColor="#000000"
         android:text="ハヤえもんについて"
         android:id="@+id/menuAbout"/>
 
@@ -63,6 +73,8 @@
         android:layout_weight="1"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
+        android:textSize="18dp"
+        android:textColor="#757575"
         android:text="キャンセル"
         android:id="@+id/menuCancel"/>
 
