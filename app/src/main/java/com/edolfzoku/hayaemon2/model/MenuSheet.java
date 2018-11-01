@@ -30,9 +30,11 @@ public class MenuSheet extends BottomSheetDialogFragment
     {
         BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
 
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+        dialog.setOnShowListener(new DialogInterface.OnShowListener()
+        {
             @Override
-            public void onShow(DialogInterface dialog) {
+            public void onShow(DialogInterface dialog)
+            {
                 BottomSheetDialog d = (BottomSheetDialog) dialog;
 
                 MainActivity activity = (MainActivity)getActivity();
@@ -58,7 +60,6 @@ public class MenuSheet extends BottomSheetDialogFragment
                 menuCancel.setOnClickListener(activity);
             }
         });
-
         return dialog;
     }
 }

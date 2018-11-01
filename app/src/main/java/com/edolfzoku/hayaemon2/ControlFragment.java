@@ -34,7 +34,8 @@ import android.widget.TextView;
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_FX;
 
-public class ControlFragment extends Fragment implements View.OnTouchListener, View.OnLongClickListener, View.OnFocusChangeListener {
+public class ControlFragment extends Fragment implements View.OnTouchListener, View.OnLongClickListener, View.OnFocusChangeListener
+{
     float fSpeed = 0.0f;
     float fPitch = 0.0f;
     boolean bLockSpeed = false;
@@ -54,15 +55,15 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.fragment_control, container, false);
         return rootView;
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
         super.onViewCreated(view, savedInstanceState);
 
         View viewBk = getActivity().findViewById(R.id.imgBack);
@@ -109,22 +110,20 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         if(hasFocus)
         {
             if(v.getId() == R.id.textSpeedValue)
-            {
                 showSpeedDialog();
-            }
             else if(v.getId() == R.id.textPitchValue)
-            {
                 showPitchDialog();
-            }
         }
     }
 
-    public void showSpeedDialog() {
+    public void showSpeedDialog()
+    {
         SpeedFragmentDialog dialog = new SpeedFragmentDialog();
         dialog.show(getFragmentManager(), "span_setting_dialog");
     }
 
-    public void showPitchDialog() {
+    public void showPitchDialog()
+    {
         PitchFragmentDialog dialog = new PitchFragmentDialog();
         dialog.show(getFragmentManager(), "span_setting_dialog");
     }
@@ -135,7 +134,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         fMaxSpeed = (fMaxSpeed - 1.0f) * 100.0f;
         fSpeed += 1.0;
         if(fSpeed >= fMaxSpeed) fSpeed = fMaxSpeed;
-        setSpeed(fSpeed);
+            setSpeed(fSpeed);
     }
 
     public void setSpeedDown()
@@ -144,7 +143,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
         fSpeed -= 1.0;
         if(fSpeed <= fMinSpeed) fSpeed = fMinSpeed;
-        setSpeed(fSpeed);
+            setSpeed(fSpeed);
     }
 
     public void setSpeed(float fSpeed)
@@ -179,10 +178,10 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             fX = nBkLeft + fCenter - (fSpeed / fMinSpeed) * fCenter;
         float fY = imgPoint.getY() + nPtHeight / 2;
         imgPoint.animate()
-                .x(fX - nPtWidth / 2)
-                .y(fY - nPtHeight / 2)
-                .setDuration(0)
-                .start();
+            .x(fX - nPtWidth / 2)
+            .y(fY - nPtHeight / 2)
+            .setDuration(0)
+            .start();
 
         if(bSave) {
             MainActivity activity = (MainActivity)getActivity();
@@ -196,7 +195,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         float fMaxPitch = 12.0f;
         fPitch += 1.0;
         if(fPitch >= fMaxPitch) fPitch = fMaxPitch;
-        setPitch(fPitch);
+            setPitch(fPitch);
     }
 
     public void setPitchDown()
@@ -204,7 +203,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         float fMinPitch = -12.0f;
         fPitch -= 1.0;
         if(fPitch <= fMinPitch) fPitch = fMinPitch;
-        setPitch(fPitch);
+            setPitch(fPitch);
     }
 
     public void setPitch(float fPitch)
@@ -242,12 +241,13 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         float fX = imgPoint.getX() + nPtWidth / 2;
         float fY = nBkTop + fBkHeight - ((fPitch - fMinPitch) / (fMaxPitch - fMinPitch)) * fBkHeight;
         imgPoint.animate()
-                .x(fX - nPtWidth / 2)
-                .y(fY)
-                .setDuration(0)
-                .start();
+            .x(fX - nPtWidth / 2)
+            .y(fY)
+            .setDuration(0)
+            .start();
 
-        if(bSave) {
+        if(bSave)
+        {
             MainActivity activity = (MainActivity)getActivity();
             PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
             playlistFragment.updateSavingEffect();
@@ -432,7 +432,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             float fX = imgPoint.getX();
             float fY = imgPoint.getY();
 
-            if(!bLockSpeed) {
+            if(!bLockSpeed)
+            {
                 fX = nBkLeft + event.getX();
                 if(fX < nBkLeft + nPtWidth / 2) fX = nBkLeft + nPtWidth / 2;
                 else if(fX > nBkLeft + nBkWidth - nPtWidth / 2) fX = nBkLeft + nBkWidth - nPtWidth / 2;
@@ -453,7 +454,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 textSpeedValue.setText(String.format("%.1f%%", fSpeed + 100));
             }
 
-            if(!bLockPitch) {
+            if(!bLockPitch)
+            {
                 fY = nBkTop + event.getY();
                 if(fY < nBkTop + nPtHeight / 2) fY = nBkTop + nPtHeight / 2;
                 else if(fY > nBkTop + nBkHeight - nPtHeight / 2) fY = nBkTop + nBkHeight - nPtHeight / 2;
@@ -480,10 +482,10 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             }
 
             imgPoint.animate()
-                    .x(fX)
-                    .y(fY)
-                    .setDuration(0)
-                    .start();
+                .x(fX)
+                .y(fY)
+                .setDuration(0)
+                .start();
 
             MainActivity activity = (MainActivity)getActivity();
             PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
@@ -493,5 +495,4 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         }
         return false;
     }
-
 }
