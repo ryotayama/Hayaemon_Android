@@ -1073,6 +1073,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                                         songsAdapter.notifyDataSetChanged();
                                     }
                                     dialog.dismiss();
+                                    saveFiles(true, true, true, true, false);
                                 }
                             }
                         }
