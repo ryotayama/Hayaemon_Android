@@ -251,12 +251,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         tabAdapter.notifyDataSetChanged();
                         playlistsAdapter.notifyDataSetChanged();
 
-                        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                        Gson gson = new Gson();
-                        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-                        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
-                        preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
-                        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+                        saveFiles(true, true, true, true, false);
                     }
 
                     @Override
@@ -355,18 +350,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 btnPlayMode.setText("連続再生");
                 btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_normal, 0, 0);
             }
-
-            SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-            int nPlayMode = 0;
-            if(btnPlayMode.getText().equals("連続再生"))
-                nPlayMode = 0;
-            else if(btnPlayMode.getText().equals("１曲リピート"))
-                nPlayMode = 1;
-            else if(btnPlayMode.getText().equals("全曲リピート"))
-                nPlayMode = 2;
-            else if(btnPlayMode.getText().equals("シャッフル"))
-                nPlayMode = 3;
-            preferences.edit().putInt("playmode", nPlayMode).commit();
+            saveFiles(false, false, false, false, true);
         }
         else if(v.getId() == R.id.btnRecord)
         {
@@ -457,9 +441,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(editLyrics.getWindowToken(), 0);
 
-                SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                Gson gson = new Gson();
-                preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
+                saveFiles(false, false, true, false, false);
             }
         }
         else if(v.getId() == R.id.btnEdit)
@@ -666,12 +648,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 arTempLyrics.add(null);
                 if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
                 songsAdapter.notifyDataSetChanged();
-                SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                Gson gson = new Gson();
-                preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-                preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
-                preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
-                preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+
+                saveFiles(true, true, true, true, false);
             }
         });
         builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
@@ -698,20 +676,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         ArrayList<String> arTempLyrics = new ArrayList<>();
         arLyrics.add(arTempLyrics);
         if(activity != null)
-        {
-            SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-            Gson gson = new Gson();
-            preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-            preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
-            preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
-            preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
-        }
+            saveFiles(true, true, true, true, false);
         selectPlaylist(arPlaylists.size() - 1);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.fragment_playlist, container, false);
         return rootView;
@@ -826,12 +796,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             }
         }
 
-        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-        Gson gson = new Gson();
-        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
-        preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
-        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+        saveFiles(true, true, true, true, false);
     }
 
     public void showSongMenu(final int nItem)
@@ -1225,12 +1190,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
                             songsAdapter.notifyDataSetChanged();
 
-                            SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                            Gson gson = new Gson();
-                            preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-                            preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
-                            preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
-                            preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+                            saveFiles(true, true, true, true, false);
                         }
 
                         @Override
@@ -1278,12 +1238,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
                         songsAdapter.notifyDataSetChanged();
 
-                        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                        Gson gson = new Gson();
-                        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-                        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
-                        preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
-                        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+                        saveFiles(true, true, true, true, false);
                     }
                 });
                 builder.setNegativeButton("キャンセル", null);
@@ -1324,9 +1279,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     EffectSaver saver = arEffectSavers.get(nItem);
                     saver.setSave(false);
                     songsAdapter.notifyDataSetChanged();
-                    SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                    Gson gson = new Gson();
-                    preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+
+                    saveFiles(false, true, false, false, false);
                     dialog.dismiss();
                 }
             });
@@ -1406,12 +1360,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         tabAdapter.notifyDataSetChanged();
                         playlistsAdapter.notifyDataSetChanged();
 
-                        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                        Gson gson = new Gson();
-                        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-                        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
-                        preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
-                        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+                        saveFiles(true, true, true, true, false);
                     }
                 });
                 builder.setNegativeButton("キャンセル", null);
@@ -1458,12 +1407,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
                         selectPlaylist(nSelect);
 
-                        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                        Gson gson = new Gson();
-                        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-                        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
-                        preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
-                        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+                        saveFiles(true, true, true, true, false);
                     }
                 });
                 builder.setNegativeButton("キャンセル", null);
@@ -1508,12 +1452,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         songsAdapter.notifyDataSetChanged();
                         playlistsAdapter.notifyDataSetChanged();
 
-                        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                        Gson gson = new Gson();
-                        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-                        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
-                        preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
-                        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+                        saveFiles(true, true, true, true, false);
                     }
                 });
                 builder.setNegativeButton("キャンセル", null);
@@ -1653,9 +1592,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             saver.setIsLoopMarker(btnLoopmarker.isSelected());
             saver.setMarker(loopFragment.getMarker());
         }
-        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-        Gson gson = new Gson();
-        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+
+        saveFiles(false, true, false, false, false);
+
     }
 
     public void updateSavingEffect()
@@ -1726,9 +1665,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             saver.setArMarkerTime(loopFragment.getArMarkerTime());
             saver.setIsLoopMarker(btnLoopmarker.isSelected());
             saver.setMarker(loopFragment.getMarker());
-            SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-            Gson gson = new Gson();
-            preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+
+            saveFiles(false, true, false, false, false);
         }
     }
 
@@ -2070,12 +2008,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         arTempLyrics.add(strLyrics);
         if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
         songsAdapter.notifyDataSetChanged();
-        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-        Gson gson = new Gson();
-        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
-        preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
-        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+
+        saveFiles(true, true, true, true, false);
     }
 
     public void export()
@@ -2636,12 +2570,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         ArrayList<String> arTempLyrics = arLyrics.get(nPlaylist);
         arTempLyrics.remove(nSong);
 
-        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-        Gson gson = new Gson();
-        preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-        preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
-        preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
-        preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+        saveFiles(true, true, true, true, false);
+
     }
 
     public String getFileNameFromUri(Context context, Uri uri) {
@@ -2698,5 +2628,33 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     {
         if(songsAdapter != null)
             songsAdapter.notifyDataSetChanged();
+    }
+
+    public void saveFiles(boolean bPlaylists, boolean bEffects, boolean bLyrics, boolean bPlaylistNames, boolean bPlayMode)
+    {
+        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        Gson gson = new Gson();
+        if(bPlaylists)
+            preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+        if(bEffects)
+            preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+        if(bLyrics)
+            preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
+        if(bPlaylistNames)
+            preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+        if(bPlayMode)
+        {
+            Button btnPlayMode = (Button)activity.findViewById(R.id.btnPlayMode);
+            int nPlayMode = 0;
+            if(btnPlayMode.getText().equals("連続再生"))
+                nPlayMode = 0;
+            else if(btnPlayMode.getText().equals("１曲リピート"))
+                nPlayMode = 1;
+            else if(btnPlayMode.getText().equals("全曲リピート"))
+                nPlayMode = 2;
+            else if(btnPlayMode.getText().equals("シャッフル"))
+                nPlayMode = 3;
+            preferences.edit().putInt("playmode", nPlayMode).commit();
+        }
     }
 }
