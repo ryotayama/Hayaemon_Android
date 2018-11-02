@@ -410,6 +410,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             textAddSong.setVisibility(View.VISIBLE);
             bSorting = false;
             songsAdapter.notifyDataSetChanged();
+
+            songTouchHelper.attachToRecyclerView(null);
         }
         else if(v.getId() == R.id.btnFinishLyrics)
         {
@@ -740,68 +742,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         recyclerSongs.setLayoutManager(songsManager);
         recyclerSongs.setAdapter(songsAdapter);
         recyclerSongs.setOnClickListener(this);
-        songTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
-            @Override
-            public boolean onMove(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                final int fromPos = viewHolder.getAdapterPosition();
-                final int toPos = target.getAdapterPosition();
-
-                ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
-                SongItem itemTemp = arSongs.get(fromPos);
-                arSongs.remove(fromPos);
-                arSongs.add(toPos, itemTemp);
-
-                ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
-                EffectSaver saver = arEffectSavers.get(fromPos);
-                arEffectSavers.remove(fromPos);
-                arEffectSavers.add(toPos, saver);
-
-                ArrayList<String> arTempLyrics = arLyrics.get(nSelectedPlaylist);
-                String strLyrics = arTempLyrics.get(fromPos);
-                arTempLyrics.remove(fromPos);
-                arTempLyrics.add(toPos, strLyrics);
-
-                if(nPlayingPlaylist == nSelectedPlaylist)
-                {
-                    Boolean bTemp = arPlayed.get(fromPos);
-                    arPlayed.remove(fromPos);
-                    arPlayed.add(toPos, bTemp);
-                }
-
-                int nStart = fromPos < toPos ? fromPos : toPos;
-                for(int i = nStart; i < arSongs.size(); i++) {
-                    SongItem songItem = arSongs.get(i);
-                    songItem.setNumber(String.format("%d", i+1));
-                }
-
-                if(fromPos == nPlaying) nPlaying = toPos;
-                else if(fromPos < nPlaying && nPlaying <= toPos) nPlaying--;
-                else if(fromPos > nPlaying && nPlaying >= toPos) nPlaying++;
-
-                songsAdapter.notifyItemMoved(fromPos, toPos);
-
-                return true;
-            }
-
-            @Override
-            public void clearView(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder) {
-                super.clearView(recyclerSongs, viewHolder);
-
-                songsAdapter.notifyDataSetChanged();
-
-                SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                Gson gson = new Gson();
-                preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
-                preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
-                preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
-                preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            }
-        });
-        songTouchHelper.attachToRecyclerView(recyclerSongs);
 
         Button btnRewind = (Button) activity.findViewById(R.id.btnRewind);
         btnRewind.setOnClickListener(this);
@@ -1211,6 +1151,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     bSorting = false;
                     songsAdapter.notifyDataSetChanged();
                     dialog.dismiss();
+                    songTouchHelper.attachToRecyclerView(null);
                 }
             });
             linearLayout.addView(textSort, param);
@@ -1234,6 +1175,69 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     bSorting = true;
                     dialog.dismiss();
                     songsAdapter.notifyDataSetChanged();
+
+                    songTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
+                        @Override
+                        public boolean onMove(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                            final int fromPos = viewHolder.getAdapterPosition();
+                            final int toPos = target.getAdapterPosition();
+
+                            ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+                            SongItem itemTemp = arSongs.get(fromPos);
+                            arSongs.remove(fromPos);
+                            arSongs.add(toPos, itemTemp);
+
+                            ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
+                            EffectSaver saver = arEffectSavers.get(fromPos);
+                            arEffectSavers.remove(fromPos);
+                            arEffectSavers.add(toPos, saver);
+
+                            ArrayList<String> arTempLyrics = arLyrics.get(nSelectedPlaylist);
+                            String strLyrics = arTempLyrics.get(fromPos);
+                            arTempLyrics.remove(fromPos);
+                            arTempLyrics.add(toPos, strLyrics);
+
+                            if(nPlayingPlaylist == nSelectedPlaylist)
+                            {
+                                Boolean bTemp = arPlayed.get(fromPos);
+                                arPlayed.remove(fromPos);
+                                arPlayed.add(toPos, bTemp);
+                            }
+
+                            int nStart = fromPos < toPos ? fromPos : toPos;
+                            for(int i = nStart; i < arSongs.size(); i++) {
+                                SongItem songItem = arSongs.get(i);
+                                songItem.setNumber(String.format("%d", i+1));
+                            }
+
+                            if(fromPos == nPlaying) nPlaying = toPos;
+                            else if(fromPos < nPlaying && nPlaying <= toPos) nPlaying--;
+                            else if(fromPos > nPlaying && nPlaying >= toPos) nPlaying++;
+
+                            songsAdapter.notifyItemMoved(fromPos, toPos);
+
+                            return true;
+                        }
+
+                        @Override
+                        public void clearView(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder) {
+                            super.clearView(recyclerSongs, viewHolder);
+
+                            songsAdapter.notifyDataSetChanged();
+
+                            SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                            Gson gson = new Gson();
+                            preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+                            preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+                            preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
+                            preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+                        }
+
+                        @Override
+                        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                        }
+                    });
+                    songTouchHelper.attachToRecyclerView(recyclerSongs);
                 }
             });
             linearLayout.addView(textSort, param);

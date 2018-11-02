@@ -101,7 +101,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
         });
         if(playlistFragment.isSorting()) {
             holder.framePlaylistMenu.setOnClickListener(null);
-            holder.playlistItem.setOnClickListener(null);
+            holder.playlistItem.setOnLongClickListener(null);
             holder.framePlaylistMenu.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
