@@ -106,6 +106,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
         });
         if(playlistFragment.isSorting()) {
             holder.framePlaylistMenu.setOnClickListener(null);
+            holder.playlistItem.setOnClickListener(null);
             holder.framePlaylistMenu.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
@@ -126,7 +127,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
                     playlistFragment.showPlaylistMenu(position);
                 }
             });
-            holder.framePlaylistMenu.setOnLongClickListener(new View.OnLongClickListener()
+            holder.playlistItem.setOnLongClickListener(new View.OnLongClickListener()
             {
                 public boolean onLongClick(View v) {
                     bClicked = true;

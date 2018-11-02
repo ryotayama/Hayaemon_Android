@@ -143,7 +143,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         });
         if(playlistFragment.isSorting()) {
             holder.frameSongMenu.setOnClickListener(null);
-            holder.frameSongMenu.setOnLongClickListener(null);
+            holder.songItem.setOnLongClickListener(null);
             holder.frameSongMenu.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
@@ -162,7 +162,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
                     playlistFragment.showSongMenu(position);
                 }
             });
-            holder.frameSongMenu.setOnLongClickListener(new View.OnLongClickListener() {
+            holder.songItem.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     playlistFragment.showSongMenu(position);
