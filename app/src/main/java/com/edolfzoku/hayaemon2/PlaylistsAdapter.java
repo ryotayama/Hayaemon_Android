@@ -41,11 +41,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
     private int resource;
     private List<String> items;
     private LayoutInflater inflater;
-    private boolean bClicked = false;
-
-    public String getName(int nPosition) { return items.get(nPosition); }
-    public void setClicked(boolean bClicked) { this.bClicked = bClicked; }
-    public boolean isClicked() { return bClicked; }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout playlistItem;
@@ -123,14 +118,12 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             holder.framePlaylistMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    bClicked = true;
                     playlistFragment.showPlaylistMenu(position);
                 }
             });
             holder.playlistItem.setOnLongClickListener(new View.OnLongClickListener()
             {
                 public boolean onLongClick(View v) {
-                    bClicked = true;
                     playlistFragment.showPlaylistMenu(position);
                     return true;
                 }
