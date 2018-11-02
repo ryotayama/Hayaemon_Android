@@ -1310,13 +1310,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
         EffectSaver saver = arEffectSavers.get(nItem);
 
-        TextView textEffect = new TextView(activity);
-        textEffect.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        textEffect.setGravity(Gravity.CENTER);
-        textEffect.setTextColor(Color.argb(255, 0, 0, 0));
-        textEffect.setHeight((int) (56 * getResources().getDisplayMetrics().density + 0.5));
         if(saver.isSave()) {
+            TextView textEffect = new TextView(activity);
+            textEffect.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+            textEffect.setGravity(Gravity.CENTER);
             textEffect.setText("エフェクトの設定保持を解除");
+            textEffect.setTextColor(Color.argb(255, 0, 0, 0));
+            textEffect.setHeight((int) (56 * getResources().getDisplayMetrics().density + 0.5));
             textEffect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1324,16 +1324,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     EffectSaver saver = arEffectSavers.get(nItem);
                     saver.setSave(false);
                     songsAdapter.notifyDataSetChanged();
-                    SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                    Gson gson = new Gson();
-                    preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
                     dialog.dismiss();
                 }
             });
+            linearLayout.addView(textEffect, param);
         }
 
         else {
+            TextView textEffect = new TextView(activity);
+            textEffect.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+            textEffect.setGravity(Gravity.CENTER);
             textEffect.setText("エフェクトの設定状態を保持");
+            textEffect.setTextColor(Color.argb(255, 0, 0, 0));
+            textEffect.setHeight((int) (56 * getResources().getDisplayMetrics().density + 0.5));
             textEffect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1342,8 +1345,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     dialog.dismiss();
                 }
             });
+            linearLayout.addView(textEffect, param);
         }
-        linearLayout.addView(textEffect, param);
 
         TextView textCancel = new TextView (activity);
         textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
