@@ -55,6 +55,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -795,10 +796,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 songsAdapter.notifyDataSetChanged();
             }
         }
-
+        
         saveFiles(true, true, true, true, false);
     }
-
+    
     public void showSongMenu(final int nItem)
     {
         final BottomSheetDialog dialog = new BottomSheetDialog(activity);
@@ -806,9 +807,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         ScrollView scroll = new ScrollView(activity);
         nSelectedItem = nItem;
-
+        
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
+        
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         final SongItem songItem = arSongs.get(nItem);
         String strTitle = songItem.getTitle();
@@ -1097,7 +1098,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         textRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                boolean bDeletePlaying = false; // 再生中の曲を削除したか
+                if(nSelectedPlaylist == nPlayingPlaylist && nItem == nPlaying)
+                    bDeletePlaying = true;
                 removeSong(nSelectedPlaylist, nItem);
+                if(bDeletePlaying) {
+                    ArrayList<SongItem> arSongs = arPlaylists.get(nPlayingPlaylist);
+                    if(nPlaying < arSongs.size())
+                        playSong(nPlaying);
+                    else if(nPlaying > 0 && nPlaying == arSongs.size())
+                        playSong(nPlaying-1);
+                    else
+                        stop();
+                }
                 dialog.dismiss();
             }
         });
