@@ -673,7 +673,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             try {
                 String strVersionName = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
-                builder.setMessage("バージョン: " + strVersionName);
+                builder.setMessage("バージョン: Android ver." + strVersionName);
             }
             catch(PackageManager.NameNotFoundException e) {
                 builder.setMessage("バージョン: 〈バージョン情報を取得できませんでした〉");
