@@ -170,34 +170,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         final LinearLayoutManager equalizersManager = new LinearLayoutManager(activity);
         recyclerEqualizers.setLayoutManager(equalizersManager);
         recyclerEqualizers.setAdapter(equalizersAdapter);
-        equalizerTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
-            @Override
-            public boolean onMove(RecyclerView recyclerEqualizers, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                final int fromPos = viewHolder.getAdapterPosition();
-                final int toPos = target.getAdapterPosition();
-
-                EqualizerItem itemTemp = arEqualizerItems.get(fromPos);
-                arEqualizerItems.remove(fromPos);
-                arEqualizerItems.add(toPos, itemTemp);
-
-                equalizersAdapter.notifyItemMoved(fromPos, toPos);
-
-                return true;
-            }
-
-            @Override
-            public void clearView(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder) {
-                super.clearView(recyclerSongs, viewHolder);
-
-                equalizersAdapter.notifyDataSetChanged();
-                saveData();
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            }
-        });
-        equalizerTouchHelper.attachToRecyclerView(recyclerEqualizers);
 
         arTextValue = new ArrayList<TextView>();
         arTextValue.add((TextView)getActivity().findViewById(R.id.textVolValue));
@@ -359,6 +331,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             textFinishSortEqualizer.setVisibility(View.GONE);
             bSorting = false;
             equalizersAdapter.notifyDataSetChanged();
+            equalizerTouchHelper.attachToRecyclerView(null);
         }
     }
 
@@ -696,6 +669,35 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 textFinishSortEqualizer.setVisibility(View.VISIBLE);
                 bSorting = true;
                 equalizersAdapter.notifyDataSetChanged();
+
+                equalizerTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
+                    @Override
+                    public boolean onMove(RecyclerView recyclerEqualizers, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                        final int fromPos = viewHolder.getAdapterPosition();
+                        final int toPos = target.getAdapterPosition();
+
+                        EqualizerItem itemTemp = arEqualizerItems.get(fromPos);
+                        arEqualizerItems.remove(fromPos);
+                        arEqualizerItems.add(toPos, itemTemp);
+
+                        equalizersAdapter.notifyItemMoved(fromPos, toPos);
+
+                        return true;
+                    }
+
+                    @Override
+                    public void clearView(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder) {
+                        super.clearView(recyclerSongs, viewHolder);
+
+                        equalizersAdapter.notifyDataSetChanged();
+                        saveData();
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                    }
+                });
+                equalizerTouchHelper.attachToRecyclerView(recyclerEqualizers);
             }
         });
         linearLayout.addView(textSort, param);
