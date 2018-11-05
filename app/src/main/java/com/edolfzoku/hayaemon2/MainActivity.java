@@ -32,6 +32,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.effect.Effect;
@@ -43,6 +44,7 @@ import android.os.IBinder;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -293,7 +295,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-
         if(bShowUpdateLog) {
             bShowUpdateLog = false;
 
@@ -357,14 +358,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND);
                     try {
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, "ハヤえもんAndroid版ver." + getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName + "にアップデートしました！ https://play.google.com/store/apps/details?id=com.edolfzoku.hayaemon2");
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, "ハヤえもんAndroid版ver." + getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName + "にアップデートしました！ https://bit.ly/2D3jY89");
                     }
                     catch(PackageManager.NameNotFoundException e) {
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, "ハヤえもんAndroid版をアップデートしました！ https://play.google.com/store/apps/details?id=com.edolfzoku.hayaemon2");
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, "ハヤえもんAndroid版をアップデートしました！ https://bit.ly/2D3jY89");
                     }
-                    sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(getScreenshot(layout.getRootView())));
-                    sendIntent.setType("*/*");
+                    sendIntent.setType("＊/＊");
+                    File file = getScreenshot(layout.getRootView());
+                    Uri uri = FileProvider.getUriForFile(getApplicationContext(), "com.edolfzoku.hayaemon2", file);
+                    List<ResolveInfo> resInfoList = getApplicationContext().getPackageManager().queryIntentActivities(sendIntent, PackageManager.MATCH_ALL);
+                    for (ResolveInfo resolveInfo : resInfoList) {
+                        String packageName = resolveInfo.activityInfo.packageName;
+                        getApplicationContext().grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    }
+                    sendIntent.putExtra(Intent.EXTRA_STREAM, uri);
                     startActivity(sendIntent);
+
+                    file.deleteOnExit();
                 }
             });
         }
@@ -378,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Bitmap screenShot = Bitmap.createBitmap(cache);
         view.setDrawingCacheEnabled(false);
 
-        File file = new File(Environment.getExternalStorageDirectory() + "/capture.jpeg");
+        File file = new File(getExternalCacheDir() + "/export/capture.jpeg");
         file.getParentFile().mkdir();
         FileOutputStream fos = null;
         try {
