@@ -295,6 +295,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
+
         if(bShowUpdateLog) {
             bShowUpdateLog = false;
 
@@ -363,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     catch(PackageManager.NameNotFoundException e) {
                         sendIntent.putExtra(Intent.EXTRA_TEXT, "ハヤえもんAndroid版をアップデートしました！ https://bit.ly/2D3jY89");
                     }
-                    sendIntent.setType("＊/＊");
+                    sendIntent.setType("*/*");
                     File file = getScreenshot(layout.getRootView());
                     Uri uri = FileProvider.getUriForFile(getApplicationContext(), "com.edolfzoku.hayaemon2", file);
                     List<ResolveInfo> resInfoList = getApplicationContext().getPackageManager().queryIntentActivities(sendIntent, PackageManager.MATCH_ALL);
