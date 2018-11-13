@@ -121,10 +121,10 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             holder.textArtist.setText(item.getArtist());
         }
         if(playlistFragment.getPlayingPlaylist() == playlistFragment.getSelectedPlaylist() && nItem == playlistFragment.getPlaying()) {
-            if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED)
-                holder.imgStatus.setImageResource(R.drawable.pause_circle);
-            else
+            if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING)
                 holder.imgStatus.setImageResource(R.drawable.circle_music);
+            else
+                holder.imgStatus.setImageResource(R.drawable.pause_circle);
             holder.textNumber.setVisibility(View.INVISIBLE);
         }
         else {
