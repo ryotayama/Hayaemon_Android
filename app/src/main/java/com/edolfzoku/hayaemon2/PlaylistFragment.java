@@ -318,15 +318,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         arPlayed = new ArrayList<Boolean>();
                         for(int i = 0; i < arSongs.size(); i++)
                             arPlayed.add(false);
-                        playNext();
+                        playNext(true);
                     }
+                    else
+                        play();
                 }
             }
         }
         else if(v.getId() == R.id.btnForward)
         {
             if(activity.hStream == 0) return;
-            playNext();
+            playNext(true);
         }
         else if(v.getId() == R.id.btnPlayMode)
         {
@@ -2134,7 +2136,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         playSong(nPlaying, true);
     }
 
-    public void playNext() {
+    public void playNext(boolean bPlay) {
         int nTempPlaying = nPlaying;
         MainActivity activity = (MainActivity) getActivity();
         Button btnPlayMode = (Button) activity.findViewById(R.id.btnPlayMode);
@@ -2192,11 +2194,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         {
             nTempPlaying++;
             if (nTempPlaying >= arSongs.size())
-            {
                 nTempPlaying = 0;
-            }
-            playSong(nTempPlaying, false);
-            pause();
+            playSong(nTempPlaying, bPlay);
+            if(!bPlay)
+                pause();
         }
     }
 

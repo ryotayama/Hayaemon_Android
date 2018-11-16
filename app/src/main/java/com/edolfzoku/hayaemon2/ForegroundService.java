@@ -145,7 +145,7 @@ public class ForegroundService extends IntentService {
             mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    playlistFragment.playNext();
+                    playlistFragment.playNext(true);
                 }
             });
         }
