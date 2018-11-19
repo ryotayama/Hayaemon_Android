@@ -66,6 +66,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -107,6 +108,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -148,6 +150,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -189,6 +192,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -230,6 +234,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -271,6 +276,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -312,6 +318,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -353,6 +360,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -394,6 +402,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -435,6 +444,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -476,6 +486,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -517,6 +528,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -558,6 +570,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -599,6 +612,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -640,6 +654,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -681,6 +696,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -722,6 +738,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -763,6 +780,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -804,6 +822,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -845,6 +864,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -886,6 +906,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -927,6 +948,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -968,6 +990,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -1009,6 +1032,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -1050,6 +1074,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -1091,6 +1116,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -1132,6 +1158,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -1173,6 +1200,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -1214,6 +1242,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -1255,6 +1284,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -1296,6 +1326,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView
@@ -1337,6 +1368,7 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
+                    android:thumb="@drawable/thumb"
                     />
 
                 <TextView

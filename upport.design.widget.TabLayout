@@ -1,0 +1,288 @@
+warning: LF will be replaced by CRLF in .idea/misc.xml.
+The file will have its original line endings in your working directory.
+[1mdiff --git a/app/src/main/res/drawable-hdpi/edit1.png b/app/src/main/res/drawable-hdpi/edit1.png[m
+[1mdeleted file mode 100644[m
+[1mindex 9547d37..0000000[m
+Binary files a/app/src/main/res/drawable-hdpi/edit1.png and /dev/null differ
+[1mdiff --git a/app/src/main/res/drawable-mdpi/edit1.png b/app/src/main/res/drawable-mdpi/edit1.png[m
+[1mdeleted file mode 100644[m
+[1mindex 67cee69..0000000[m
+Binary files a/app/src/main/res/drawable-mdpi/edit1.png and /dev/null differ
+[1mdiff --git a/app/src/main/res/drawable-xhdpi/edit1.png b/app/src/main/res/drawable-xhdpi/edit1.png[m
+[1mdeleted file mode 100644[m
+[1mindex 98eadc4..0000000[m
+Binary files a/app/src/main/res/drawable-xhdpi/edit1.png and /dev/null differ
+[1mdiff --git a/app/src/main/res/layout/fragment_equalizer.xml b/app/src/main/res/layout/fragment_equalizer.xml[m
+[1mindex 03bcb91..18a592c 100644[m
+[1m--- a/app/src/main/res/layout/fragment_equalizer.xml[m
+[1m+++ b/app/src/main/res/layout/fragment_equalizer.xml[m
+[36m@@ -66,6 +66,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -107,6 +108,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -148,6 +150,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -189,6 +192,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -230,6 +234,8 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+[32m+[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -271,6 +277,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -312,6 +319,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -353,6 +361,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -394,6 +403,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -435,6 +445,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -476,6 +487,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -517,6 +529,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -558,6 +571,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -599,6 +613,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -640,6 +655,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -681,6 +697,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -722,6 +739,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -763,6 +781,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -804,6 +823,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -845,6 +865,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -886,6 +907,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -927,6 +949,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -968,6 +991,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -1009,6 +1033,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -1050,6 +1075,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -1091,6 +1117,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -1132,6 +1159,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -1173,6 +1201,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -1214,6 +1243,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -1255,6 +1285,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -1296,6 +1327,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[36m@@ -1337,6 +1369,7 @@[m
+                     android:layout_centerVertical="true"[m
+                     android:max="60"[m
+                     android:progress="30"[m
+[32m+[m[32m                    android:thumb="@drawable/thumb"[m
+                     />[m
+ [m
+                 <TextView[m
+[1mdiff --git a/app/src/main/res/layout/fragment_playlist.xml b/app/src/main/res/layout/fragment_playlist.xml[m
+[1mindex e973dc7..c251256 100644[m
+[1m--- a/app/src/main/res/layout/fragment_playlist.xml[m
+[1m+++ b/app/src/main/res/layout/fragment_playlist.xml[m
+[36m@@ -282,7 +282,7 @@[m
+             android:layout_width="64dp"[m
+             android:layout_height="64dp"[m
+             android:background="@null"[m
+[31m-            android:src="@drawable/edit1"[m
+[32m+[m[32m            android:src="@drawable/edit_lyric"[m
+             android:scaleType="centerInside"[m
+             android:clickable="true"[m
+             android:layout_margin="16dp"[m
