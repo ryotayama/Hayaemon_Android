@@ -194,8 +194,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             if(bSorting)
             {
                 recyclerPlaylists.setPadding(0, 0, 0, (int)(80 * getResources().getDisplayMetrics().density + 0.5));
-                TextView textAddPlaylist = (TextView) activity.findViewById(R.id.textAddPlaylist);
-                textAddPlaylist.setVisibility(View.VISIBLE);
+                ImageButton btnAddPlaylist = (ImageButton) activity.findViewById(R.id.btnAddPlaylist);
+                btnAddPlaylist.setVisibility(View.VISIBLE);
                 bSorting = false;
                 playlistsAdapter.notifyDataSetChanged();
                 Button btnSortPlaylist = (Button) activity.findViewById(R.id.btnSortPlaylist);
@@ -206,8 +206,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             else
             {
                 recyclerPlaylists.setPadding(0, 0, 0, 0);
-                TextView textAddPlaylist = (TextView) activity.findViewById(R.id.textAddPlaylist);
-                textAddPlaylist.setVisibility(View.GONE);
+                ImageButton btnAddPlaylist = (ImageButton) activity.findViewById(R.id.btnAddPlaylist);
+                btnAddPlaylist.setVisibility(View.GONE);
                 bSorting = true;
                 playlistsAdapter.notifyDataSetChanged();
                 Button btnSortPlaylist = (Button) activity.findViewById(R.id.btnSortPlaylist);
@@ -262,7 +262,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 playlistTouchHelper.attachToRecyclerView(recyclerPlaylists);
             }
         }
-        else if(v.getId() == R.id.textAddPlaylist)
+        else if(v.getId() == R.id.btnAddPlaylist)
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("新しいリストを追加する");
@@ -389,7 +389,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             builder.setNegativeButton("キャンセル", null);
             builder.show();
         }
-        else if(v.getId() == R.id.textAddSong)
+        else if(v.getId() == R.id.btnAddSong)
         {
             activity.open();
         }
@@ -398,8 +398,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             recyclerSongs.setPadding(0, 0, 0, (int)(80 * getResources().getDisplayMetrics().density + 0.5));
             TextView textFinishSort = (TextView) activity.findViewById(R.id.textFinishSort);
             textFinishSort.setVisibility(View.GONE);
-            TextView textAddSong = (TextView) activity.findViewById(R.id.textAddSong);
-            textAddSong.setVisibility(View.VISIBLE);
+            ImageButton btnAddSong = (ImageButton) activity.findViewById(R.id.btnAddSong);
+            btnAddSong.setVisibility(View.VISIBLE);
             bSorting = false;
             songsAdapter.notifyDataSetChanged();
 
@@ -742,8 +742,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         Button btnSortPlaylist = (Button) activity.findViewById(R.id.btnSortPlaylist);
         btnSortPlaylist.setOnClickListener(this);
 
-        TextView textAddPlaylist = (TextView) activity.findViewById(R.id.textAddPlaylist);
-        textAddPlaylist.setOnClickListener(this);
+        ImageButton btnAddPlaylist = (ImageButton) activity.findViewById(R.id.btnAddPlaylist);
+        btnAddPlaylist.setOnClickListener(this);
 
         TextView textLeft = (TextView) activity.findViewById(R.id.textLeft);
         textLeft.setOnClickListener(this);
@@ -751,8 +751,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         TextView textAddPlaylist_small = (TextView) activity.findViewById(R.id.textAddPlaylist_small);
         textAddPlaylist_small.setOnClickListener(this);
 
-        TextView textAddSong = (TextView) activity.findViewById(R.id.textAddSong);
-        textAddSong.setOnClickListener(this);
+        ImageButton btnAddSong = (ImageButton) activity.findViewById(R.id.btnAddSong) ;
+        btnAddSong.setOnClickListener(this);
 
         TextView textFinishSort = (TextView) activity.findViewById(R.id.textFinishSort);
         textFinishSort.setOnClickListener(this);
@@ -1156,8 +1156,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     recyclerSongs.setPadding(0, 0, 0, (int)(64 * getResources().getDisplayMetrics().density + 0.5));
                     TextView textFinishSort = (TextView) activity.findViewById(R.id.textFinishSort);
                     textFinishSort.setVisibility(View.VISIBLE);
-                    TextView textAddSong = (TextView) activity.findViewById(R.id.textAddSong);
-                    textAddSong.setVisibility(View.GONE);
+                    ImageButton btnAddSong = (ImageButton) activity.findViewById(R.id.btnAddSong);
+                    btnAddSong.setVisibility(View.GONE);
                     bSorting = true;
                     dialog.dismiss();
                     songsAdapter.notifyDataSetChanged();

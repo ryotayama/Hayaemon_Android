@@ -62,16 +62,14 @@
             android:layout_alignParentBottom="true"
             >
 
-            <TextView
-                android:id="@+id/textAddPlaylist"
+            <ImageButton
+                android:id="@+id/btnAddPlaylist"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:text="＋"
-                android:textSize="40dp"
-                android:background="@drawable/circle"
-                android:textColor="#FFFFFF"
+                android:background="@null"
+                android:src="@drawable/add_folder"
+                android:scaleType="centerInside"
                 android:clickable="true"
-                android:gravity="center"
                 android:layout_margin="8dp"
                 android:layout_alignParentRight="true"
                 android:visibility="visible"
@@ -175,16 +173,14 @@
             android:layout_alignParentBottom="true"
             >
 
-            <TextView
-                android:id="@+id/textAddSong"
+            <ImageButton
+                android:id="@+id/btnAddSong"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:text="＋"
-                android:textSize="40dp"
-                android:background="@drawable/circle"
-                android:textColor="#FFFFFF"
+                android:background="@null"
+                android:src="@drawable/add_music"
+                android:scaleType="centerInside"
                 android:clickable="true"
-                android:gravity="center"
                 android:layout_margin="8dp"
                 android:layout_alignParentRight="true"
                 android:visibility="visible"
@@ -282,7 +278,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:background="@null"
-            android:src="@drawable/edit1"
+            android:src="@drawable/edit_lyric"
             android:scaleType="centerInside"
             android:clickable="true"
             android:layout_margin="16dp"
