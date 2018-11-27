@@ -62,7 +62,7 @@
             android:layout_alignParentBottom="true"
             >
 
-            <ImageButton
+            <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnAddPlaylist"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
@@ -73,6 +73,7 @@
                 android:layout_margin="8dp"
                 android:layout_alignParentRight="true"
                 android:visibility="visible"
+
                 />
 
         </RelativeLayout>
@@ -173,7 +174,7 @@
             android:layout_alignParentBottom="true"
             >
 
-            <ImageButton
+            <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnAddSong"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
@@ -273,7 +274,7 @@
             android:layout_alignParentLeft="true"
             />
 
-        <ImageButton
+        <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnEdit"
             android:layout_width="64dp"
             android:layout_height="64dp"

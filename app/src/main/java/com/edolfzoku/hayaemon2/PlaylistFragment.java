@@ -51,6 +51,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -264,20 +265,27 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         }
         else if(v.getId() == R.id.btnAddPlaylist)
         {
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("新しいリストを追加する");
-            final EditText editText = new EditText (activity);
-            editText.setHint("再生リスト");
-            editText.setHintTextColor(Color.argb(255, 192, 192, 192));
-            editText.setText("再生リスト");
-            builder.setView(editText);
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    addPlaylist(editText.getText().toString());
+            final Handler handler = new Handler();
+            Runnable timer=new Runnable() {
+                public void run()
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                    builder.setTitle("新しいリストを追加する");
+                    final EditText editText = new EditText (activity);
+                    editText.setHint("再生リスト");
+                    editText.setHintTextColor(Color.argb(255, 192, 192, 192));
+                    editText.setText("再生リスト");
+                    builder.setView(editText);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            addPlaylist(editText.getText().toString());
+                        }
+                    });
+                    builder.setNegativeButton("キャンセル", null);
+                    builder.show();
                 }
-            });
-            builder.setNegativeButton("キャンセル", null);
-            builder.show();
+            };
+            handler.postDelayed(timer, 80);
         }
         else if(v.getId() == R.id.btnRewind)
         {
@@ -391,7 +399,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         }
         else if(v.getId() == R.id.btnAddSong)
         {
-            activity.open();
+            final Handler handler = new Handler();
+            Runnable timer=new Runnable() {
+                public void run()
+                {
+                    activity.open();
+                }
+            };
+            handler.postDelayed(timer, 80);
         }
         else if(v.getId() == R.id.textFinishSort)
         {
@@ -454,20 +469,27 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         }
         else if(v.getId() == R.id.btnEdit)
         {
-            TextView textLyrics = (TextView)activity.findViewById(R.id.textLyrics);
-            textLyrics.setVisibility(View.INVISIBLE);
-            Button btnFinishLyrics = (Button)activity.findViewById(R.id.btnFinishLyrics);
-            btnFinishLyrics.setText("完了");
-            ImageButton btnEdit = (ImageButton)activity.findViewById(R.id.btnEdit);
-            btnEdit.setVisibility(View.INVISIBLE);
-            EditText editLyrics = (EditText)activity.findViewById(R.id.editLyrics);
-            editLyrics.setText(textLyrics.getText());
-            editLyrics.setVisibility(View.VISIBLE);
-            editLyrics.requestFocus();
-            InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(editLyrics, InputMethodManager.SHOW_IMPLICIT);
-            int nPos = editLyrics.getText().length();
-            editLyrics.setSelection(nPos);
+            final Handler handler = new Handler();
+            Runnable timer=new Runnable() {
+                public void run()
+                {
+                    TextView textLyrics = (TextView)activity.findViewById(R.id.textLyrics);
+                    textLyrics.setVisibility(View.INVISIBLE);
+                    Button btnFinishLyrics = (Button)activity.findViewById(R.id.btnFinishLyrics);
+                    btnFinishLyrics.setText("完了");
+                    ImageButton btnEdit = (ImageButton)activity.findViewById(R.id.btnEdit);
+                    btnEdit.setVisibility(View.INVISIBLE);
+                    EditText editLyrics = (EditText)activity.findViewById(R.id.editLyrics);
+                    editLyrics.setText(textLyrics.getText());
+                    editLyrics.setVisibility(View.VISIBLE);
+                    editLyrics.requestFocus();
+                    InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(editLyrics, InputMethodManager.SHOW_IMPLICIT);
+                    int nPos = editLyrics.getText().length();
+                    editLyrics.setSelection(nPos);
+                }
+            };
+            handler.postDelayed(timer, 80);
         }
         else if(v.getId() == R.id.textNoLyrics)
         {
