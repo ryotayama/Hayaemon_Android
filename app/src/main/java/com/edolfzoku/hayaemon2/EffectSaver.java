@@ -258,7 +258,10 @@ public class EffectSaver {
         dLoopA = saver.dLoopA;
         bLoopB = saver.bLoopB;
         dLoopB = saver.dLoopB;
-        arMarkerTime = (ArrayList<Double>)saver.arMarkerTime.clone();
+        if(saver.arMarkerTime == null)
+            arMarkerTime = null;
+        else
+            arMarkerTime = (ArrayList<Double>)saver.arMarkerTime.clone();
         bLoopMarker = saver.bLoopMarker;
         nMarker = saver.nMarker;
     }
