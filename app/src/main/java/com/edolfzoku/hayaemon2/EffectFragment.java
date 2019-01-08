@@ -82,42 +82,42 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private final int kEffectTypeRightOnly = 5;
     private final int kEffectTypeReplace = 6;
     private final int kEffectTypeDoubling = 7;
-    private final int kEffectTypePan = 8;
-    private final int kEffectTypeFrequency = 9;
-    private final int kEffectTypePhaseReversal = 10;
-    private final int kEffectTypeStadiumEcho = 11;
-    private final int kEffectTypeHallEcho = 12;
-    private final int kEffectTypeLiveHouseEcho = 13;
-    private final int kEffectTypeRoomEcho = 14;
-    private final int kEffectTypeBathroomEcho = 15;
-    private final int kEffectTypeVocalEcho = 16;
-    private final int kEffectTypeMountainEcho = 17;
-    private final int kEffectTypeReverb_Bathroom = 18;
-    private final int kEffectTypeReverb_SmallRoom = 19;
-    private final int kEffectTypeReverb_MediumRoom = 20;
-    private final int kEffectTypeReverb_LargeRoom = 21;
-    private final int kEffectTypeReverb_Church = 22;
-    private final int kEffectTypeReverb_Cathedral = 23;
-    private final int kEffectTypeChorus = 24;
-    private final int kEffectTypeFlanger = 25;
-    private final int kEffectTypeDistortion_Strong = 26;
-    private final int kEffectTypeDistortion_Middle = 27;
-    private final int kEffectTypeDistortion_Weak = 28;
-    private final int kEffectTypeReverse = 29;
-    private final int kEffectTypeOldRecord = 30;
-    private final int kEffectTypeLowBattery = 31;
-    private final int kEffectTypeNoSense_Strong = 32;
-    private final int kEffectTypeNoSense_Middle = 33;
-    private final int kEffectTypeNoSense_Weak = 34;
-    private final int kEffectTypeEarTraining = 35;
-    private final int kEffectTypeMetronome = 36;
-    private final int kEffectTypeRecordNoise = 37;
-    private final int kEffectTypeRoarOfWaves = 38;
-    private final int kEffectTypeRain = 39;
-    private final int kEffectTypeRiver = 40;
-    private final int kEffectTypeWar = 41;
-    private final int kEffectTypeFire = 42;
-    private final int kEffectTypeConcertHall = 43;
+    private final int kEffectTypeTranscribeBass = 8;
+    private final int kEffectTypePan = 9;
+    private final int kEffectTypeFrequency = 10;
+    private final int kEffectTypePhaseReversal = 11;
+    private final int kEffectTypeStadiumEcho = 12;
+    private final int kEffectTypeHallEcho = 13;
+    private final int kEffectTypeRoomEcho = 15;
+    private final int kEffectTypeBathroomEcho = 16;
+    private final int kEffectTypeVocalEcho = 17;
+    private final int kEffectTypeMountainEcho = 18;
+    private final int kEffectTypeReverb_Bathroom = 19;
+    private final int kEffectTypeReverb_SmallRoom = 20;
+    private final int kEffectTypeReverb_MediumRoom = 21;
+    private final int kEffectTypeReverb_LargeRoom = 22;
+    private final int kEffectTypeReverb_Church = 23;
+    private final int kEffectTypeReverb_Cathedral = 24;
+    private final int kEffectTypeChorus = 25;
+    private final int kEffectTypeFlanger = 26;
+    private final int kEffectTypeDistortion_Strong = 27;
+    private final int kEffectTypeDistortion_Middle = 28;
+    private final int kEffectTypeDistortion_Weak = 29;
+    private final int kEffectTypeReverse = 30;
+    private final int kEffectTypeOldRecord = 31;
+    private final int kEffectTypeLowBattery = 32;
+    private final int kEffectTypeNoSense_Strong = 33;
+    private final int kEffectTypeNoSense_Middle = 34;
+    private final int kEffectTypeNoSense_Weak = 35;
+    private final int kEffectTypeEarTraining = 36;
+    private final int kEffectTypeMetronome = 37;
+    private final int kEffectTypeRecordNoise = 38;
+    private final int kEffectTypeRoarOfWaves = 39;
+    private final int kEffectTypeRain = 40;
+    private final int kEffectTypeRiver = 41;
+    private final int kEffectTypeWar = 42;
+    private final int kEffectTypeFire = 43;
+    private final int kEffectTypeConcertHall = 44;
     private Timer timer;
     private int hSEStream;
     private int hSEStream2;
@@ -462,6 +462,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         arEffectItems.add(item);
         item = new EffectItem("ダブリング", false);
         arEffectItems.add(item);
+        item = new EffectItem("ベースの耳コピ（オクターブ上げ）", false);
+        arEffectItems.add(item);
         item = new EffectItem("パン", true);
         arEffectItems.add(item);
         item = new EffectItem("再生周波数", true);
@@ -569,6 +571,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             controlFragment.setSpeed(0.0f);
             controlFragment.setPitch(0.0f);
         }
+        if(!item.isSelected() && nEffect == kEffectTypeTranscribeBass)
+        {
+            EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+            equalizerFragment.setEQ(0);
+            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+            controlFragment.setPitch(0.0f);
+        }
         checkDuplicate(nEffect);
         if(hSEStream != 0)
         {
@@ -607,6 +616,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             {
                 ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
                 controlFragment.setSpeed(0.0f);
+                controlFragment.setPitch(0.0f);
+            }
+            if(arEffectItems.get(i).isSelected() && (i == kEffectTypeTranscribeBass))
+            {
+                EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+                equalizerFragment.setEQ(0);
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
                 controlFragment.setPitch(0.0f);
             }
             arEffectItems.get(i).setSelected(false);
@@ -890,6 +906,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                     controlFragment.setSpeed(0.0f);
                     controlFragment.setPitch(0.0f);
                 }
+                if(arEffectItems.get(i).isSelected() && i == kEffectTypeTranscribeBass)
+                {
+                    EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+                    equalizerFragment.setEQ(0);
+                    ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                    controlFragment.setPitch(0.0f);
+                }
                 arEffectItems.get(i).setSelected(false);
             }
         }
@@ -1115,6 +1138,21 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
                     }
                     echpos = 0;
                     hDspDoubling = BASS.BASS_ChannelSetDSP(hStream, doublingDSP, null, 0);
+                }
+            }
+            else if(strEffect.equals("ベースの耳コピ（オクターブ上げ）"))
+            {
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                controlFragment.setPitch(12.0f);
+                EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+                int[] array = new int[] {0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-20,-10,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0};
+                for(int j = 0; j < 32; j++)
+                {
+                    int nLevel = array[j];
+                    if(j == 0)
+                        equalizerFragment.setVol(nLevel);
+                    else
+                        equalizerFragment.setEQ(j, nLevel);
                 }
             }
             else if(strEffect.equals("パン"))
