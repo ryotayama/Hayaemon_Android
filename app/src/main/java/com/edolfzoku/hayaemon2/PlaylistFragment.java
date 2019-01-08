@@ -1314,7 +1314,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         textEffect.setTextColor(Color.argb(255, 0, 0, 0));
         textEffect.setHeight((int) (56 * getResources().getDisplayMetrics().density + 0.5));
         if(saver.isSave()) {
-            textEffect.setText("エフェクトの設定保持を解除");
+            textEffect.setText("各画面の設定保持を解除");
             textEffect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1330,7 +1330,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         }
 
         else {
-            textEffect.setText("エフェクトの設定状態を保持");
+            textEffect.setText("各画面の設定を保持");
             textEffect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
