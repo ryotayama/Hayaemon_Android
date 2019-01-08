@@ -2289,6 +2289,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     item.setSelected(false);
                 }
                 equalizerFragment.getEqualizersAdapter().notifyDataSetChanged();
+                nPlaying = nSong;
                 EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
                 effectFragment.resetEffect();
             }
