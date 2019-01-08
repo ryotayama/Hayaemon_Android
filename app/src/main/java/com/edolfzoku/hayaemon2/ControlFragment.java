@@ -81,19 +81,19 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         Button btnResetPitch = (Button)getActivity().findViewById(R.id.btnResetPitch);
         btnResetPitch.setOnTouchListener(this);
 
-        TextView textSpeedUp = (TextView)getActivity().findViewById(R.id.textSpeedUp);
+        AnimationTextView textSpeedUp = (AnimationTextView) getActivity().findViewById(R.id.textSpeedUp);
         textSpeedUp.setOnTouchListener(this);
         textSpeedUp.setOnLongClickListener(this);
 
-        TextView textSpeedDown = (TextView)getActivity().findViewById(R.id.textSpeedDown);
+        AnimationTextView textSpeedDown = (AnimationTextView)getActivity().findViewById(R.id.textSpeedDown);
         textSpeedDown.setOnTouchListener(this);
         textSpeedDown.setOnLongClickListener(this);
 
-        ImageView imgPitchUp = (ImageView)getActivity().findViewById(R.id.imgPitchUp);
+        AnimationButton imgPitchUp = (AnimationButton)getActivity().findViewById(R.id.imgPitchUp);
         imgPitchUp.setOnTouchListener(this);
         imgPitchUp.setOnLongClickListener(this);
 
-        ImageView imgPitchDown = (ImageView)getActivity().findViewById(R.id.imgPitchDown);
+        AnimationButton imgPitchDown = (AnimationButton)getActivity().findViewById(R.id.imgPitchDown);
         imgPitchDown.setOnTouchListener(this);
         imgPitchDown.setOnLongClickListener(this);
 
@@ -388,7 +388,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         }
         else if(v.getId() == R.id.textSpeedUp)
         {
-            if(event.getAction() == MotionEvent.ACTION_UP)
+            if (event.getAction() == MotionEvent.ACTION_UP)
             {
                 isContinue = false;
                 setSpeedUp();

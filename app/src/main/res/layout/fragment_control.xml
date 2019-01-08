@@ -141,7 +141,7 @@
             android:adjustViewBounds="true"
             android:layout_centerInParent="true"
             />
-        <TextView
+        <com.edolfzoku.hayaemon2.AnimationTextView
             android:id="@+id/textSpeedUp"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -157,7 +157,7 @@
             android:gravity="center"
             android:layout_margin="4dp"
             />
-        <TextView
+        <com.edolfzoku.hayaemon2.AnimationTextView
             android:id="@+id/textSpeedDown"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -173,7 +173,7 @@
             android:gravity="center"
             android:layout_margin="4dp"
             />
-        <ImageView
+        <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/imgPitchUp"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -186,7 +186,7 @@
             android:layout_centerHorizontal="true"
             android:layout_alignParentTop="true"
             />
-        <ImageView
+        <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/imgPitchDown"
             android:layout_width="48dp"
             android:layout_height="48dp"
