@@ -75,8 +75,35 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/textVolMinus"
+                    />
+
+                <TextView
+                    android:id="@+id/textVolMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/textVolPlus"
+                    />
+                
+
+                <TextView
+                    android:id="@+id/textVolPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -117,8 +144,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text20KMinus"
+                    />
+
+                <TextView
+                    android:id="@+id/text20KMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text20KPlus"
+                    />
+
+                <TextView
+                    android:id="@+id/text20KPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -159,8 +212,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text16KMinus"
+                    />
+
+                <TextView
+                    android:id="@+id/text16KMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text16KPlus"
+                    />
+
+                <TextView
+                    android:id="@+id/text16KPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -201,9 +280,36 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text12_5KMinus"
                     />
+
+                <TextView
+                    android:id="@+id/text12_5KMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text12_5KPlus"
+                    />
+
+                <TextView
+                    android:id="@+id/text12_5KPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
+                    />
+
 
             </RelativeLayout>
 
@@ -243,8 +349,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text10KMinus"
+                    />
+
+                <TextView
+                    android:id="@+id/text10KMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text10KPlus"
+                    />
+
+                <TextView
+                    android:id="@+id/text10KPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -285,8 +417,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text8KMinus"
+                    />
+
+                <TextView
+                    android:id="@+id/text8KMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text8KPlus"
+                    />
+
+                <TextView
+                    android:id="@+id/text8KPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -327,8 +485,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text6_3KMinus"
+                    />
+
+                <TextView
+                    android:id="@+id/text6_3KMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text6_3KPlus"
+                    />
+
+                <TextView
+                    android:id="@+id/text6_3KPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -369,8 +553,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text5KMinus"
+                    />
+
+                <TextView
+                    android:id="@+id/text5KMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text5KPlus"
+                    />
+
+                <TextView
+                    android:id="@+id/text5KPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -411,8 +621,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text4KMinus"
+                    />
+
+                <TextView
+                    android:id="@+id/text4KMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text4KPlus"
+                    />
+
+                <TextView
+                    android:id="@+id/text4KPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -446,15 +682,40 @@
                     android:progress="30"
                     android:thumb="@drawable/thumb"
                     />
-
                 <TextView
                     android:id="@+id/text3_15KValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text3_15KMinus"
+                    />
+
+                <TextView
+                    android:id="@+id/text3_15KMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text3_15KPlus"
+                    />
+
+                <TextView
+                    android:id="@+id/text3_15KPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -495,8 +756,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text2_5KMinus"
+                    />
+
+                <TextView
+                    android:id="@+id/text2_5KMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text2_5KPlus"
+                    />
+
+                <TextView
+                    android:id="@+id/text2_5KPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -537,8 +824,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text2KMinus"
+                    />
+
+                <TextView
+                    android:id="@+id/text2KMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text2KPlus"
+                    />
+
+                <TextView
+                    android:id="@+id/text2KPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -579,8 +892,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text1_6KMinus"
+                    />
+
+                <TextView
+                    android:id="@+id/text1_6KMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text1_6KPlus"
+                    />
+
+                <TextView
+                    android:id="@+id/text1_6KPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -621,8 +960,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text1_25KMinus"
+                    />
+
+                <TextView
+                    android:id="@+id/text1_25KMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text1_25KPlus"
+                    />
+
+                <TextView
+                    android:id="@+id/text1_25KPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -663,8 +1028,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text1KMinus"
+                    />
+
+                <TextView
+                    android:id="@+id/text1KMinus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text1KPlus"
+                    />
+
+                <TextView
+                    android:id="@+id/text1KPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -705,8 +1096,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text800Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text800Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text800Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text800Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -747,8 +1164,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text630Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text630Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text630Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text630Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -789,8 +1232,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text500Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text500Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text500Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text500Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -831,8 +1300,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text400Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text400Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text400Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text400Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -873,8 +1368,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text315Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text315Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text315Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text315Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -915,8 +1436,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text250Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text250Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text250Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text250Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -957,8 +1504,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text200Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text200Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text200Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text200Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -999,8 +1572,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text160Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text160Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text160Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text160Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -1041,8 +1640,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text125Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text125Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text125Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text125Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -1083,8 +1708,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text100Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text100Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text100Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text100Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -1125,8 +1776,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text80Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text80Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text80Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text80Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -1167,8 +1844,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text63Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text63Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text63Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text63Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -1209,8 +1912,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text50Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text50Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text50Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text50Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -1251,8 +1980,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text40Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text40Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text40Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text40Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -1293,8 +2048,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text31_5Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text31_5Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text31_5Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text31_5Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -1335,8 +2116,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text25Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text25Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text25Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text25Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
@@ -1377,8 +2184,34 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="left"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/text20Minus"
+                    />
+
+                <TextView
+                    android:id="@+id/text20Minus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="ー"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_toLeftOf="@+id/text20Plus"
+                    />
+
+                <TextView
+                    android:id="@+id/text20Plus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:text="＋"
+                    android:textSize="15dp"
+                    android:background="@drawable/circle2"
+                    android:textColor="#007AFF"
+                    android:gravity="center"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentRight="true"
                     />
 
             </RelativeLayout>
