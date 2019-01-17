@@ -57,7 +57,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class EqualizerFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
+public class EqualizerFragment extends Fragment implements View.OnClickListener {
     private MainActivity activity = null;
     private RecyclerView recyclerEqualizers;
     private EqualizersAdapter equalizersAdapter;
@@ -511,12 +511,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener,
             default:
                 break;
         }
-    }
-
-    @Override
-    public boolean onLongClick(View v)
-    {
-        return false;
     }
 
     public int minusValue(SeekBar seek)

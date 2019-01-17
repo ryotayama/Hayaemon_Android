@@ -26,6 +26,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -47,7 +48,7 @@ import java.util.Timer;
 
 import static java.lang.Boolean.FALSE;
 
-public class EffectFragment extends Fragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener
+public class EffectFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener, SeekBar.OnSeekBarChangeListener
 {
     private MainActivity activity = null;
     private RecyclerView recyclerEffects;
@@ -127,6 +128,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
     private float fAccel = 0.0f;
     private float fVelo1 = 0.0f;
     private float fVelo2 = 0.0f;
+    private boolean isContinue = true;
+    private Handler handlerLongClick;
 
     public boolean isSelectedItem(int nItem)
     {
@@ -249,10 +252,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         this.fVol7 = fVol7;
     }
 
-
     public EffectFragment()
     {
         arEffectItems = new ArrayList<>();
+        handlerLongClick = new Handler();
     }
 
     @Override
@@ -288,151 +291,207 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
             relativeEffect.setVisibility(View.VISIBLE);
         }
         else if (v.getId() == R.id.relativeMinus)
+            minusValue();
+        else if (v.getId() == R.id.relativePlus)
+            plusValue();
+    }
+
+    @Override
+    public boolean onLongClick(View v)
+    {
+        if (v.getId() == R.id.relativeMinus)
         {
-            TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
-            SeekBar seek = (SeekBar) activity.findViewById(R.id.seekEffectDetail);
-            TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
-            int nProgress = seek.getProgress();
-            nProgress -= 1;
-            if(nProgress < 0) nProgress = 0;
-            seek.setProgress(nProgress);
-            if(textEffectName.getText().equals(arEffectItems.get(kEffectTypePan).getEffectName()))
-            {
-                float fProgress = (nProgress - 100) / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress - 100));
-                setPan(fProgress);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
-            {
-                double dProgress = (double)(nProgress + 1) / 10.0;
-                textEffectDetail.setText(String.format("%.1f", dProgress));
-                setFreq((float)dProgress);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeMetronome).getEffectName()))
-            {
-                nBPM = nProgress + 10;
-                textEffectDetail.setText(String.format("%d", nBPM));
-                applyEffect(MainActivity.hStream);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRecordNoise).getEffectName()))
-            {
-                fVol1 = nProgress / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress));
-                applyEffect(MainActivity.hStream);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRoarOfWaves).getEffectName()))
-            {
-                fVol2 = nProgress / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress));
-                applyEffect(MainActivity.hStream);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRain).getEffectName()))
-            {
-                fVol3 = nProgress / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress));
-                applyEffect(MainActivity.hStream);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRiver).getEffectName()))
-            {
-                fVol4 = nProgress / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress));
-                applyEffect(MainActivity.hStream);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeWar).getEffectName()))
-            {
-                fVol5 = nProgress / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress));
-                applyEffect(MainActivity.hStream);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFire).getEffectName()))
-            {
-                fVol6 = nProgress / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress));
-                applyEffect(MainActivity.hStream);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeConcertHall).getEffectName()))
-            {
-                fVol7 = nProgress / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress));
-                applyEffect(MainActivity.hStream);
-            }
-            MainActivity activity = (MainActivity)getActivity();
-            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-            playlistFragment.updateSavingEffect();
+            isContinue = true;
+            handlerLongClick.post(repeatMinusValue);
+            return true;
         }
         else if (v.getId() == R.id.relativePlus)
         {
-            TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
-            SeekBar seek = (SeekBar) activity.findViewById(R.id.seekEffectDetail);
-            TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
-            int nProgress = seek.getProgress();
-            nProgress += 1;
-            if(nProgress > seek.getMax()) nProgress = seek.getMax();
-            seek.setProgress(nProgress);
-            if(textEffectName.getText().equals(arEffectItems.get(kEffectTypePan).getEffectName()))
-            {
-                float fProgress = (nProgress - 100) / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress - 100));
-                setPan(fProgress);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
-            {
-                double dProgress = (double)(nProgress + 1) / 10.0;
-                textEffectDetail.setText(String.format("%.1f", dProgress));
-                setFreq((float)dProgress);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeMetronome).getEffectName()))
-            {
-                nBPM = nProgress + 10;
-                textEffectDetail.setText(String.format("%d", nBPM));
-                applyEffect(MainActivity.hStream);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRecordNoise).getEffectName()))
-            {
-                fVol1 = nProgress / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress));
-                applyEffect(MainActivity.hStream);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRoarOfWaves).getEffectName()))
-            {
-                fVol2 = nProgress / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress));
-                applyEffect(MainActivity.hStream);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRain).getEffectName()))
-            {
-                fVol3 = nProgress / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress));
-                applyEffect(MainActivity.hStream);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRiver).getEffectName()))
-            {
-                fVol4 = nProgress / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress));
-                applyEffect(MainActivity.hStream);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeWar).getEffectName()))
-            {
-                fVol5 = nProgress / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress));
-                applyEffect(MainActivity.hStream);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFire).getEffectName()))
-            {
-                fVol6 = nProgress / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress));
-                applyEffect(MainActivity.hStream);
-            }
-            else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeConcertHall).getEffectName()))
-            {
-                fVol7 = nProgress / 100.0f;
-                textEffectDetail.setText(String.format("%d", nProgress));
-                applyEffect(MainActivity.hStream);
-            }
-            MainActivity activity = (MainActivity)getActivity();
-            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-            playlistFragment.updateSavingEffect();
+            isContinue = true;
+            handlerLongClick.post(repeatPlusValue);
+            return true;
         }
+        return false;
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent)
+    {
+        if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+            isContinue = false;
+        return false;
+    }
+
+    Runnable repeatMinusValue = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            if(!isContinue)
+                return;
+            minusValue();
+            handlerLongClick.postDelayed(this, 100);
+        }
+    };
+
+    Runnable repeatPlusValue = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            if(!isContinue)
+                return;
+            plusValue();
+            handlerLongClick.postDelayed(this, 100);
+        }
+    };
+
+    public void minusValue()
+    {
+        TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
+        SeekBar seek = (SeekBar) activity.findViewById(R.id.seekEffectDetail);
+        TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
+        int nProgress = seek.getProgress();
+        nProgress -= 1;
+        if(nProgress < 0) nProgress = 0;
+        seek.setProgress(nProgress);
+        if(textEffectName.getText().equals(arEffectItems.get(kEffectTypePan).getEffectName()))
+        {
+            float fProgress = (nProgress - 100) / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress - 100));
+            setPan(fProgress);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
+        {
+            double dProgress = (double)(nProgress + 1) / 10.0;
+            textEffectDetail.setText(String.format("%.1f", dProgress));
+            setFreq((float)dProgress);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeMetronome).getEffectName()))
+        {
+            nBPM = nProgress + 10;
+            textEffectDetail.setText(String.format("%d", nBPM));
+            applyEffect(MainActivity.hStream);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRecordNoise).getEffectName()))
+        {
+            fVol1 = nProgress / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress));
+            applyEffect(MainActivity.hStream);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRoarOfWaves).getEffectName()))
+        {
+            fVol2 = nProgress / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress));
+            applyEffect(MainActivity.hStream);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRain).getEffectName()))
+        {
+            fVol3 = nProgress / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress));
+            applyEffect(MainActivity.hStream);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRiver).getEffectName()))
+        {
+            fVol4 = nProgress / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress));
+            applyEffect(MainActivity.hStream);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeWar).getEffectName()))
+        {
+            fVol5 = nProgress / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress));
+            applyEffect(MainActivity.hStream);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFire).getEffectName()))
+        {
+            fVol6 = nProgress / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress));
+            applyEffect(MainActivity.hStream);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeConcertHall).getEffectName()))
+        {
+            fVol7 = nProgress / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress));
+            applyEffect(MainActivity.hStream);
+        }
+        MainActivity activity = (MainActivity)getActivity();
+        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+        playlistFragment.updateSavingEffect();
+    }
+
+    public void plusValue()
+    {
+        TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
+        SeekBar seek = (SeekBar) activity.findViewById(R.id.seekEffectDetail);
+        TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
+        int nProgress = seek.getProgress();
+        nProgress += 1;
+        if(nProgress > seek.getMax()) nProgress = seek.getMax();
+        seek.setProgress(nProgress);
+        if(textEffectName.getText().equals(arEffectItems.get(kEffectTypePan).getEffectName()))
+        {
+            float fProgress = (nProgress - 100) / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress - 100));
+            setPan(fProgress);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
+        {
+            double dProgress = (double)(nProgress + 1) / 10.0;
+            textEffectDetail.setText(String.format("%.1f", dProgress));
+            setFreq((float)dProgress);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeMetronome).getEffectName()))
+        {
+            nBPM = nProgress + 10;
+            textEffectDetail.setText(String.format("%d", nBPM));
+            applyEffect(MainActivity.hStream);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRecordNoise).getEffectName()))
+        {
+            fVol1 = nProgress / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress));
+            applyEffect(MainActivity.hStream);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRoarOfWaves).getEffectName()))
+        {
+            fVol2 = nProgress / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress));
+            applyEffect(MainActivity.hStream);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRain).getEffectName()))
+        {
+            fVol3 = nProgress / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress));
+            applyEffect(MainActivity.hStream);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRiver).getEffectName()))
+        {
+            fVol4 = nProgress / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress));
+            applyEffect(MainActivity.hStream);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeWar).getEffectName()))
+        {
+            fVol5 = nProgress / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress));
+            applyEffect(MainActivity.hStream);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFire).getEffectName()))
+        {
+            fVol6 = nProgress / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress));
+            applyEffect(MainActivity.hStream);
+        }
+        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeConcertHall).getEffectName()))
+        {
+            fVol7 = nProgress / 100.0f;
+            textEffectDetail.setText(String.format("%d", nProgress));
+            applyEffect(MainActivity.hStream);
+        }
+        MainActivity activity = (MainActivity)getActivity();
+        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+        playlistFragment.updateSavingEffect();
     }
 
     @Override
@@ -546,8 +605,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Se
         btnFinith.setOnClickListener(this);
         RelativeLayout relativeMinus = (RelativeLayout) activity.findViewById(R.id.relativeMinus);
         relativeMinus.setOnClickListener(this);
+        relativeMinus.setOnLongClickListener(this);
+        relativeMinus.setOnTouchListener(this);
         RelativeLayout relativePlus = (RelativeLayout) activity.findViewById(R.id.relativePlus);
         relativePlus.setOnClickListener(this);
+        relativePlus.setOnLongClickListener(this);
+        relativePlus.setOnTouchListener(this);
     }
 
     public void onEffectItemClick(int nEffect)
