@@ -25,6 +25,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.audiofx.Equalizer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -35,6 +36,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -69,6 +71,9 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener,
     private int[] arHFX;
     private int nLastChecked = 0;
     private boolean bSorting = false;
+    private boolean isContinue = true;
+    private Handler handler;
+    private int nLongClick = 0;
 
     public ArrayList<SeekBar> getArSeek() { return arSeek; }
     public float[] getArCenters() { return arCenters; }
@@ -93,6 +98,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener,
     {
         arHFX = null;
         arEqualizerItems = new ArrayList<>();
+        handler = new Handler();
     }
 
     @Override
@@ -345,7 +351,26 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener,
                     else setEQ(j, nProgress);
                 }
             });
-            arTextMinus.get(i).setOnLongClickListener(this);
+            arTextMinus.get(i).setOnLongClickListener(new View.OnLongClickListener()
+            {
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    nLongClick = j;
+                    isContinue = true;
+                    handler.post(repeatMinusValue);
+                    return true;
+                }
+            });
+            arTextMinus.get(i).setOnTouchListener(new View.OnTouchListener()
+            {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                        isContinue = false;
+                    return false;
+                }
+            });
         }
 
         arTextPlus = new ArrayList<TextView>();
@@ -394,9 +419,56 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener,
                     else setEQ(j, nProgress);
                 }
             });
-            arTextPlus.get(i).setOnLongClickListener(this);
+            arTextPlus.get(i).setOnLongClickListener(new View.OnLongClickListener()
+            {
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    nLongClick = j;
+                    isContinue = true;
+                    handler.post(repeatPlusValue);
+                    return true;
+                }
+            });
+            arTextPlus.get(i).setOnTouchListener(new View.OnTouchListener()
+            {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                        isContinue = false;
+                    return false;
+                }
+            });
         }
     }
+
+    Runnable repeatMinusValue = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            if(!isContinue)
+                return;
+            int nProgress = minusValue(arSeek.get(nLongClick));
+            if(nLongClick == 0) setVol(nProgress);
+            else setEQ(nLongClick, nProgress);
+            handler.postDelayed(this, 100);
+        }
+    };
+
+    Runnable repeatPlusValue = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            if(!isContinue)
+                return;
+            int nProgress = plusValue(arSeek.get(nLongClick));
+            if(nLongClick == 0) setVol(nProgress);
+            else setEQ(nLongClick, nProgress);
+            handler.postDelayed(this, 100);
+        }
+    };
 
     @Override
     public void onClick(View v) {
