@@ -64,6 +64,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener,
     private float[] arCenters;
     private ArrayList<TextView> arTextValue;
     private ArrayList<SeekBar> arSeek;
+    private ArrayList<TextView> arTextMinus;
+    private ArrayList<TextView> arTextPlus;
     private int[] arHFX;
     private int nLastChecked = 0;
     private boolean bSorting = false;
@@ -297,135 +299,103 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener,
         TextView textFinishSortEqualizer = (TextView) activity.findViewById(R.id.textFinishSortEqualizer);
         textFinishSortEqualizer.setOnClickListener(this);
 
-        TextView textVolMinus = (TextView) activity.findViewById(R.id.textVolMinus);
-        textVolMinus.setOnClickListener(this);
-        textVolMinus.setOnLongClickListener(this);
+        arTextMinus = new ArrayList<TextView>();
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.textVolMinus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text20KMinus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text16KMinus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text12_5KMinus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text10KMinus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text8KMinus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text6_3KMinus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text5KMinus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text4KMinus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text3_15KMinus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text2_5KMinus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text2KMinus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text1_6KMinus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text1_25KMinus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text1KMinus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text800Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text630Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text500Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text400Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text315Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text250Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text200Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text160Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text125Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text100Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text80Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text63Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text50Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text40Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text31_5Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text25Minus));
+        arTextMinus.add((TextView)getActivity().findViewById(R.id.text20Minus));
 
-        TextView text20KMinus = (TextView) activity.findViewById(R.id.text20KMinus);
-        text20KMinus.setOnClickListener(this);
-        text20KMinus.setOnLongClickListener(this);
+        for(int i = 0; i < arTextMinus.size(); i++)
+        {
+            final int j = i;
+            arTextMinus.get(i).setOnClickListener(new View.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+                    int nProgress = minusValue(arSeek.get(j));
+                    if(j == 0) setVol(nProgress);
+                    else setEQ(j, nProgress);
+                }
+            });
+            arTextMinus.get(i).setOnLongClickListener(this);
+        }
 
-        TextView text16KMinus = (TextView) activity.findViewById(R.id.text16KMinus);
-        text16KMinus.setOnClickListener(this);
-        text16KMinus.setOnLongClickListener(this);
+        arTextPlus = new ArrayList<TextView>();
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.textVolPlus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text20KPlus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text16KPlus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text12_5KPlus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text10KPlus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text8KPlus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text6_3KPlus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text5KPlus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text4KPlus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text3_15KPlus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text2_5KPlus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text2KPlus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text1_6KPlus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text1_25KPlus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text1KPlus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text800Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text630Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text500Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text400Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text315Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text250Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text200Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text160Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text125Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text100Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text80Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text63Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text50Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text40Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text31_5Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text25Plus));
+        arTextPlus.add((TextView)getActivity().findViewById(R.id.text20Plus));
 
-        TextView text12_5KMinus = (TextView) activity.findViewById(R.id.text12_5KMinus);
-        text12_5KMinus.setOnClickListener(this);
-        text12_5KMinus.setOnLongClickListener(this);
-
-        TextView text10KMinus = (TextView) activity.findViewById(R.id.text10KMinus);
-        text10KMinus.setOnClickListener(this);
-        text10KMinus.setOnLongClickListener(this);
-
-        TextView text8KMinus = (TextView) activity.findViewById(R.id.text8KMinus);
-        text8KMinus.setOnClickListener(this);
-        text8KMinus.setOnLongClickListener(this);
-
-        TextView text6_3KMinus = (TextView) activity.findViewById(R.id.text6_3KMinus);
-        text6_3KMinus.setOnClickListener(this);
-        text6_3KMinus.setOnLongClickListener(this);
-
-        TextView text5KMinus = (TextView) activity.findViewById(R.id.text5KMinus);
-        text5KMinus.setOnClickListener(this);
-        text5KMinus.setOnLongClickListener(this);
-
-        TextView text4KMinus = (TextView) activity.findViewById(R.id.text4KMinus);
-        text4KMinus.setOnClickListener(this);
-        text4KMinus.setOnLongClickListener(this);
-
-        TextView text3_15KMinus = (TextView) activity.findViewById(R.id.text3_15KMinus);
-        text3_15KMinus.setOnClickListener(this);
-        text3_15KMinus.setOnLongClickListener(this);
-
-        TextView text2_5KMinus = (TextView) activity.findViewById(R.id.text2_5KMinus);
-        text2_5KMinus.setOnClickListener(this);
-        text2_5KMinus.setOnLongClickListener(this);
-
-        TextView text2KMinus = (TextView) activity.findViewById(R.id.text2KMinus);
-        text2KMinus.setOnClickListener(this);
-        text2KMinus.setOnLongClickListener(this);
-
-        TextView text1_6KMinus = (TextView) activity.findViewById(R.id.text1_6KMinus);
-        text1_6KMinus.setOnClickListener(this);
-        text1_6KMinus.setOnLongClickListener(this);
-
-        TextView text1_25KMinus = (TextView) activity.findViewById(R.id.text1_25KMinus);
-        text1_25KMinus.setOnClickListener(this);
-        text1_25KMinus.setOnLongClickListener(this);
-
-        TextView text1KMinus = (TextView) activity.findViewById(R.id.text1KMinus);
-        text1KMinus.setOnClickListener(this);
-        text1KMinus.setOnLongClickListener(this);
-
-        TextView text800Minus = (TextView) activity.findViewById(R.id.text800Minus);
-        text800Minus.setOnClickListener(this);
-        text800Minus.setOnLongClickListener(this);
-
-        TextView text630Minus = (TextView) activity.findViewById(R.id.text630Minus);
-        text630Minus.setOnClickListener(this);
-        text630Minus.setOnLongClickListener(this);
-
-        TextView text500Minus = (TextView) activity.findViewById(R.id.text500Minus);
-        text500Minus.setOnClickListener(this);
-        text500Minus.setOnLongClickListener(this);
-
-        TextView text400Minus = (TextView) activity.findViewById(R.id.text400Minus);
-        text400Minus.setOnClickListener(this);
-        text400Minus.setOnLongClickListener(this);
-
-        TextView text315Minus = (TextView) activity.findViewById(R.id.text315Minus);
-        text315Minus.setOnClickListener(this);
-        text315Minus.setOnLongClickListener(this);
-
-        TextView text250Minus = (TextView) activity.findViewById(R.id.text250Minus);
-        text250Minus.setOnClickListener(this);
-        text250Minus.setOnLongClickListener(this);
-
-        TextView text200Minus = (TextView) activity.findViewById(R.id.text200Minus);
-        text200Minus.setOnClickListener(this);
-        text200Minus.setOnLongClickListener(this);
-
-        TextView text160Minus = (TextView) activity.findViewById(R.id.text160Minus);
-        text160Minus.setOnClickListener(this);
-        text160Minus.setOnLongClickListener(this);
-
-        TextView text125Minus = (TextView) activity.findViewById(R.id.text125Minus);
-        text125Minus.setOnClickListener(this);
-        text125Minus.setOnLongClickListener(this);
-
-        TextView text100Minus = (TextView) activity.findViewById(R.id.text100Minus);
-        text100Minus.setOnClickListener(this);
-        text100Minus.setOnLongClickListener(this);
-
-        TextView text80Minus = (TextView) activity.findViewById(R.id.text80Minus);
-        text80Minus.setOnClickListener(this);
-        text80Minus.setOnLongClickListener(this);
-
-        TextView text63Minus = (TextView) activity.findViewById(R.id.text63Minus);
-        text63Minus.setOnClickListener(this);
-        text63Minus.setOnLongClickListener(this);
-
-        TextView text50Minus = (TextView) activity.findViewById(R.id.text50Minus);
-        text50Minus.setOnClickListener(this);
-        text50Minus.setOnLongClickListener(this);
-
-        TextView text40Minus = (TextView) activity.findViewById(R.id.text40Minus);
-        text40Minus.setOnClickListener(this);
-        text40Minus.setOnLongClickListener(this);
-
-        TextView text31_5Minus = (TextView) activity.findViewById(R.id.text31_5Minus);
-        text31_5Minus.setOnClickListener(this);
-        text31_5Minus.setOnLongClickListener(this);
-
-        TextView text25Minus = (TextView) activity.findViewById(R.id.text25Minus);
-        text25Minus.setOnClickListener(this);
-        text25Minus.setOnLongClickListener(this);
-
-        TextView text20Minus = (TextView) activity.findViewById(R.id.text20Minus);
-        text20Minus.setOnClickListener(this);
-        text20Minus.setOnLongClickListener(this);
-
-
+        for(int i = 0; i < arTextPlus.size(); i++)
+        {
+            final int j = i;
+            arTextPlus.get(i).setOnClickListener(new View.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+                    int nProgress = plusValue(arSeek.get(j));
+                    if(j == 0) setVol(nProgress);
+                    else setEQ(j, nProgress);
+                }
+            });
+            arTextPlus.get(i).setOnLongClickListener(this);
+        }
     }
 
     @Override
@@ -464,326 +434,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener,
                 bSorting = false;
                 equalizersAdapter.notifyDataSetChanged();
                 equalizerTouchHelper.attachToRecyclerView(null);
-                break;
-
-            case R.id.textVolMinus:
-                int nVolMinusProgress = minusValue(arSeek.get(0));
-                setVol(nVolMinusProgress);
-                break;
-
-            case R.id.text20KMinus:
-                int n20KMinusProgress = minusValue(arSeek.get(1));
-                setEQ(1, n20KMinusProgress);
-                break;
-
-            case R.id.text16KMinus:
-                int n16kMinusProgress = minusValue(arSeek.get(2));
-                setEQ(2, n16kMinusProgress);
-                break;
-
-            case R.id.text12_5KMinus:
-                int n12_5KMinusProgress = minusValue(arSeek.get(3));
-                setEQ(3, n12_5KMinusProgress);
-                break;
-
-            case R.id.text10KMinus:
-                int n10KMinusProgress = minusValue(arSeek.get(4));
-                setEQ(4, n10KMinusProgress);
-                break;
-
-            case R.id.text8KMinus:
-                int n8KMinusProgress = minusValue(arSeek.get(5));
-                setEQ(5, n8KMinusProgress);
-                break;
-
-            case R.id.text6_3KMinus:
-                int n6_3KMinusProgress = minusValue(arSeek.get(6));
-                setEQ(6, n6_3KMinusProgress);
-                break;
-
-            case R.id.text5KMinus:
-                int n5KMinusProgress = minusValue(arSeek.get(7));
-                setEQ(7, n5KMinusProgress);
-                break;
-
-            case R.id.text4KMinus:
-                int n4KMinusProgress = minusValue(arSeek.get(8));
-                setEQ(8, n4KMinusProgress);
-                break;
-
-            case R.id.text3_15KMinus:
-                int n3_15KMinusProgress = minusValue(arSeek.get(9));
-                setEQ(9, n3_15KMinusProgress);
-                break;
-
-            case R.id.text2_5KMinus:
-                int n2_5KMinusProgress = minusValue(arSeek.get(10));
-                setEQ(10, n2_5KMinusProgress);
-                break;
-
-            case R.id.text2KMinus:
-                int n2KMinusProgress = minusValue(arSeek.get(11));
-                setEQ(11, n2KMinusProgress);
-                break;
-
-            case R.id.text1_6KMinus:
-                int n1_6KMinusProgress = minusValue(arSeek.get(12));
-                setEQ(12, n1_6KMinusProgress);
-                break;
-
-            case R.id.text1_25KMinus:
-                int n1_25KMinusProgress = minusValue(arSeek.get(13));
-                setEQ(13, n1_25KMinusProgress);
-                break;
-
-            case R.id.text1KMinus:
-                int n1KMinusProgress = minusValue(arSeek.get(14));
-                setEQ(14, n1KMinusProgress);
-                break;
-
-            case R.id.text800Minus:
-                int n800MinusProgress = minusValue(arSeek.get(15));
-                setEQ(15, n800MinusProgress);
-                break;
-
-            case R.id.text630Minus:
-                int n630MinusProgress = minusValue(arSeek.get(16));
-                setEQ(16, n630MinusProgress);
-                break;
-
-            case R.id.text500Minus:
-                int n500MinusProgress = minusValue(arSeek.get(17));
-                setEQ(17, n500MinusProgress);
-                break;
-
-            case R.id.text400Minus:
-                int n400MinusProgress = minusValue(arSeek.get(18));
-                setEQ(18, n400MinusProgress);
-                break;
-
-            case R.id.text315Minus:
-                int n315MinusProgress = minusValue(arSeek.get(19));
-                setEQ(19, n315MinusProgress);
-                break;
-
-            case R.id.text250Minus:
-                int n250MinusProgress = minusValue(arSeek.get(20));
-                setEQ(20, n250MinusProgress);
-                break;
-
-            case R.id.text200Minus:
-                int n200MinusProgress = minusValue(arSeek.get(21));
-                setEQ(21, n200MinusProgress);
-                break;
-
-            case R.id.text160Minus:
-                int n160MinusProgress = minusValue(arSeek.get(22));
-                setEQ(22, n160MinusProgress);
-                break;
-
-            case R.id.text125Minus:
-                int n125MinusProgress = minusValue(arSeek.get(23));
-                setEQ(23, n125MinusProgress);
-                break;
-
-            case R.id.text100Minus:
-                int n100MinusProgress = minusValue(arSeek.get(24));
-                setEQ(24, n100MinusProgress);
-                break;
-
-            case R.id.text80Minus:
-                int n80MinusProgress = minusValue(arSeek.get(25));
-                setEQ(25, n80MinusProgress);
-                break;
-
-            case R.id.text63Minus:
-                int n63MinusProgress = minusValue(arSeek.get(26));
-                setEQ(26, n63MinusProgress);
-                break;
-
-            case R.id.text50Minus:
-                int n50MinusProgress = minusValue(arSeek.get(27));
-                setEQ(27, n50MinusProgress);
-                break;
-
-            case R.id.text40Minus:
-                int n40MinusProgress = minusValue(arSeek.get(28));
-                setEQ(28, n40MinusProgress);
-                break;
-
-            case R.id.text31_5Minus:
-                int n31_5MinusProgress = minusValue(arSeek.get(29));
-                setEQ(29, n31_5MinusProgress);
-                break;
-
-            case R.id.text25Minus:
-                int n25MinusProgress = minusValue(arSeek.get(30));
-                setEQ(30, n25MinusProgress);
-                break;
-
-            case R.id.text20Minus:
-                int n20MinusProgress = minusValue(arSeek.get(31));
-                setEQ(31, n20MinusProgress);
-                break;
-
-            case R.id.textVolPlus:
-                int nVolPlusProgress = plusValue(arSeek.get(0));
-                setVol(nVolPlusProgress);
-                break;
-
-            case R.id.text20KPlus:
-                int n20KPlusProgress = plusValue(arSeek.get(1));
-                setEQ(1, n20KPlusProgress);
-                break;
-
-            case R.id.text16KPlus:
-                int n16KPlusProgress = plusValue(arSeek.get(2));
-                setEQ(2, n16KPlusProgress);
-                break;
-
-            case R.id.text12_5KPlus:
-                int n12_5KPlusProgress = plusValue(arSeek.get(3));
-                setEQ(3, n12_5KPlusProgress);
-                break;
-
-            case R.id.text10KPlus:
-                int n10KPlusProgress = plusValue(arSeek.get(4));
-                setEQ(4, n10KPlusProgress);
-                break;
-
-            case R.id.text8KPlus:
-                int n8KPlusProgress = plusValue(arSeek.get(5));
-                setEQ(5, n8KPlusProgress);
-                break;
-
-            case R.id.text6_3KPlus:
-                int n6_3KPlusProgress = plusValue(arSeek.get(6));
-                setEQ(6, n6_3KPlusProgress);
-                break;
-
-            case R.id.text5KPlus:
-                int n5KPlusProgress = plusValue(arSeek.get(7));
-                setEQ(7, n5KPlusProgress);
-                break;
-
-            case R.id.text4KPlus:
-                int n4KPlusProgress = plusValue(arSeek.get(8));
-                setEQ(8, n4KPlusProgress);
-                break;
-
-            case R.id.text3_15KPlus:
-                int n3_15KPlusProgress = plusValue(arSeek.get(9));
-                setEQ(9, n3_15KPlusProgress);
-                break;
-
-            case R.id.text2_5KPlus:
-                int n2_5KPlusProgress = plusValue(arSeek.get(10));
-                setEQ(10, n2_5KPlusProgress);
-                break;
-
-            case R.id.text2KPlus:
-                int n2KPlusProgress = plusValue(arSeek.get(11));
-                setEQ(11, n2KPlusProgress);
-                break;
-
-            case R.id.text1_6KPlus:
-                int n1_6KPlusProgress = plusValue(arSeek.get(12));
-                setEQ(12, n1_6KPlusProgress);
-                break;
-
-            case R.id.text1_25KPlus:
-                int n1_25KPlusProgress = plusValue(arSeek.get(13));
-                setEQ(13, n1_25KPlusProgress);
-                break;
-
-            case R.id.text1KPlus:
-                int n1KPlusProgress = plusValue(arSeek.get(14));
-                setEQ(14, n1KPlusProgress);
-                break;
-
-            case R.id.text800Plus:
-                int n800PlusProgress = plusValue(arSeek.get(15));
-                setEQ(15, n800PlusProgress);
-                break;
-
-            case R.id.text630Plus:
-                int n630PlusProgress = plusValue(arSeek.get(16));
-                setEQ(16, n630PlusProgress);
-                break;
-
-            case R.id.text500Plus:
-                int n500PlusProgress = plusValue(arSeek.get(17));
-                setEQ(17, n500PlusProgress);
-                break;
-
-            case R.id.text400Plus:
-                int n400PlusProgress = plusValue(arSeek.get(18));
-                setEQ(18, n400PlusProgress);
-                break;
-
-            case R.id.text315Plus:
-                int n315PlusProgress = plusValue(arSeek.get(19));
-                setEQ(19, n315PlusProgress);
-                break;
-
-            case R.id.text250Plus:
-                int n250PlusProgress = plusValue(arSeek.get(20));
-                setEQ(20, n250PlusProgress);
-                break;
-
-            case R.id.text200Plus:
-                int n200PlusProgress = plusValue(arSeek.get(21));
-                setEQ(21, n200PlusProgress);
-                break;
-
-            case R.id.text160Plus:
-                int n160PlusProgress = plusValue(arSeek.get(22));
-                setEQ(22, n160PlusProgress);
-                break;
-
-            case R.id.text125Plus:
-                int n125PlusProgress = plusValue(arSeek.get(23));
-                setEQ(23, n125PlusProgress);
-                break;
-
-            case R.id.text100Plus:
-                int n100PlusProgress = plusValue(arSeek.get(24));
-                setEQ(24, n100PlusProgress);
-                break;
-
-            case R.id.text80Plus:
-                int n80PlusProgress = plusValue(arSeek.get(25));
-                setEQ(25, n80PlusProgress);
-                break;
-
-            case R.id.text63Plus:
-                int n63PlusProgress = plusValue(arSeek.get(26));
-                setEQ(26, n63PlusProgress);
-                break;
-
-            case R.id.text50Plus:
-                int n50PlusProgress = plusValue(arSeek.get(27));
-                setEQ(27, n50PlusProgress);
-                break;
-
-            case R.id.text40Plus:
-                int n40PlusProgress = plusValue(arSeek.get(28));
-                setEQ(28, n40PlusProgress);
-                break;
-
-            case R.id.text31_5Plus:
-                int n31_5PlusProgress = plusValue(arSeek.get(29));
-                setEQ(29, n31_5PlusProgress);
-                break;
-
-            case R.id.text25Plus:
-                int n25PlusProgress = plusValue(arSeek.get(30));
-                setEQ(30, n25PlusProgress);
-                break;
-
-            case R.id.text20Plus:
-                int n20PlusProgress = plusValue(arSeek.get(31));
-                setEQ(31, n20PlusProgress);
                 break;
 
             default:
