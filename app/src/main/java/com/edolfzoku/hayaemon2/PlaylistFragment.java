@@ -380,7 +380,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             RelativeLayout relativePlaylists = (RelativeLayout)activity.findViewById(R.id.relativePlaylists);
             relativePlaylists.setVisibility(View.VISIBLE);
         }
-        else if(v.getId() == R.id.textAddPlaylist_small)
+        else if(v.getId() == R.id.buttonAddPlaylist_small)
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("新しいリストを追加する");
@@ -770,8 +770,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         TextView textLeft = (TextView) activity.findViewById(R.id.textLeft);
         textLeft.setOnClickListener(this);
 
-        TextView textAddPlaylist_small = (TextView) activity.findViewById(R.id.textAddPlaylist_small);
-        textAddPlaylist_small.setOnClickListener(this);
+        ImageButton buttonAddPlaylist_small = (ImageButton) activity.findViewById(R.id.buttonAddPlaylist_small);
+        buttonAddPlaylist_small.setOnClickListener(this);
 
         ImageButton btnAddSong = (ImageButton) activity.findViewById(R.id.btnAddSong) ;
         btnAddSong.setOnClickListener(this);
