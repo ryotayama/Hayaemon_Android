@@ -23,22 +23,21 @@
     <RelativeLayout
         android:id="@+id/relativeEffectDetail"
         android:layout_width="wrap_content"
-        android:layout_height="44dp"
-        android:clickable="true"
+        android:layout_height="48dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        >
+    >
 
-        <TextView
-            android:id="@+id/textEffectDetail"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:text="i"
-            android:textSize="15dp"
-            android:background="@drawable/circle2"
-            android:textColor="#007AFF"
-            android:gravity="center"
-            android:layout_marginVertical="12dp"
+        <ImageButton
+            android:id="@+id/buttonEffectDetail"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/infobutton"
+            android:background="@null"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:padding="2dp"
+            android:layout_alignParentTop="true"
             />
 
         <ImageView
@@ -48,10 +47,10 @@
             android:background="@null"
             android:src="@drawable/ic_listright"
             android:scaleType="centerInside"
-            android:layout_marginVertical="7dp"
-            android:layout_marginHorizontal="4dp"
+            android:layout_marginLeft="-8dp"
+            android:layout_marginRight="4dp"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/textEffectDetail"
+            android:layout_toRightOf="@+id/buttonEffectDetail"
             />
 
     </RelativeLayout>

@@ -24,6 +24,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,16 +45,14 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
     static class ViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout effectItem;
         TextView textEffect;
-        RelativeLayout relativeEffectDetail;
-        TextView textEffectDetail;
+        ImageButton buttonEffectDetail;
         ImageView imgRight;
 
         ViewHolder(View view) {
             super(view);
             effectItem = (RelativeLayout) view.findViewById(R.id.effectItem);
             textEffect = (TextView) view.findViewById(R.id.textEffect);
-            relativeEffectDetail = (RelativeLayout) view.findViewById(R.id.relativeEffectDetail);
-            textEffectDetail = (TextView) view.findViewById(R.id.textEffectDetail);
+            buttonEffectDetail = (ImageButton) view.findViewById(R.id.buttonEffectDetail);
             imgRight = (ImageView) view.findViewById(R.id.imgRight);
         }
     }
@@ -94,13 +93,13 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
         });
 
         if(!item.isEditEnabled()) {
-            holder.textEffectDetail.setVisibility(View.GONE);
+            holder.buttonEffectDetail.setVisibility(View.GONE);
             holder.imgRight.setVisibility(View.GONE);
         }
         else {
-            holder.textEffectDetail.setVisibility(View.VISIBLE);
+            holder.buttonEffectDetail.setVisibility(View.VISIBLE);
             holder.imgRight.setVisibility(View.VISIBLE);
-            holder.relativeEffectDetail.setOnClickListener(new View.OnClickListener() {
+            holder.buttonEffectDetail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     effectFragment.onEffectDetailClick(position);

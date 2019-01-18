@@ -46,14 +46,14 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
     static class ViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout equalizerItem;
         TextView textEqualizer;
-        FrameLayout frameEqualizerMenu;
+        RelativeLayout relativeEqualizerMenu;
         ImageView imgEqualizerMenu;
 
         ViewHolder(View view) {
             super(view);
             equalizerItem = (RelativeLayout) view.findViewById(R.id.equalizerItem);
             textEqualizer = (TextView) view.findViewById(R.id.textEqualizer);
-            frameEqualizerMenu = (FrameLayout) view.findViewById(R.id.frameEqualizerMenu);
+            relativeEqualizerMenu = (RelativeLayout) view.findViewById(R.id.relativeEqualizerMenu);
             imgEqualizerMenu = (ImageView) view.findViewById(R.id.imgEqualizerMenu);
         }
     }
@@ -99,8 +99,8 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
         });
 
         if(equalizerFragment.isSorting()) {
-            holder.frameEqualizerMenu.setOnClickListener(null);
-            holder.frameEqualizerMenu.setOnTouchListener(new View.OnTouchListener() {
+            holder.relativeEqualizerMenu.setOnClickListener(null);
+            holder.relativeEqualizerMenu.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
                 {
@@ -111,8 +111,8 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
             holder.imgEqualizerMenu.setImageResource(R.drawable.ic_sort);
         }
         else {
-            holder.frameEqualizerMenu.setOnTouchListener(null);
-            holder.frameEqualizerMenu.setOnClickListener(new View.OnClickListener() {
+            holder.relativeEqualizerMenu.setOnTouchListener(null);
+            holder.relativeEqualizerMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     bClicked = true;
