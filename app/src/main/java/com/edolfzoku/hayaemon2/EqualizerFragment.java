@@ -41,6 +41,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -66,8 +67,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     private float[] arCenters;
     private ArrayList<TextView> arTextValue;
     private ArrayList<SeekBar> arSeek;
-    private ArrayList<TextView> arTextMinus;
-    private ArrayList<TextView> arTextPlus;
+    private ArrayList<ImageButton> arButtonMinus;
+    private ArrayList<ImageButton> arButtonPlus;
     private int[] arHFX;
     private int nLastChecked = 0;
     private boolean bSorting = false;
@@ -305,44 +306,44 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         TextView textFinishSortEqualizer = (TextView) activity.findViewById(R.id.textFinishSortEqualizer);
         textFinishSortEqualizer.setOnClickListener(this);
 
-        arTextMinus = new ArrayList<TextView>();
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.textVolMinus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text20KMinus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text16KMinus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text12_5KMinus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text10KMinus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text8KMinus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text6_3KMinus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text5KMinus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text4KMinus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text3_15KMinus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text2_5KMinus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text2KMinus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text1_6KMinus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text1_25KMinus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text1KMinus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text800Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text630Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text500Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text400Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text315Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text250Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text200Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text160Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text125Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text100Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text80Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text63Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text50Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text40Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text31_5Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text25Minus));
-        arTextMinus.add((TextView)getActivity().findViewById(R.id.text20Minus));
+        arButtonMinus = new ArrayList<ImageButton>();
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.buttonVolMinus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button20KMinus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button16KMinus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button12_5KMinus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button10KMinus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button8KMinus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button6_3KMinus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button5KMinus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button4KMinus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button3_15KMinus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button2_5KMinus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button2KMinus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button1_6KMinus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button1_25KMinus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button1KMinus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button800Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button630Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button500Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button400Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button315Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button250Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button200Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button160Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button125Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button100Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button80Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button63Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button50Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button40Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button31_5Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button25Minus));
+        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button20Minus));
 
-        for(int i = 0; i < arTextMinus.size(); i++)
+        for(int i = 0; i < arButtonMinus.size(); i++)
         {
             final int j = i;
-            arTextMinus.get(i).setOnClickListener(new View.OnClickListener()
+            arButtonMinus.get(i).setOnClickListener(new View.OnClickListener()
             {
                 public void onClick(View v)
                 {
@@ -351,7 +352,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     else setEQ(j, nProgress);
                 }
             });
-            arTextMinus.get(i).setOnLongClickListener(new View.OnLongClickListener()
+            arButtonMinus.get(i).setOnLongClickListener(new View.OnLongClickListener()
             {
                 @Override
                 public boolean onLongClick(View view)
@@ -362,7 +363,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     return true;
                 }
             });
-            arTextMinus.get(i).setOnTouchListener(new View.OnTouchListener()
+            arButtonMinus.get(i).setOnTouchListener(new View.OnTouchListener()
             {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -373,44 +374,44 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             });
         }
 
-        arTextPlus = new ArrayList<TextView>();
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.textVolPlus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text20KPlus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text16KPlus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text12_5KPlus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text10KPlus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text8KPlus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text6_3KPlus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text5KPlus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text4KPlus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text3_15KPlus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text2_5KPlus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text2KPlus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text1_6KPlus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text1_25KPlus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text1KPlus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text800Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text630Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text500Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text400Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text315Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text250Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text200Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text160Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text125Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text100Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text80Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text63Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text50Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text40Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text31_5Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text25Plus));
-        arTextPlus.add((TextView)getActivity().findViewById(R.id.text20Plus));
+        arButtonPlus = new ArrayList<ImageButton>();
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.buttonVolPlus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button20KPlus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button16KPlus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button12_5KPlus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button10KPlus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button8KPlus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button6_3KPlus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button5KPlus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button4KPlus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button3_15KPlus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button2_5KPlus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button2KPlus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button1_6KPlus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button1_25KPlus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button1KPlus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button800Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button630Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button500Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button400Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button315Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button250Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button200Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button160Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button125Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button100Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button80Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button63Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button50Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button40Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button31_5Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button25Plus));
+        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button20Plus));
 
-        for(int i = 0; i < arTextPlus.size(); i++)
+        for(int i = 0; i < arButtonPlus.size(); i++)
         {
             final int j = i;
-            arTextPlus.get(i).setOnClickListener(new View.OnClickListener()
+            arButtonPlus.get(i).setOnClickListener(new View.OnClickListener()
             {
                 public void onClick(View v)
                 {
@@ -419,7 +420,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     else setEQ(j, nProgress);
                 }
             });
-            arTextPlus.get(i).setOnLongClickListener(new View.OnLongClickListener()
+            arButtonPlus.get(i).setOnLongClickListener(new View.OnLongClickListener()
             {
                 @Override
                 public boolean onLongClick(View view)
@@ -430,7 +431,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     return true;
                 }
             });
-            arTextPlus.get(i).setOnTouchListener(new View.OnTouchListener()
+            arButtonPlus.get(i).setOnTouchListener(new View.OnTouchListener()
             {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -524,12 +525,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     public int plusValue(SeekBar seek)
     {
         int nProgress = seek.getProgress();
-        System.out.println("動作確認; 866 " + nProgress);
         nProgress += 1;
-        System.out.println("動作確認; 867 " + nProgress);
         if(nProgress > 60) nProgress = 60;
-        System.out.println("動作確認; 868 = " + nProgress);
-        System.out.println("動作確認; 869 = " + (nProgress - 30));
         return (nProgress - 30);
     }
 
