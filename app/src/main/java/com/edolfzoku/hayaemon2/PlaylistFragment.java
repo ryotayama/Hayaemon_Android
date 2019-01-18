@@ -372,7 +372,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         {
             startRecord();
         }
-        else if(v.getId() == R.id.textLeft)
+        else if(v.getId() == R.id.buttonLeft)
         {
             RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
             relativeSongs.setVisibility(View.INVISIBLE);
@@ -767,8 +767,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         ImageButton btnAddPlaylist = (ImageButton) activity.findViewById(R.id.btnAddPlaylist);
         btnAddPlaylist.setOnClickListener(this);
 
-        TextView textLeft = (TextView) activity.findViewById(R.id.textLeft);
-        textLeft.setOnClickListener(this);
+        ImageButton buttonLeft = (ImageButton) activity.findViewById(R.id.buttonLeft);
+        buttonLeft.setOnClickListener(this);
 
         ImageButton buttonAddPlaylist_small = (ImageButton) activity.findViewById(R.id.buttonAddPlaylist_small);
         buttonAddPlaylist_small.setOnClickListener(this);

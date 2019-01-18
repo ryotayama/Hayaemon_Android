@@ -86,30 +86,19 @@
         android:layout_height="match_parent"
         >
 
-        <RelativeLayout
-            android:id="@+id/relativeLeft"
+        <ImageButton
+            android:id="@+id/buttonLeft"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:src="@drawable/arrowleftbutton"
             android:background="#FFFFFF"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:padding="2dp"
             android:layout_marginTop="0.5dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
-            >
-
-            <TextView
-                android:id="@+id/textLeft"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:text="←"
-                android:textSize="15dp"
-                android:background="@drawable/circle2"
-                android:textColor="#007AFF"
-                android:clickable="true"
-                android:gravity="center"
-                android:layout_margin="12dp"
-                />
-
-        </RelativeLayout>
+            />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerTab"
@@ -119,7 +108,7 @@
             android:divider="#BFBFBF"
             android:dividerHeight="0.5dp"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/relativeLeft"
+            android:layout_toRightOf="@+id/buttonLeft"
             android:layout_toLeftOf="@+id/buttonAddPlaylist_small"
             />
 
