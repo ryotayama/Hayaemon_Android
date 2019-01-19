@@ -117,5 +117,10 @@ public class PitchFragmentDialog extends DialogFragment {
         builder.setView(view);
         return builder.create();
     }
-
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        MainActivity activity = (MainActivity) getActivity();
+        ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(1);
+        controlFragment.clearFocus();
+    }
 }

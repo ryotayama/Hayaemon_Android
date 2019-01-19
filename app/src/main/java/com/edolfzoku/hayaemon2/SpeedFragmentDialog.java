@@ -86,7 +86,6 @@ public class SpeedFragmentDialog extends DialogFragment {
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 MainActivity activity = (MainActivity)getActivity();
@@ -98,4 +97,10 @@ public class SpeedFragmentDialog extends DialogFragment {
         return builder.create();
     }
 
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        MainActivity activity = (MainActivity) getActivity();
+        ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(1);
+        controlFragment.clearFocus();
+    }
 }
