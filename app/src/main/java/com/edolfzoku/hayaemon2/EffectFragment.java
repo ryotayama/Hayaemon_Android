@@ -505,7 +505,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        EffectItem item = new EffectItem("なし", false);
+        EffectItem item = new EffectItem("オフ", false);
         arEffectItems.add(item);
         item = new EffectItem("ランダム", false);
         arEffectItems.add(item);
@@ -1142,7 +1142,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             if(!arEffectItems.get(i).isSelected())
                 continue;
             String strEffect = arEffectItems.get(i).getEffectName();
-            if(strEffect.equals("なし"))
+            if(strEffect.equals("オフ"))
             {
 
             }

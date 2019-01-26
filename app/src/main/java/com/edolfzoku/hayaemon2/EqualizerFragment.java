@@ -566,7 +566,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     public void resetPresets()
     {
         if(arEqualizerItems.size() > 0) arEqualizerItems.clear();
-        arEqualizerItems.add(new EqualizerItem("フラット",                          new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("オフ",                              new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
         arEqualizerItems.add(new EqualizerItem("ランダム",                          new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
         arEqualizerItems.add(new EqualizerItem("ベースの耳コピ",                    new ArrayList<Integer>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
         arEqualizerItems.add(new EqualizerItem("ボーカル強調",                      new ArrayList<Integer>(Arrays.asList(  0,-30,-20,-12, -7, -4, -3, -2, -1,  0,  0,  0,  0,  0, -1, -2, -3, -4, -7,-12,-20,-24,-27,-28,-29,-30,-30,-30,-30,-30,-30,-30))));
