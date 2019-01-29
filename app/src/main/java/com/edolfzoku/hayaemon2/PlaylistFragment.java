@@ -2138,6 +2138,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         btnPlay.setText("一時停止");
         btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pause, 0, 0);
         songsAdapter.notifyDataSetChanged();
+        playlistsAdapter.notifyDataSetChanged();
     }
 
     public void pause()
@@ -2447,6 +2448,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(2);
         loopFragment.drawWaveForm(strPath);
         songsAdapter.notifyDataSetChanged();
+        playlistsAdapter.notifyDataSetChanged();
         if(bReloadLyrics) showLyrics();
 
         activity.getForegroundService().setMainActivity(activity);
@@ -2547,6 +2549,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         MainActivity activity = (MainActivity)getActivity();
         activity.clearLoop();
         songsAdapter.notifyDataSetChanged();
+        playlistsAdapter.notifyDataSetChanged();
 
         activity.getForegroundService().stopForeground();
     }

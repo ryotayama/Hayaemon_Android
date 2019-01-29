@@ -132,7 +132,10 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             holder.imgRight.setVisibility(View.VISIBLE);
         }
 
-        holder.playlistItem.setBackgroundColor(Color.argb(255, 255, 255, 255));
+        if(playlistFragment.getPlayingPlaylist() == position && playlistFragment.getPlaying() != -1)
+            holder.playlistItem.setBackgroundColor(Color.argb(255, 224, 239, 255));
+        else
+            holder.playlistItem.setBackgroundColor(Color.argb(255, 255, 255, 255));
     }
 
     @Override
