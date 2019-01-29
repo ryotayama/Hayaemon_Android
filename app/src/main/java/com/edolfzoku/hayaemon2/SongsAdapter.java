@@ -174,10 +174,8 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
 
         if(playlistFragment.getPlayingPlaylist() == playlistFragment.getSelectedPlaylist() && nItem == playlistFragment.getPlaying())
             holder.songItem.setBackgroundColor(Color.argb(255, 224, 239, 255));
-        else if(nItem % 2 == 0)
-            holder.songItem.setBackgroundColor(Color.argb(255, 247, 247, 247));
         else
-            holder.songItem.setBackgroundColor(Color.argb(255, 240, 240, 240));
+            holder.songItem.setBackgroundColor(Color.argb(255, 255, 255, 255));
     }
 
     @Override

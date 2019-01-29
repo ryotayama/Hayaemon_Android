@@ -5,13 +5,16 @@
     android:paddingBottom="0dp"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
-    android:paddingTop="0dp">
+    android:paddingTop="0dp"
+    android:background="#FFF"
+    >
 
     <RelativeLayout
         android:id="@+id/relativePlaylists"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"
+        android:background="#FFF"
         >
 
         <TextView
@@ -95,7 +98,6 @@
             android:scaleType="centerInside"
             android:clickable="true"
             android:padding="2dp"
-            android:layout_marginTop="0.5dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             />
@@ -104,7 +106,6 @@
             android:id="@+id/recyclerTab"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginTop="0.5dp"
             android:divider="#BFBFBF"
             android:dividerHeight="0.5dp"
             android:layout_alignParentTop="true"
@@ -121,7 +122,6 @@
             android:scaleType="centerInside"
             android:clickable="true"
             android:padding="2dp"
-            android:layout_marginTop="0.5dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             />
