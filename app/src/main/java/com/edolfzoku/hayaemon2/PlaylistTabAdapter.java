@@ -74,6 +74,10 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
             holder.textPlaylistTab.setTypeface(Typeface.DEFAULT_BOLD);
             holder.textPlaylistTab.setBackgroundColor(Color.argb(255, 170, 170, 170));
         }
+        else if(playlistFragment.getPlayingPlaylist() == position && playlistFragment.getPlaying() != -1) {
+            holder.textPlaylistTab.setTypeface(Typeface.DEFAULT);
+            holder.textPlaylistTab.setBackgroundColor(Color.argb(255, 224, 239, 255));
+        }
         else {
             holder.textPlaylistTab.setTypeface(Typeface.DEFAULT);
             holder.textPlaylistTab.setBackgroundColor(Color.argb(255, 255, 255, 255));

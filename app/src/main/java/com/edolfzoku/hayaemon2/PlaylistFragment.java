@@ -1494,6 +1494,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
                         songsAdapter.notifyDataSetChanged();
                         playlistsAdapter.notifyDataSetChanged();
+                        tabAdapter.notifyDataSetChanged();
 
                         saveFiles(true, true, true, true, false);
                     }
@@ -2139,6 +2140,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pause, 0, 0);
         songsAdapter.notifyDataSetChanged();
         playlistsAdapter.notifyDataSetChanged();
+        tabAdapter.notifyDataSetChanged();
     }
 
     public void pause()
@@ -2449,6 +2451,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         loopFragment.drawWaveForm(strPath);
         songsAdapter.notifyDataSetChanged();
         playlistsAdapter.notifyDataSetChanged();
+        tabAdapter.notifyDataSetChanged();
         if(bReloadLyrics) showLyrics();
 
         activity.getForegroundService().setMainActivity(activity);
@@ -2550,6 +2553,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         activity.clearLoop();
         songsAdapter.notifyDataSetChanged();
         playlistsAdapter.notifyDataSetChanged();
+        tabAdapter.notifyDataSetChanged();
 
         activity.getForegroundService().stopForeground();
     }
