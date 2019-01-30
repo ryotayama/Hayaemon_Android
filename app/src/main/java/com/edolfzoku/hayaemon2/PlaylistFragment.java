@@ -82,7 +82,9 @@ import com.un4seen.bass.BASSenc_MP3;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -120,6 +122,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private int hRecord;
     private ByteBuffer recbuf;
     private SongSavingTask task;
+    private DownloadTask downloadTask;
     private boolean bFinish = false;
     private ProgressBar progress;
 
@@ -403,7 +406,86 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             Runnable timer=new Runnable() {
                 public void run()
                 {
-                    activity.open();
+                    final BottomSheetDialog dialog = new BottomSheetDialog(activity);
+                    LinearLayout linearLayout = new LinearLayout(activity);
+                    linearLayout.setOrientation(LinearLayout.VERTICAL);
+                    ScrollView scroll = new ScrollView(activity);
+
+                    LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                    TextView textTitle = new TextView (activity);
+                    textTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                    textTitle.setGravity(Gravity.CENTER);
+                    textTitle.setText("曲を追加");
+                    textTitle.setHeight((int)(40 *  getResources().getDisplayMetrics().density + 0.5));
+                    linearLayout.addView(textTitle, param);
+
+                    TextView textLocal = new TextView (activity);
+                    textLocal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+                    textLocal.setGravity(Gravity.CENTER);
+                    textLocal.setText("端末内から追加");
+                    textLocal.setTextColor(Color.argb(255, 0, 0, 0));
+                    textLocal.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+                    textLocal.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                            activity.open();
+                        }
+                    });
+                    linearLayout.addView(textLocal, param);
+
+                    TextView textURL = new TextView (activity);
+                    textURL.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+                    textURL.setGravity(Gravity.CENTER);
+                    textURL.setText("URLから追加");
+                    textURL.setTextColor(Color.argb(255, 0, 0, 0));
+                    textURL.setTag(1);
+                    textURL.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+                    textURL.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                            builder.setTitle("URLから追加");
+                            LinearLayout linearLayout = new LinearLayout(activity);
+                            linearLayout.setOrientation(LinearLayout.VERTICAL);
+                            final EditText editURL = new EditText (activity);
+                            editURL.setHint("URL");
+                            editURL.setHintTextColor(Color.argb(255, 192, 192, 192));
+                            editURL.setText("");
+                            linearLayout.addView(editURL);
+                            builder.setView(linearLayout);
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                            {
+                                public void onClick(DialogInterface dialog, int id)
+                                {
+                                    startAddURL(editURL.getText().toString());
+                                }
+                            });
+                            builder.setNegativeButton("キャンセル", null);
+                            builder.show();
+                        }
+                    });
+                    linearLayout.addView(textURL, param);
+
+                    TextView textCancel = new TextView (activity);
+                    textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+                    textCancel.setGravity(Gravity.CENTER);
+                    textCancel.setText("キャンセル");
+                    textCancel.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+                    textCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+                    linearLayout.addView(textCancel, param);
+
+                    scroll.addView(linearLayout);
+                    dialog.setContentView(scroll);
+                    dialog.show();
                 }
             };
             handler.postDelayed(timer, 80);
@@ -513,6 +595,142 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(editLyrics, InputMethodManager.SHOW_IMPLICIT);
         }
+    }
+
+    public void startAddURL(String strURL)
+    {
+        StatFs sf = new StatFs(activity.getFilesDir().toString());
+        long nFreeSpace = 0;
+        if(Build.VERSION.SDK_INT >= 18)
+            nFreeSpace = sf.getAvailableBlocksLong() * sf.getBlockSizeLong();
+        else
+            nFreeSpace = (long)sf.getAvailableBlocks() * (long)sf.getBlockSize();
+        if(nFreeSpace < 100) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("端末内の空き容量が少なくなっています");
+            builder.setMessage("こんにちは♪\n\nハヤえもん開発者のりょーたです！\n\n端末内の空き容量が少なくなっています。\n\n不要なファイルを削除した上で、再度試してみてください。\n\nそれでは引き続き、Enjoy \"Your\" Music with Hayaemon!!");
+            builder.setPositiveButton("OK", null);
+            builder.show();
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("ダウンロード中");
+        LinearLayout linearLayout = new LinearLayout(activity);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        progress = new ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal);
+        progress.setMax(100);
+        progress.setProgress(0);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        param.topMargin = (int)(24 *  getResources().getDisplayMetrics().density + 0.5);
+        param.leftMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
+        param.rightMargin = (int)(16 *  getResources().getDisplayMetrics().density + 0.5);
+        linearLayout.addView(progress, param);
+        builder.setView(linearLayout);
+
+        String strPathTo;
+        int i = 0;
+        File fileForCheck;
+        while (true) {
+            strPathTo = activity.getFilesDir() + "/recorded" + String.format("%d", i) + ".mp3";
+            fileForCheck = new File(strPathTo);
+            if (!fileForCheck.exists()) break;
+            i++;
+        }
+        bFinish = false;
+        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                bFinish = true;
+            }
+        });
+        AlertDialog alert = builder.show();
+
+        if(downloadTask != null && downloadTask.getStatus() == AsyncTask.Status.RUNNING)
+            downloadTask.cancel(true);
+        try
+        {
+            downloadTask = new DownloadTask(this, new URL(strURL), strPathTo, alert);
+            downloadTask.execute(0);
+        }
+        catch (MalformedURLException e)
+        {
+            if(alert.isShowing()) alert.dismiss();
+        }
+    }
+
+    public void finishAddURL(String strPathTo, AlertDialog alert, int nError)
+    {
+        if(alert.isShowing()) alert.dismiss();
+
+        final File file = new File(strPathTo);
+        if(nError == 1)
+        {
+            file.delete();
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("ダウンロードに失敗しました");
+            builder.setMessage("こんにちは♪\n\nハヤえもん開発者のりょーたです！\n\nファイルをダウンロードしようとしたところ、ダウンロードすることができませんでした。\n\nお手数をおかけしますが、URLが正しいか再度ご確認ください。\n\nそれでは引き続き、Enjoy \"Your\" Music with Hayaemon!!");
+            builder.setPositiveButton("OK", null);
+            builder.show();
+            return;
+        }
+
+        int hTempStream = BASS.BASS_StreamCreateFile(strPathTo, 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+        if(hTempStream == 0)
+        {
+            file.delete();
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("ハヤえもんで再生可能な音声データではありませんでした");
+            builder.setMessage("こんにちは♪\n\nハヤえもん開発者のりょーたです！\n\nダウンロードしたファイルが、ハヤえもんで再生可能な音声データではありませんでした。\n\nお手数をおかけしますが、MP3, MP2, MP1, OGG, AIFF, M4A, MP4（※）のいずれかのファイルをご指定ください。\n※MP4は音声ファイルをご指定ください。\n\nそれでは引き続き、Enjoy \"Your\" Music with Hayaemon!!");
+            builder.setPositiveButton("OK", null);
+            builder.show();
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("URLから追加");
+        LinearLayout linearLayout = new LinearLayout(activity);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        final EditText editTitle = new EditText (activity);
+        editTitle.setHint("タイトル");
+        editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        editTitle.setText("タイトル(" + df.format(date) + ")");
+        final EditText editArtist = new EditText (activity);
+        editArtist.setHint("アーティスト名");
+        editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
+        editArtist.setText("");
+        linearLayout.addView(editTitle);
+        linearLayout.addView(editArtist);
+        builder.setView(linearLayout);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+                SongItem item = new SongItem(String.format("%d", arSongs.size()+1), editTitle.getText().toString(), editArtist.getText().toString(), file.getPath());
+                arSongs.add(item);
+                ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
+                EffectSaver saver = new EffectSaver();
+                arEffectSavers.add(saver);
+                ArrayList<String> arTempLyrics = arLyrics.get(nSelectedPlaylist);
+                arTempLyrics.add(null);
+                if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
+                songsAdapter.notifyDataSetChanged();
+
+                saveFiles(true, true, true, true, false);
+            }
+        });
+        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                file.delete();
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                file.delete();
+            }
+        });
+        builder.show();
     }
 
     public void startRecord()

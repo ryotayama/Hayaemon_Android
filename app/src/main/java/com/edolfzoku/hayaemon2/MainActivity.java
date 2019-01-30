@@ -34,6 +34,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.effect.Effect;
 import android.net.Uri;
@@ -43,6 +44,7 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -51,14 +53,17 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
 import android.text.method.ScrollingMovementMethod;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -621,15 +626,95 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v)
     {
-        PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
+        final PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
         if(v.getId() == R.id.btnMenu)
         {
             menuSheet.show(getSupportFragmentManager(), menuSheet.getTag());
         }
         else if(v.getId() == R.id.menuOpen)
         {
-            open();
             menuSheet.dismiss();
+            final BottomSheetDialog dialog = new BottomSheetDialog(this);
+            LinearLayout linearLayout = new LinearLayout(this);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            ScrollView scroll = new ScrollView(this);
+
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            TextView textTitle = new TextView (this);
+            textTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+            textTitle.setGravity(Gravity.CENTER);
+            textTitle.setText("曲を追加");
+            textTitle.setHeight((int)(40 *  getResources().getDisplayMetrics().density + 0.5));
+            linearLayout.addView(textTitle, param);
+
+            TextView textLocal = new TextView (this);
+            textLocal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+            textLocal.setGravity(Gravity.CENTER);
+            textLocal.setText("端末内から追加");
+            textLocal.setTextColor(Color.argb(255, 0, 0, 0));
+            textLocal.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+            textLocal.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    open();
+                }
+            });
+            linearLayout.addView(textLocal, param);
+
+            TextView textURL = new TextView (this);
+            textURL.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+            textURL.setGravity(Gravity.CENTER);
+            textURL.setText("URLから追加");
+            textURL.setTextColor(Color.argb(255, 0, 0, 0));
+            textURL.setTag(1);
+            textURL.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+            final Activity activity = this;
+            textURL.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                    builder.setTitle("URLから追加");
+                    LinearLayout linearLayout = new LinearLayout(activity);
+                    linearLayout.setOrientation(LinearLayout.VERTICAL);
+                    final EditText editURL = new EditText (activity);
+                    editURL.setHint("URL");
+                    editURL.setHintTextColor(Color.argb(255, 192, 192, 192));
+                    editURL.setText("");
+                    linearLayout.addView(editURL);
+                    builder.setView(linearLayout);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+                            playlistFragment.startAddURL(editURL.getText().toString());
+                        }
+                    });
+                    builder.setNegativeButton("キャンセル", null);
+                    builder.show();
+                }
+            });
+            linearLayout.addView(textURL, param);
+
+            TextView textCancel = new TextView (activity);
+            textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+            textCancel.setGravity(Gravity.CENTER);
+            textCancel.setText("キャンセル");
+            textCancel.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+            textCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+            linearLayout.addView(textCancel, param);
+
+            scroll.addView(linearLayout);
+            dialog.setContentView(scroll);
+            dialog.show();
         }
         else if(v.getId() == R.id.menuTwitter)
         {
