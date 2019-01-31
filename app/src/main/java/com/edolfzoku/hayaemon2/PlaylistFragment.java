@@ -1405,20 +1405,40 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         textRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean bDeletePlaying = false; // 再生中の曲を削除したか
-                if(nSelectedPlaylist == nPlayingPlaylist && nItem == nPlaying)
-                    bDeletePlaying = true;
-                removeSong(nSelectedPlaylist, nItem);
-                if(bDeletePlaying) {
-                    ArrayList<SongItem> arSongs = arPlaylists.get(nPlayingPlaylist);
-                    if(nPlaying < arSongs.size())
-                        playSong(nPlaying, true);
-                    else if(nPlaying > 0 && nPlaying == arSongs.size())
-                        playSong(nPlaying-1, true);
-                    else
-                        stop();
-                }
                 dialog.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                String strTitle = songItem.getTitle();
+                builder.setTitle(strTitle);
+                builder.setMessage("曲を削除しますが、よろしいでしょうか？");
+                builder.setPositiveButton("やめる", null);
+                builder.setNegativeButton("削除する", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        boolean bDeletePlaying = false; // 再生中の曲を削除したか
+                        if(nSelectedPlaylist == nPlayingPlaylist && nItem == nPlaying)
+                            bDeletePlaying = true;
+                        removeSong(nSelectedPlaylist, nItem);
+                        if(bDeletePlaying) {
+                            ArrayList<SongItem> arSongs = arPlaylists.get(nPlayingPlaylist);
+                            if(nPlaying < arSongs.size())
+                                playSong(nPlaying, true);
+                            else if(nPlaying > 0 && nPlaying == arSongs.size())
+                                playSong(nPlaying-1, true);
+                            else
+                                stop();
+                        }
+                    }
+                });
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                    }
+                });
+                alertDialog.show();
             }
         });
         linearLayout.addView(textRemove, param);
