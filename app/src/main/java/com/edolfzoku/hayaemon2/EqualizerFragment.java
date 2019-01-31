@@ -986,13 +986,23 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setTitle("すべてのプリセットを初期化");
                 builder.setMessage("デフォルトを復元すると、現在の設定内容が消えてしまいますが、よろしいでしょうか？");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("やめる", null);
+                builder.setNegativeButton("初期化する", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         resetPresets();
                     }
                 });
-                builder.setNegativeButton("キャンセル", null);
-                builder.show();
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                    }
+                });
+                alertDialog.show();
             }
         });
         linearLayout.addView(textReset, param);

@@ -1747,7 +1747,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setTitle("再生リストを削除");
                 builder.setMessage("再生リストを削除しますが、よろしいでしょうか？");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("やめる", null);
+                builder.setNegativeButton("削除する", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
                         if(nPosition == nPlayingPlaylist) stop();
@@ -1775,8 +1776,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         saveFiles(true, true, true, true, false);
                     }
                 });
-                builder.setNegativeButton("キャンセル", null);
-                builder.show();
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                    }
+                });
+                alertDialog.show();
             }
         });
         linearLayout.addView(textListRemove, param);
@@ -1794,7 +1804,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setTitle("再生リストを空にする");
                 builder.setMessage("再生リストを空にしますが、よろしいでしょうか？");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("やめる", null);
+                builder.setNegativeButton("空にする", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         ArrayList<SongItem> arSongs;
                         ArrayList<EffectSaver> arEffectSavers;
@@ -1821,8 +1832,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         saveFiles(true, true, true, true, false);
                     }
                 });
-                builder.setNegativeButton("キャンセル", null);
-                builder.show();
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                    }
+                });
+                alertDialog.show();
             }
         });
         linearLayout.addView(textEmpty, param);
