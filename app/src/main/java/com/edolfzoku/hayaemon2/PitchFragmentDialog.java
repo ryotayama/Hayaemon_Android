@@ -105,7 +105,7 @@ public class PitchFragmentDialog extends DialogFragment {
                 controlFragment.setPitch(fPitch);
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {

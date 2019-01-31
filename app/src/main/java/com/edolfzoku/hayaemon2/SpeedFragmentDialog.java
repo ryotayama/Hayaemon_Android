@@ -85,7 +85,7 @@ public class SpeedFragmentDialog extends DialogFragment {
                 controlFragment.setSpeed(fSpeed);
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 MainActivity activity = (MainActivity)getActivity();

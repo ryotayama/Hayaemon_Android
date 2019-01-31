@@ -468,7 +468,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 clearFocus();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
