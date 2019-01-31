@@ -949,7 +949,26 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                removeItem(nItem);
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle(arEqualizerItems.get(nItem).getEqualizerName());
+                builder.setMessage("プリセットを削除しますが、よろしいでしょうか？");
+                builder.setPositiveButton("やめる", null);
+                builder.setNegativeButton("削除する", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        removeItem(nItem);
+                    }
+                });
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                    }
+                });
+                alertDialog.show();
             }
         });
         linearLayout.addView(textRemove, param);
