@@ -846,20 +846,50 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         textTitle.setHeight((int)(40 *  getResources().getDisplayMetrics().density + 0.5));
         linearLayout.addView(textTitle, param);
 
-        TextView textRemove = new TextView (activity);
-        textRemove.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        textRemove.setGravity(Gravity.CENTER);
-        textRemove.setText("削除");
-        textRemove.setTextColor(Color.argb(255, 255, 0, 0));
-        textRemove.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
-        textRemove.setOnClickListener(new View.OnClickListener() {
+        TextView textChange = new TextView (activity);
+        textChange.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        textChange.setGravity(Gravity.CENTER);
+        textChange.setText("プリセット名を変更");
+        textChange.setTextColor(Color.argb(255, 0, 0, 0));
+        textChange.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+        textChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                removeItem(nItem);
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle("プリセット名を変更");
+                LinearLayout linearLayout = new LinearLayout(activity);
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+                final EditText editPreset = new EditText (activity);
+                editPreset.setHint("プリセット名");
+                editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
+                editPreset.setText(arEqualizerItems.get(nItem).getEqualizerName());
+                linearLayout.addView(editPreset);
+                builder.setView(linearLayout);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        arEqualizerItems.get(nItem).setEqualizerName(editPreset.getText().toString());
+                        equalizersAdapter.notifyDataSetChanged();
+                        saveData();
+                    }
+                });
+                builder.setNegativeButton("キャンセル", null);
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        editPreset.requestFocus();
+                        editPreset.setSelection(editPreset.getText().toString().length());
+                        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if (null != imm) imm.showSoftInput(editPreset, 0);
+                    }
+                });
+                alertDialog.show();
             }
         });
-        linearLayout.addView(textRemove, param);
+        linearLayout.addView(textChange, param);
 
         TextView textSort = new TextView (activity);
         textSort.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
@@ -909,63 +939,33 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         });
         linearLayout.addView(textSort, param);
 
-        TextView textChange = new TextView (activity);
-        textChange.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        textChange.setGravity(Gravity.CENTER);
-        textChange.setText("プリセット名を変更");
-        textChange.setTextColor(Color.argb(255, 0, 0, 0));
-        textChange.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
-        textChange.setOnClickListener(new View.OnClickListener() {
+        TextView textRemove = new TextView (activity);
+        textRemove.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        textRemove.setGravity(Gravity.CENTER);
+        textRemove.setText("削除");
+        textRemove.setTextColor(Color.argb(255, 255, 0, 0));
+        textRemove.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
+        textRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("プリセット名を変更");
-                LinearLayout linearLayout = new LinearLayout(activity);
-                linearLayout.setOrientation(LinearLayout.VERTICAL);
-                final EditText editPreset = new EditText (activity);
-                editPreset.setHint("プリセット名");
-                editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
-                editPreset.setText(arEqualizerItems.get(nItem).getEqualizerName());
-                linearLayout.addView(editPreset);
-                builder.setView(linearLayout);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        arEqualizerItems.get(nItem).setEqualizerName(editPreset.getText().toString());
-                        equalizersAdapter.notifyDataSetChanged();
-                        saveData();
-                    }
-                });
-                builder.setNegativeButton("キャンセル", null);
-                final AlertDialog alertDialog = builder.create();
-                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
-                {
-                    @Override
-                    public void onShow(DialogInterface arg0)
-                    {
-                        editPreset.requestFocus();
-                        editPreset.setSelection(editPreset.getText().toString().length());
-                        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        if (null != imm) imm.showSoftInput(editPreset, 0);
-                    }
-                });
-                alertDialog.show();
+                removeItem(nItem);
             }
         });
-        linearLayout.addView(textChange, param);
+        linearLayout.addView(textRemove, param);
 
         TextView textReset = new TextView (activity);
         textReset.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         textReset.setGravity(Gravity.CENTER);
-        textReset.setText("デフォルトに戻す");
-        textReset.setTextColor(Color.argb(255, 0, 0, 0));
+        textReset.setText("すべてのプリセットを初期化");
+        textReset.setTextColor(Color.argb(255, 255, 0, 0));
         textReset.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
         textReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("デフォルトに戻す");
+                builder.setTitle("すべてのプリセットを初期化");
                 builder.setMessage("デフォルトを復元すると、現在の設定内容が消えてしまいますが、よろしいでしょうか？");
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
