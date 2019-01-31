@@ -59,6 +59,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -694,7 +695,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     });
                     builder.setNegativeButton("キャンセル", null);
-                    builder.show();
+                    final AlertDialog alertDialog = builder.create();
+                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                    {
+                        @Override
+                        public void onShow(DialogInterface arg0)
+                        {
+                            editURL.requestFocus();
+                            editURL.setSelection(editURL.getText().toString().length());
+                            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                            if (null != imm) imm.showSoftInput(editURL, 0);
+                        }
+                    });
+                    alertDialog.show();
                 }
             });
             linearLayout.addView(textURL, param);

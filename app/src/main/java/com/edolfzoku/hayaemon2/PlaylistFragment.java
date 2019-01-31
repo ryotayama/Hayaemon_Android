@@ -285,7 +285,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         }
                     });
                     builder.setNegativeButton("キャンセル", null);
-                    builder.show();
+                    final AlertDialog alertDialog = builder.create();
+                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                    {
+                        @Override
+                        public void onShow(DialogInterface arg0)
+                        {
+                            editText.requestFocus();
+                            editText.setSelection(editText.getText().toString().length());
+                            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                            if (null != imm) imm.showSoftInput(editText, 0);
+                        }
+                    });
+                    alertDialog.show();
                 }
             };
             handler.postDelayed(timer, 80);
@@ -398,7 +410,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 }
             });
             builder.setNegativeButton("キャンセル", null);
-            builder.show();
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+            {
+                @Override
+                public void onShow(DialogInterface arg0)
+                {
+                    editText.requestFocus();
+                    editText.setSelection(editText.getText().toString().length());
+                    InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (null != imm) imm.showSoftInput(editText, 0);
+                }
+            });
+            alertDialog.show();
         }
         else if(v.getId() == R.id.btnAddSong)
         {
@@ -465,7 +489,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                                 }
                             });
                             builder.setNegativeButton("キャンセル", null);
-                            builder.show();
+                            final AlertDialog alertDialog = builder.create();
+                            alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                            {
+                                @Override
+                                public void onShow(DialogInterface arg0)
+                                {
+                                    editURL.requestFocus();
+                                    editURL.setSelection(editURL.getText().toString().length());
+                                    InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    if (null != imm) imm.showSoftInput(editURL, 0);
+                                }
+                            });
+                            alertDialog.show();
                         }
                     });
                     linearLayout.addView(textURL, param);
@@ -730,7 +766,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 file.delete();
             }
         });
-        builder.show();
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+        {
+            @Override
+            public void onShow(DialogInterface arg0)
+            {
+                editTitle.requestFocus();
+                editTitle.setSelection(editTitle.getText().toString().length());
+                InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (null != imm) imm.showSoftInput(editTitle, 0);
+            }
+        });
+        alertDialog.show();
     }
 
     public void startRecord()
@@ -911,7 +959,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 file.delete();
             }
         });
-        builder.show();
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+        {
+            @Override
+            public void onShow(DialogInterface arg0)
+            {
+                editTitle.requestFocus();
+                editTitle.setSelection(editTitle.getText().toString().length());
+                InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (null != imm) imm.showSoftInput(editTitle, 0);
+            }
+        });
+        alertDialog.show();
     }
 
     public void addPlaylist(String strName)
@@ -1503,7 +1563,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     }
                 });
                 builder.setNegativeButton("キャンセル", null);
-                builder.show();
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        editTitle.requestFocus();
+                        editTitle.setSelection(editTitle.getText().toString().length());
+                        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if (null != imm) imm.showSoftInput(editTitle, 0);
+                    }
+                });
+                alertDialog.show();
             }
         });
         linearLayout.addView(textChange, param);
@@ -1625,7 +1697,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     }
                 });
                 builder.setNegativeButton("キャンセル", null);
-                builder.show();
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        editText.requestFocus();
+                        editText.setSelection(editText.getText().toString().length());
+                        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if (null != imm) imm.showSoftInput(editText, 0);
+                    }
+                });
+                alertDialog.show();
             }
         });
         linearLayout.addView(textRename, param);
@@ -2316,7 +2400,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             }
         });
         builder.setNegativeButton("キャンセル", null);
-        builder.show();
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+        {
+            @Override
+            public void onShow(DialogInterface arg0)
+            {
+                editTitle.requestFocus();
+                editTitle.setSelection(editTitle.getText().toString().length());
+                InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (null != imm) imm.showSoftInput(editTitle, 0);
+            }
+        });
+        alertDialog.show();
     }
 
     public void finishExport(int hTempStream, int hEncode, String strPathTo, AlertDialog alert)

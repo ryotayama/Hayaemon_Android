@@ -39,6 +39,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -497,7 +498,19 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     }
                 });
                 builder.setNegativeButton("キャンセル", null);
-                builder.show();
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        editPreset.requestFocus();
+                        editPreset.setSelection(editPreset.getText().toString().length());
+                        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if (null != imm) imm.showSoftInput(editPreset, 0);
+                    }
+                });
+                alertDialog.show();
                 break;
 
             case R.id.textFinishSortEqualizer:
@@ -924,7 +937,19 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     }
                 });
                 builder.setNegativeButton("キャンセル", null);
-                builder.show();
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        editPreset.requestFocus();
+                        editPreset.setSelection(editPreset.getText().toString().length());
+                        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if (null != imm) imm.showSoftInput(editPreset, 0);
+                    }
+                });
+                alertDialog.show();
             }
         });
         linearLayout.addView(textChange, param);
