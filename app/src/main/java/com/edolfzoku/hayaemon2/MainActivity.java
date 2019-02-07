@@ -44,7 +44,6 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -635,47 +634,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(v.getId() == R.id.menuOpen)
         {
             menuSheet.dismiss();
-            final BottomSheetDialog dialog = new BottomSheetDialog(this);
-            LinearLayout linearLayout = new LinearLayout(this);
-            linearLayout.setOrientation(LinearLayout.VERTICAL);
-            ScrollView scroll = new ScrollView(this);
 
-            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-            TextView textTitle = new TextView (this);
-            textTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-            textTitle.setGravity(Gravity.CENTER);
-            textTitle.setText("曲を追加");
-            textTitle.setHeight((int)(40 *  getResources().getDisplayMetrics().density + 0.5));
-            linearLayout.addView(textTitle, param);
-
-            TextView textLocal = new TextView (this);
-            textLocal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-            textLocal.setGravity(Gravity.CENTER);
-            textLocal.setText("端末内から追加");
-            textLocal.setTextColor(Color.argb(255, 0, 0, 0));
-            textLocal.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
-            textLocal.setOnClickListener(new View.OnClickListener() {
+            final BottomMenu menu = new BottomMenu(this);
+            menu.setTitle("曲を追加");
+            menu.addMenu("端末内から追加", R.drawable.actionsheet_music, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dialog.dismiss();
+                    menu.dismiss();
                     open();
                 }
             });
-            linearLayout.addView(textLocal, param);
-
-            TextView textURL = new TextView (this);
-            textURL.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-            textURL.setGravity(Gravity.CENTER);
-            textURL.setText("URLから追加");
-            textURL.setTextColor(Color.argb(255, 0, 0, 0));
-            textURL.setTag(1);
-            textURL.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
             final Activity activity = this;
-            textURL.setOnClickListener(new View.OnClickListener() {
+            menu.addMenu("URLから追加", R.drawable.actionsheet_globe, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dialog.dismiss();
+                    menu.dismiss();
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                     builder.setTitle("URLから追加");
@@ -710,24 +683,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     alertDialog.show();
                 }
             });
-            linearLayout.addView(textURL, param);
-
-            TextView textCancel = new TextView (activity);
-            textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-            textCancel.setGravity(Gravity.CENTER);
-            textCancel.setText("キャンセル");
-            textCancel.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
-            textCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
-                }
-            });
-            linearLayout.addView(textCancel, param);
-
-            scroll.addView(linearLayout);
-            dialog.setContentView(scroll);
-            dialog.show();
+            menu.setCancelMenu();
+            menu.show();
         }
         else if(v.getId() == R.id.menuTwitter)
         {

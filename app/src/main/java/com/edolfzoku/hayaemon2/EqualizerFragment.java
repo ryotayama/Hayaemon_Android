@@ -26,7 +26,6 @@ import android.graphics.Color;
 import android.media.audiofx.Equalizer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -832,30 +831,12 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     }
 
     public void showMenu(final int nItem) {
-        final BottomSheetDialog dialog = new BottomSheetDialog(activity);
-        LinearLayout linearLayout = new LinearLayout(activity);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        ScrollView scroll = new ScrollView(activity);
-
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        TextView textTitle = new TextView (activity);
-        textTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-        textTitle.setGravity(Gravity.CENTER);
-        textTitle.setText(arEqualizerItems.get(nItem).getEqualizerName());
-        textTitle.setHeight((int)(40 *  getResources().getDisplayMetrics().density + 0.5));
-        linearLayout.addView(textTitle, param);
-
-        TextView textChange = new TextView (activity);
-        textChange.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        textChange.setGravity(Gravity.CENTER);
-        textChange.setText("プリセット名を変更");
-        textChange.setTextColor(Color.argb(255, 0, 0, 0));
-        textChange.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
-        textChange.setOnClickListener(new View.OnClickListener() {
+        final BottomMenu menu = new BottomMenu(activity);
+        menu.setTitle(arEqualizerItems.get(nItem).getEqualizerName());
+        menu.addMenu("プリセット名を変更", R.drawable.actionsheet_edit, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
+                menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setTitle("プリセット名を変更");
                 LinearLayout linearLayout = new LinearLayout(activity);
@@ -889,18 +870,10 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 alertDialog.show();
             }
         });
-        linearLayout.addView(textChange, param);
-
-        TextView textSort = new TextView (activity);
-        textSort.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        textSort.setGravity(Gravity.CENTER);
-        textSort.setText("プリセットの並べ替え");
-        textSort.setTextColor(Color.argb(255, 0, 0, 0));
-        textSort.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
-        textSort.setOnClickListener(new View.OnClickListener() {
+        menu.addMenu("プリセットの並べ替え", R.drawable.actionsheet_sort, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
+                menu.dismiss();
                 recyclerEqualizers.setPadding(0, 0, 0, (int)(64 * getResources().getDisplayMetrics().density + 0.5));
                 TextView textFinishSortEqualizer = (TextView) activity.findViewById(R.id.textFinishSortEqualizer);
                 textFinishSortEqualizer.setVisibility(View.VISIBLE);
@@ -937,18 +910,10 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 equalizerTouchHelper.attachToRecyclerView(recyclerEqualizers);
             }
         });
-        linearLayout.addView(textSort, param);
-
-        TextView textRemove = new TextView (activity);
-        textRemove.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        textRemove.setGravity(Gravity.CENTER);
-        textRemove.setText("削除");
-        textRemove.setTextColor(Color.argb(255, 255, 0, 0));
-        textRemove.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
-        textRemove.setOnClickListener(new View.OnClickListener() {
+        menu.addDestructiveMenu("削除", R.drawable.actionsheet_delete, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
+                menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setTitle(arEqualizerItems.get(nItem).getEqualizerName());
                 builder.setMessage("プリセットを削除しますが、よろしいでしょうか？");
@@ -971,18 +936,10 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 alertDialog.show();
             }
         });
-        linearLayout.addView(textRemove, param);
-
-        TextView textReset = new TextView (activity);
-        textReset.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        textReset.setGravity(Gravity.CENTER);
-        textReset.setText("すべてのプリセットを初期化");
-        textReset.setTextColor(Color.argb(255, 255, 0, 0));
-        textReset.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
-        textReset.setOnClickListener(new View.OnClickListener() {
+        menu.addDestructiveMenu("すべてのプリセットを初期化", R.drawable.actionsheet_initialize, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
+                menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setTitle("すべてのプリセットを初期化");
                 builder.setMessage("デフォルトを復元すると、現在の設定内容が消えてしまいますが、よろしいでしょうか？");
@@ -1005,24 +962,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 alertDialog.show();
             }
         });
-        linearLayout.addView(textReset, param);
-
-        TextView textCancel = new TextView (activity);
-        textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        textCancel.setGravity(Gravity.CENTER);
-        textCancel.setText("キャンセル");
-        textCancel.setHeight((int)(56 *  getResources().getDisplayMetrics().density + 0.5));
-        textCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        linearLayout.addView(textCancel, param);
-
-        scroll.addView(linearLayout);
-        dialog.setContentView(scroll);
-        dialog.show();
+        menu.setCancelMenu();
+        menu.show();
     }
 
     public void removeItem(int nItem)
