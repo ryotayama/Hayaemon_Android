@@ -1,5 +1,6 @@
 package com.edolfzoku.hayaemon2;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -31,6 +33,20 @@ public class BottomMenu extends BottomSheetDialog
         setContentView(scroll);
         BottomSheetBehavior behavior = BottomSheetBehavior.from((View)scroll.getParent());
         behavior.setPeekHeight(context.getResources().getDisplayMetrics().heightPixels);
+        setDialogBorder(this);
+    }
+
+    public void setDialogBorder(Dialog dialog) {
+        FrameLayout bottomSheet = (FrameLayout) dialog.getWindow().findViewById(android.support.design.R.id.design_bottom_sheet);
+        setMargins(bottomSheet, (int)(16 *  getContext().getResources().getDisplayMetrics().density + 0.5), 0, (int)(16 *  getContext().getResources().getDisplayMetrics().density + 0.5), 0);
+    }
+
+    private void setMargins(View view, int left, int top, int right, int bottom) {
+        if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            p.setMargins(left, top, right, bottom);
+            view.requestLayout();
+        }
     }
 
     public void setTitle(String strTitle)
