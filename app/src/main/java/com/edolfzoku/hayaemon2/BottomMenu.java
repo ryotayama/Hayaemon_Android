@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -75,10 +76,14 @@ public class BottomMenu extends BottomSheetDialog {
 
     public void setTitle(String strTitle) {
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        param.leftMargin = (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5);
+        param.rightMargin = (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5);
         TextView textTitle = new TextView(getContext());
         textTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
         textTitle.setGravity(Gravity.CENTER);
         textTitle.setText(strTitle);
+        textTitle.setEllipsize(TextUtils.TruncateAt.END);
+        textTitle.setSingleLine();
         textTitle.setHeight((int) (48 * getContext().getResources().getDisplayMetrics().density + 0.5));
         linearLayoutParent.addView(textTitle, param);
 
