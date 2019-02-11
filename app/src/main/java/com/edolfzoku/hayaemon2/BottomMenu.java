@@ -3,6 +3,7 @@ package com.edolfzoku.hayaemon2;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -19,12 +20,16 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class BottomMenu extends BottomSheetDialog {
+    LinearLayout linearLayoutParent;
     LinearLayout linearLayout;
     ScrollView scroll;
     int nTag = 0;
+    int nHeight = 0;
 
     public BottomMenu(@NonNull Context context) {
         super(context);
+        linearLayoutParent = new LinearLayout(context);
+        linearLayoutParent.setOrientation(LinearLayout.VERTICAL);
         linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         scroll = new ScrollView(context);
@@ -42,11 +47,17 @@ public class BottomMenu extends BottomSheetDialog {
                 return false;
             }
         });
-        setContentView(scroll);
-        BottomSheetBehavior behavior = BottomSheetBehavior.from((View) scroll.getParent());
-        behavior.setPeekHeight(context.getResources().getDisplayMetrics().heightPixels);
+        setContentView(linearLayoutParent);
+        BottomSheetBehavior behavior = BottomSheetBehavior.from((View) linearLayoutParent.getParent());
+        behavior.setPeekHeight(context.getResources().getDisplayMetrics().heightPixels - getStatusBarHeight() - (int) (16.0 * getContext().getResources().getDisplayMetrics().density + 0.5));
         setDialogBorder(this);
         setCancelable(false);
+    }
+
+    public int getStatusBarHeight(){
+        final Rect rect = new Rect();
+        getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+        return rect.top;
     }
 
     public void setDialogBorder(Dialog dialog) {
@@ -69,7 +80,7 @@ public class BottomMenu extends BottomSheetDialog {
         textTitle.setGravity(Gravity.CENTER);
         textTitle.setText(strTitle);
         textTitle.setHeight((int) (48 * getContext().getResources().getDisplayMetrics().density + 0.5));
-        linearLayout.addView(textTitle, param);
+        linearLayoutParent.addView(textTitle, param);
 
         View viewSep = new View(getContext());
         viewSep.setBackgroundColor(Color.argb(255, 208, 208, 208));
@@ -79,7 +90,9 @@ public class BottomMenu extends BottomSheetDialog {
         paramViewSep.leftMargin = (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5);
         paramViewSep.rightMargin = (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5);
         paramViewSep.height = (int) (0.5 * getContext().getResources().getDisplayMetrics().density + 0.5);
-        linearLayout.addView(viewSep, paramViewSep);
+        linearLayoutParent.addView(viewSep, paramViewSep);
+
+        linearLayoutParent.addView(scroll);
     }
 
     public void addSeparator() {
@@ -92,6 +105,7 @@ public class BottomMenu extends BottomSheetDialog {
         paramViewSep.rightMargin = (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5);
         paramViewSep.height = (int) (0.5 * getContext().getResources().getDisplayMetrics().density + 0.5);
         linearLayout.addView(viewSep, paramViewSep);
+        nHeight += paramViewSep.topMargin + paramViewSep.bottomMargin + paramViewSep.height;
     }
 
     public void addMenu(String strText, int resID, android.view.View.OnClickListener listener) {
@@ -131,6 +145,7 @@ public class BottomMenu extends BottomSheetDialog {
         relativeLocal.addView(textLocal, paramTextLocal);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         linearLayout.addView(relativeLocal, param);
+        nHeight += (int) (48 * getContext().getResources().getDisplayMetrics().density + 0.5);
     }
 
     public void addDestructiveMenu(String strText, int resID, android.view.View.OnClickListener listener) {
@@ -168,6 +183,7 @@ public class BottomMenu extends BottomSheetDialog {
         relativeLocal.addView(textLocal, paramTextLocal);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         linearLayout.addView(relativeLocal, param);
+        nHeight += (int) (48 * getContext().getResources().getDisplayMetrics().density + 0.5);
     }
 
     public void setCancelMenu() {
@@ -179,7 +195,7 @@ public class BottomMenu extends BottomSheetDialog {
         paramViewSep.leftMargin = (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5);
         paramViewSep.rightMargin = (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5);
         paramViewSep.height = (int) (0.5 * getContext().getResources().getDisplayMetrics().density + 0.5);
-        linearLayout.addView(viewSep, paramViewSep);
+        linearLayoutParent.addView(viewSep, paramViewSep);
 
         final TextView textCancel = new TextView(getContext());
         textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
@@ -203,6 +219,18 @@ public class BottomMenu extends BottomSheetDialog {
             }
         });
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        linearLayout.addView(textCancel, param);
+        linearLayoutParent.addView(textCancel, param);
+
+        int nSpaceHeight = (int) (8 * getContext().getResources().getDisplayMetrics().density + 0.5);
+        int nSepHeight = (int) (0.5 * getContext().getResources().getDisplayMetrics().density + 0.5);
+        int nMenuHeight = (int) (48 * getContext().getResources().getDisplayMetrics().density + 0.5);
+        int nScrollMaxHeight = getContext().getResources().getDisplayMetrics().heightPixels - getStatusBarHeight() - nSpaceHeight * 4 - nMenuHeight * 2 - nSepHeight * 2;
+        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams)scroll.getLayoutParams();
+        System.out.println(nHeight);
+        System.out.println(nScrollMaxHeight);
+        if(nHeight > nScrollMaxHeight) {
+            marginLayoutParams.height = nScrollMaxHeight;
+            scroll.setLayoutParams(marginLayoutParams);
+        }
     }
 }
