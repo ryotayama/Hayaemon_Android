@@ -124,10 +124,9 @@ public class BottomMenu extends BottomSheetDialog {
 
         TextView textLocal = new TextView(getContext());
         textLocal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        textLocal.setGravity(Gravity.CENTER);
+        textLocal.setGravity(Gravity.LEFT | Gravity.CENTER);
         textLocal.setText(strText);
         textLocal.setTextColor(Color.argb(255, 0, 0, 0));
-        textLocal.setHeight((int) (48 * getContext().getResources().getDisplayMetrics().density + 0.5));
         relativeLocal.setOnClickListener(listener);
         relativeLocal.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -146,6 +145,9 @@ public class BottomMenu extends BottomSheetDialog {
         RelativeLayout.LayoutParams paramTextLocal = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         paramTextLocal.addRule(RelativeLayout.RIGHT_OF, imgLocal.getId());
         paramTextLocal.addRule(RelativeLayout.CENTER_VERTICAL);
+        paramTextLocal.topMargin = (int) (17 * getContext().getResources().getDisplayMetrics().density + 0.5);
+        paramTextLocal.bottomMargin = (int) (17 * getContext().getResources().getDisplayMetrics().density + 0.5);
+        paramTextLocal.rightMargin = (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5);
         relativeLocal.addView(textLocal, paramTextLocal);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         linearLayout.addView(relativeLocal, param);
@@ -166,10 +168,9 @@ public class BottomMenu extends BottomSheetDialog {
 
         TextView textLocal = new TextView(getContext());
         textLocal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        textLocal.setGravity(Gravity.CENTER);
+        textLocal.setGravity(Gravity.LEFT | Gravity.CENTER);
         textLocal.setText(strText);
         textLocal.setTextColor(Color.argb(255, 255, 0, 0));
-        textLocal.setHeight((int) (48 * getContext().getResources().getDisplayMetrics().density + 0.5));
         relativeLocal.setOnClickListener(listener);
         relativeLocal.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -188,6 +189,9 @@ public class BottomMenu extends BottomSheetDialog {
         RelativeLayout.LayoutParams paramTextLocal = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         paramTextLocal.addRule(RelativeLayout.RIGHT_OF, imgLocal.getId());
         paramTextLocal.addRule(RelativeLayout.CENTER_VERTICAL);
+        paramTextLocal.topMargin = (int) (17 * getContext().getResources().getDisplayMetrics().density + 0.5);
+        paramTextLocal.bottomMargin = (int) (17 * getContext().getResources().getDisplayMetrics().density + 0.5);
+        paramTextLocal.rightMargin = (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5);
         relativeLocal.addView(textLocal, paramTextLocal);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         linearLayout.addView(relativeLocal, param);
