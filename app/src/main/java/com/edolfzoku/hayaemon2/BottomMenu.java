@@ -170,7 +170,7 @@ public class BottomMenu extends BottomSheetDialog {
         textLocal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         textLocal.setGravity(Gravity.LEFT | Gravity.CENTER);
         textLocal.setText(strText);
-        textLocal.setTextColor(Color.argb(255, 255, 0, 0));
+        textLocal.setTextColor(Color.argb(255, 255, 45, 85));
         relativeLocal.setOnClickListener(listener);
         relativeLocal.setOnTouchListener(new View.OnTouchListener() {
             @Override
