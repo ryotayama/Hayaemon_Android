@@ -38,6 +38,7 @@ public class BottomMenu extends BottomSheetDialog {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_UP) {
+                    setCancelable(true);
                     for(int i = 0; i < linearLayout.getChildCount(); i++) {
                         View childView = linearLayout.getChildAt(i);
                         if(childView.getHeight() != (int) (0.5 * getContext().getResources().getDisplayMetrics().density + 0.5))
@@ -51,7 +52,6 @@ public class BottomMenu extends BottomSheetDialog {
         BottomSheetBehavior behavior = BottomSheetBehavior.from((View) linearLayoutParent.getParent());
         behavior.setPeekHeight(context.getResources().getDisplayMetrics().heightPixels - getStatusBarHeight() - (int) (16.0 * getContext().getResources().getDisplayMetrics().density + 0.5));
         setDialogBorder(this);
-        setCancelable(false);
     }
 
     public int getStatusBarHeight(){
@@ -132,10 +132,14 @@ public class BottomMenu extends BottomSheetDialog {
         relativeLocal.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN)
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    setCancelable(false);
                     relativeLocal.setBackgroundColor(Color.argb(255, 229, 229, 229));
-                else if(event.getAction() == MotionEvent.ACTION_UP)
+                }
+                else if(event.getAction() == MotionEvent.ACTION_UP) {
+                    setCancelable(true);
                     relativeLocal.setBackgroundColor(Color.argb(255, 255, 255, 255));
+                }
                 return false;
             }
         });
@@ -170,10 +174,14 @@ public class BottomMenu extends BottomSheetDialog {
         relativeLocal.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN)
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    setCancelable(false);
                     relativeLocal.setBackgroundColor(Color.argb(255, 229, 229, 229));
-                else if(event.getAction() == MotionEvent.ACTION_UP)
+                }
+                else if(event.getAction() == MotionEvent.ACTION_UP) {
+                    setCancelable(true);
                     relativeLocal.setBackgroundColor(Color.argb(255, 255, 255, 255));
+                }
                 return false;
             }
         });
@@ -211,10 +219,14 @@ public class BottomMenu extends BottomSheetDialog {
         textCancel.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN)
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    setCancelable(false);
                     textCancel.setBackgroundColor(Color.argb(255, 229, 229, 229));
-                else if(event.getAction() == MotionEvent.ACTION_UP)
+                }
+                else if(event.getAction() == MotionEvent.ACTION_UP) {
+                    setCancelable(true);
                     textCancel.setBackgroundColor(Color.argb(255, 255, 255, 255));
+                }
                 return false;
             }
         });
