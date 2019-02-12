@@ -67,6 +67,7 @@
 
             <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnAddPlaylist"
+                android:contentDescription="再生リストの追加"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:background="@null"
@@ -91,6 +92,7 @@
 
         <ImageButton
             android:id="@+id/buttonLeft"
+            android:contentDescription="再生リスト整理画面への移動"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/arrowleftbutton"
@@ -115,6 +117,7 @@
 
         <ImageButton
             android:id="@+id/buttonAddPlaylist_small"
+            android:contentDescription="再生リストの追加"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/plusbutton"
@@ -154,6 +157,7 @@
 
             <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnAddSong"
+                android:contentDescription="曲の追加"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:background="@null"
@@ -254,6 +258,7 @@
 
         <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnEdit"
+            android:contentDescription="歌詞の編集"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:background="@null"

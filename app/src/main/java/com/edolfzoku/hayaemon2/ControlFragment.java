@@ -225,7 +225,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         else
         {
             textPitchValue.setText(String.format("　%.1f", fPitch));
-            if(textPitchValue.getText().equals("　-0.0"))
+            if(textPitchValue.getText().toString().equals("　-0.0"))
                 textPitchValue.setText("　0.0");
         }
 
@@ -476,7 +476,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 else
                 {
                     textPitchValue.setText(String.format("　%.1f", fPitch));
-                    if(textPitchValue.getText().equals("　-0.0"))
+                    if(textPitchValue.getText().toString().equals("　-0.0"))
                         textPitchValue.setText("　0.0");
                 }
             }

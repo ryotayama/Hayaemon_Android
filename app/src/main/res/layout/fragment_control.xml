@@ -26,6 +26,7 @@
         />
     <ImageButton
         android:id="@+id/btnLockSpeed"
+        android:contentDescription="速度をロック"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:background="@null"
@@ -68,6 +69,7 @@
         />
     <ImageButton
         android:id="@+id/btnLockPitch"
+        android:contentDescription="音程をロック"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:background="@null"
@@ -143,6 +145,7 @@
             />
         <com.edolfzoku.hayaemon2.AnimationTextView
             android:id="@+id/textSpeedUp"
+            android:contentDescription="速度を上げるボタン"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:text="速"
@@ -159,6 +162,7 @@
             />
         <com.edolfzoku.hayaemon2.AnimationTextView
             android:id="@+id/textSpeedDown"
+            android:contentDescription="速度を下げるボタン"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:text="遅"
@@ -175,6 +179,7 @@
             />
         <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/imgPitchUp"
+            android:contentDescription="音程を上げる"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@null"
@@ -188,6 +193,7 @@
             />
         <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/imgPitchDown"
+            android:contentDescription="音程を下げる"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@null"

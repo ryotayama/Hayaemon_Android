@@ -81,6 +81,7 @@
 
                 <ImageButton
                     android:id="@+id/buttonVolMinus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -93,6 +94,7 @@
 
                 <ImageButton
                     android:id="@+id/buttonVolPlus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -147,6 +149,7 @@
 
                 <ImageButton
                     android:id="@+id/button20KMinus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -159,6 +162,7 @@
 
                 <ImageButton
                     android:id="@+id/button20KPlus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -213,6 +217,7 @@
 
                 <ImageButton
                     android:id="@+id/button16KMinus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -225,6 +230,7 @@
 
                 <ImageButton
                     android:id="@+id/button16KPlus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -279,6 +285,7 @@
 
                 <ImageButton
                     android:id="@+id/button12_5KMinus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -291,6 +298,7 @@
 
                 <ImageButton
                     android:id="@+id/button12_5KPlus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -346,6 +354,7 @@
 
                 <ImageButton
                     android:id="@+id/button10KMinus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -358,6 +367,7 @@
 
                 <ImageButton
                     android:id="@+id/button10KPlus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -412,6 +422,7 @@
 
                 <ImageButton
                     android:id="@+id/button8KMinus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -424,6 +435,7 @@
 
                 <ImageButton
                     android:id="@+id/button8KPlus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -478,6 +490,7 @@
 
                 <ImageButton
                     android:id="@+id/button6_3KMinus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -490,6 +503,7 @@
 
                 <ImageButton
                     android:id="@+id/button6_3KPlus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -544,6 +558,7 @@
 
                 <ImageButton
                     android:id="@+id/button5KMinus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -556,6 +571,7 @@
 
                 <ImageButton
                     android:id="@+id/button5KPlus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -610,6 +626,7 @@
 
                 <ImageButton
                     android:id="@+id/button4KMinus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -622,6 +639,7 @@
 
                 <ImageButton
                     android:id="@+id/button4KPlus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -675,6 +693,7 @@
 
                 <ImageButton
                     android:id="@+id/button3_15KMinus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -687,6 +706,7 @@
 
                 <ImageButton
                     android:id="@+id/button3_15KPlus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -741,6 +761,7 @@
 
                 <ImageButton
                     android:id="@+id/button2_5KMinus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -753,6 +774,7 @@
 
                 <ImageButton
                     android:id="@+id/button2_5KPlus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -807,6 +829,7 @@
 
                 <ImageButton
                     android:id="@+id/button2KMinus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -819,6 +842,7 @@
 
                 <ImageButton
                     android:id="@+id/button2KPlus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -873,6 +897,7 @@
 
                 <ImageButton
                     android:id="@+id/button1_6KMinus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -885,6 +910,7 @@
 
                 <ImageButton
                     android:id="@+id/button1_6KPlus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -939,6 +965,7 @@
 
                 <ImageButton
                     android:id="@+id/button1_25KMinus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -951,6 +978,7 @@
 
                 <ImageButton
                     android:id="@+id/button1_25KPlus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1005,6 +1033,7 @@
 
                 <ImageButton
                     android:id="@+id/button1KMinus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -1017,6 +1046,7 @@
 
                 <ImageButton
                     android:id="@+id/button1KPlus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1071,6 +1101,7 @@
 
                 <ImageButton
                     android:id="@+id/button800Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -1083,6 +1114,7 @@
 
                 <ImageButton
                     android:id="@+id/button800Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1137,6 +1169,7 @@
 
                 <ImageButton
                     android:id="@+id/button630Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -1149,6 +1182,7 @@
 
                 <ImageButton
                     android:id="@+id/button630Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1203,6 +1237,7 @@
 
                 <ImageButton
                     android:id="@+id/button500Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -1215,6 +1250,7 @@
 
                 <ImageButton
                     android:id="@+id/button500Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1269,6 +1305,7 @@
 
                 <ImageButton
                     android:id="@+id/button400Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -1281,6 +1318,7 @@
 
                 <ImageButton
                     android:id="@+id/button400Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1335,6 +1373,7 @@
 
                 <ImageButton
                     android:id="@+id/button315Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -1347,6 +1386,7 @@
 
                 <ImageButton
                     android:id="@+id/button315Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1401,6 +1441,7 @@
 
                 <ImageButton
                     android:id="@+id/button250Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -1413,6 +1454,7 @@
 
                 <ImageButton
                     android:id="@+id/button250Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1467,6 +1509,7 @@
 
                 <ImageButton
                     android:id="@+id/button200Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -1479,6 +1522,7 @@
 
                 <ImageButton
                     android:id="@+id/button200Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1533,6 +1577,7 @@
 
                 <ImageButton
                     android:id="@+id/button160Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -1545,6 +1590,7 @@
 
                 <ImageButton
                     android:id="@+id/button160Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1599,6 +1645,7 @@
 
                 <ImageButton
                     android:id="@+id/button125Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -1611,6 +1658,7 @@
 
                 <ImageButton
                     android:id="@+id/button125Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1665,6 +1713,7 @@
 
                 <ImageButton
                     android:id="@+id/button100Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -1677,6 +1726,7 @@
 
                 <ImageButton
                     android:id="@+id/button100Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1731,6 +1781,7 @@
 
                 <ImageButton
                     android:id="@+id/button80Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -1743,6 +1794,7 @@
 
                 <ImageButton
                     android:id="@+id/button80Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1797,6 +1849,7 @@
 
                 <ImageButton
                     android:id="@+id/button63Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -1809,6 +1862,7 @@
 
                 <ImageButton
                     android:id="@+id/button63Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1863,6 +1917,7 @@
 
                 <ImageButton
                     android:id="@+id/button50Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -1875,6 +1930,7 @@
 
                 <ImageButton
                     android:id="@+id/button50Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1929,6 +1985,7 @@
 
                 <ImageButton
                     android:id="@+id/button40Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -1941,6 +1998,7 @@
 
                 <ImageButton
                     android:id="@+id/button40Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -1995,6 +2053,7 @@
 
                 <ImageButton
                     android:id="@+id/button31_5Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -2007,6 +2066,7 @@
 
                 <ImageButton
                     android:id="@+id/button31_5Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -2061,6 +2121,7 @@
 
                 <ImageButton
                     android:id="@+id/button25Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -2073,6 +2134,7 @@
 
                 <ImageButton
                     android:id="@+id/button25Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
@@ -2127,6 +2189,7 @@
 
                 <ImageButton
                     android:id="@+id/button20Minus"
+                    android:contentDescription="マイナス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
@@ -2139,6 +2202,7 @@
 
                 <ImageButton
                     android:id="@+id/button20Plus"
+                    android:contentDescription="プラス"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"

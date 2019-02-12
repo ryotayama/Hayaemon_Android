@@ -355,61 +355,61 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         nProgress -= 1;
         if(nProgress < 0) nProgress = 0;
         seek.setProgress(nProgress);
-        if(textEffectName.getText().equals(arEffectItems.get(kEffectTypePan).getEffectName()))
+        if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypePan).getEffectName()))
         {
             float fProgress = (nProgress - 100) / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress - 100));
             setPan(fProgress);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
         {
             double dProgress = (double)(nProgress + 1) / 10.0;
             textEffectDetail.setText(String.format("%.1f", dProgress));
             setFreq((float)dProgress);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeMetronome).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeMetronome).getEffectName()))
         {
             nBPM = nProgress + 10;
             textEffectDetail.setText(String.format("%d", nBPM));
             applyEffect(MainActivity.hStream);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRecordNoise).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRecordNoise).getEffectName()))
         {
             fVol1 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
             applyEffect(MainActivity.hStream);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRoarOfWaves).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRoarOfWaves).getEffectName()))
         {
             fVol2 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
             applyEffect(MainActivity.hStream);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRain).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRain).getEffectName()))
         {
             fVol3 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
             applyEffect(MainActivity.hStream);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRiver).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRiver).getEffectName()))
         {
             fVol4 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
             applyEffect(MainActivity.hStream);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeWar).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeWar).getEffectName()))
         {
             fVol5 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
             applyEffect(MainActivity.hStream);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFire).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeFire).getEffectName()))
         {
             fVol6 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
             applyEffect(MainActivity.hStream);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeConcertHall).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeConcertHall).getEffectName()))
         {
             fVol7 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
@@ -429,61 +429,61 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         nProgress += 1;
         if(nProgress > seek.getMax()) nProgress = seek.getMax();
         seek.setProgress(nProgress);
-        if(textEffectName.getText().equals(arEffectItems.get(kEffectTypePan).getEffectName()))
+        if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypePan).getEffectName()))
         {
             float fProgress = (nProgress - 100) / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress - 100));
             setPan(fProgress);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
         {
             double dProgress = (double)(nProgress + 1) / 10.0;
             textEffectDetail.setText(String.format("%.1f", dProgress));
             setFreq((float)dProgress);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeMetronome).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeMetronome).getEffectName()))
         {
             nBPM = nProgress + 10;
             textEffectDetail.setText(String.format("%d", nBPM));
             applyEffect(MainActivity.hStream);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRecordNoise).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRecordNoise).getEffectName()))
         {
             fVol1 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
             applyEffect(MainActivity.hStream);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRoarOfWaves).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRoarOfWaves).getEffectName()))
         {
             fVol2 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
             applyEffect(MainActivity.hStream);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRain).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRain).getEffectName()))
         {
             fVol3 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
             applyEffect(MainActivity.hStream);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRiver).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRiver).getEffectName()))
         {
             fVol4 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
             applyEffect(MainActivity.hStream);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeWar).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeWar).getEffectName()))
         {
             fVol5 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
             applyEffect(MainActivity.hStream);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFire).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeFire).getEffectName()))
         {
             fVol6 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
             applyEffect(MainActivity.hStream);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeConcertHall).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeConcertHall).getEffectName()))
         {
             fVol7 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
@@ -795,25 +795,25 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     {
         TextView textEffectName = (TextView) activity.findViewById(R.id.textEffectName);
         TextView textEffectDetail = (TextView) activity.findViewById(R.id.textEffectDetail);
-        if(textEffectName.getText().equals(arEffectItems.get(kEffectTypePan).getEffectName()))
+        if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypePan).getEffectName()))
         {
             float fPan = (progress - 100) / 100.0f;
             textEffectDetail.setText(String.format("%d", progress - 100));
             setPan(fPan);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeFrequency).getEffectName()))
         {
             double dProgress = (double)(progress + 1) / 10.0;
             textEffectDetail.setText(String.format("%.1f", dProgress));
             setFreq((float)dProgress);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeMetronome).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeMetronome).getEffectName()))
         {
             nBPM = progress + 10;
             textEffectDetail.setText(String.format("%d", nBPM));
             applyEffect(MainActivity.hStream);
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRecordNoise).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRecordNoise).getEffectName()))
         {
             fVol1 = progress / 100.0f;
             textEffectDetail.setText(String.format("%d", progress));
@@ -824,7 +824,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol1);
             }
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRoarOfWaves).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRoarOfWaves).getEffectName()))
         {
             fVol2 = progress / 100.0f;
             textEffectDetail.setText(String.format("%d", progress));
@@ -835,7 +835,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol2);
             }
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRain).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRain).getEffectName()))
         {
             fVol3 = progress / 100.0f;
             textEffectDetail.setText(String.format("%d", progress));
@@ -846,7 +846,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol3);
             }
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeRiver).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRiver).getEffectName()))
         {
             fVol4 = progress / 100.0f;
             textEffectDetail.setText(String.format("%d", progress));
@@ -857,7 +857,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol4);
             }
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeWar).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeWar).getEffectName()))
         {
             fVol5 = progress / 100.0f;
             textEffectDetail.setText(String.format("%d", progress));
@@ -868,7 +868,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol5);
             }
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeFire).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeFire).getEffectName()))
         {
             fVol6 = progress / 100.0f;
             textEffectDetail.setText(String.format("%d", progress));
@@ -879,7 +879,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol6);
             }
         }
-        else if(textEffectName.getText().equals(arEffectItems.get(kEffectTypeConcertHall).getEffectName()))
+        else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeConcertHall).getEffectName()))
         {
             fVol7 = progress / 100.0f;
             textEffectDetail.setText(String.format("%d", progress));

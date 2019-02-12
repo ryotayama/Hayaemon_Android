@@ -90,6 +90,7 @@
 
                 <TextView
                     android:id="@+id/textMinus"
+                    android:contentDescription="マイナスボタン"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:text="ー"
@@ -113,6 +114,7 @@
 
                 <TextView
                     android:id="@+id/textPlus"
+                    android:contentDescription="プラスボタン"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:text="＋"

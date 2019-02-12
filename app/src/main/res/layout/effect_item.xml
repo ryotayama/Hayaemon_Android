@@ -30,6 +30,7 @@
 
         <ImageButton
             android:id="@+id/buttonEffectDetail"
+            android:contentDescription="詳細情報"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/infobutton"

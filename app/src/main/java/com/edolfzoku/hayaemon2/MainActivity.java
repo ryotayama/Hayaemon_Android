@@ -1008,14 +1008,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     else
                     {
                         Button btnPlayMode = (Button) findViewById(R.id.btnPlayMode);
-                        if (btnPlayMode.getText().equals("連続再生") || btnPlayMode.getText().equals("全曲リピート") || btnPlayMode.getText().equals("シャッフル")) {
+                        if (btnPlayMode.getText().toString().equals("連続再生") || btnPlayMode.getText().toString().equals("全曲リピート") || btnPlayMode.getText().toString().equals("シャッフル")) {
                             PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
                             playlistFragment.playNext(true);
                         }
-                        else if (btnPlayMode.getText().equals("１曲リピート")) {
+                        else if (btnPlayMode.getText().toString().equals("１曲リピート")) {
                             BASS.BASS_ChannelPlay(hStream, true);
                         }
-                        else if(btnPlayMode.getText().equals("１曲のみ"))
+                        else if(btnPlayMode.getText().toString().equals("１曲のみ"))
                         {
                             PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
                             playlistFragment.playNext(false);
