@@ -44,8 +44,10 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.FileProvider;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -63,12 +65,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.android.vending.billing.IInAppBillingService;
-import com.edolfzoku.hayaemon2.model.MenuSheet;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -93,16 +94,16 @@ import java.util.List;
 import static com.un4seen.bass.BASS_AAC.BASS_CONFIG_AAC_MP4;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
-        View.OnLongClickListener, View.OnTouchListener
+        View.OnLongClickListener, View.OnTouchListener, DrawerLayout.DrawerListener
 {
     static int hFxVol;
     static int hStream;
     SectionsPagerAdapter mSectionsPagerAdapter;
+    private DrawerLayout mDrawerLayout;
     boolean bLoopA, bLoopB;
     double dLoopA, dLoopB;
     private HoldableViewPager mViewPager;
     private int hSync;
-    private MenuSheet menuSheet;
     private IInAppBillingService mService;
     private ServiceConnection mServiceConn;
     private boolean bShowUpdateLog;
@@ -199,6 +200,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!mBound) {
             bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
             mBound = true;
+        }
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.addDrawerListener(this);
+        RelativeLayout relativeAddSong = (RelativeLayout)findViewById(R.id.relativeAddSong);
+        relativeAddSong.setOnTouchListener(this);
+        relativeAddSong.setOnClickListener(this);
+        RelativeLayout relativeReport = (RelativeLayout)findViewById(R.id.relativeReport);
+        relativeReport.setOnTouchListener(this);
+        relativeReport.setOnClickListener(this);
+        RelativeLayout relativeReview = (RelativeLayout)findViewById(R.id.relativeReview);
+        relativeReview.setOnTouchListener(this);
+        relativeReview.setOnClickListener(this);
+        RelativeLayout relativeHideAds = (RelativeLayout)findViewById(R.id.relativeHideAds);
+        relativeHideAds.setOnTouchListener(this);
+        relativeHideAds.setOnClickListener(this);
+        RelativeLayout relativeInfo = (RelativeLayout)findViewById(R.id.relativeInfo);
+        relativeInfo.setOnTouchListener(this);
+        relativeInfo.setOnClickListener(this);
+    }
+
+    @Override
+    public void onDrawerOpened(@NonNull View drawerView)
+    {
+    }
+
+    @Override
+    public void onDrawerClosed(@NonNull View drawerView)
+    {
+    }
+
+    @Override
+    public void onDrawerSlide(@NonNull View drawerView, float slideOffset)
+    {
+    }
+
+    @Override
+    public void onDrawerStateChanged(int newState)
+    {
+        if(newState == DrawerLayout.STATE_IDLE)
+        {
+            findViewById(R.id.relativeAddSong).setBackgroundColor(Color.argb(255, 255, 255, 255));
+            findViewById(R.id.relativeReport).setBackgroundColor(Color.argb(255, 255, 255, 255));
+            findViewById(R.id.relativeReview).setBackgroundColor(Color.argb(255, 255, 255, 255));
+            findViewById(R.id.relativeHideAds).setBackgroundColor(Color.argb(255, 255, 255, 255));
+            findViewById(R.id.relativeInfo).setBackgroundColor(Color.argb(255, 255, 255, 255));
         }
     }
 
@@ -601,6 +648,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         if(event.getAction() == MotionEvent.ACTION_UP)
         {
+            findViewById(R.id.relativeAddSong).setBackgroundColor(Color.argb(255, 255, 255, 255));
+            findViewById(R.id.relativeReport).setBackgroundColor(Color.argb(255, 255, 255, 255));
+            findViewById(R.id.relativeReview).setBackgroundColor(Color.argb(255, 255, 255, 255));
+            findViewById(R.id.relativeHideAds).setBackgroundColor(Color.argb(255, 255, 255, 255));
+            findViewById(R.id.relativeInfo).setBackgroundColor(Color.argb(255, 255, 255, 255));
             if(v.getId() == R.id.btnRewind)
             {
                 if(hStream == 0) return false;
@@ -620,6 +672,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed);
             }
         }
+        if(event.getAction() == MotionEvent.ACTION_DOWN)
+        {
+            if(v.getId() == R.id.relativeAddSong)
+                findViewById(R.id.relativeAddSong).setBackgroundColor(Color.argb(255, 229, 229, 229));
+            if(v.getId() == R.id.relativeReport)
+                findViewById(R.id.relativeReport).setBackgroundColor(Color.argb(255, 229, 229, 229));
+            if(v.getId() == R.id.relativeReview)
+                findViewById(R.id.relativeReview).setBackgroundColor(Color.argb(255, 229, 229, 229));
+            if(v.getId() == R.id.relativeHideAds)
+                findViewById(R.id.relativeHideAds).setBackgroundColor(Color.argb(255, 229, 229, 229));
+            if(v.getId() == R.id.relativeInfo)
+                findViewById(R.id.relativeInfo).setBackgroundColor(Color.argb(255, 229, 229, 229));
+        }
         return false;
     }
 
@@ -629,11 +694,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
         if(v.getId() == R.id.btnMenu)
         {
-            menuSheet.show(getSupportFragmentManager(), menuSheet.getTag());
+            if(!isAdsVisible())
+                findViewById(R.id.relativeHideAds).setVisibility(View.GONE);
+            mDrawerLayout.openDrawer(Gravity.START);
         }
-        else if(v.getId() == R.id.menuOpen)
+        else if(v.getId() == R.id.relativeAddSong)
         {
-            menuSheet.dismiss();
+            mDrawerLayout.closeDrawer(Gravity.START);
 
             final BottomMenu menu = new BottomMenu(this);
             menu.setTitle("曲を追加");
@@ -686,21 +753,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             menu.setCancelMenu();
             menu.show();
         }
-        else if(v.getId() == R.id.menuTwitter)
+        else if(v.getId() == R.id.relativeReport)
         {
             Uri uri = Uri.parse("https://twitter.com/ryota_yama");
             Intent i = new Intent(Intent.ACTION_VIEW,uri);
             startActivity(i);
-            menuSheet.dismiss();
+            mDrawerLayout.closeDrawer(Gravity.START);
         }
-        else if(v.getId() == R.id.menuReview)
+        else if(v.getId() == R.id.relativeReview)
         {
             Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.edolfzoku.hayaemon2&hl=ja");
             Intent i = new Intent(Intent.ACTION_VIEW,uri);
             startActivity(i);
-            menuSheet.dismiss();
+            mDrawerLayout.closeDrawer(Gravity.START);
         }
-        else if(v.getId() == R.id.menuHideAds)
+        else if(v.getId() == R.id.relativeHideAds)
         {
             try {
                 Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), "hideads", "inapp", "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkVvqgLyPSTyJKuyNw3Z0luaxCnOtbFwj65HGYmDS4KiyGaJNgFsLOc9wpmIQaQI+zrntxbufWXsT0gIh1/MRRmX2FgA0G6WDS0+w39ZsbgJRbXsxOzOOZaHbSo2NLOA29GXPo9FraFtNrOL9v4vLu7hxDPdfqoFNR80BUWwQqMBsiMNFqJ12sq1HzxHd2MIk/QooBZIB3EeM0QX5EYIsWcaKIAyzetuKjRGvO9Oi2a86dOBUfOFnHMMCvQ5+dldx5UkzmnhlbTm/KBWQCO3AqNy82NKxN9ND6GWVrlHuQGYX1FRiApMeXCmEvmwEyU2ArztpV8CfHyK2d0mM4bp0bwIDAQAB");
@@ -725,11 +792,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             catch(Exception e) {
             }
-            menuSheet.dismiss();
+            mDrawerLayout.closeDrawer(Gravity.START);
         }
-        else if(v.getId() == R.id.menuAbout)
+        else if(v.getId() == R.id.relativeInfo)
         {
-            menuSheet.dismiss();
+            mDrawerLayout.closeDrawer(Gravity.START);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             try {
@@ -743,14 +810,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.setTitle("ハヤえもんについて");
             builder.setIcon(R.mipmap.ic_launcher);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
-                    });
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
             builder.show();
-        }
-        else if(v.getId() == R.id.menuCancel)
-        {
-            menuSheet.dismiss();
         }
     }
 
@@ -867,8 +930,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button btnForward = (Button)findViewById(R.id.btnForward);
         btnForward.setOnLongClickListener(this);
         btnForward.setOnTouchListener(this);
-
-        menuSheet = new MenuSheet();
     }
 
     public boolean isAdsVisible() {

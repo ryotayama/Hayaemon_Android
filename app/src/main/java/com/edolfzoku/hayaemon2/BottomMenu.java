@@ -247,8 +247,6 @@ public class BottomMenu extends BottomSheetDialog {
         int nMenuHeight = (int) (48 * getContext().getResources().getDisplayMetrics().density + 0.5);
         int nScrollMaxHeight = getContext().getResources().getDisplayMetrics().heightPixels - getStatusBarHeight() - nSpaceHeight * 4 - nMenuHeight * 2 - nSepHeight * 2;
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams)scroll.getLayoutParams();
-        System.out.println(nHeight);
-        System.out.println(nScrollMaxHeight);
         if(nHeight > nScrollMaxHeight) {
             marginLayoutParams.height = nScrollMaxHeight;
             scroll.setLayoutParams(marginLayoutParams);

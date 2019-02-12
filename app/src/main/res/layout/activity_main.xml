@@ -1,158 +1,339 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="0dp"
-    android:paddingLeft="0dp"
-    android:paddingRight="0dp"
-    android:paddingTop="0dp"
-    android:background="#FFF"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.edolfzoku.hayaemon2.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:openDrawer="start" >
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/tool_bar"
-        android:layout_height="wrap_content"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:contentInsetLeft="0dp"
-        android:contentInsetStart="0dp"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        android:contentInsetRight="0dp"
-        android:contentInsetEnd="0dp"
-        app:contentInsetRight="0dp"
-        app:contentInsetEnd="0dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        android:minHeight="?attr/actionBarSize">
-        <LinearLayout
+        android:layout_height="match_parent"
+        android:paddingBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="0dp"
+        android:background="#FFF"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="com.edolfzoku.hayaemon2.MainActivity"
+        tools:showIn="@layout/activity_main">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/tool_bar"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:contentInsetLeft="0dp"
+                android:contentInsetStart="0dp"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                android:contentInsetRight="0dp"
+                android:contentInsetEnd="0dp"
+                app:contentInsetRight="0dp"
+                app:contentInsetEnd="0dp"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                android:minHeight="?attr/actionBarSize">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_menu"
+                        android:text="メニュー"
+                        android:textSize="8sp"
+                        android:textStyle="bold"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/btnMenu"/>
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_rewind"
+                        android:text="前へ"
+                        android:textSize="8sp"
+                        android:textStyle="bold"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/btnRewind"/>
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_play"
+                        android:text="再生"
+                        android:textSize="8sp"
+                        android:textStyle="bold"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/btnPlay"/>
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_stop"
+                        android:text="停止"
+                        android:textSize="8sp"
+                        android:textStyle="bold"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/btnStop"/>
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_forward"
+                        android:text="次へ"
+                        android:textSize="8sp"
+                        android:textStyle="bold"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/btnForward" />
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_normal"
+                        android:text="連続再生"
+                        android:textSize="8sp"
+                        android:textStyle="bold"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/btnPlayMode" />
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_mic"
+                        android:text="録音"
+                        android:textSize="8sp"
+                        android:textStyle="bold"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/btnRecord" />
+                </LinearLayout>
+            </android.support.v7.widget.Toolbar>
+            <View
+                android:id="@+id/viewSep1"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#a0a0a0"
+                android:layout_below="@+id/tool_bar"/>
+            <com.edolfzoku.hayaemon2.HoldableViewPager
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/viewSep1"
+                android:layout_above="@+id/adView"/>
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabSelectedTextColor="#007AFF"
+                app:tabTextColor="#000000"
+                app:tabMaxWidth="0dp"
+                app:tabGravity="fill"
+                app:tabMode="fixed"
+                android:contentInsetLeft="0dp"
+                android:contentInsetStart="0dp"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                android:contentInsetRight="0dp"
+                android:contentInsetEnd="0dp"
+                app:contentInsetRight="0dp"
+                app:contentInsetEnd="0dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"/>
+
+            <View
+                android:id="@+id/viewSep2"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#a0a0a0"
+                android:layout_above="@+id/tabs"/>
+
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/viewSep2"
+                android:layout_centerHorizontal="true"
+                ads:adSize="SMART_BANNER"
+                ads:adUnitId="ca-app-pub-9499594730627438/5954202671">
+            </com.google.android.gms.ads.AdView>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="272dp"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:background="#FFF"
+        android:layout_gravity="start"
+        >
+
+        <RelativeLayout
+            android:id="@+id/relativeAddSong"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/ic_menu"
-                android:text="メニュー"
-                android:textSize="8sp"
-                android:textStyle="bold"
-                android:background="@android:color/transparent"
-                android:id="@+id/btnMenu"/>
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/ic_rewind"
-                android:text="前へ"
-                android:textSize="8sp"
-                android:textStyle="bold"
-                android:background="@android:color/transparent"
-                android:id="@+id/btnRewind"/>
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/ic_play"
-                android:text="再生"
-                android:textSize="8sp"
-                android:textStyle="bold"
-                android:background="@android:color/transparent"
-                android:id="@+id/btnPlay"/>
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/ic_stop"
-                android:text="停止"
-                android:textSize="8sp"
-                android:textStyle="bold"
-                android:background="@android:color/transparent"
-                android:id="@+id/btnStop"/>
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/ic_forward"
-                android:text="次へ"
-                android:textSize="8sp"
-                android:textStyle="bold"
-                android:background="@android:color/transparent"
-                android:id="@+id/btnForward" />
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/ic_normal"
-                android:text="連続再生"
-                android:textSize="8sp"
-                android:textStyle="bold"
-                android:background="@android:color/transparent"
-                android:id="@+id/btnPlayMode" />
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/ic_mic"
-                android:text="録音"
-                android:textSize="8sp"
-                android:textStyle="bold"
-                android:background="@android:color/transparent"
-                android:id="@+id/btnRecord" />
-        </LinearLayout>
-    </android.support.v7.widget.Toolbar>
-    <View
-        android:id="@+id/viewSep1"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#a0a0a0"
-        android:layout_below="@+id/tool_bar"/>
-    <com.edolfzoku.hayaemon2.HoldableViewPager
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/viewSep1"
-        android:layout_above="@+id/adView"/>
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_marginTop="21dp"
+            >
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tabSelectedTextColor="#007AFF"
-        app:tabTextColor="#000000"
-        app:tabMaxWidth="0dp"
-        app:tabGravity="fill"
-        app:tabMode="fixed"
-        android:contentInsetLeft="0dp"
-        android:contentInsetStart="0dp"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        android:contentInsetRight="0dp"
-        android:contentInsetEnd="0dp"
-        app:contentInsetRight="0dp"
-        app:contentInsetEnd="0dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+            <ImageView
+                android:id="@+id/imgAddSong"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/leftmenu_add_music"
+                android:layout_centerVertical="true"
+                />
 
-    <View
-        android:id="@+id/viewSep2"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#a0a0a0"
-        android:layout_above="@+id/tabs"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="曲を追加"
+                android:textColor="#000"
+                android:textSize="14dp"
+                android:layout_marginTop="21dp"
+                android:layout_marginBottom="21dp"
+                android:layout_toRightOf="@id/imgAddSong"
+                android:layout_centerVertical="true"
+                />
 
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/viewSep2"
-        android:layout_centerHorizontal="true"
-        ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-9499594730627438/5954202671">
-    </com.google.android.gms.ads.AdView>
+        </RelativeLayout>
 
-</RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/relativeReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_below="@id/relativeAddSong"
+            >
+
+            <ImageView
+                android:id="@+id/imgReport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/leftmenu_twitter"
+                android:layout_centerVertical="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="不具合報告・機能要望"
+                android:textColor="#000"
+                android:textSize="14dp"
+                android:layout_marginTop="21dp"
+                android:layout_marginBottom="21dp"
+                android:layout_toRightOf="@id/imgReport"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeReview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_below="@id/relativeReport"
+            >
+
+            <ImageView
+                android:id="@+id/imgReview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/leftmenu_write_review"
+                android:layout_centerVertical="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="レビュー投稿"
+                android:textColor="#000"
+                android:textSize="14dp"
+                android:layout_marginTop="21dp"
+                android:layout_marginBottom="21dp"
+                android:layout_toRightOf="@id/imgReview"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeHideAds"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_below="@id/relativeReview"
+            >
+
+            <ImageView
+                android:id="@+id/imgHideAds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/leftmenu_hide_ad"
+                android:layout_centerVertical="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="広告を非表示にする"
+                android:textColor="#000"
+                android:textSize="14dp"
+                android:layout_marginTop="21dp"
+                android:layout_marginBottom="21dp"
+                android:layout_toRightOf="@id/imgHideAds"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_below="@id/relativeHideAds"
+            >
+
+            <ImageView
+                android:id="@+id/imgInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/leftmenu_info"
+                android:layout_centerVertical="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ハヤえもんについて"
+                android:textColor="#000"
+                android:textSize="14dp"
+                android:layout_marginTop="21dp"
+                android:layout_marginBottom="21dp"
+                android:layout_toRightOf="@id/imgInfo"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</android.support.v4.widget.DrawerLayout>
