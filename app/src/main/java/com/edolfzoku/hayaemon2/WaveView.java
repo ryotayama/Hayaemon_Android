@@ -34,6 +34,7 @@ import android.view.View;
 
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_AAC;
+import com.un4seen.bass.BASSFLAC;
 
 import java.io.File;
 import java.io.IOException;
@@ -319,6 +320,8 @@ public class WaveView extends View {
                 FileChannel fc = afd.createInputStream().getChannel();
                 if(strMimeType == "audio/mp4")
                     hTempStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                else if(strMimeType == "audio/flac")
+                    hTempStream = BASSFLAC.BASS_FLAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
                 else
                     hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
             } catch (IOException e) {

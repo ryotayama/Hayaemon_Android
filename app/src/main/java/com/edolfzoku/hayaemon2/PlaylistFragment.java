@@ -74,6 +74,7 @@ import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_AAC;
+import com.un4seen.bass.BASSFLAC;
 import com.un4seen.bass.BASS_FX;
 import com.un4seen.bass.BASSenc;
 import com.un4seen.bass.BASSenc_MP3;
@@ -1915,6 +1916,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 FileChannel fc = afd.createInputStream().getChannel();
                 if(strMimeType == "audio/mp4")
                     _hTempStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                else if(strMimeType == "audio/flac")
+                    _hTempStream = BASSFLAC.BASS_FLAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
                 else
                     _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
             } catch (Exception e) {
@@ -2428,6 +2431,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 FileChannel fc = afd.createInputStream().getChannel();
                 if(strMimeType == "audio/mp4")
                     MainActivity.hStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                else if(strMimeType == "audio/flac")
+                    MainActivity.hStream = BASSFLAC.BASS_FLAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
                 else
                     MainActivity.hStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
             } catch (Exception e) {

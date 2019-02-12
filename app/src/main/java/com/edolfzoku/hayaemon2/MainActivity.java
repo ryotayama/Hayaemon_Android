@@ -885,6 +885,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         BASS.BASS_SetConfig(BASS_CONFIG_AAC_MP4, 1);
 
         BASS.BASS_PluginLoad("libbass_aac.so", 0);
+        BASS.BASS_PluginLoad("libbassflac.so", 0);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
