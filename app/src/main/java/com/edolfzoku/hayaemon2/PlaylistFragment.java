@@ -31,6 +31,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
@@ -2513,8 +2515,23 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         tabAdapter.notifyDataSetChanged();
         if(bReloadLyrics) showLyrics();
 
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        Bitmap bitmap = null;
+        boolean bError = false;
+        try {
+            mmr.setDataSource(activity.getApplicationContext(), Uri.parse(item.getPath()));
+        }
+        catch(Exception e) {
+            bError = true;
+        }
+        if(!bError) {
+            byte[] data = mmr.getEmbeddedPicture();
+            if(data != null) {
+                bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            }
+        }
         activity.getForegroundService().setMainActivity(activity);
-        activity.getForegroundService().startForeground(item.getTitle(), item.getArtist());
+        activity.getForegroundService().startForeground(item.getTitle(), item.getArtist(), bitmap);
     }
 
     public String getLyrics(int nPlaylist, int nSong) {

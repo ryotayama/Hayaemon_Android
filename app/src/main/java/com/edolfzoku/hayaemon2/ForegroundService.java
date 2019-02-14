@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RemoteControlClient;
 import android.os.Binder;
@@ -54,7 +55,7 @@ public class ForegroundService extends IntentService {
         super.onDestroy();
     }
 
-    public void startForeground(String strTitle, String strArtist) {
+    public void startForeground(String strTitle, String strArtist, Bitmap bitmap) {
         if (Build.VERSION.SDK_INT >= 26) {
             NotificationManager notificationManager =
                     (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -78,6 +79,9 @@ public class ForegroundService extends IntentService {
             intentForward.setAction("action_forward");
             PendingIntent pendingIntentForward = PendingIntent.getService(getApplicationContext(), 1, intentForward, 0);
 
+            if(bitmap == null)
+                bitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher);
+
             notification = new NotificationCompat.Builder(this, "default")
                     .addAction(new NotificationCompat.Action.Builder(R.drawable.ic_rewind, "Previous", pendingIntentRewind).build())
                     .addAction(new NotificationCompat.Action.Builder(R.drawable.ic_pause, "Pause", pendingIntentPause).build())
@@ -85,7 +89,7 @@ public class ForegroundService extends IntentService {
                     .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
                             .setShowActionsInCompactView(0, 1, 2))
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher))
+                    .setLargeIcon(bitmap)
                     .setContentTitle(strTitle)
                     .setContentText(strArtist)
                     .build();
@@ -93,7 +97,7 @@ public class ForegroundService extends IntentService {
         else {
             notification = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher))
+                    .setLargeIcon(bitmap)
                     .setContentTitle(strTitle)
                     .setContentText(strArtist)
                     .build();
