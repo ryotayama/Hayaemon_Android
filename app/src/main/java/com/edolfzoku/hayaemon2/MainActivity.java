@@ -902,13 +902,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tabLayout.getTabAt(0).setCustomView(tab0);
 
         TextView tab1 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
-        tab1.setText("コントロール");
-        tab1.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_control, 0, 0);
+        tab1.setText("ループ");
+        tab1.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_abloop, 0, 0);
         tabLayout.getTabAt(1).setCustomView(tab1);
 
         TextView tab2 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
-        tab2.setText("ループ");
-        tab2.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_abloop, 0, 0);
+        tab2.setText("コントロール");
+        tab2.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_control, 0, 0);
         tabLayout.getTabAt(2).setCustomView(tab2);
 
         TextView tab3 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);

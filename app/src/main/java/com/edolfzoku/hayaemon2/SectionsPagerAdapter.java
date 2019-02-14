@@ -44,8 +44,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     {
         switch (position) {
             case 0: return playlistFragment;
-            case 1: return controlFragment;
-            case 2: return loopFragment;
+            case 1: return loopFragment;
+            case 2: return controlFragment;
             case 3: return equalizerFragment;
             case 4: return effectFragment;
             default: return null;
