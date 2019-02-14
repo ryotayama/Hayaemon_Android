@@ -666,7 +666,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     public void setEQ(int row)
     {
         MainActivity activity = (MainActivity)getActivity();
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
         if(arEqualizerItems.get(nLastChecked).getEqualizerName().equals("ベースの耳コピ（オクターブ上げ）"))
             controlFragment.setPitch(0.0f);
         nLastChecked = row;

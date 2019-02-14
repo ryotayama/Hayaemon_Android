@@ -33,7 +33,7 @@ public class SpeedFragmentDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MainActivity activity = (MainActivity)getActivity();
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.speedpicker, null, false);
         float fSpeed = controlFragment.fSpeed + 100;
@@ -81,7 +81,7 @@ public class SpeedFragmentDialog extends DialogFragment {
                 fSpeed -= 100;
 
                 MainActivity activity = (MainActivity)getActivity();
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 controlFragment.setSpeed(fSpeed);
             }
         });
@@ -89,7 +89,7 @@ public class SpeedFragmentDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 MainActivity activity = (MainActivity)getActivity();
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 controlFragment.clearFocus();
             }
         });
@@ -100,7 +100,7 @@ public class SpeedFragmentDialog extends DialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         MainActivity activity = (MainActivity) getActivity();
-        ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(1);
+        ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(2);
         controlFragment.clearFocus();
     }
 }

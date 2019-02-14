@@ -36,7 +36,7 @@ public class PitchFragmentDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.pitchpicker, null, false);
         MainActivity activity = (MainActivity)getActivity();
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
         float fPitch = controlFragment.fPitch;
         int nIntPitch = (int)fPitch;
         int nDecimalPitch;
@@ -101,7 +101,7 @@ public class PitchFragmentDialog extends DialogFragment {
                 float fPitch = Float.parseFloat(strPitch);
 
                 MainActivity activity = (MainActivity)getActivity();
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 controlFragment.setPitch(fPitch);
             }
         });
@@ -110,7 +110,7 @@ public class PitchFragmentDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 MainActivity activity = (MainActivity)getActivity();
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 controlFragment.clearFocus();
             }
         });
@@ -120,7 +120,7 @@ public class PitchFragmentDialog extends DialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         MainActivity activity = (MainActivity) getActivity();
-        ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(1);
+        ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(2);
         controlFragment.clearFocus();
     }
 }

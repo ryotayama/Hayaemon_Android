@@ -630,7 +630,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
         if(!item.isSelected() && (nEffect == kEffectTypeRandom || nEffect == kEffectTypeNoSense_Strong || nEffect == kEffectTypeNoSense_Middle || nEffect == kEffectTypeNoSense_Weak))
         {
-            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
             controlFragment.setSpeed(0.0f);
             controlFragment.setPitch(0.0f);
         }
@@ -638,7 +638,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
             equalizerFragment.setEQ(0);
-            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
             controlFragment.setPitch(0.0f);
         }
         checkDuplicate(nEffect);
@@ -677,7 +677,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             if(arEffectItems.get(i).isSelected() && (i == kEffectTypeRandom || i == kEffectTypeNoSense_Strong || i == kEffectTypeNoSense_Middle || i == kEffectTypeNoSense_Weak))
             {
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 controlFragment.setSpeed(0.0f);
                 controlFragment.setPitch(0.0f);
             }
@@ -685,7 +685,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             {
                 EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
                 equalizerFragment.setEQ(0);
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 controlFragment.setPitch(0.0f);
             }
             arEffectItems.get(i).setSelected(false);
@@ -965,7 +965,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 }
                 if(arEffectItems.get(i).isSelected() && (i == kEffectTypeRandom || i == kEffectTypeNoSense_Strong || i == kEffectTypeNoSense_Middle || i == kEffectTypeNoSense_Weak))
                 {
-                    ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                    ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                     controlFragment.setSpeed(0.0f);
                     controlFragment.setPitch(0.0f);
                 }
@@ -973,7 +973,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 {
                     EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
                     equalizerFragment.setEQ(0);
-                    ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                    ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                     controlFragment.setPitch(0.0f);
                 }
                 arEffectItems.get(i).setSelected(false);
@@ -1036,7 +1036,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                             equalizerFragment.setEQ(0);
                         }
                         else if((i == kEffectTypeNoSense_Strong && arEffectItems.get(i).isSelected()) || (i == kEffectTypeNoSense_Middle && arEffectItems.get(i).isSelected()) || (i == kEffectTypeNoSense_Weak && arEffectItems.get(i).isSelected())) {
-                            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                             controlFragment.setSpeed(0.0f);
                             controlFragment.setPitch(0.0f);
                         }
@@ -1148,7 +1148,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             else if(strEffect.equals("ランダム"))
             {
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 float fMaxSpeed = 1.5f;
                 float fMinSpeed = 0.75f;
                 fMaxSpeed = (fMaxSpeed - 1.0f) * 100.0f;
@@ -1205,7 +1205,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             else if(strEffect.equals("ベースの耳コピ（オクターブ上げ）"))
             {
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 controlFragment.setPitch(12.0f);
                 EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
                 int[] array = new int[] {0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-20,-10,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0};
@@ -1507,7 +1507,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             else if(strEffect.equals("歌へた（強）") || strEffect.equals("歌へた（中）") || strEffect.equals("歌へた（弱）"))
             {
                 fVelo1 = fVol2 = 0.0f;
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 controlFragment.setSpeed(0.0f);
                 controlFragment.setPitch(0.0f);
 
@@ -1697,7 +1697,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 }
                 fVelo1 += fAccel; // 速度の差分に加速度を加える
                 fSpeed += fVelo1; // 速度に差分を加える
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PAUSED)
                     controlFragment.setSpeed(fSpeed);
 

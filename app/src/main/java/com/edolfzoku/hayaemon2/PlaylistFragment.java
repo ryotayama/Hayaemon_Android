@@ -1613,8 +1613,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
     public void setSavingEffect()
     {
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
-        LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(2);
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
+        LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(1);
         EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
         EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
@@ -1692,8 +1692,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nPlayingPlaylist);
         EffectSaver saver = arEffectSavers.get(nPlaying);
         if(saver.isSave()) {
-            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
-            LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(2);
+            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
+            LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(1);
             EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
             EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
             saver.setSpeed(controlFragment.fSpeed);
@@ -1761,8 +1761,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
     public void restoreEffect()
     {
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
-        LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(2);
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
+        LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(1);
         EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
         EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nPlayingPlaylist);
@@ -1972,7 +1972,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         int hTempFx31_5 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
         int hTempFx25 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
         int hTempFx20 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
         BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed);
         BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, controlFragment.fPitch);
         EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
@@ -2071,7 +2071,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         String strLyrics = arTempLyrics.get(nSelectedItem);
 
         String strTitle = item.getTitle();
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
         float fSpeed = controlFragment.fSpeed;
         float fPitch = controlFragment.fPitch;
         String strSpeed = String.format("%.1f%%", fSpeed + 100);
@@ -2115,7 +2115,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         SongItem item = arSongs.get(nSelectedItem);
         String strTitle = item.getTitle();
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(1);
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
         float fSpeed = controlFragment.fSpeed;
         float fPitch = controlFragment.fPitch;
         String strSpeed = String.format("%.1f%%", fSpeed + 100);
@@ -2337,7 +2337,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             EffectSaver saverBefore = arEffectSavers.get(nPlaying);
             EffectSaver saverAfter = arEffectSavers.get(nSong);
             if(saverBefore.isSave() && !saverAfter.isSave()) {
-                ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(1);
+                ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(2);
                 controlFragment.setSpeed(0.0f, false);
                 controlFragment.setPitch(0.0f, false);
                 EqualizerFragment equalizerFragment = (EqualizerFragment) activity.mSectionsPagerAdapter.getItem(3);
@@ -2497,7 +2497,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         else if(nPlaying >= arEffectSavers.size()) nPlaying = arEffectSavers.size() - 1;
         EffectSaver saver = arEffectSavers.get(nPlaying);
         if(saver.isSave()) restoreEffect();
-        ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(1);
+        ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(2);
         BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed);
         BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, controlFragment.fPitch);
         equalizerFragment.setEQ();
@@ -2508,7 +2508,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
         btnPlay.setText("一時停止");
         btnPlay.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_pause,0,0);
-        LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(2);
+        LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(1);
         loopFragment.drawWaveForm(strPath);
         songsAdapter.notifyDataSetChanged();
         playlistsAdapter.notifyDataSetChanged();
