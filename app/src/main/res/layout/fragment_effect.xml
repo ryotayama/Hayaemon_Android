@@ -76,58 +76,36 @@
                 android:layout_marginVertical="12dp"
                 android:layout_marginRight="8dp"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/relativeMinus"
+                android:layout_toLeftOf="@+id/buttonEffectMinus"
                 />
 
-            <RelativeLayout
-                android:id="@+id/relativeMinus"
-                android:layout_width="wrap_content"
-                android:layout_height="44dp"
+            <ImageButton
+                android:id="@+id/buttonEffectMinus"
+                android:contentDescription="マイナス"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/minusbutton"
+                android:background="@null"
+                android:scaleType="centerInside"
                 android:clickable="true"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/relativePlus"
-                >
+                android:padding="2dp"
+                android:layout_toLeftOf="@+id/buttonEffectPlus"
+                />
 
-                <TextView
-                    android:id="@+id/textMinus"
-                    android:contentDescription="マイナスボタン"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:text="ー"
-                    android:textSize="15dp"
-                    android:background="@drawable/circle2"
-                    android:textColor="#007AFF"
-                    android:gravity="center"
-                    android:layout_margin="12dp"
-                    />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/relativePlus"
-                android:layout_width="wrap_content"
-                android:layout_height="44dp"
+            <ImageButton
+                android:id="@+id/buttonEffectPlus"
+                android:contentDescription="プラス"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/plusbutton"
+                android:background="@null"
+                android:scaleType="centerInside"
                 android:clickable="true"
-                android:layout_centerVertical="true"
+                android:padding="2dp"
                 android:layout_alignParentRight="true"
-                >
+                />
 
-                <TextView
-                    android:id="@+id/textPlus"
-                    android:contentDescription="プラスボタン"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:text="＋"
-                    android:textSize="15dp"
-                    android:background="@drawable/circle2"
-                    android:textColor="#007AFF"
-                    android:gravity="center"
-                    android:layout_margin="12dp"
-                    />
-
-            </RelativeLayout>
-
-        </RelativeLayout>
+       </RelativeLayout>
 
     </RelativeLayout>
 

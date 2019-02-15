@@ -30,6 +30,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -290,22 +291,22 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             RelativeLayout relativeEffect = (RelativeLayout) activity.findViewById(R.id.relativeEffects);
             relativeEffect.setVisibility(View.VISIBLE);
         }
-        else if (v.getId() == R.id.relativeMinus)
+        else if (v.getId() == R.id.buttonEffectMinus)
             minusValue();
-        else if (v.getId() == R.id.relativePlus)
+        else if (v.getId() == R.id.buttonEffectPlus)
             plusValue();
     }
 
     @Override
     public boolean onLongClick(View v)
     {
-        if (v.getId() == R.id.relativeMinus)
+        if (v.getId() == R.id.buttonEffectMinus)
         {
             isContinue = true;
             handlerLongClick.post(repeatMinusValue);
             return true;
         }
-        else if (v.getId() == R.id.relativePlus)
+        else if (v.getId() == R.id.buttonEffectPlus)
         {
             isContinue = true;
             handlerLongClick.post(repeatPlusValue);
@@ -603,14 +604,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         recyclerEffects.setAdapter(effectsAdapter);
         Button btnFinith = (Button)activity.findViewById(R.id.btnFinish);
         btnFinith.setOnClickListener(this);
-        RelativeLayout relativeMinus = (RelativeLayout) activity.findViewById(R.id.relativeMinus);
-        relativeMinus.setOnClickListener(this);
-        relativeMinus.setOnLongClickListener(this);
-        relativeMinus.setOnTouchListener(this);
-        RelativeLayout relativePlus = (RelativeLayout) activity.findViewById(R.id.relativePlus);
-        relativePlus.setOnClickListener(this);
-        relativePlus.setOnLongClickListener(this);
-        relativePlus.setOnTouchListener(this);
+        ImageButton buttonEffectMinus = (ImageButton) activity.findViewById(R.id.buttonEffectMinus);
+        buttonEffectMinus.setOnClickListener(this);
+        buttonEffectMinus.setOnLongClickListener(this);
+        buttonEffectMinus.setOnTouchListener(this);
+        ImageButton buttonEffectPlus = (ImageButton) activity.findViewById(R.id.buttonEffectPlus);
+        buttonEffectPlus.setOnClickListener(this);
+        buttonEffectPlus.setOnLongClickListener(this);
+        buttonEffectPlus.setOnTouchListener(this);
     }
 
     public void onEffectItemClick(int nEffect)
