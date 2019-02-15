@@ -123,14 +123,112 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/viewSep1"
-                android:layout_above="@+id/adView"/>
+                android:layout_above="@+id/relativePlaying"/>
 
-            <android.support.design.widget.TabLayout
+        <View
+            android:id="@+id/viewShadowOfPlayingBar"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:alpha="0.0"
+            android:animateLayoutChanges="true"
+            android:layout_above="@+id/relativePlaying"
+            android:background="@drawable/topshadow"
+            />
+
+        <RelativeLayout
+            android:id="@+id/relativePlaying"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="#FFF"
+            android:animateLayoutChanges="true"
+            android:visibility="gone"
+            android:layout_above="@+id/adView">
+
+            <ImageView
+                android:id="@+id/imgViewArtworkInPlayingBar"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:src="@drawable/playing_large_artwork"
+                android:scaleType="centerCrop"
+                android:animateLayoutChanges="true"
+                android:background="@drawable/frameborder"
+                android:layout_marginHorizontal="8dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                />
+
+            <TextView
+                android:id="@+id/textTitleInPlayingBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="タイトル"
+                android:textSize="13dp"
+                android:textColor="#000"
+                android:singleLine="true"
+                android:animateLayoutChanges="true"
+                android:layout_marginTop="14dp"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/imgViewArtworkInPlayingBar"
+                android:layout_toLeftOf="@id/btnPlayInPlayingBar"
+                />
+
+            <TextView
+                android:id="@+id/textArtistInPlayingBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="アーティスト名"
+                android:textSize="10dp"
+                android:textColor="#666"
+                android:singleLine="true"
+                android:animateLayoutChanges="true"
+                android:layout_marginTop="33dp"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/imgViewArtworkInPlayingBar"
+                android:layout_toLeftOf="@id/btnPlayInPlayingBar"
+                />
+
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnPlayInPlayingBar"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:src="@drawable/bar_button_play"
+                android:background="@null"
+                android:animateLayoutChanges="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/btnForwardInPlayingBar"
+                />
+
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnForwardInPlayingBar"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:src="@drawable/bar_button_forward"
+                android:background="@null"
+                android:animateLayoutChanges="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/btnCloseInPlayingBar"
+                />
+
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnCloseInPlayingBar"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:src="@drawable/bar_button_close"
+                android:background="@null"
+                android:animateLayoutChanges="true"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                />
+
+        </RelativeLayout>
+
+        <android.support.design.widget.TabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tabSelectedTextColor="#007AFF"
                 app:tabTextColor="#000000"
+            android:background="#FFF"
                 app:tabMaxWidth="0dp"
                 app:tabGravity="fill"
                 app:tabMode="fixed"

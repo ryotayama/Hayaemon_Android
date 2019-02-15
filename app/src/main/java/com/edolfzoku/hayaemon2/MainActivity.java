@@ -219,6 +219,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RelativeLayout relativeInfo = (RelativeLayout)findViewById(R.id.relativeInfo);
         relativeInfo.setOnTouchListener(this);
         relativeInfo.setOnClickListener(this);
+
+        findViewById(R.id.btnPlayInPlayingBar).setOnClickListener(this);
+        AnimationButton btnForwardInPlayingBar = findViewById(R.id.btnForwardInPlayingBar);
+        btnForwardInPlayingBar.setOnClickListener(this);
+        btnForwardInPlayingBar.setOnLongClickListener(this);
+        btnForwardInPlayingBar.setOnTouchListener(this);
+        findViewById(R.id.btnCloseInPlayingBar).setOnClickListener(this);
     }
 
     @Override
@@ -633,7 +640,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed + 100);
             return true;
         }
-        else if(v.getId() == R.id.btnForward)
+        else if(v.getId() == R.id.btnForward || v.getId() == R.id.btnForwardInPlayingBar)
         {
             if(hStream == 0) return false;
             ControlFragment controlFragment = (ControlFragment)mSectionsPagerAdapter.getItem(2);
@@ -665,7 +672,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ControlFragment controlFragment = (ControlFragment)mSectionsPagerAdapter.getItem(2);
                 BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed);
             }
-            else if(v.getId() == R.id.btnForward)
+            else if(v.getId() == R.id.btnForward || v.getId() == R.id.btnForwardInPlayingBar)
             {
                 if(hStream == 0) return false;
                 ControlFragment controlFragment = (ControlFragment)mSectionsPagerAdapter.getItem(2);
@@ -815,6 +822,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
             builder.show();
         }
+        else if(v.getId() == R.id.btnPlayInPlayingBar)
+            playlistFragment.onPlayBtnClicked();
+        else if(v.getId() == R.id.btnForwardInPlayingBar)
+            playlistFragment.playNext(true);
+        else if(v.getId() == R.id.btnCloseInPlayingBar)
+            playlistFragment.stop();
     }
 
     public void open()

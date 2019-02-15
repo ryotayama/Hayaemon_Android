@@ -19,6 +19,8 @@
 package com.edolfzoku.hayaemon2;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -321,35 +323,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             stop();
         }
         else if(v.getId() == R.id.btnPlay)
-        {
-            if(BASS.BASS_ChannelIsActive(activity.hStream) == BASS.BASS_ACTIVE_PLAYING)
-            {
-                pause();
-            }
-            else
-            {
-                if(BASS.BASS_ChannelIsActive(activity.hStream) == BASS.BASS_ACTIVE_PAUSED)
-                {
-                    play();
-                }
-                else
-                {
-                    if(activity.hStream == 0)
-                    {
-                        if(nSelectedPlaylist < 0) nSelectedPlaylist = 0;
-                        else if(nSelectedPlaylist >= arPlaylists.size()) nSelectedPlaylist = arPlaylists.size() - 1;
-                        nPlayingPlaylist = nSelectedPlaylist;
-                        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
-                        arPlayed = new ArrayList<Boolean>();
-                        for(int i = 0; i < arSongs.size(); i++)
-                            arPlayed.add(false);
-                        playNext(true);
-                    }
-                    else
-                        play();
-                }
-            }
-        }
+            onPlayBtnClicked();
         else if(v.getId() == R.id.btnForward)
         {
             if(activity.hStream == 0) return;
@@ -589,6 +563,37 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             editLyrics.requestFocus();
             InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(editLyrics, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+
+    public void onPlayBtnClicked()
+    {
+        if(BASS.BASS_ChannelIsActive(activity.hStream) == BASS.BASS_ACTIVE_PLAYING)
+        {
+            pause();
+        }
+        else
+        {
+            if(BASS.BASS_ChannelIsActive(activity.hStream) == BASS.BASS_ACTIVE_PAUSED)
+            {
+                play();
+            }
+            else
+            {
+                if(activity.hStream == 0)
+                {
+                    if(nSelectedPlaylist < 0) nSelectedPlaylist = 0;
+                    else if(nSelectedPlaylist >= arPlaylists.size()) nSelectedPlaylist = arPlaylists.size() - 1;
+                    nPlayingPlaylist = nSelectedPlaylist;
+                    ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+                    arPlayed = new ArrayList<Boolean>();
+                    for(int i = 0; i < arSongs.size(); i++)
+                        arPlayed.add(false);
+                    playNext(true);
+                }
+                else
+                    play();
+            }
         }
     }
 
@@ -1128,6 +1133,23 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     public void onClick(DialogInterface dialog, int id) {
                         songItem.setTitle(editTitle.getText().toString());
                         songItem.setArtist(editArtist.getText().toString());
+
+                        if(nSelectedPlaylist == nPlayingPlaylist && nItem == nPlaying)
+                        {
+                            TextView textTitleInPlayingBar = (TextView)activity.findViewById(R.id.textTitleInPlayingBar);
+                            textTitleInPlayingBar.setText(songItem.getTitle());
+                            TextView textArtistInPlayingBar = (TextView)activity.findViewById(R.id.textArtistInPlayingBar);
+                            if(songItem.getArtist() == null || songItem.getArtist().equals(""))
+                            {
+                                textArtistInPlayingBar.setTextColor(Color.argb(255, 147, 156, 160));
+                                textArtistInPlayingBar.setText("〈不明なアーティスト〉");
+                            }
+                            else
+                            {
+                                textArtistInPlayingBar.setTextColor(Color.argb(255, 102, 102, 102));
+                                textArtistInPlayingBar.setText(songItem.getArtist());
+                            }
+                        }
 
                         songsAdapter.notifyDataSetChanged();
 
@@ -2197,6 +2219,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
         btnPlay.setText("一時停止");
         btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pause, 0, 0);
+        AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
+        btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_pause);
         songsAdapter.notifyDataSetChanged();
         playlistsAdapter.notifyDataSetChanged();
         tabAdapter.notifyDataSetChanged();
@@ -2209,6 +2233,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
         btnPlay.setText("再生");
         btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_play, 0, 0);
+        AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
+        btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_play);
         songsAdapter.notifyDataSetChanged();
     }
 
@@ -2451,6 +2477,56 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         }
         if(MainActivity.hStream == 0) return;
 
+        RelativeLayout relativePlaying = (RelativeLayout)activity.findViewById(R.id.relativePlaying);
+        View viewShadowOfPlayingBar = (View)activity.findViewById(R.id.viewShadowOfPlayingBar);
+
+        ImageView imgViewArtworkInPlayingBar = (ImageView)activity.findViewById(R.id.imgViewArtworkInPlayingBar);
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        Bitmap bitmap = null;
+        boolean bError = false;
+        try {
+            mmr.setDataSource(activity.getApplicationContext(), Uri.parse(item.getPath()));
+        }
+        catch(Exception e) {
+            bError = true;
+        }
+        if(!bError) {
+            byte[] data = mmr.getEmbeddedPicture();
+            if(data != null) {
+                bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            }
+        }
+        if(bitmap != null) imgViewArtworkInPlayingBar.setImageBitmap(bitmap);
+        else imgViewArtworkInPlayingBar.setImageResource(R.drawable.playing_large_artwork);
+        TextView textTitleInPlayingBar = (TextView)activity.findViewById(R.id.textTitleInPlayingBar);
+        textTitleInPlayingBar.setText(item.getTitle());
+        TextView textArtistInPlayingBar = (TextView)activity.findViewById(R.id.textArtistInPlayingBar);
+        if(item.getArtist() == null || item.getArtist().equals(""))
+        {
+            textArtistInPlayingBar.setTextColor(Color.argb(255, 147, 156, 160));
+            textArtistInPlayingBar.setText("〈不明なアーティスト〉");
+        }
+        else
+        {
+            textArtistInPlayingBar.setTextColor(Color.argb(255, 102, 102, 102));
+            textArtistInPlayingBar.setText(item.getArtist());
+        }
+
+        if(relativePlaying.getVisibility() != View.VISIBLE)
+        {
+            relativePlaying.setTranslationY((int) (70 * getResources().getDisplayMetrics().density + 0.5));
+            relativePlaying.setVisibility(View.VISIBLE);
+            relativePlaying.animate()
+                    .setListener(null)
+                    .translationY(0)
+                    .setDuration(200);
+            viewShadowOfPlayingBar.setTranslationY((int) (70 * getResources().getDisplayMetrics().density + 0.5));
+            viewShadowOfPlayingBar.setAlpha(1.0f);
+            viewShadowOfPlayingBar.animate()
+                    .translationY(0)
+                    .setDuration(200);
+        }
+
         MainActivity.hStream = BASS_FX.BASS_FX_ReverseCreate(MainActivity.hStream, 2, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
         MainActivity.hStream = BASS_FX.BASS_FX_TempoCreate(MainActivity.hStream, BASS_FX.BASS_FX_FREESOURCE);
         int chan = BASS_FX.BASS_FX_TempoGetSource(MainActivity.hStream);
@@ -2508,6 +2584,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
         btnPlay.setText("一時停止");
         btnPlay.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_pause,0,0);
+        AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
+        btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_pause);
         LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(1);
         loopFragment.drawWaveForm(strPath);
         songsAdapter.notifyDataSetChanged();
@@ -2515,21 +2593,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         tabAdapter.notifyDataSetChanged();
         if(bReloadLyrics) showLyrics();
 
-        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        Bitmap bitmap = null;
-        boolean bError = false;
-        try {
-            mmr.setDataSource(activity.getApplicationContext(), Uri.parse(item.getPath()));
-        }
-        catch(Exception e) {
-            bError = true;
-        }
-        if(!bError) {
-            byte[] data = mmr.getEmbeddedPicture();
-            if(data != null) {
-                bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-            }
-        }
         activity.getForegroundService().setMainActivity(activity);
         activity.getForegroundService().startForeground(item.getTitle(), item.getArtist(), bitmap);
     }
@@ -2619,12 +2682,33 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public void stop()
     {
         if(MainActivity.hStream == 0) return;
+
+        final RelativeLayout relativePlaying = (RelativeLayout)activity.findViewById(R.id.relativePlaying);
+        View viewShadowOfPlayingBar = (View)activity.findViewById(R.id.viewShadowOfPlayingBar);
+
+        relativePlaying.setVisibility(View.VISIBLE);
+        relativePlaying.animate()
+                .translationY((int)(70 * getResources().getDisplayMetrics().density + 0.5))
+                .setDuration(200)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        relativePlaying.setVisibility(View.GONE);
+                    }
+                });
+        viewShadowOfPlayingBar.animate()
+                .translationY((int)(70 * getResources().getDisplayMetrics().density + 0.5))
+                .setDuration(200);
+
         nPlaying = -1;
         BASS.BASS_ChannelStop(MainActivity.hStream);
         MainActivity.hStream = 0;
         Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
         btnPlay.setText("再生");
         btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_play, 0, 0);
+        AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
+        btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_play);
         MainActivity activity = (MainActivity)getActivity();
         activity.clearLoop();
         songsAdapter.notifyDataSetChanged();
