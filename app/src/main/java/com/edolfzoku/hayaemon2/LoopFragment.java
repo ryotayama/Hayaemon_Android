@@ -361,11 +361,13 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     @Override
     public boolean onLongClick(View v) {
         if (v.getId() == R.id.relativeZoomOut) {
+            if(MainActivity.hStream == 0) return false;
             bContinue = true;
             handler.post(repeatZoomOut);
             return true;
         }
         else if (v.getId() == R.id.relativeZoomIn) {
+            if(MainActivity.hStream == 0) return false;
             bContinue = true;
             handler.post(repeatZoomIn);
             return true;
@@ -598,6 +600,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         MainActivity activity = (MainActivity)getActivity();
         if(v.getId() == R.id.relativeZoomOut) {
             if(event.getAction() == MotionEvent.ACTION_UP) {
+                if(MainActivity.hStream == 0) return false;
                 bContinue = false;
                 setZoomOut();
                 waveView = (WaveView)getActivity().findViewById(R.id.waveView);
@@ -606,6 +609,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         }
         else if(v.getId() == R.id.relativeZoomIn) {
             if(event.getAction() == MotionEvent.ACTION_UP) {
+                if(MainActivity.hStream == 0) return false;
                 bContinue = false;
                 setZoomIn();
                 waveView = (WaveView)getActivity().findViewById(R.id.waveView);
