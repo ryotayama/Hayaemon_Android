@@ -317,11 +317,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             else
                 playPrev();
         }
-        else if(v.getId() == R.id.btnStop)
-        {
-            if(activity.hStream == 0) return;
-            stop();
-        }
         else if(v.getId() == R.id.btnPlay)
             onPlayBtnClicked();
         else if(v.getId() == R.id.btnForward)
@@ -329,33 +324,43 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             if(activity.hStream == 0) return;
             playNext(true);
         }
-        else if(v.getId() == R.id.btnPlayMode)
+        else if(v.getId() == R.id.btnShuffle)
         {
-            Button btnPlayMode = (Button)activity.findViewById(R.id.btnPlayMode);
-            if(btnPlayMode.getText().toString().equals("連続再生"))
+            AnimationButton btnShuffle = (AnimationButton)activity.findViewById(R.id.btnShuffle);
+            if(btnShuffle.getContentDescription().toString().equals("シャッフルなし"))
             {
-                btnPlayMode.setText("１曲リピート");
-                btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_sloop, 0, 0);
+                btnShuffle.setContentDescription("シャッフルあり");
+                btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle_on);
             }
-            else if(btnPlayMode.getText().toString().equals("１曲リピート"))
+            else if(btnShuffle.getContentDescription().toString().equals("シャッフルあり"))
             {
-                btnPlayMode.setText("全曲リピート");
-                btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_aloop, 0, 0);
+                btnShuffle.setContentDescription("１曲のみ");
+                btnShuffle.setImageResource(R.drawable.bar_button_mode_single_on);
             }
-            else if(btnPlayMode.getText().toString().equals("全曲リピート"))
+            else
             {
-                btnPlayMode.setText("シャッフル");
-                btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_random, 0, 0);
+                btnShuffle.setContentDescription("シャッフルなし");
+                btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle);
             }
-            else if(btnPlayMode.getText().toString().equals("シャッフル"))
+            saveFiles(false, false, false, false, true);
+        }
+        else if(v.getId() == R.id.btnRepeat)
+        {
+            AnimationButton btnRepeat = (AnimationButton)activity.findViewById(R.id.btnRepeat);
+            if(btnRepeat.getContentDescription().toString().equals("リピートなし"))
             {
-                btnPlayMode.setText("１曲のみ");
-                btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_arrow_right_one, 0, 0);
+                btnRepeat.setContentDescription("全曲リピート");
+                btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_all_on);
             }
-            else if(btnPlayMode.getText().toString().equals("１曲のみ"))
+            else if(btnRepeat.getContentDescription().toString().equals("全曲リピート"))
             {
-                btnPlayMode.setText("連続再生");
-                btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_normal, 0, 0);
+                btnRepeat.setContentDescription("１曲リピート");
+                btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_single_on);
+            }
+            else
+            {
+                btnRepeat.setContentDescription("リピートなし");
+                btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat);
             }
             saveFiles(false, false, false, false, true);
         }
@@ -985,22 +990,22 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         recyclerSongs.setAdapter(songsAdapter);
         recyclerSongs.setOnClickListener(this);
 
-        Button btnRewind = (Button) activity.findViewById(R.id.btnRewind);
+        AnimationButton btnRewind = (AnimationButton) activity.findViewById(R.id.btnRewind);
         btnRewind.setOnClickListener(this);
 
-        Button btnPlay = (Button) activity.findViewById(R.id.btnPlay);
+        AnimationButton btnPlay = (AnimationButton) activity.findViewById(R.id.btnPlay);
         btnPlay.setOnClickListener(this);
 
-        Button btnStop = (Button) activity.findViewById(R.id.btnStop);
-        btnStop.setOnClickListener(this);
-
-        Button btnForward = (Button) activity.findViewById(R.id.btnForward);
+        AnimationButton btnForward = (AnimationButton) activity.findViewById(R.id.btnForward);
         btnForward.setOnClickListener(this);
 
-        Button btnPlayMode = (Button) activity.findViewById(R.id.btnPlayMode);
-        btnPlayMode.setOnClickListener(this);
+        AnimationButton btnShuffle = (AnimationButton) activity.findViewById(R.id.btnShuffle);
+        btnShuffle.setOnClickListener(this);
 
-        Button btnRecord = (Button) activity.findViewById(R.id.btnRecord);
+        AnimationButton btnRepeat = (AnimationButton) activity.findViewById(R.id.btnRepeat);
+        btnRepeat.setOnClickListener(this);
+
+        AnimationButton btnRecord = (AnimationButton) activity.findViewById(R.id.btnRecord);
         btnRecord.setOnClickListener(this);
 
         Button btnSortPlaylist = (Button) activity.findViewById(R.id.btnSortPlaylist);
@@ -2216,9 +2221,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     {
         if(MainActivity.hStream == 0) return;
         BASS.BASS_ChannelPlay(MainActivity.hStream, false);
-        Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
-        btnPlay.setText("一時停止");
-        btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pause, 0, 0);
+        AnimationButton btnPlay = (AnimationButton)getActivity().findViewById(R.id.btnPlay);
+        btnPlay.setContentDescription("一時停止");
+        btnPlay.setImageResource(R.drawable.bar_button_pause);
         AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
         btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_pause);
         songsAdapter.notifyDataSetChanged();
@@ -2230,9 +2235,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     {
         if(MainActivity.hStream == 0) return;
         BASS.BASS_ChannelPause(MainActivity.hStream);
-        Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
-        btnPlay.setText("再生");
-        btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_play, 0, 0);
+        AnimationButton btnPlay = (AnimationButton)getActivity().findViewById(R.id.btnPlay);
+        btnPlay.setContentDescription("再生");
+        btnPlay.setImageResource(R.drawable.bar_button_play);
         AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
         btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_play);
         songsAdapter.notifyDataSetChanged();
@@ -2249,65 +2254,89 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public void playNext(boolean bPlay) {
         int nTempPlaying = nPlaying;
         MainActivity activity = (MainActivity) getActivity();
-        Button btnPlayMode = (Button) activity.findViewById(R.id.btnPlayMode);
         ArrayList<SongItem> arSongs = arPlaylists.get(nPlayingPlaylist);
-        if(btnPlayMode.getText().toString().equals("連続再生") || btnPlayMode.getText().toString().equals("１曲リピート") || btnPlayMode.getText().toString().equals("全曲リピート") || btnPlayMode.getText().toString().equals("シャッフル"))
+
+        ImageButton btnShuffle = (ImageButton)activity.findViewById(R.id.btnShuffle);
+        boolean bShuffle = false;
+        boolean bSingle = false;
+        if(btnShuffle.getContentDescription().toString().equals("シャッフルあり"))
+            bShuffle = true;
+        else if(btnShuffle.getContentDescription().toString().equals("１曲のみ"))
+            bSingle = true;
+
+        ImageButton btnRepeat = (ImageButton)activity.findViewById(R.id.btnRepeat);
+        boolean bRepeatAll = false;
+        boolean bRepeatSingle = false;
+        if(btnRepeat.getContentDescription().toString().equals("全曲リピート"))
+            bRepeatAll = true;
+        else if(btnRepeat.getContentDescription().toString().equals("１曲リピート"))
+            bRepeatSingle = true;
+
+        if(bSingle) // １曲のみ
         {
-            if (btnPlayMode.getText().toString().equals("連続再生") || btnPlayMode.getText().toString().equals("１曲リピート"))
+            if(!bRepeatSingle) nTempPlaying++;
+            if (nTempPlaying >= arSongs.size())
             {
-                nTempPlaying++;
-                if (nTempPlaying >= arSongs.size()) {
+                if(!bRepeatAll)
+                {
                     stop();
                     return;
                 }
+                nTempPlaying = 0;
             }
-            else if (btnPlayMode.getText().toString().equals("全曲リピート"))
-            {
-                nTempPlaying++;
-                if (nTempPlaying >= arSongs.size()) {
-                    nTempPlaying = 0;
+            playSong(nTempPlaying, bPlay);
+            if(!bPlay) pause();
+        }
+        else if(bShuffle) // シャッフル
+        {
+            ArrayList<Integer> arTemp = new ArrayList<Integer>();
+            for (int i = 0; i < arPlayed.size(); i++) {
+                if (i == nTempPlaying) continue;
+                Boolean bPlayed = arPlayed.get(i);
+                if (!bPlayed.booleanValue()) {
+                    arTemp.add(i);
                 }
             }
-            else if (btnPlayMode.getText().toString().equals("シャッフル"))
+            if (arTemp.size() == 0)
             {
-                ArrayList<Integer> arTemp = new ArrayList<Integer>();
-                for (int i = 0; i < arPlayed.size(); i++) {
-                    if (i == nTempPlaying) continue;
-                    Boolean bPlayed = arPlayed.get(i);
-                    if (!bPlayed.booleanValue()) {
-                        arTemp.add(i);
-                    }
-                }
-                if (arTemp.size() == 0)
+                if(!bRepeatAll)
                 {
-                    for (int i = 0; i < arPlayed.size(); i++)
-                    {
-                        arPlayed.set(i, false);
-                    }
+                    stop();
+                    return;
                 }
-                if (arPlayed.size() > 1)
+                for (int i = 0; i < arPlayed.size(); i++)
                 {
-                    Random random = new Random();
-                    if (arTemp.size() == 0 || arTemp.size() == arPlayed.size())
-                    {
-                        nTempPlaying = random.nextInt(arPlayed.size());
-                    }
-                    else {
-                        int nRandom = random.nextInt(arTemp.size());
-                        nTempPlaying = arTemp.get(nRandom);
-                    }
+                    arPlayed.set(i, false);
+                }
+            }
+            if (arPlayed.size() > 1)
+            {
+                Random random = new Random();
+                if (arTemp.size() == 0 || arTemp.size() == arPlayed.size())
+                {
+                    nTempPlaying = random.nextInt(arPlayed.size());
+                }
+                else {
+                    int nRandom = random.nextInt(arTemp.size());
+                    nTempPlaying = arTemp.get(nRandom);
                 }
             }
             playSong(nTempPlaying, true);
         }
-        else if(btnPlayMode.getText().toString().equals("１曲のみ"))
+        else
         {
             nTempPlaying++;
             if (nTempPlaying >= arSongs.size())
+            {
+                if(!bRepeatAll)
+                {
+                    stop();
+                    return;
+                }
                 nTempPlaying = 0;
+            }
             playSong(nTempPlaying, bPlay);
-            if(!bPlay)
-                pause();
+            if(!bPlay) pause();
         }
     }
 
@@ -2581,9 +2610,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         activity.setSync();
         if(bPlay)
             BASS.BASS_ChannelPlay(MainActivity.hStream, false);
-        Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
-        btnPlay.setText("一時停止");
-        btnPlay.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_pause,0,0);
+        AnimationButton btnPlay = (AnimationButton)getActivity().findViewById(R.id.btnPlay);
+        btnPlay.setContentDescription("一時停止");
+        btnPlay.setImageResource(R.drawable.bar_button_pause);
         AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
         btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_pause);
         LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(1);
@@ -2704,9 +2733,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         nPlaying = -1;
         BASS.BASS_ChannelStop(MainActivity.hStream);
         MainActivity.hStream = 0;
-        Button btnPlay = (Button)getActivity().findViewById(R.id.btnPlay);
-        btnPlay.setText("再生");
-        btnPlay.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_play, 0, 0);
+        AnimationButton btnPlay = (AnimationButton)getActivity().findViewById(R.id.btnPlay);
+        btnPlay.setContentDescription("再生");
+        btnPlay.setImageResource(R.drawable.bar_button_play);
         AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
         btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_play);
         MainActivity activity = (MainActivity)getActivity();
@@ -2862,19 +2891,24 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
         if(bPlayMode)
         {
-            Button btnPlayMode = (Button)activity.findViewById(R.id.btnPlayMode);
-            int nPlayMode = 0;
-            if(btnPlayMode.getText().toString().equals("連続再生"))
-                nPlayMode = 0;
-            else if(btnPlayMode.getText().toString().equals("１曲リピート"))
-                nPlayMode = 1;
-            else if(btnPlayMode.getText().toString().equals("全曲リピート"))
-                nPlayMode = 2;
-            else if(btnPlayMode.getText().toString().equals("シャッフル"))
-                nPlayMode = 3;
-            else if(btnPlayMode.getText().toString().equals("１曲のみ"))
-                nPlayMode = 4;
-            preferences.edit().putInt("playmode", nPlayMode).commit();
+            AnimationButton btnShuffle = (AnimationButton)activity.findViewById(R.id.btnShuffle);
+            int nShuffle = 0;
+            if(btnShuffle.getContentDescription().toString().equals("シャッフルなし"))
+                nShuffle = 0;
+            else if(btnShuffle.getContentDescription().toString().equals("シャッフルあり"))
+                nShuffle = 1;
+            else if(btnShuffle.getContentDescription().toString().equals("１曲のみ"))
+                nShuffle = 2;
+            preferences.edit().putInt("shufflemode", nShuffle).commit();
+            AnimationButton btnRepeat = (AnimationButton)activity.findViewById(R.id.btnRepeat);
+            int nRepeat = 0;
+            if(btnRepeat.getContentDescription().toString().equals("リピートなし"))
+                nRepeat = 0;
+            else if(btnRepeat.getContentDescription().toString().equals("全曲リピート"))
+                nRepeat = 1;
+            else if(btnRepeat.getContentDescription().toString().equals("１曲リピート"))
+                nRepeat = 2;
+            preferences.edit().putInt("repeatmode", nRepeat).commit();
         }
     }
 }

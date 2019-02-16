@@ -574,32 +574,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        int nPlayMode = preferences.getInt("playmode", 0);
-        Button btnPlayMode = (Button)findViewById(R.id.btnPlayMode);
-        if(nPlayMode == 0)
+        int nShuffle = preferences.getInt("shufflemode", 0);
+        AnimationButton btnShuffle = (AnimationButton)findViewById(R.id.btnShuffle);
+        if(nShuffle == 1)
         {
-            btnPlayMode.setText("連続再生");
-            btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_normal, 0, 0);
+            btnShuffle.setContentDescription("シャッフルあり");
+            btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle_on);
         }
-        else if(nPlayMode == 1)
+        else if(nShuffle == 2)
         {
-            btnPlayMode.setText("１曲リピート");
-            btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_sloop, 0, 0);
+            btnShuffle.setContentDescription("１曲のみ");
+            btnShuffle.setImageResource(R.drawable.bar_button_mode_single_on);
         }
-        else if(nPlayMode == 2)
+        else
         {
-            btnPlayMode.setText("全曲リピート");
-            btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_aloop, 0, 0);
+            btnShuffle.setContentDescription("シャッフルなし");
+            btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle);
         }
-        else if(nPlayMode == 3)
+
+        int nRepeat = preferences.getInt("repeatmode", 0);
+        AnimationButton btnRepeat = (AnimationButton)findViewById(R.id.btnRepeat);
+        if(nRepeat == 1)
         {
-            btnPlayMode.setText("シャッフル");
-            btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_random, 0, 0);
+            btnRepeat.setContentDescription("全曲リピート");
+            btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_all_on);
         }
-        else if(nPlayMode == 4)
+        else if(nRepeat == 2)
         {
-            btnPlayMode.setText("１曲のみ");
-            btnPlayMode.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_arrow_right_one, 0, 0);
+            btnRepeat.setContentDescription("１曲リピート");
+            btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_single_on);
+        }
+        else
+        {
+            btnRepeat.setContentDescription("リピートなし");
+            btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat);
         }
     }
 
@@ -934,14 +942,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tab4.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_effect, 0, 0);
         tabLayout.getTabAt(4).setCustomView(tab4);
 
-        Button btnMenu = (Button)findViewById(R.id.btnMenu);
+        AnimationButton btnMenu = (AnimationButton)findViewById(R.id.btnMenu);
         btnMenu.setOnClickListener(this);
 
-        Button btnRewind = (Button)findViewById(R.id.btnRewind);
+        AnimationButton btnRewind = (AnimationButton)findViewById(R.id.btnRewind);
         btnRewind.setOnLongClickListener(this);
         btnRewind.setOnTouchListener(this);
 
-        Button btnForward = (Button)findViewById(R.id.btnForward);
+        AnimationButton btnForward = (AnimationButton)findViewById(R.id.btnForward);
         btnForward.setOnLongClickListener(this);
         btnForward.setOnTouchListener(this);
     }
@@ -1020,23 +1028,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     else
                     {
-                        Button btnPlayMode = (Button) findViewById(R.id.btnPlayMode);
-                        if (btnPlayMode.getText().toString().equals("連続再生") || btnPlayMode.getText().toString().equals("全曲リピート") || btnPlayMode.getText().toString().equals("シャッフル")) {
-                            PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
-                            playlistFragment.playNext(true);
-                        }
-                        else if (btnPlayMode.getText().toString().equals("１曲リピート")) {
-                            BASS.BASS_ChannelPlay(hStream, true);
-                        }
-                        else if(btnPlayMode.getText().toString().equals("１曲のみ"))
-                        {
-                            PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
+                        ImageButton btnShuffle = (ImageButton)findViewById(R.id.btnShuffle);
+                        boolean bShuffle = false;
+                        boolean bSingle = false;
+                        if(btnShuffle.getContentDescription().toString().equals("シャッフルあり"))
+                            bShuffle = true;
+                        else if(btnShuffle.getContentDescription().toString().equals("１曲のみ"))
+                            bSingle = true;
+
+                        ImageButton btnRepeat = (ImageButton)findViewById(R.id.btnRepeat);
+                        boolean bRepeatAll = false;
+                        boolean bRepeatSingle = false;
+                        if(btnRepeat.getContentDescription().toString().equals("全曲リピート"))
+                            bRepeatAll = true;
+                        else if(btnRepeat.getContentDescription().toString().equals("１曲リピート"))
+                            bRepeatSingle = true;
+
+                        PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
+                        if(bSingle)
                             playlistFragment.playNext(false);
-                        }
-                        else {
-                            PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
-                            playlistFragment.stop();
-                        }
+                        else if(bRepeatSingle)
+                            BASS.BASS_ChannelPlay(hStream, true);
+                        else
+                            playlistFragment.playNext(true);
                     }
                 }
             });
