@@ -2370,7 +2370,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
     public void playSong(int nSong, boolean bPlay)
     {
-        MainActivity activity = (MainActivity)getActivity();
+        final MainActivity activity = (MainActivity)getActivity();
         activity.clearLoop(false);
 
         boolean bReloadLyrics = false;
@@ -2417,7 +2417,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         if(nSong < 0) nSong = 0;
         else if(nSong >= arPlaylists.get(nPlayingPlaylist).size()) nSong = arPlaylists.get(nPlayingPlaylist).size() - 1;
         SongItem item = arPlaylists.get(nPlayingPlaylist).get(nSong);
-        String strPath = item.getPath();
+        final String strPath = item.getPath();
         if(MainActivity.hStream != 0)
         {
             BASS.BASS_StreamFree(MainActivity.hStream);
@@ -2546,14 +2546,26 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             relativePlaying.setTranslationY((int) (70 * getResources().getDisplayMetrics().density + 0.5));
             relativePlaying.setVisibility(View.VISIBLE);
             relativePlaying.animate()
-                    .setListener(null)
                     .translationY(0)
-                    .setDuration(200);
+                    .setDuration(200)
+                    .setListener(new AnimatorListenerAdapter() {
+                                     @Override
+                                     public void onAnimationEnd(Animator animation) {
+                                         super.onAnimationEnd(animation);
+                                         LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(1);
+                                         loopFragment.drawWaveForm(strPath);
+                                     }
+                                 });
             viewShadowOfPlayingBar.setTranslationY((int) (70 * getResources().getDisplayMetrics().density + 0.5));
             viewShadowOfPlayingBar.setAlpha(1.0f);
             viewShadowOfPlayingBar.animate()
                     .translationY(0)
                     .setDuration(200);
+        }
+        else
+        {
+            LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(1);
+            loopFragment.drawWaveForm(strPath);
         }
 
         MainActivity.hStream = BASS_FX.BASS_FX_ReverseCreate(MainActivity.hStream, 2, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
@@ -2615,8 +2627,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         btnPlay.setImageResource(R.drawable.bar_button_pause);
         AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
         btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_pause);
-        LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(1);
-        loopFragment.drawWaveForm(strPath);
         songsAdapter.notifyDataSetChanged();
         playlistsAdapter.notifyDataSetChanged();
         tabAdapter.notifyDataSetChanged();
