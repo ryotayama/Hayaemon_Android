@@ -43,12 +43,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
-        android:layout_marginTop="4dp"
         android:layout_alignParentTop="true"
         android:text="リセット"
         android:layout_toLeftOf="@+id/btnLockSpeed"
         android:clickable="true"
         android:gravity="center"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#BFBFBF"
+        android:layout_below="@+id/btnResetSpeed"
         />
     <TextView
         android:id="@+id/textPitch"
@@ -91,6 +96,12 @@
         android:clickable="true"
         android:gravity="center"
         android:layout_below="@id/btnResetSpeed"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#BFBFBF"
+        android:layout_below="@+id/btnResetPitch"
         />
     <RelativeLayout
         android:id="@+id/relative2"
