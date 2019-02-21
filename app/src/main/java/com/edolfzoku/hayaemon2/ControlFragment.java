@@ -274,7 +274,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             if(!isContinue)
                 return;
             setSpeedUp();
-            handler.postDelayed(this, 200);
+            handler.postDelayed(this, 100);
         }
     };
 
@@ -286,7 +286,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             if(!isContinue)
                 return;
             setSpeedDown();
-            handler.postDelayed(this, 200);
+            handler.postDelayed(this, 100);
         }
     };
 
@@ -391,35 +391,34 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         }
         else if(v.getId() == R.id.textSpeedUp)
         {
-            if (event.getAction() == MotionEvent.ACTION_UP)
-            {
-                isContinue = false;
+            if (event.getAction() == MotionEvent.ACTION_DOWN)
                 setSpeedUp();
-            }
+            else if (event.getAction() == MotionEvent.ACTION_UP)
+                isContinue = false;
             return false;
         }
         else if(v.getId() == R.id.textSpeedDown)
         {
-            if(event.getAction() == MotionEvent.ACTION_UP) {
-                isContinue = false;
+            if(event.getAction() == MotionEvent.ACTION_DOWN)
                 setSpeedDown();
-            }
+            else if (event.getAction() == MotionEvent.ACTION_UP)
+                isContinue = false;
             return false;
         }
         else if(v.getId() == R.id.imgPitchUp)
         {
-            if(event.getAction() == MotionEvent.ACTION_UP) {
-                isContinue = false;
+            if(event.getAction() == MotionEvent.ACTION_DOWN)
                 setPitchUp();
-            }
+            else if (event.getAction() == MotionEvent.ACTION_UP)
+                isContinue = false;
             return false;
         }
         else if(v.getId() == R.id.imgPitchDown)
         {
-            if(event.getAction() == MotionEvent.ACTION_UP) {
-                isContinue = false;
+            if(event.getAction() == MotionEvent.ACTION_DOWN)
                 setPitchDown();
-            }
+            else if (event.getAction() == MotionEvent.ACTION_UP)
+                isContinue = false;
             return false;
         }
         else if(v.getId() == R.id.imgBack)
