@@ -81,21 +81,21 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         Button btnResetPitch = (Button)getActivity().findViewById(R.id.btnResetPitch);
         btnResetPitch.setOnTouchListener(this);
 
-        AnimationTextView textSpeedUp = (AnimationTextView) getActivity().findViewById(R.id.textSpeedUp);
-        textSpeedUp.setOnTouchListener(this);
-        textSpeedUp.setOnLongClickListener(this);
+        AnimationButton btnSpeedUp = (AnimationButton) getActivity().findViewById(R.id.btnSpeedUp);
+        btnSpeedUp.setOnTouchListener(this);
+        btnSpeedUp.setOnLongClickListener(this);
 
-        AnimationTextView textSpeedDown = (AnimationTextView)getActivity().findViewById(R.id.textSpeedDown);
-        textSpeedDown.setOnTouchListener(this);
-        textSpeedDown.setOnLongClickListener(this);
+        AnimationButton btnSpeedDown = (AnimationButton)getActivity().findViewById(R.id.btnSpeedDown);
+        btnSpeedDown.setOnTouchListener(this);
+        btnSpeedDown.setOnLongClickListener(this);
 
-        AnimationButton imgPitchUp = (AnimationButton)getActivity().findViewById(R.id.imgPitchUp);
-        imgPitchUp.setOnTouchListener(this);
-        imgPitchUp.setOnLongClickListener(this);
+        AnimationButton btnPitchUp = (AnimationButton)getActivity().findViewById(R.id.btnPitchUp);
+        btnPitchUp.setOnTouchListener(this);
+        btnPitchUp.setOnLongClickListener(this);
 
-        AnimationButton imgPitchDown = (AnimationButton)getActivity().findViewById(R.id.imgPitchDown);
-        imgPitchDown.setOnTouchListener(this);
-        imgPitchDown.setOnLongClickListener(this);
+        AnimationButton btnPitchDown = (AnimationButton)getActivity().findViewById(R.id.btnPitchDown);
+        btnPitchDown.setOnTouchListener(this);
+        btnPitchDown.setOnLongClickListener(this);
 
         EditText textSpeedValue = (EditText)getActivity().findViewById(R.id.textSpeedValue);
         textSpeedValue.setOnFocusChangeListener(this);
@@ -317,25 +317,25 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     @Override
     public boolean onLongClick(View v)
     {
-        if(v.getId() == R.id.textSpeedUp)
+        if(v.getId() == R.id.btnSpeedUp)
         {
             isContinue = true;
             handler.post(repeatSpeedUp);
             return true;
         }
-        else if(v.getId() == R.id.textSpeedDown)
+        else if(v.getId() == R.id.btnSpeedDown)
         {
             isContinue = true;
             handler.post(repeatSpeedDown);
             return true;
         }
-        else if(v.getId() == R.id.imgPitchUp)
+        else if(v.getId() == R.id.btnPitchUp)
         {
             isContinue = true;
             handler.post(repeatPitchUp);
             return true;
         }
-        else if(v.getId() == R.id.imgPitchDown)
+        else if(v.getId() == R.id.btnPitchDown)
         {
             isContinue = true;
             handler.post(repeatPitchDown);
@@ -389,7 +389,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             }
             return false;
         }
-        else if(v.getId() == R.id.textSpeedUp)
+        else if(v.getId() == R.id.btnSpeedUp)
         {
             if (event.getAction() == MotionEvent.ACTION_DOWN)
                 setSpeedUp();
@@ -397,7 +397,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 isContinue = false;
             return false;
         }
-        else if(v.getId() == R.id.textSpeedDown)
+        else if(v.getId() == R.id.btnSpeedDown)
         {
             if(event.getAction() == MotionEvent.ACTION_DOWN)
                 setSpeedDown();
@@ -405,7 +405,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 isContinue = false;
             return false;
         }
-        else if(v.getId() == R.id.imgPitchUp)
+        else if(v.getId() == R.id.btnPitchUp)
         {
             if(event.getAction() == MotionEvent.ACTION_DOWN)
                 setPitchUp();
@@ -413,7 +413,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 isContinue = false;
             return false;
         }
-        else if(v.getId() == R.id.imgPitchDown)
+        else if(v.getId() == R.id.btnPitchDown)
         {
             if(event.getAction() == MotionEvent.ACTION_DOWN)
                 setPitchDown();
