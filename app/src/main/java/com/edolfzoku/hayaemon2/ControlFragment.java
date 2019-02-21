@@ -192,7 +192,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
 
     public void setPitchUp()
     {
-        float fMaxPitch = 12.0f;
+        float fMaxPitch = 24.0f;
         fPitch += 1.0;
         if(fPitch >= fMaxPitch) fPitch = fMaxPitch;
             setPitch(fPitch);
@@ -200,7 +200,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
 
     public void setPitchDown()
     {
-        float fMinPitch = -12.0f;
+        float fMinPitch = -24.0f;
         fPitch -= 1.0;
         if(fPitch <= fMinPitch) fPitch = fMinPitch;
             setPitch(fPitch);
