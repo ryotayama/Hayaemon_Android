@@ -238,8 +238,11 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         float fBkHeight = nBkHeight - nPtHeight;
         float fMaxPitch = 12.0f;
         float fMinPitch = -12.0f;
+        float fDummyPitch = fPitch;
+        if(fDummyPitch > fMaxPitch) fDummyPitch = fMaxPitch;
+        else if(fDummyPitch < fMinPitch) fDummyPitch = fMinPitch;
         float fX = imgPoint.getX() + nPtWidth / 2;
-        float fY = nBkTop + fBkHeight - ((fPitch - fMinPitch) / (fMaxPitch - fMinPitch)) * fBkHeight;
+        float fY = nBkTop + fBkHeight - ((fDummyPitch - fMinPitch) / (fMaxPitch - fMinPitch)) * fBkHeight;
         imgPoint.animate()
             .x(fX - nPtWidth / 2)
             .y(fY)
