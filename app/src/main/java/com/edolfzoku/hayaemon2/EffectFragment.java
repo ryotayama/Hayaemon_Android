@@ -779,6 +779,24 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             seek.setMax(100);
             seek.setProgress((int)(fVol7 * 100));
         }
+
+        ImageButton buttonEffectMinus = (ImageButton)activity.findViewById(R.id.buttonEffectMinus);
+        ImageButton buttonEffectPlus = (ImageButton)activity.findViewById(R.id.buttonEffectPlus);
+        if(nEffect == kEffectTypePan)
+        {
+            buttonEffectMinus.setImageResource(R.drawable.leftbutton);
+            buttonEffectMinus.setContentDescription("値を左に変更");
+            buttonEffectPlus.setImageResource(R.drawable.rightbutton);
+            buttonEffectPlus.setContentDescription("値を右に変更");
+        }
+        else
+        {
+            buttonEffectMinus.setImageResource(R.drawable.minusbutton);
+            buttonEffectMinus.setContentDescription("マイナス");
+            buttonEffectPlus.setImageResource(R.drawable.plusbutton);
+            buttonEffectPlus.setContentDescription("プラス");
+        }
+
         seek.setOnSeekBarChangeListener(this);
         RelativeLayout relativeEffectDetail = (RelativeLayout) activity.findViewById(R.id.relativeEffectDetail);
         relativeEffectDetail.setVisibility(View.VISIBLE);
