@@ -46,6 +46,8 @@ import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -107,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private IInAppBillingService mService;
     private ServiceConnection mServiceConn;
     private boolean bShowUpdateLog;
+    private boolean bPlayNextByBPos;
     private BroadcastReceiver receiver;
     private AdView mAdView;
     private boolean mBound = false;
@@ -123,6 +126,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     public ForegroundService getForegroundService() { return foregroundService; }
+
+    public void setPlayNextByBPos(boolean bPlayNextByBPos) { this.bPlayNextByBPos = bPlayNextByBPos; }
+    public boolean isPlayNextByBPos() { return bPlayNextByBPos; }
 
     public MainActivity() {
         bLoopA = false;
@@ -219,6 +225,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RelativeLayout relativeInfo = (RelativeLayout)findViewById(R.id.relativeInfo);
         relativeInfo.setOnTouchListener(this);
         relativeInfo.setOnClickListener(this);
+        AnimationButton btnSetting = (AnimationButton)findViewById(R.id.btnSetting);
+        btnSetting.setOnClickListener(this);
 
         findViewById(R.id.btnPlayInPlayingBar).setOnClickListener(this);
         AnimationButton btnForwardInPlayingBar = findViewById(R.id.btnForwardInPlayingBar);
@@ -547,6 +555,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         preferences.edit().putString("versionname", strCurrentVersionName).commit();
 
+        bPlayNextByBPos = preferences.getBoolean("bPlayNextByBPos", false);
+
         boolean bHideAds = preferences.getBoolean("hideads", false);
         if(bHideAds) hideAds();
         else
@@ -830,6 +840,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
             builder.show();
         }
+        else if(v.getId() == R.id.btnSetting)
+        {
+            mDrawerLayout.closeDrawer(Gravity.START);
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            final FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
+            transaction.replace(R.id.relativeMain, new SettingFragment());
+            transaction.commit();
+        }
         else if(v.getId() == R.id.btnPlayInPlayingBar)
             playlistFragment.onPlayBtnClicked();
         else if(v.getId() == R.id.btnForwardInPlayingBar)
@@ -1009,7 +1029,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     LinearLayout MarkerButton = (LinearLayout)findViewById(R.id.MarkerButton);
                     ImageButton btnLoopmarker = (ImageButton)findViewById(R.id.btnLoopmarker);
 
-                    if(ABButton.getVisibility() == View.VISIBLE && (bLoopA || bLoopB))
+                    if(ABButton.getVisibility() == View.VISIBLE && (bLoopA || bLoopB) && !bPlayNextByBPos)
                     {
                         if(effectFragment.isReverse())
                             BASS.BASS_ChannelSetPosition(hStream, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopB), BASS.BASS_POS_BYTE);

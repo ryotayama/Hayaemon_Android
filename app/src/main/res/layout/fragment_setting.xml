@@ -1,0 +1,112 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EFEFF4"
+    android:clickable="true"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp">
+
+    <RelativeLayout
+        android:id="@+id/relativeSettingTitle"
+        android:background="#F9F9F9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textSettingTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="オプション設定"
+            android:textColor="#000000"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:layout_margin="12dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            />
+
+        <Button
+            android:id="@+id/btnCloseSetting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="閉じる"
+            android:layout_margin="2dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/viewSepSetting"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#CCC"
+        android:layout_below="@+id/relativeSettingTitle"
+        />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="0"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/viewSepSetting"
+        >
+
+        <TableRow
+            android:background="#EFEFF4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="再生設定"
+                android:layout_span="2"
+                android:id="@+id/textView"
+                android:textSize="13sp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"/>
+        </TableRow>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFF"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            >
+
+            <TextView
+                android:id="@+id/textRepeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AB地点を設置したら1曲リピート"
+                android:textSize="18sp"
+                android:textColor="#000"
+                android:layout_marginRight="16dp"
+                android:layout_toLeftOf="@+id/switchRepeat"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                />
+
+            <Switch
+                android:id="@+id/switchRepeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                />
+
+        </RelativeLayout>
+
+    </TableLayout>
+
+</RelativeLayout>

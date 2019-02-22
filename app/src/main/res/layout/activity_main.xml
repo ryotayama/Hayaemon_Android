@@ -11,6 +11,7 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/relativeMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="0dp"
@@ -415,6 +416,36 @@
                 android:layout_marginBottom="21dp"
                 android:layout_toRightOf="@id/imgInfo"
                 android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#CCC"
+            android:layout_above="@+id/relativeMenuBottom"
+            />
+
+        <RelativeLayout
+            android:id="@+id/relativeMenuBottom"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            >
+
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnSetting"
+                android:contentDescription="設定"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:src="@drawable/leftmenu_settings"
+                android:scaleType="centerInside"
+                android:clickable="true"
+                android:layout_marginLeft="8dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
                 />
 
         </RelativeLayout>
