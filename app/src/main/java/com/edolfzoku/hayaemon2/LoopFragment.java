@@ -127,7 +127,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 if (activity != null) {
                     LinearLayout ABButton = (LinearLayout)activity.findViewById(R.id.ABButton);
                     EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-                    if(ABButton.getVisibility() == View.VISIBLE && ((activity.bLoopA && dPos < activity.dLoopA) || (activity.bLoopB && activity.dLoopB < dPos))) {
+                    if(ABButton.getVisibility() == View.VISIBLE && ((activity.bLoopA && dPos < activity.dLoopA) || (activity.bLoopB && activity.dLoopB < dPos)) && !activity.isPlayNextByBPos()) {
                         if(effectFragment.isReverse())
                             dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB));
                         else
