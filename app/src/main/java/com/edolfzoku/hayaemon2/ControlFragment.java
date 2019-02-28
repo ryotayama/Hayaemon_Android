@@ -18,6 +18,8 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -65,6 +67,22 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
+        SharedPreferences preferences = getActivity().getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        int nImgPointTag = preferences.getInt("imgPointTag", 0);
+        ImageView imgPoint = (ImageView)getActivity().findViewById(R.id.imgPoint);
+        if(nImgPointTag == 1) {
+            imgPoint.setImageResource(R.drawable.control_pointer_uni_murasaki);
+            imgPoint.setTag(1);
+        }
+        else if(nImgPointTag == 2) {
+            imgPoint.setImageResource(R.drawable.control_pointer_uni_bafun);
+            imgPoint.setTag(2);
+        }
+        if(nImgPointTag != 0) {
+            imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        }
 
         View viewBk = getActivity().findViewById(R.id.imgBack);
         viewBk.setOnTouchListener(this);

@@ -66,6 +66,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -127,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public ForegroundService getForegroundService() { return foregroundService; }
 
+    public IInAppBillingService getService() { return mService; }
     public void setPlayNextByBPos(boolean bPlayNextByBPos) { this.bPlayNextByBPos = bPlayNextByBPos; }
     public boolean isPlayNextByBPos() { return bPlayNextByBPos; }
 
@@ -213,6 +215,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RelativeLayout relativeAddSong = (RelativeLayout)findViewById(R.id.relativeAddSong);
         relativeAddSong.setOnTouchListener(this);
         relativeAddSong.setOnClickListener(this);
+        RelativeLayout relativeItem = (RelativeLayout)findViewById(R.id.relativeItem);
+        relativeItem.setOnTouchListener(this);
+        relativeItem.setOnClickListener(this);
         RelativeLayout relativeReport = (RelativeLayout)findViewById(R.id.relativeReport);
         relativeReport.setOnTouchListener(this);
         relativeReport.setOnClickListener(this);
@@ -257,9 +262,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(newState == DrawerLayout.STATE_IDLE)
         {
             findViewById(R.id.relativeAddSong).setBackgroundColor(Color.argb(255, 255, 255, 255));
+            findViewById(R.id.relativeHideAds).setBackgroundColor(Color.argb(255, 255, 255, 255));
+            findViewById(R.id.relativeItem).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeReport).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeReview).setBackgroundColor(Color.argb(255, 255, 255, 255));
-            findViewById(R.id.relativeHideAds).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeInfo).setBackgroundColor(Color.argb(255, 255, 255, 255));
         }
     }
@@ -674,9 +680,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(event.getAction() == MotionEvent.ACTION_UP)
         {
             findViewById(R.id.relativeAddSong).setBackgroundColor(Color.argb(255, 255, 255, 255));
+            findViewById(R.id.relativeHideAds).setBackgroundColor(Color.argb(255, 255, 255, 255));
+            findViewById(R.id.relativeItem).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeReport).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeReview).setBackgroundColor(Color.argb(255, 255, 255, 255));
-            findViewById(R.id.relativeHideAds).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeInfo).setBackgroundColor(Color.argb(255, 255, 255, 255));
             if(v.getId() == R.id.btnRewind)
             {
@@ -701,12 +708,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             if(v.getId() == R.id.relativeAddSong)
                 findViewById(R.id.relativeAddSong).setBackgroundColor(Color.argb(255, 229, 229, 229));
+            if(v.getId() == R.id.relativeHideAds)
+                findViewById(R.id.relativeHideAds).setBackgroundColor(Color.argb(255, 229, 229, 229));
+            if(v.getId() == R.id.relativeItem)
+                findViewById(R.id.relativeItem).setBackgroundColor(Color.argb(255, 229, 229, 229));
             if(v.getId() == R.id.relativeReport)
                 findViewById(R.id.relativeReport).setBackgroundColor(Color.argb(255, 229, 229, 229));
             if(v.getId() == R.id.relativeReview)
                 findViewById(R.id.relativeReview).setBackgroundColor(Color.argb(255, 229, 229, 229));
-            if(v.getId() == R.id.relativeHideAds)
-                findViewById(R.id.relativeHideAds).setBackgroundColor(Color.argb(255, 229, 229, 229));
             if(v.getId() == R.id.relativeInfo)
                 findViewById(R.id.relativeInfo).setBackgroundColor(Color.argb(255, 229, 229, 229));
         }
@@ -778,20 +787,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             menu.setCancelMenu();
             menu.show();
         }
-        else if(v.getId() == R.id.relativeReport)
-        {
-            Uri uri = Uri.parse("https://twitter.com/ryota_yama");
-            Intent i = new Intent(Intent.ACTION_VIEW,uri);
-            startActivity(i);
-            mDrawerLayout.closeDrawer(Gravity.START);
-        }
-        else if(v.getId() == R.id.relativeReview)
-        {
-            Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.edolfzoku.hayaemon2&hl=ja");
-            Intent i = new Intent(Intent.ACTION_VIEW,uri);
-            startActivity(i);
-            mDrawerLayout.closeDrawer(Gravity.START);
-        }
         else if(v.getId() == R.id.relativeHideAds)
         {
             try {
@@ -819,6 +814,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             mDrawerLayout.closeDrawer(Gravity.START);
         }
+        else if(v.getId() == R.id.relativeItem)
+        {
+            mDrawerLayout.closeDrawer(Gravity.START);
+            openItem();
+        }
+        else if(v.getId() == R.id.relativeReport)
+        {
+            Uri uri = Uri.parse("https://twitter.com/ryota_yama");
+            Intent i = new Intent(Intent.ACTION_VIEW,uri);
+            startActivity(i);
+            mDrawerLayout.closeDrawer(Gravity.START);
+        }
+        else if(v.getId() == R.id.relativeReview)
+        {
+            Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.edolfzoku.hayaemon2&hl=ja");
+            Intent i = new Intent(Intent.ACTION_VIEW,uri);
+            startActivity(i);
+            mDrawerLayout.closeDrawer(Gravity.START);
+        }
         else if(v.getId() == R.id.relativeInfo)
         {
             mDrawerLayout.closeDrawer(Gravity.START);
@@ -843,12 +857,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(v.getId() == R.id.btnSetting)
         {
             mDrawerLayout.closeDrawer(Gravity.START);
-
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            final FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
-            transaction.replace(R.id.relativeMain, new SettingFragment());
-            transaction.commit();
+            openSetting();
         }
         else if(v.getId() == R.id.btnPlayInPlayingBar)
             playlistFragment.onPlayBtnClicked();
@@ -856,6 +865,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             playlistFragment.playNext(true);
         else if(v.getId() == R.id.btnCloseInPlayingBar)
             playlistFragment.stop();
+    }
+
+    public void openItem()
+    {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        final FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
+        transaction.replace(R.id.relativeMain, new ItemFragment());
+        transaction.commit();
+    }
+
+    public void openSetting()
+    {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        final FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
+        transaction.replace(R.id.relativeMain, new SettingFragment());
+        transaction.commit();
     }
 
     public void open()
@@ -885,7 +912,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(requestCode == 1001)
         {
-            int responseCode = data.getIntExtra("RESPONSE_CODE", 0);
             String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
 
             if (resultCode == RESULT_OK)
@@ -895,6 +921,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String productId = jo.getString("productId");
 
                     hideAds();
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        else if(requestCode == 1002)
+        {
+            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
+
+            if (resultCode == RESULT_OK)
+            {
+                try {
+                    JSONObject jo = new JSONObject(purchaseData);
+                    String productId = jo.getString("productId");
+
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    ItemFragment itemFragment = (ItemFragment)fragmentManager.findFragmentById(R.id.relativeMain);
+                    itemFragment.buyPurpleSeaUrchinPointer();
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        else if(requestCode == 1003)
+        {
+            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
+
+            if (resultCode == RESULT_OK)
+            {
+                try {
+                    JSONObject jo = new JSONObject(purchaseData);
+                    String productId = jo.getString("productId");
+
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    ItemFragment itemFragment = (ItemFragment)fragmentManager.findFragmentById(R.id.relativeMain);
+                    itemFragment.buyElegantSeaUrchinPointer();
                 }
                 catch (JSONException e) {
                     e.printStackTrace();

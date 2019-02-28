@@ -33,7 +33,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="閉じる"
-            android:layout_margin="2dp"
+            android:textColor="#007AFF"
+            android:textSize="15dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             />
@@ -48,65 +50,230 @@
         android:layout_below="@+id/relativeSettingTitle"
         />
 
-    <TableLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stretchColumns="0"
-        android:layout_marginTop="16dp"
         android:layout_below="@+id/viewSepSetting"
         >
 
-        <TableRow
-            android:background="#EFEFF4"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="再生設定"
-                android:layout_span="2"
-                android:id="@+id/textView"
-                android:textSize="13sp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"/>
-        </TableRow>
-
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#FFF"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            >
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/textRepeat"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/relativePlaySetting"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="AB地点を設置したら1曲リピート"
-                android:textSize="18sp"
-                android:textColor="#000"
-                android:layout_marginRight="16dp"
-                android:layout_toLeftOf="@+id/switchRepeat"
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"
-                />
+                android:layout_marginTop="16dp"
+                android:paddingBottom="16dp"
+                >
 
-            <Switch
-                android:id="@+id/switchRepeat"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:contentDescription="再生設定"
+                    android:id="@+id/textPlayHeader"
+                    android:background="#EFEFF4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="再生設定"
+                    android:textSize="13sp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"/>
+
+                <View
+                    android:id="@+id/viewSepPlayHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="#CCC"
+                    android:layout_below="@+id/textPlayHeader"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeRepeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFF"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:layout_below="@id/viewSepPlayHeader"
+                    >
+
+                    <TextView
+                        android:id="@+id/textRepeat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="AB地点を設置したら1曲リピート"
+                        android:textSize="18sp"
+                        android:textColor="#000"
+                        android:layout_marginRight="16dp"
+                        android:layout_toLeftOf="@+id/switchRepeat"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        />
+
+                    <Switch
+                        android:id="@+id/switchRepeat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="#CCC"
+                    android:layout_below="@+id/relativeRepeat"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relativePurchaseSetting"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                />
+                android:stretchColumns="0"
+                android:visibility="gone"
+                android:layout_marginTop="16dp"
+                android:layout_below="@+id/relativePlaySetting"
+                >
+
+                <TextView
+                    android:id="@+id/textPurchasedHeader"
+                    android:background="#EFEFF4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="課金済みのアイテム"
+                    android:textSize="13sp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"/>
+
+                <View
+                    android:id="@+id/viewSepPurchasedHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="#CCC"
+                    android:layout_below="@id/textPurchasedHeader"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativePurple"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFF"
+                    android:visibility="gone"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:layout_below="@id/viewSepPurchasedHeader"
+                    >
+
+                    <ImageView
+                        android:id="@+id/imgPurpleSetting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/control_pointer_uni_murasaki"
+                        android:layout_marginRight="16dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        />
+
+                    <TextView
+                        android:id="@+id/textPurple"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="コントロールポインター - ムラサキウニ"
+                        android:textSize="18sp"
+                        android:textColor="#000"
+                        android:layout_marginRight="16dp"
+                        android:layout_toRightOf="@+id/imgPurpleSetting"
+                        android:layout_toLeftOf="@+id/switchPurple"
+                        android:layout_centerVertical="true"
+                        />
+
+                    <Switch
+                        android:id="@+id/switchPurple"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        />
+
+                </RelativeLayout>
+
+                <View
+                    android:id="@+id/viewDivider"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="#CCC"
+                    android:layout_below="@id/relativePurple"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeElegant"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFF"
+                    android:visibility="gone"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:layout_below="@id/viewDivider"
+                    >
+
+                    <ImageView
+                        android:id="@+id/imgElegantSetting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/control_pointer_uni_bafun"
+                        android:layout_marginRight="16dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        />
+
+                    <TextView
+                        android:id="@+id/textElegant"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="コントロールポインター - バフンウニ"
+                        android:textSize="18sp"
+                        android:textColor="#000"
+                        android:layout_marginRight="16dp"
+                        android:layout_toRightOf="@+id/imgElegantSetting"
+                        android:layout_toLeftOf="@+id/switchElegant"
+                        android:layout_centerVertical="true"
+                        />
+
+                    <Switch
+                        android:id="@+id/switchElegant"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="#CCC"
+                    android:layout_below="@id/relativeElegant"
+                    />
+
+            </RelativeLayout>
 
         </RelativeLayout>
 
-    </TableLayout>
+    </ScrollView>
 
 </RelativeLayout>

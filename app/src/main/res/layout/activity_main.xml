@@ -293,11 +293,75 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/relativeReport"
+            android:id="@+id/relativeHideAds"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
             android:layout_below="@id/relativeAddSong"
+            >
+
+            <ImageView
+                android:id="@+id/imgHideAds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/leftmenu_hide_ad"
+                android:layout_centerVertical="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="広告を非表示にする"
+                android:textColor="#000"
+                android:textSize="14dp"
+                android:layout_marginTop="21dp"
+                android:layout_marginBottom="21dp"
+                android:layout_toRightOf="@id/imgHideAds"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_below="@id/relativeHideAds"
+            >
+
+            <ImageView
+                android:id="@+id/imgItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/leftmenu_item"
+                android:layout_centerVertical="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="課金アイテム"
+                android:textColor="#000"
+                android:textSize="14dp"
+                android:layout_marginTop="21dp"
+                android:layout_marginBottom="21dp"
+                android:layout_toRightOf="@id/imgItem"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_below="@id/relativeItem"
             >
 
             <ImageView
@@ -357,43 +421,11 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/relativeHideAds"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:layout_below="@id/relativeReview"
-            >
-
-            <ImageView
-                android:id="@+id/imgHideAds"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="8dp"
-                android:src="@drawable/leftmenu_hide_ad"
-                android:layout_centerVertical="true"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="広告を非表示にする"
-                android:textColor="#000"
-                android:textSize="14dp"
-                android:layout_marginTop="21dp"
-                android:layout_marginBottom="21dp"
-                android:layout_toRightOf="@id/imgHideAds"
-                android:layout_centerVertical="true"
-                />
-
-        </RelativeLayout>
-
-        <RelativeLayout
             android:id="@+id/relativeInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:layout_below="@id/relativeHideAds"
+            android:layout_below="@id/relativeReview"
             >
 
             <ImageView

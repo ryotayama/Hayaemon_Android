@@ -1,0 +1,271 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EFEFF4"
+    android:clickable="true"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp">
+
+    <RelativeLayout
+        android:id="@+id/relativeItemTitle"
+        android:background="#F9F9F9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="課金アイテム"
+            android:textColor="#000000"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:layout_margin="12dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            />
+
+        <Button
+            android:id="@+id/btnCloseItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="閉じる"
+            android:textColor="#007AFF"
+            android:textSize="15dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/viewSepItem"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#CCC"
+        android:layout_below="@+id/relativeItemTitle"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/viewSepItem"
+        >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingBottom="16dp"
+        >
+
+        <TextView
+            android:id="@+id/textItemHeader"
+            android:background="#EFEFF4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="コントロール画面"
+            android:textSize="13sp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFF"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:layout_below="@id/textItemHeader"
+            >
+
+            <TextView
+                android:id="@+id/textItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="【謹製】お布施ウニポインター"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#611988"
+                android:layout_marginTop="8dp"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"
+                />
+
+            <ImageView
+                android:id="@+id/imgPurple"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/item_control_pointer_uni_murasaki"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/textItem"
+                />
+
+            <TextView
+                android:id="@+id/textPurpleTitle"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:text="【むらさき】120円"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#611988"
+                android:shadowColor="#DCCAE5"
+                android:shadowDx="0"
+                android:shadowDy="3"
+                android:shadowRadius="1"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/imgPurple"
+                />
+
+            <TextView
+                android:id="@+id/textPurpleDescription"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:text="くりーむいろの　たんぱくで\nじょうひんな　おあじ"
+                android:fontFamily="monospace"
+                android:textSize="13dp"
+                android:textColor="#611988"
+                android:lineSpacingExtra="10sp"
+                android:shadowColor="#DCCAE5"
+                android:shadowDx="0"
+                android:shadowDy="3"
+                android:shadowRadius="1"
+                android:layout_marginBottom="14dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/textPurpleTitle"
+                />
+
+            <View
+                android:layout_width="208dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/itemborder"
+                android:layout_marginTop="-14dp"
+                android:layout_marginBottom="-14dp"
+                android:layout_alignTop="@+id/textPurpleTitle"
+                android:layout_alignBottom="@id/textPurpleDescription"
+                android:layout_centerHorizontal="true"
+                />
+
+            <Button
+                android:id="@+id/btnPurplePurchase"
+                android:layout_width="160dp"
+                android:layout_height="44dp"
+                android:text="購入する"
+                android:textColor="#FFF"
+                android:textStyle="bold"
+                android:background="@drawable/itempurchase"
+                android:layout_marginTop="14dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/textPurpleDescription"
+                />
+
+            <Button
+                android:id="@+id/btnPurpleSet"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:text="設定する"
+                android:textColor="#007AFF"
+                android:visibility="gone"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/btnPurplePurchase"
+                />
+
+            <ImageView
+                android:id="@+id/imgElegant"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/item_control_pointer_uni_bafun"
+                android:layout_marginTop="8dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/btnPurpleSet"
+                />
+
+            <TextView
+                android:id="@+id/textElegantTitle"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:text="【ばふん】240円"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#611988"
+                android:shadowColor="#DCCAE5"
+                android:shadowDx="0"
+                android:shadowDy="3"
+                android:shadowRadius="1"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/imgElegant"
+                />
+
+            <TextView
+                android:id="@+id/textElegantDescription"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:text="おれんじいろの　のうこうで\nぜいたくな　おあじ"
+                android:fontFamily="monospace"
+                android:textSize="13dp"
+                android:textColor="#611988"
+                android:lineSpacingExtra="10sp"
+                android:shadowColor="#DCCAE5"
+                android:shadowDx="0"
+                android:shadowDy="3"
+                android:shadowRadius="1"
+                android:layout_marginBottom="14dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/textElegantTitle"
+                />
+
+            <View
+                android:layout_width="208dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/itemborder"
+                android:layout_marginTop="-14dp"
+                android:layout_marginBottom="-14dp"
+                android:layout_alignTop="@+id/textElegantTitle"
+                android:layout_alignBottom="@id/textElegantDescription"
+                android:layout_centerHorizontal="true"
+                />
+
+            <Button
+                android:id="@+id/btnElegantPurchase"
+                android:layout_width="160dp"
+                android:layout_height="44dp"
+                android:text="購入する"
+                android:textColor="#FFF"
+                android:textStyle="bold"
+                android:background="@drawable/itempurchase"
+                android:layout_marginTop="14dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/textElegantDescription"
+                />
+
+            <Button
+                android:id="@+id/btnElegantSet"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:text="設定する"
+                android:textColor="#007AFF"
+                android:visibility="gone"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/btnElegantPurchase"
+                />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>
