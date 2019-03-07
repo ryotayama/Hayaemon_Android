@@ -36,7 +36,11 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.MediaCodec;
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaMuxer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -55,6 +59,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -84,6 +89,7 @@ import com.un4seen.bass.BASSenc;
 import com.un4seen.bass.BASSenc_MP3;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -101,6 +107,7 @@ import java.util.Random;
 import java.text.DateFormat;
 
 import static android.app.Activity.RESULT_OK;
+import static android.util.Log.VERBOSE;
 
 public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private ArrayList<String> arPlaylistNames;
@@ -420,6 +427,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                             activity.open();
                         }
                     });
+                    if(Build.VERSION.SDK_INT >= 18) {
+                        menu.addMenu("ギャラリーから追加", R.drawable.actionsheet_film, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                menu.dismiss();
+                                activity.openGallery();
+                            }
+                        });
+                    }
                     menu.addMenu("URLから追加", R.drawable.actionsheet_globe, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -1072,7 +1088,36 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 songsAdapter.notifyDataSetChanged();
             }
         }
-        
+        else if(requestCode == 2)
+        {
+            if(resultCode == RESULT_OK)
+            {
+                final int takeFlags = data.getFlags()
+                        & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                if(Build.VERSION.SDK_INT < 19)
+                    addVideo(activity, data.getData());
+                else
+                {
+                    if(data.getClipData() == null)
+                    {
+                        addVideo(activity, data.getData());
+                        activity.getContentResolver().takePersistableUriPermission(data.getData(), takeFlags);
+                    }
+                    else
+                    {
+                        for(int i = 0; i < data.getClipData().getItemCount(); i++)
+                        {
+                            Uri uri = data.getClipData().getItemAt(i).getUri();
+                            addVideo(activity, uri);
+                            activity.getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                        }
+                    }
+                }
+                songsAdapter.notifyDataSetChanged();
+            }
+        }
+
         saveFiles(true, true, true, true, false);
     }
     
@@ -2508,7 +2553,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         RelativeLayout relativePlaying = (RelativeLayout)activity.findViewById(R.id.relativePlaying);
         View viewShadowOfPlayingBar = (View)activity.findViewById(R.id.viewShadowOfPlayingBar);
-
         ImageView imgViewArtworkInPlayingBar = (ImageView)activity.findViewById(R.id.imgViewArtworkInPlayingBar);
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         Bitmap bitmap = null;
@@ -2798,6 +2842,159 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         arTempLyrics.add(null);
 
         if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
+    }
+
+    public void addVideo(MainActivity activity, Uri uri)
+    {
+        if(Build.VERSION.SDK_INT < 18) return;
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        boolean bError = false;
+        try {
+            mmr.setDataSource(activity.getApplicationContext(), uri);
+        }
+        catch(Exception e) {
+            bError = true;
+            return;
+        }
+        String strMimeType = null;
+        if(!bError)
+            strMimeType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
+
+        ContentResolver cr = activity.getApplicationContext().getContentResolver();
+
+        AssetFileDescriptor afd = null;
+        try {
+            afd = cr.openAssetFileDescriptor(uri, "r");
+        }
+        catch(Exception e) { }
+        if(afd == null) return;
+        MediaExtractor extractor = new MediaExtractor();
+        try {
+            extractor.setDataSource(afd.getFileDescriptor());
+        }
+        catch (Exception e) {
+            return;
+        }
+        int trackCount = extractor.getTrackCount();
+        String strPathTo;
+        int n = 0;
+        File fileForCheck;
+        while (true) {
+            strPathTo = activity.getFilesDir() + "/recorded" + String.format("%d", n) + ".mp3";
+            fileForCheck = new File(strPathTo);
+            if (!fileForCheck.exists()) break;
+            n++;
+        }
+        final File file = new File(strPathTo);
+        MediaMuxer muxer = null;
+        try {
+            muxer = new MediaMuxer(strPathTo, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+        }
+        catch(Exception e) {
+            return;
+        }
+        int audioTrackIndex = 0;
+        for (int i = 0; i < trackCount; i++) {
+            MediaFormat format = extractor.getTrackFormat(i);
+            String COMPRESSED_AUDIO_FILE_MIME_TYPE = format.getString(MediaFormat.KEY_MIME);
+
+            if(COMPRESSED_AUDIO_FILE_MIME_TYPE.startsWith("audio/")) {
+                extractor.selectTrack(i);
+                audioTrackIndex = muxer.addTrack(format);
+            }
+        }
+        boolean sawEOS = false;
+        int offset = 100;
+        ByteBuffer dstBuf = ByteBuffer.allocate(256 * 1024);
+        MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
+        muxer.start();
+        while (!sawEOS) {
+            bufferInfo.offset = offset;
+            bufferInfo.size = extractor.readSampleData(dstBuf, offset);
+            if ((bufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0) {
+                bufferInfo.size = 0;
+            }
+            else if (bufferInfo.size < 0) {
+                sawEOS = true;
+                bufferInfo.size = 0;
+            }
+            else {
+                bufferInfo.presentationTimeUs = extractor.getSampleTime();
+                if(Build.VERSION.SDK_INT >= 21)
+                    bufferInfo.flags = MediaCodec.BUFFER_FLAG_KEY_FRAME;
+                else
+                    bufferInfo.flags = MediaCodec.BUFFER_FLAG_SYNC_FRAME;
+                dstBuf.position(bufferInfo.offset);
+                dstBuf.limit(bufferInfo.offset + bufferInfo.size);
+                int trackIndex = extractor.getSampleTrackIndex();
+                muxer.writeSampleData(audioTrackIndex, dstBuf, bufferInfo);
+                extractor.advance();
+            }
+        }
+        muxer.stop();
+        muxer.release();
+        try {
+            afd.close();
+        }
+        catch(Exception e) { }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("ギャラリーから追加");
+        LinearLayout linearLayout = new LinearLayout(activity);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        final EditText editTitle = new EditText (activity);
+        editTitle.setHint("タイトル");
+        editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        editTitle.setText("ムービー(" + df.format(date) + ")");
+        final EditText editArtist = new EditText (activity);
+        editArtist.setHint("アーティスト名");
+        editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
+        editArtist.setText("");
+        linearLayout.addView(editTitle);
+        linearLayout.addView(editArtist);
+        builder.setView(linearLayout);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+                SongItem item = new SongItem(String.format("%d", arSongs.size()+1), editTitle.getText().toString(), editArtist.getText().toString(), file.getPath());
+                arSongs.add(item);
+                ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
+                EffectSaver saver = new EffectSaver();
+                arEffectSavers.add(saver);
+                ArrayList<String> arTempLyrics = arLyrics.get(nSelectedPlaylist);
+                arTempLyrics.add(null);
+                if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
+                songsAdapter.notifyDataSetChanged();
+
+                saveFiles(true, true, true, true, false);
+            }
+        });
+        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                file.delete();
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                file.delete();
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+        {
+            @Override
+            public void onShow(DialogInterface arg0)
+            {
+                editTitle.requestFocus();
+                editTitle.setSelection(editTitle.getText().toString().length());
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (null != imm) imm.showSoftInput(editTitle, 0);
+            }
+        });
+        alertDialog.show();
     }
 
     public void removeSong(int nPlaylist, int nSong)

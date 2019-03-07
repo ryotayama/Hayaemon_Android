@@ -44,6 +44,7 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -745,6 +746,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     open();
                 }
             });
+            if(Build.VERSION.SDK_INT >= 18) {
+                menu.addMenu("ギャラリーから追加", R.drawable.actionsheet_film, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        menu.dismiss();
+                        openGallery();
+                    }
+                });
+            }
             final Activity activity = this;
             menu.addMenu("URLから追加", R.drawable.actionsheet_globe, new View.OnClickListener() {
                 @Override
@@ -901,6 +911,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             intent.setType("audio/*");
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             playlistFragment.startActivityForResult(intent, 1);
+        }
+    }
+
+    public void openGallery()
+    {
+        PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
+        if (Build.VERSION.SDK_INT < 19)
+        {
+            final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("video/*");
+            playlistFragment.startActivityForResult(intent, 2);
+        }
+        else
+        {
+            final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("video/*");
+            playlistFragment.startActivityForResult(intent, 2);
         }
     }
 
