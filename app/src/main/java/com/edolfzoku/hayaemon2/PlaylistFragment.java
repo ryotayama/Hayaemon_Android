@@ -22,9 +22,11 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -89,7 +91,6 @@ import com.un4seen.bass.BASSenc;
 import com.un4seen.bass.BASSenc_MP3;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -107,7 +108,6 @@ import java.util.Random;
 import java.text.DateFormat;
 
 import static android.app.Activity.RESULT_OK;
-import static android.util.Log.VERBOSE;
 
 public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private ArrayList<String> arPlaylistNames;
@@ -133,6 +133,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private int hRecord;
     private ByteBuffer recbuf;
     private SongSavingTask task;
+    private VideoSavingTask videoSavingTask;
     private DownloadTask downloadTask;
     private boolean bFinish = false;
     private ProgressBar progress;
@@ -146,6 +147,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public ArrayList<String> getArPlaylistNames() { return arPlaylistNames; }
     public void setArPlaylistNames(ArrayList<String> arNames) { arPlaylistNames = arNames; }
     public int getSelectedPlaylist() { return nSelectedPlaylist; }
+    public int getSelectedItem() { return nSelectedItem; }
     public int getPlaying() { return nPlaying; }
     public int getPlayingPlaylist() { return nPlayingPlaylist; }
     public ItemTouchHelper getPlaylistTouchHelper() { return playlistTouchHelper; }
@@ -1145,6 +1147,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         saveSongToLocal();
                     }
                 });
+                if(Build.VERSION.SDK_INT >= 18) {
+                    menu.addMenu("ギャラリーに保存", R.drawable.actionsheet_film, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            menu.dismiss();
+                            saveSongToGallery();
+                        }
+                    });
+                }
                 menu.addMenu("他のアプリにエクスポート", R.drawable.actionsheet_share, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -2072,7 +2083,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         }
         effectFragment.applyEffect(hTempStream);
         String strPathTo;
-        if(nPurpose == 0) {
+        if(nPurpose == 0) // saveSongToLocal
+        {
             int i = 0;
             File fileForCheck;
             while (true) {
@@ -2082,13 +2094,22 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 i++;
             }
         }
-        else {
+        else if(nPurpose == 1) // export
+        {
             File fileDir = new File(activity.getExternalCacheDir() + "/export");
             if(!fileDir.exists()) fileDir.mkdir();
             strPathTo = activity.getExternalCacheDir() + "/export/";
             strPathTo += strFileName + ".mp3";
             File file = new File(strPathTo);
             if(file.exists()) file.delete();
+        }
+        else // saveSongToGallery
+        {
+            File fileDir = new File(activity.getExternalCacheDir() + "/export");
+            if(!fileDir.exists()) fileDir.mkdir();
+            strPathTo = activity.getExternalCacheDir() + "/export/export.wav";
+            File file = new File(strPathTo);
+            if (file.exists()) file.delete();
         }
 
         double _dEnd = BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE));
@@ -2100,7 +2121,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 _dEnd = activity.dLoopB;
         }
         final double dEnd = _dEnd;
-        final int hEncode = BASSenc_MP3.BASS_Encode_MP3_StartFile(hTempStream, "", 0, strPathTo);
+        int hTempEncode = 0;
+        if(nPurpose == 2) // saveSongToGallery
+            hTempEncode = BASSenc.BASS_Encode_Start(hTempStream, strPathTo, BASSenc.BASS_ENCODE_PCM | BASSenc.BASS_ENCODE_FP_16BIT, null, null);
+        else
+            hTempEncode = BASSenc_MP3.BASS_Encode_MP3_StartFile(hTempStream, "", 0, strPathTo);
+        final int hEncode = hTempEncode;
         bFinish = false;
         builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
             @Override
@@ -2119,6 +2145,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public void saveSongToLocal()
     {
         saveSong(0, null);
+    }
+
+    public void saveSongToGallery()
+    {
+        if(Build.VERSION.SDK_INT >= 23) {
+            if (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                activity.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                return;
+            }
+        }
+        saveSong(2, null);
     }
 
     public void finishSaveSongToLocal(int hTempStream, int hEncode, String strPathTo, AlertDialog alert)
@@ -2260,6 +2298,53 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         startActivityForResult(Intent.createChooser(share, "他のアプリにエクスポート"), 0);
 
         file.deleteOnExit();
+    }
+
+    public void finishSaveSongToGallery(int hTempStream, int hEncode, String strPathTo, AlertDialog alert)
+    {
+        BASSenc.BASS_Encode_Stop(hEncode);
+        hEncode = 0;
+        int nLength = (int)BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE)) + 1;
+        BASS.BASS_StreamFree(hTempStream);
+        hTempStream = 0;
+
+        if (bFinish) {
+            if (alert.isShowing()) alert.dismiss();
+            File file = new File(strPathTo);
+            file.delete();
+            bFinish = false;
+            return;
+        }
+
+        if(videoSavingTask != null && videoSavingTask.getStatus() == AsyncTask.Status.RUNNING)
+            videoSavingTask.cancel(true);
+        videoSavingTask = new VideoSavingTask(this, strPathTo, alert, nLength);
+        videoSavingTask.execute(0);
+    }
+
+    public void finishSaveSongToGallery2(int nLength, String strMP4Path, AlertDialog alert, String strPathTo)
+    {
+        if (alert.isShowing()) alert.dismiss();
+
+        if (bFinish) {
+            File file = new File(strPathTo);
+            file.delete();
+            bFinish = false;
+            return;
+        }
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+        values.put(MediaStore.Video.Media.DURATION, nLength * 1000);
+        values.put("_data", strMP4Path);
+        ContentResolver cr = getActivity().getContentResolver();
+        cr.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("ギャラリーに保存");
+        builder.setMessage("保存しました。");
+        builder.setPositiveButton("OK", null);
+        builder.show();
     }
 
     public void play()

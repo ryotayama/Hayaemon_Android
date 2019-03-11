@@ -47,8 +47,10 @@ import android.os.storage.StorageVolume;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -241,6 +243,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnForwardInPlayingBar.setOnTouchListener(this);
         findViewById(R.id.btnCloseInPlayingBar).setOnClickListener(this);
     }
+
+    public void verifyStoragePermissions(Activity activity) {
+        int readPermission = ContextCompat.checkSelfPermission(this, mPermissions[0]);
+        int writePermission = ContextCompat.checkSelfPermission(this, mPermissions[1]);
+
+        if (writePermission != PackageManager.PERMISSION_GRANTED ||
+                readPermission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    mPermissions,
+                    2
+            );
+        }
+    }
+
+    private String[] mPermissions = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+    };
 
     @Override
     public void onDrawerOpened(@NonNull View drawerView)
