@@ -62,6 +62,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private int hDspExchange = 0;
     private int hDspDoubling = 0;
     private int hDspPan = 0;
+    private int hFxCompressor = 0;
     private int hDspPhaseReversal = 0;
     private int hFxEcho = 0;
     private int hFxReverb = 0;
@@ -87,41 +88,42 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private final int kEffectTypeTranscribeSideGuitar = 8;
     private final int kEffectTypeTranscribeBass = 9;
     private final int kEffectTypePan = 10;
-    private final int kEffectTypeFrequency = 11;
-    private final int kEffectTypePhaseReversal = 12;
-    private final int kEffectTypeStadiumEcho = 13;
-    private final int kEffectTypeHallEcho = 14;
-    private final int kEffectTypeLiveHouseEcho = 15;
-    private final int kEffectTypeRoomEcho = 16;
-    private final int kEffectTypeBathroomEcho = 17;
-    private final int kEffectTypeVocalEcho = 18;
-    private final int kEffectTypeMountainEcho = 19;
-    private final int kEffectTypeReverb_Bathroom = 20;
-    private final int kEffectTypeReverb_SmallRoom = 21;
-    private final int kEffectTypeReverb_MediumRoom = 22;
-    private final int kEffectTypeReverb_LargeRoom = 23;
-    private final int kEffectTypeReverb_Church = 24;
-    private final int kEffectTypeReverb_Cathedral = 25;
-    private final int kEffectTypeChorus = 26;
-    private final int kEffectTypeFlanger = 27;
-    private final int kEffectTypeDistortion_Strong = 28;
-    private final int kEffectTypeDistortion_Middle = 29;
-    private final int kEffectTypeDistortion_Weak = 30;
-    private final int kEffectTypeReverse = 31;
-    private final int kEffectTypeOldRecord = 32;
-    private final int kEffectTypeLowBattery = 33;
-    private final int kEffectTypeNoSense_Strong = 34;
-    private final int kEffectTypeNoSense_Middle = 35;
-    private final int kEffectTypeNoSense_Weak = 36;
-    private final int kEffectTypeEarTraining = 37;
-    private final int kEffectTypeMetronome = 38;
-    private final int kEffectTypeRecordNoise = 39;
-    private final int kEffectTypeRoarOfWaves = 40;
-    private final int kEffectTypeRain = 41;
-    private final int kEffectTypeRiver = 42;
-    private final int kEffectTypeWar = 43;
-    private final int kEffectTypeFire = 44;
-    private final int kEffectTypeConcertHall = 45;
+    private final int kEffectTypeCompressor = 11;
+    private final int kEffectTypeFrequency = 12;
+    private final int kEffectTypePhaseReversal = 13;
+    private final int kEffectTypeStadiumEcho = 14;
+    private final int kEffectTypeHallEcho = 15;
+    private final int kEffectTypeLiveHouseEcho = 16;
+    private final int kEffectTypeRoomEcho = 17;
+    private final int kEffectTypeBathroomEcho = 18;
+    private final int kEffectTypeVocalEcho = 19;
+    private final int kEffectTypeMountainEcho = 20;
+    private final int kEffectTypeReverb_Bathroom = 21;
+    private final int kEffectTypeReverb_SmallRoom = 22;
+    private final int kEffectTypeReverb_MediumRoom = 23;
+    private final int kEffectTypeReverb_LargeRoom = 24;
+    private final int kEffectTypeReverb_Church = 25;
+    private final int kEffectTypeReverb_Cathedral = 26;
+    private final int kEffectTypeChorus = 27;
+    private final int kEffectTypeFlanger = 28;
+    private final int kEffectTypeDistortion_Strong = 29;
+    private final int kEffectTypeDistortion_Middle = 30;
+    private final int kEffectTypeDistortion_Weak = 31;
+    private final int kEffectTypeReverse = 32;
+    private final int kEffectTypeOldRecord = 33;
+    private final int kEffectTypeLowBattery = 34;
+    private final int kEffectTypeNoSense_Strong = 35;
+    private final int kEffectTypeNoSense_Middle = 36;
+    private final int kEffectTypeNoSense_Weak = 37;
+    private final int kEffectTypeEarTraining = 38;
+    private final int kEffectTypeMetronome = 39;
+    private final int kEffectTypeRecordNoise = 40;
+    private final int kEffectTypeRoarOfWaves = 41;
+    private final int kEffectTypeRain = 42;
+    private final int kEffectTypeRiver = 43;
+    private final int kEffectTypeWar = 44;
+    private final int kEffectTypeFire = 45;
+    private final int kEffectTypeConcertHall = 46;
     private Timer timer;
     private int hSEStream;
     private int hSEStream2;
@@ -529,6 +531,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         item = new EffectItem("ベースの耳コピ（オクターブ上げ）", false);
         arEffectItems.add(item);
         item = new EffectItem("パン", true);
+        arEffectItems.add(item);
+        item = new EffectItem("コンプレッサー", false);
         arEffectItems.add(item);
         item = new EffectItem("再生周波数", true);
         arEffectItems.add(item);
@@ -1231,6 +1235,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             {
                 if(info.chans != 1)
                     hDspPan = BASS.BASS_ChannelSetDSP(hStream, panDSP, this, 0);
+            }
+            else if(strEffect.equals("コンプレッサー"))
+            {
+                hFxCompressor = BASS.BASS_ChannelSetFX(hStream, BASS_FX.BASS_FX_BFX_COMPRESSOR2, 2);
+                BASS_FX.BASS_BFX_COMPRESSOR2 p = new BASS_FX.BASS_BFX_COMPRESSOR2();
+                p.fGain = 2.0f;
+                p.fThreshold = -20.0f;
+                p.fRatio = 10.0f;
+                p.fAttack = 1.2f;
+                p.fRelease = 400.0f;
+                p.lChannel = BASS_FX.BASS_BFX_CHANALL;
+                BASS.BASS_FXSetParameters(hFxCompressor, p);
             }
             else if(strEffect.equals("再生周波数"))
                 BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * fFreq);
