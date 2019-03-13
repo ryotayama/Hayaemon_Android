@@ -3088,8 +3088,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         ArrayList<SongItem> arSongs = arPlaylists.get(nPlaylist);
         SongItem song = arSongs.get(nSong);
-        File file = new File(song.getPath());
-        if(file.getParent().equals(activity.getFilesDir())) {
+        Uri uri = Uri.parse(song.getPath());
+        if(!(uri.getScheme() != null && uri.getScheme().equals("content"))) {
+            File file = new File(song.getPath());
             file.delete();
         }
 
