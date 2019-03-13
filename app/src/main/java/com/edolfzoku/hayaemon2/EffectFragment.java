@@ -84,42 +84,44 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private final int kEffectTypeRightOnly = 5;
     private final int kEffectTypeReplace = 6;
     private final int kEffectTypeDoubling = 7;
-    private final int kEffectTypeTranscribeBass = 8;
-    private final int kEffectTypePan = 9;
-    private final int kEffectTypeFrequency = 10;
-    private final int kEffectTypePhaseReversal = 11;
-    private final int kEffectTypeStadiumEcho = 12;
-    private final int kEffectTypeHallEcho = 13;
-    private final int kEffectTypeRoomEcho = 15;
-    private final int kEffectTypeBathroomEcho = 16;
-    private final int kEffectTypeVocalEcho = 17;
-    private final int kEffectTypeMountainEcho = 18;
-    private final int kEffectTypeReverb_Bathroom = 19;
-    private final int kEffectTypeReverb_SmallRoom = 20;
-    private final int kEffectTypeReverb_MediumRoom = 21;
-    private final int kEffectTypeReverb_LargeRoom = 22;
-    private final int kEffectTypeReverb_Church = 23;
-    private final int kEffectTypeReverb_Cathedral = 24;
-    private final int kEffectTypeChorus = 25;
-    private final int kEffectTypeFlanger = 26;
-    private final int kEffectTypeDistortion_Strong = 27;
-    private final int kEffectTypeDistortion_Middle = 28;
-    private final int kEffectTypeDistortion_Weak = 29;
-    private final int kEffectTypeReverse = 30;
-    private final int kEffectTypeOldRecord = 31;
-    private final int kEffectTypeLowBattery = 32;
-    private final int kEffectTypeNoSense_Strong = 33;
-    private final int kEffectTypeNoSense_Middle = 34;
-    private final int kEffectTypeNoSense_Weak = 35;
-    private final int kEffectTypeEarTraining = 36;
-    private final int kEffectTypeMetronome = 37;
-    private final int kEffectTypeRecordNoise = 38;
-    private final int kEffectTypeRoarOfWaves = 39;
-    private final int kEffectTypeRain = 40;
-    private final int kEffectTypeRiver = 41;
-    private final int kEffectTypeWar = 42;
-    private final int kEffectTypeFire = 43;
-    private final int kEffectTypeConcertHall = 44;
+    private final int kEffectTypeTranscribeSideGuitar = 8;
+    private final int kEffectTypeTranscribeBass = 9;
+    private final int kEffectTypePan = 10;
+    private final int kEffectTypeFrequency = 11;
+    private final int kEffectTypePhaseReversal = 12;
+    private final int kEffectTypeStadiumEcho = 13;
+    private final int kEffectTypeHallEcho = 14;
+    private final int kEffectTypeLiveHouseEcho = 15;
+    private final int kEffectTypeRoomEcho = 16;
+    private final int kEffectTypeBathroomEcho = 17;
+    private final int kEffectTypeVocalEcho = 18;
+    private final int kEffectTypeMountainEcho = 19;
+    private final int kEffectTypeReverb_Bathroom = 20;
+    private final int kEffectTypeReverb_SmallRoom = 21;
+    private final int kEffectTypeReverb_MediumRoom = 22;
+    private final int kEffectTypeReverb_LargeRoom = 23;
+    private final int kEffectTypeReverb_Church = 24;
+    private final int kEffectTypeReverb_Cathedral = 25;
+    private final int kEffectTypeChorus = 26;
+    private final int kEffectTypeFlanger = 27;
+    private final int kEffectTypeDistortion_Strong = 28;
+    private final int kEffectTypeDistortion_Middle = 29;
+    private final int kEffectTypeDistortion_Weak = 30;
+    private final int kEffectTypeReverse = 31;
+    private final int kEffectTypeOldRecord = 32;
+    private final int kEffectTypeLowBattery = 33;
+    private final int kEffectTypeNoSense_Strong = 34;
+    private final int kEffectTypeNoSense_Middle = 35;
+    private final int kEffectTypeNoSense_Weak = 36;
+    private final int kEffectTypeEarTraining = 37;
+    private final int kEffectTypeMetronome = 38;
+    private final int kEffectTypeRecordNoise = 39;
+    private final int kEffectTypeRoarOfWaves = 40;
+    private final int kEffectTypeRain = 41;
+    private final int kEffectTypeRiver = 42;
+    private final int kEffectTypeWar = 43;
+    private final int kEffectTypeFire = 44;
+    private final int kEffectTypeConcertHall = 45;
     private Timer timer;
     private int hSEStream;
     private int hSEStream2;
@@ -521,6 +523,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         item = new EffectItem("左右入れ替え", false);
         arEffectItems.add(item);
         item = new EffectItem("ダブリング", false);
+        arEffectItems.add(item);
+        item = new EffectItem("サイドギターの耳コピ", false);
         arEffectItems.add(item);
         item = new EffectItem("ベースの耳コピ（オクターブ上げ）", false);
         arEffectItems.add(item);
@@ -976,114 +980,85 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if(nSelect == 0)
         {
             for(int i = 1; i < arEffectItems.size(); i++)
-            {
-                if(arEffectItems.get(i).isSelected() && (i == kEffectTypeRandom || i == kEffectTypeOldRecord || i == kEffectTypeLowBattery || i == kEffectTypeEarTraining))
-                {
-                    EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
-                    equalizerFragment.setEQ(0);
-                }
-                if(arEffectItems.get(i).isSelected() && (i == kEffectTypeRandom || i == kEffectTypeNoSense_Strong || i == kEffectTypeNoSense_Middle || i == kEffectTypeNoSense_Weak))
-                {
-                    ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-                    controlFragment.setSpeed(0.0f);
-                    controlFragment.setPitch(0.0f);
-                }
-                if(arEffectItems.get(i).isSelected() && i == kEffectTypeTranscribeBass)
-                {
-                    EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
-                    equalizerFragment.setEQ(0);
-                    ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-                    controlFragment.setPitch(0.0f);
-                }
-                arEffectItems.get(i).setSelected(false);
-            }
+                deselectEffect(i);
         }
         else
         {
-            arEffectItems.get(0).setSelected(false);
-            if(kEffectTypeVocalCancel <= nSelect && nSelect <= kEffectTypeDoubling)
+            deselectEffect(0);
+            if(kEffectTypeVocalCancel <= nSelect && nSelect <= kEffectTypeTranscribeSideGuitar)
             {
-                for (int i = kEffectTypeVocalCancel; i <= kEffectTypeDoubling; i++)
-                {
-                    if(i != nSelect)
-                        arEffectItems.get(i).setSelected(false);
-                }
+                for (int i = kEffectTypeVocalCancel; i <= kEffectTypeTranscribeSideGuitar; i++)
+                    if(i != nSelect) deselectEffect(i);
+            }
+            if(nSelect == kEffectTypeRandom || nSelect == kEffectTypeTranscribeSideGuitar || nSelect == kEffectTypeTranscribeBass || nSelect == kEffectTypeOldRecord || nSelect == kEffectTypeLowBattery || nSelect == kEffectTypeEarTraining || nSelect == kEffectTypeNoSense_Strong || nSelect == kEffectTypeNoSense_Middle || nSelect == kEffectTypeNoSense_Weak) {
+                if(nSelect != kEffectTypeRandom) deselectEffect(kEffectTypeRandom);
+                if(nSelect != kEffectTypeTranscribeSideGuitar) deselectEffect(kEffectTypeTranscribeSideGuitar);
+                if (nSelect != kEffectTypeTranscribeBass) deselectEffect(kEffectTypeTranscribeBass);
+                if (nSelect != kEffectTypeOldRecord) deselectEffect(kEffectTypeOldRecord);
+                if (nSelect != kEffectTypeLowBattery) deselectEffect(kEffectTypeLowBattery);
+                if (nSelect != kEffectTypeEarTraining) deselectEffect(kEffectTypeEarTraining);
+                if (nSelect != kEffectTypeNoSense_Strong) deselectEffect(kEffectTypeNoSense_Strong);
+                if (nSelect != kEffectTypeNoSense_Middle) deselectEffect(kEffectTypeNoSense_Middle);
+                if (nSelect != kEffectTypeNoSense_Weak) deselectEffect(kEffectTypeNoSense_Weak);
             }
             if(kEffectTypeStadiumEcho <= nSelect && nSelect <= kEffectTypeMountainEcho)
             {
                 for(int i = kEffectTypeStadiumEcho; i <= kEffectTypeMountainEcho; i++)
-                {
-                    if(i != nSelect)
-                        arEffectItems.get(i).setSelected(false);
-                }
+                    deselectEffect(i);
             }
             if(kEffectTypeReverb_Bathroom <= nSelect && nSelect <= kEffectTypeReverb_Cathedral)
             {
                 for(int i = kEffectTypeReverb_Bathroom; i <= kEffectTypeReverb_Cathedral; i++)
-                {
-                    if(nSelect != i)
-                        arEffectItems.get(i).setSelected(false);
-                }
+                    if(i != nSelect) deselectEffect(i);
             }
             if(kEffectTypeChorus <= nSelect && nSelect <= kEffectTypeFlanger)
             {
                 for(int i = kEffectTypeChorus; i <= kEffectTypeFlanger; i++)
-                {
-                    if(nSelect != i)
-                        arEffectItems.get(i).setSelected(false);
-                }
+                    if(i != nSelect) deselectEffect(i);
             }
             if((kEffectTypeDistortion_Strong <= nSelect && nSelect <= kEffectTypeDistortion_Weak) || nSelect == kEffectTypeLowBattery)
             {
                 for(int i = kEffectTypeDistortion_Strong; i <= kEffectTypeDistortion_Weak; i++)
-                {
-                    if(i != nSelect)
-                        arEffectItems.get(i).setSelected(false);
-                }
-                if(nSelect != kEffectTypeLowBattery)
-                    arEffectItems.get(kEffectTypeLowBattery).setSelected(false);
+                    if(i != nSelect) deselectEffect(i);
+                if(nSelect != kEffectTypeLowBattery) deselectEffect(kEffectTypeLowBattery);
             }
             if(kEffectTypeOldRecord <= nSelect && nSelect <= kEffectTypeMetronome)
             {
                 for(int i = kEffectTypeOldRecord; i <= kEffectTypeMetronome; i++)
-                {
-                    if(i != nSelect)
-                    {
-                        if(arEffectItems.get(i).isSelected() && (i == kEffectTypeOldRecord || i == kEffectTypeLowBattery || i == kEffectTypeEarTraining))
-                        {
-                            EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
-                            equalizerFragment.setEQ(0);
-                        }
-                        else if((i == kEffectTypeNoSense_Strong && arEffectItems.get(i).isSelected()) || (i == kEffectTypeNoSense_Middle && arEffectItems.get(i).isSelected()) || (i == kEffectTypeNoSense_Weak && arEffectItems.get(i).isSelected())) {
-                            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-                            controlFragment.setSpeed(0.0f);
-                            controlFragment.setPitch(0.0f);
-                        }
-                        arEffectItems.get(i).setSelected(false);
-                    }
-                }
+                    if(i != nSelect) deselectEffect(i);
             }
             if(nSelect == kEffectTypeOldRecord || (kEffectTypeMetronome <= nSelect && nSelect <= kEffectTypeConcertHall))
             {
-                if(nSelect != kEffectTypeOldRecord)
-                {
-                    if(arEffectItems.get(kEffectTypeOldRecord).isSelected())
-                    {
-                        EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
-                        equalizerFragment.setEQ(0);
-                    }
-                    arEffectItems.get(kEffectTypeOldRecord).setSelected(false);
-                }
+                if(nSelect != kEffectTypeOldRecord) deselectEffect(kEffectTypeOldRecord);
                 for(int i = kEffectTypeMetronome; i <= kEffectTypeConcertHall; i++)
-                {
-                    if(i != nSelect)
-                        arEffectItems.get(i).setSelected(false);
-                }
+                    if(i != nSelect) deselectEffect(i);
             }
         }
         MainActivity activity = (MainActivity)getActivity();
         PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
         playlistFragment.updateSavingEffect();
+    }
+
+    public void deselectEffect(int nEffect)
+    {
+        if(!arEffectItems.get(nEffect).isSelected()) return;
+
+        arEffectItems.get(nEffect).setSelected(false);
+
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
+        EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+        if(nEffect == kEffectTypeRandom || nEffect == kEffectTypeTranscribeSideGuitar || nEffect == kEffectTypeOldRecord || nEffect == kEffectTypeLowBattery || nEffect == kEffectTypeEarTraining)
+            equalizerFragment.setEQ(0);
+        if(nEffect == kEffectTypeRandom || nEffect == kEffectTypeNoSense_Strong || nEffect == kEffectTypeNoSense_Middle || nEffect == kEffectTypeNoSense_Weak)
+        {
+            controlFragment.setSpeed(0.0f);
+            controlFragment.setPitch(0.0f);
+        }
+        if(nEffect == kEffectTypeTranscribeBass)
+        {
+            equalizerFragment.setEQ(0);
+            controlFragment.setPitch(0.0f);
+        }
     }
 
     public void applyEffect(int hStream)
@@ -1220,6 +1195,21 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     }
                     echpos = 0;
                     hDspDoubling = BASS.BASS_ChannelSetDSP(hStream, doublingDSP, null, 0);
+                }
+            }
+            else if(strEffect.equals("サイドギターの耳コピ"))
+            {
+                if(info.chans != 1)
+                    hDspVocalCancel = BASS.BASS_ChannelSetDSP(hStream, vocalCancelDSP, null, 0);
+                EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+                int[] array = new int[] {0,-30,-20,-12, -7, -4, -3, -2, -1,  0,  0,  0,  0,  0, -1, -2, -3, -4, -7,-12,-20,-24,-27,-28,-29,-30,-30,-30,-30,-30,-30,-30};
+                for(int j = 0; j < 32; j++)
+                {
+                    int nLevel = array[j];
+                    if(j == 0)
+                        equalizerFragment.setVol(nLevel);
+                    else
+                        equalizerFragment.setEQ(j, nLevel);
                 }
             }
             else if(strEffect.equals("ベースの耳コピ（オクターブ上げ）"))
