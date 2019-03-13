@@ -2224,7 +2224,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         SongItem item = arSongs.get(nSelectedItem);
-        String strTitle = item.getTitle();
+        String strTitle = item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_");
         ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
         float fSpeed = controlFragment.fSpeed;
         float fPitch = controlFragment.fPitch;
@@ -2251,7 +2251,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         builder.setView(linearLayout);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                saveSong(1, editTitle.getText().toString());
+                saveSong(1, editTitle.getText().toString().replaceAll("[\\\\/:*?\"<>|]", "_"));
             }
         });
         builder.setNegativeButton("キャンセル", null);
