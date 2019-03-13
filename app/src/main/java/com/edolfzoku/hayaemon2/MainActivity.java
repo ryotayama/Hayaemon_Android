@@ -61,6 +61,7 @@ import android.text.method.MovementMethod;
 import android.text.method.ScrollingMovementMethod;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -1239,5 +1240,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             return sb.toString();
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+            if(tabLayout.getSelectedTabPosition() == 0) {
+                if(findViewById(R.id.relativeLyrics).getVisibility() == View.VISIBLE) {
+                    findViewById(R.id.btnFinishLyrics).performClick();
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
     }
 }
