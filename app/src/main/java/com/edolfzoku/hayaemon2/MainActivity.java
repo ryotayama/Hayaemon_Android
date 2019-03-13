@@ -1246,9 +1246,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK){
             TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-            if(tabLayout.getSelectedTabPosition() == 0) {
+            if(tabLayout.getSelectedTabPosition() == 0) { // 再生リスト画面
                 if(findViewById(R.id.relativeLyrics).getVisibility() == View.VISIBLE) {
                     findViewById(R.id.btnFinishLyrics).performClick();
+                    return true;
+                }
+            }
+            else if(tabLayout.getSelectedTabPosition() == 4) { // エフェクト画面
+                if(findViewById(R.id.relativeEffectDetail).getVisibility() == View.VISIBLE) {
+                    findViewById(R.id.btnFinish).performClick();
                     return true;
                 }
             }
