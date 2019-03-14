@@ -147,6 +147,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public ArrayList<String> getArPlaylistNames() { return arPlaylistNames; }
     public void setArPlaylistNames(ArrayList<String> arNames) { arPlaylistNames = arNames; }
     public int getSelectedPlaylist() { return nSelectedPlaylist; }
+    public void setSelectedItem(int nSelected) { nSelectedItem = nSelected; }
     public int getSelectedItem() { return nSelectedItem; }
     public int getPlaying() { return nPlaying; }
     public int getPlayingPlaylist() { return nPlayingPlaylist; }

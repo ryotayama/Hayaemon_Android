@@ -34,8 +34,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.AudioManager;
+import android.media.MediaMetadataRetriever;
 import android.media.effect.Effect;
 import android.net.Uri;
 import android.os.Build;
@@ -216,6 +218,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.addDrawerListener(this);
+        RelativeLayout relativeSave = (RelativeLayout)findViewById(R.id.relativeSave);
+        relativeSave.setOnTouchListener(this);
+        relativeSave.setOnClickListener(this);
         RelativeLayout relativeAddSong = (RelativeLayout)findViewById(R.id.relativeAddSong);
         relativeAddSong.setOnTouchListener(this);
         relativeAddSong.setOnClickListener(this);
@@ -284,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         if(newState == DrawerLayout.STATE_IDLE)
         {
+            findViewById(R.id.relativeSave).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeAddSong).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeHideAds).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeItem).setBackgroundColor(Color.argb(255, 255, 255, 255));
@@ -702,6 +708,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         if(event.getAction() == MotionEvent.ACTION_UP)
         {
+            findViewById(R.id.relativeSave).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeAddSong).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeHideAds).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeItem).setBackgroundColor(Color.argb(255, 255, 255, 255));
@@ -729,6 +736,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(event.getAction() == MotionEvent.ACTION_DOWN)
         {
+            if(v.getId() == R.id.relativeSave)
+                findViewById(R.id.relativeSave).setBackgroundColor(Color.argb(255, 229, 229, 229));
             if(v.getId() == R.id.relativeAddSong)
                 findViewById(R.id.relativeAddSong).setBackgroundColor(Color.argb(255, 229, 229, 229));
             if(v.getId() == R.id.relativeHideAds)
@@ -751,9 +760,82 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
         if(v.getId() == R.id.btnMenu)
         {
-            if(!isAdsVisible())
-                findViewById(R.id.relativeHideAds).setVisibility(View.GONE);
+            findViewById(R.id.textPlaying).setVisibility(hStream == 0 ? View.GONE : View.VISIBLE);
+            findViewById(R.id.relativePlayingInMenu).setVisibility(hStream == 0 ? View.GONE : View.VISIBLE);
+            findViewById(R.id.relativeSave).setVisibility(hStream == 0 ? View.GONE : View.VISIBLE);
+            findViewById(R.id.dividerMenu).setVisibility(hStream == 0 ? View.GONE : View.VISIBLE);
+            if(!isAdsVisible()) findViewById(R.id.relativeHideAds).setVisibility(View.GONE);
+            if(hStream != 0) {
+                playlistFragment.selectPlaylist(playlistFragment.getPlayingPlaylist());
+                playlistFragment.setSelectedItem(playlistFragment.getPlaying());
+
+                SongItem item = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist()).get(playlistFragment.getPlaying());
+                ImageView imgViewArtworkInMenu = (ImageView)findViewById(R.id.imgViewArtworkInMenu);
+                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                Bitmap bitmap = null;
+                boolean bError = false;
+                try {
+                    mmr.setDataSource(getApplicationContext(), Uri.parse(item.getPath()));
+                }
+                catch(Exception e) {
+                    bError = true;
+                }
+                if(!bError) {
+                    byte[] data = mmr.getEmbeddedPicture();
+                    if(data != null) {
+                        bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    }
+                }
+                if(bitmap != null) imgViewArtworkInMenu.setImageBitmap(bitmap);
+                else imgViewArtworkInMenu.setImageResource(R.drawable.playing_large_artwork);
+                TextView textTitleInMenu = (TextView)findViewById(R.id.textTitleInMenu);
+                textTitleInMenu.setText(item.getTitle());
+                TextView textArtistInMenu = (TextView)findViewById(R.id.textArtistInMenu);
+                if(item.getArtist() == null || item.getArtist().equals(""))
+                {
+                    textArtistInMenu.setTextColor(Color.argb(255, 147, 156, 160));
+                    textArtistInMenu.setText("〈不明なアーティスト〉");
+                }
+                else
+                {
+                    textArtistInMenu.setTextColor(Color.argb(255, 102, 102, 102));
+                    textArtistInMenu.setText(item.getArtist());
+                }
+            }
             mDrawerLayout.openDrawer(Gravity.START);
+        }
+        else if(v.getId() == R.id.relativeSave)
+        {
+            mDrawerLayout.closeDrawer(Gravity.START);
+
+            final BottomMenu menu = new BottomMenu(this);
+            menu.setTitle("保存／エクスポート");
+            final Activity activity = this;
+            menu.addMenu("アプリ内に保存", R.drawable.actionsheet_save, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    menu.dismiss();
+                    playlistFragment.saveSongToLocal();
+                }
+            });
+            if(Build.VERSION.SDK_INT >= 18) {
+                menu.addMenu("ギャラリーに保存", R.drawable.actionsheet_film, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        menu.dismiss();
+                        playlistFragment.saveSongToGallery();
+                    }
+                });
+            }
+            menu.addMenu("他のアプリにエクスポート", R.drawable.actionsheet_share, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    menu.dismiss();
+                    playlistFragment.export();
+                }
+            });
+            menu.setCancelMenu();
+            menu.show();
         }
         else if(v.getId() == R.id.relativeAddSong)
         {
