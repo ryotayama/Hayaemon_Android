@@ -75,6 +75,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -221,6 +222,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RelativeLayout relativeSave = (RelativeLayout)findViewById(R.id.relativeSave);
         relativeSave.setOnTouchListener(this);
         relativeSave.setOnClickListener(this);
+        RelativeLayout relativeLock = (RelativeLayout)findViewById(R.id.relativeLock);
+        relativeLock.setOnTouchListener(this);
+        relativeLock.setOnClickListener(this);
         RelativeLayout relativeAddSong = (RelativeLayout)findViewById(R.id.relativeAddSong);
         relativeAddSong.setOnTouchListener(this);
         relativeAddSong.setOnClickListener(this);
@@ -290,6 +294,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(newState == DrawerLayout.STATE_IDLE)
         {
             findViewById(R.id.relativeSave).setBackgroundColor(Color.argb(255, 255, 255, 255));
+            findViewById(R.id.relativeLock).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeAddSong).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeHideAds).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeItem).setBackgroundColor(Color.argb(255, 255, 255, 255));
@@ -709,6 +714,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(event.getAction() == MotionEvent.ACTION_UP)
         {
             findViewById(R.id.relativeSave).setBackgroundColor(Color.argb(255, 255, 255, 255));
+            findViewById(R.id.relativeLock).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeAddSong).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeHideAds).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeItem).setBackgroundColor(Color.argb(255, 255, 255, 255));
@@ -738,6 +744,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             if(v.getId() == R.id.relativeSave)
                 findViewById(R.id.relativeSave).setBackgroundColor(Color.argb(255, 229, 229, 229));
+            if(v.getId() == R.id.relativeLock)
+                findViewById(R.id.relativeLock).setBackgroundColor(Color.argb(255, 229, 229, 229));
             if(v.getId() == R.id.relativeAddSong)
                 findViewById(R.id.relativeAddSong).setBackgroundColor(Color.argb(255, 229, 229, 229));
             if(v.getId() == R.id.relativeHideAds)
@@ -763,6 +771,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             findViewById(R.id.textPlaying).setVisibility(hStream == 0 ? View.GONE : View.VISIBLE);
             findViewById(R.id.relativePlayingInMenu).setVisibility(hStream == 0 ? View.GONE : View.VISIBLE);
             findViewById(R.id.relativeSave).setVisibility(hStream == 0 ? View.GONE : View.VISIBLE);
+            findViewById(R.id.relativeLock).setVisibility(hStream == 0 ? View.GONE : View.VISIBLE);
             findViewById(R.id.dividerMenu).setVisibility(hStream == 0 ? View.GONE : View.VISIBLE);
             if(!isAdsVisible()) findViewById(R.id.relativeHideAds).setVisibility(View.GONE);
             if(hStream != 0) {
@@ -801,8 +810,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     textArtistInMenu.setTextColor(Color.argb(255, 102, 102, 102));
                     textArtistInMenu.setText(item.getArtist());
                 }
+
+                ArrayList<EffectSaver> arEffectSavers = playlistFragment.getArEffects().get(playlistFragment.getPlayingPlaylist());
+                EffectSaver saver = arEffectSavers.get(playlistFragment.getPlaying());
+                ImageView imgLock = findViewById(R.id.imgLockInMenu);
+                TextView textLock = findViewById(R.id.textLock);
+                if(saver.isSave()) {
+                    imgLock.setImageResource(R.drawable.leftmenu_playing_unlock);
+                    textLock.setText("各画面の設定保持を解除");
+                }
+                else {
+                    imgLock.setImageResource(R.drawable.leftmenu_playing_lock);
+                    textLock.setText("各画面の設定を保持");
+                }
             }
             mDrawerLayout.openDrawer(Gravity.START);
+        }
+        else if(v.getId() == R.id.relativeLock)
+        {
+            mDrawerLayout.closeDrawer(Gravity.START);
+
+            ArrayList<EffectSaver> arEffectSavers = playlistFragment.getArEffects().get(playlistFragment.getPlayingPlaylist());
+            EffectSaver saver = arEffectSavers.get(playlistFragment.getPlaying());
+            ImageView imgLock = findViewById(R.id.imgLockInMenu);
+            TextView textLock = findViewById(R.id.textLock);
+            if(saver.isSave()) {
+                saver.setSave(false);
+                playlistFragment.getSongsAdapter().notifyDataSetChanged();
+
+                playlistFragment.saveFiles(false, true, false, false, false);
+            }
+            else {
+                playlistFragment.setSavingEffect();
+                playlistFragment.getSongsAdapter().notifyDataSetChanged();
+            }
         }
         else if(v.getId() == R.id.relativeSave)
         {
@@ -1168,6 +1209,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AnimationButton btnForward = (AnimationButton)findViewById(R.id.btnForward);
         btnForward.setOnLongClickListener(this);
         btnForward.setOnTouchListener(this);
+
+        ScrollView scrollMenu = findViewById(R.id.scrollMenu);
+        scrollMenu.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    findViewById(R.id.relativeSave).setBackgroundColor(Color.argb(255, 255, 255, 255));
+                    findViewById(R.id.relativeLock).setBackgroundColor(Color.argb(255, 255, 255, 255));
+                    findViewById(R.id.relativeAddSong).setBackgroundColor(Color.argb(255, 255, 255, 255));
+                    findViewById(R.id.relativeHideAds).setBackgroundColor(Color.argb(255, 255, 255, 255));
+                    findViewById(R.id.relativeItem).setBackgroundColor(Color.argb(255, 255, 255, 255));
+                    findViewById(R.id.relativeReport).setBackgroundColor(Color.argb(255, 255, 255, 255));
+                    findViewById(R.id.relativeReview).setBackgroundColor(Color.argb(255, 255, 255, 255));
+                    findViewById(R.id.relativeInfo).setBackgroundColor(Color.argb(255, 255, 255, 255));
+                }
+                return false;
+            }
+        });
     }
 
     public boolean isAdsVisible() {

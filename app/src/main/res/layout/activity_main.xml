@@ -260,324 +260,374 @@
         android:layout_gravity="start"
         >
 
-        <TextView
-            android:id="@+id/viewInvisible"
-            android:background="#FFF"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="21dp"
-            />
-
-        <TextView
-            android:id="@+id/textPlaying"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="再生中の曲："
-            android:textSize="15dp"
-            android:textColor="#808080"
-            android:visibility="visible"
-            android:layout_marginTop="-13dp"
-            android:layout_marginLeft="16dp"
-            android:layout_below="@+id/viewInvisible"
-            />
-
-        <RelativeLayout
-            android:id="@+id/relativePlayingInMenu"
+        <ScrollView
+            android:id="@+id/scrollMenu"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FFF"
-            android:animateLayoutChanges="true"
-            android:visibility="visible"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:layout_below="@+id/textPlaying"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/dividerMenuBottom"
             >
 
-            <ImageView
-                android:id="@+id/imgViewArtworkInMenu"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/playing_large_artwork"
-                android:scaleType="centerCrop"
-                android:animateLayoutChanges="true"
-                android:background="@drawable/frameborder"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="8dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"
-                />
-
-            <TextView
-                android:id="@+id/textTitleInMenu"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="タイトル"
-                android:textSize="12dp"
-                android:textColor="#000"
-                android:singleLine="true"
-                android:animateLayoutChanges="true"
-                android:layout_marginTop="1dp"
-                android:layout_marginRight="16dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_toRightOf="@id/imgViewArtworkInMenu"
-                />
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/textArtistInMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="アーティスト名"
-                android:textSize="9dp"
-                android:textColor="#666"
-                android:singleLine="true"
-                android:animateLayoutChanges="true"
-                android:layout_marginBottom="1dp"
-                android:layout_marginRight="16dp"
-                android:layout_alignBottom="@+id/imgViewArtworkInMenu"
-                android:layout_alignParentRight="true"
-                android:layout_toRightOf="@id/imgViewArtworkInMenu"
-                />
+                <TextView
+                    android:id="@+id/viewInvisible"
+                    android:background="#FFF"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="21dp"
+                    />
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/textPlaying"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="再生中の曲："
+                    android:textSize="15dp"
+                    android:textColor="#808080"
+                    android:visibility="visible"
+                    android:layout_marginTop="-13dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_below="@+id/viewInvisible"
+                    />
 
-        <RelativeLayout
-            android:id="@+id/relativeSave"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:layout_below="@+id/relativePlayingInMenu"
-            >
+                <RelativeLayout
+                    android:id="@+id/relativePlayingInMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFF"
+                    android:animateLayoutChanges="true"
+                    android:visibility="visible"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_below="@+id/textPlaying"
+                    >
 
-            <ImageView
-                android:id="@+id/imgSave"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="8dp"
-                android:src="@drawable/leftmenu_playing_save"
-                android:layout_centerVertical="true"
-                />
+                    <ImageView
+                        android:id="@+id/imgViewArtworkInMenu"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/playing_large_artwork"
+                        android:scaleType="centerCrop"
+                        android:animateLayoutChanges="true"
+                        android:background="@drawable/frameborder"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="保存／エクスポート"
-                android:textColor="#000"
-                android:textSize="14dp"
-                android:layout_marginTop="21dp"
-                android:layout_marginBottom="21dp"
-                android:layout_toRightOf="@id/imgSave"
-                android:layout_centerVertical="true"
-                />
+                    <TextView
+                        android:id="@+id/textTitleInMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="タイトル"
+                        android:textSize="12dp"
+                        android:textColor="#000"
+                        android:singleLine="true"
+                        android:animateLayoutChanges="true"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toRightOf="@id/imgViewArtworkInMenu"
+                        />
 
-        </RelativeLayout>
+                    <TextView
+                        android:id="@+id/textArtistInMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="アーティスト名"
+                        android:textSize="9dp"
+                        android:textColor="#666"
+                        android:singleLine="true"
+                        android:animateLayoutChanges="true"
+                        android:layout_marginBottom="1dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_alignBottom="@+id/imgViewArtworkInMenu"
+                        android:layout_alignParentRight="true"
+                        android:layout_toRightOf="@id/imgViewArtworkInMenu"
+                        />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeSave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:layout_below="@+id/relativePlayingInMenu"
+                    >
+
+                    <ImageView
+                        android:id="@+id/imgSave"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/leftmenu_playing_save"
+                        android:layout_centerVertical="true"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="保存／エクスポート"
+                        android:textColor="#000"
+                        android:textSize="14dp"
+                        android:layout_marginTop="21dp"
+                        android:layout_marginBottom="21dp"
+                        android:layout_toRightOf="@id/imgSave"
+                        android:layout_centerVertical="true"
+                        />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeLock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:layout_below="@+id/relativeSave"
+                    >
+
+                    <ImageView
+                        android:id="@+id/imgLockInMenu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/leftmenu_playing_lock"
+                        android:layout_centerVertical="true"
+                        />
+
+                    <TextView
+                        android:id="@+id/textLock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="各画面の設定を保持"
+                        android:textColor="#000"
+                        android:textSize="14dp"
+                        android:layout_marginTop="21dp"
+                        android:layout_marginBottom="21dp"
+                        android:layout_toRightOf="@id/imgLockInMenu"
+                        android:layout_centerVertical="true"
+                        />
+
+                </RelativeLayout>
+
+                <View
+                    android:id="@+id/dividerMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="#BFBFBF"
+                    android:layout_below="@+id/relativeLock"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeAddSong"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:layout_below="@+id/dividerMenu"
+                    >
+
+                    <ImageView
+                        android:id="@+id/imgAddSong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/leftmenu_add_music"
+                        android:layout_centerVertical="true"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="曲を追加"
+                        android:textColor="#000"
+                        android:textSize="14dp"
+                        android:layout_marginTop="21dp"
+                        android:layout_marginBottom="21dp"
+                        android:layout_toRightOf="@id/imgAddSong"
+                        android:layout_centerVertical="true"
+                        />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeHideAds"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:layout_below="@id/relativeAddSong"
+                    >
+
+                    <ImageView
+                        android:id="@+id/imgHideAds"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/leftmenu_hide_ad"
+                        android:layout_centerVertical="true"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="広告を非表示にする"
+                        android:textColor="#000"
+                        android:textSize="14dp"
+                        android:layout_marginTop="21dp"
+                        android:layout_marginBottom="21dp"
+                        android:layout_toRightOf="@id/imgHideAds"
+                        android:layout_centerVertical="true"
+                        />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:layout_below="@id/relativeHideAds"
+                    >
+
+                    <ImageView
+                        android:id="@+id/imgItem"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/leftmenu_item"
+                        android:layout_centerVertical="true"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="課金アイテム"
+                        android:textColor="#000"
+                        android:textSize="14dp"
+                        android:layout_marginTop="21dp"
+                        android:layout_marginBottom="21dp"
+                        android:layout_toRightOf="@id/imgItem"
+                        android:layout_centerVertical="true"
+                        />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeReport"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:layout_below="@id/relativeItem"
+                    >
+
+                    <ImageView
+                        android:id="@+id/imgReport"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/leftmenu_twitter"
+                        android:layout_centerVertical="true"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="不具合報告・機能要望"
+                        android:textColor="#000"
+                        android:textSize="14dp"
+                        android:layout_marginTop="21dp"
+                        android:layout_marginBottom="21dp"
+                        android:layout_toRightOf="@id/imgReport"
+                        android:layout_centerVertical="true"
+                        />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeReview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:layout_below="@id/relativeReport"
+                    >
+
+                    <ImageView
+                        android:id="@+id/imgReview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/leftmenu_write_review"
+                        android:layout_centerVertical="true"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="レビュー投稿"
+                        android:textColor="#000"
+                        android:textSize="14dp"
+                        android:layout_marginTop="21dp"
+                        android:layout_marginBottom="21dp"
+                        android:layout_toRightOf="@id/imgReview"
+                        android:layout_centerVertical="true"
+                        />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:layout_below="@id/relativeReview"
+                    >
+
+                    <ImageView
+                        android:id="@+id/imgInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/leftmenu_info"
+                        android:layout_centerVertical="true"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ハヤえもんについて"
+                        android:textColor="#000"
+                        android:textSize="14dp"
+                        android:layout_marginTop="21dp"
+                        android:layout_marginBottom="21dp"
+                        android:layout_toRightOf="@id/imgInfo"
+                        android:layout_centerVertical="true"
+                        />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </ScrollView>
 
         <View
-            android:id="@+id/dividerMenu"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:background="#BFBFBF"
-            android:layout_below="@+id/relativeSave"
-            />
-
-        <RelativeLayout
-            android:id="@+id/relativeAddSong"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:layout_below="@+id/dividerMenu"
-            >
-
-            <ImageView
-                android:id="@+id/imgAddSong"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="8dp"
-                android:src="@drawable/leftmenu_add_music"
-                android:layout_centerVertical="true"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="曲を追加"
-                android:textColor="#000"
-                android:textSize="14dp"
-                android:layout_marginTop="21dp"
-                android:layout_marginBottom="21dp"
-                android:layout_toRightOf="@id/imgAddSong"
-                android:layout_centerVertical="true"
-                />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/relativeHideAds"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:layout_below="@id/relativeAddSong"
-            >
-
-            <ImageView
-                android:id="@+id/imgHideAds"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="8dp"
-                android:src="@drawable/leftmenu_hide_ad"
-                android:layout_centerVertical="true"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="広告を非表示にする"
-                android:textColor="#000"
-                android:textSize="14dp"
-                android:layout_marginTop="21dp"
-                android:layout_marginBottom="21dp"
-                android:layout_toRightOf="@id/imgHideAds"
-                android:layout_centerVertical="true"
-                />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/relativeItem"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:layout_below="@id/relativeHideAds"
-            >
-
-            <ImageView
-                android:id="@+id/imgItem"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="8dp"
-                android:src="@drawable/leftmenu_item"
-                android:layout_centerVertical="true"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="課金アイテム"
-                android:textColor="#000"
-                android:textSize="14dp"
-                android:layout_marginTop="21dp"
-                android:layout_marginBottom="21dp"
-                android:layout_toRightOf="@id/imgItem"
-                android:layout_centerVertical="true"
-                />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/relativeReport"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:layout_below="@id/relativeItem"
-            >
-
-            <ImageView
-                android:id="@+id/imgReport"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="8dp"
-                android:src="@drawable/leftmenu_twitter"
-                android:layout_centerVertical="true"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="不具合報告・機能要望"
-                android:textColor="#000"
-                android:textSize="14dp"
-                android:layout_marginTop="21dp"
-                android:layout_marginBottom="21dp"
-                android:layout_toRightOf="@id/imgReport"
-                android:layout_centerVertical="true"
-                />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/relativeReview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:layout_below="@id/relativeReport"
-            >
-
-            <ImageView
-                android:id="@+id/imgReview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="8dp"
-                android:src="@drawable/leftmenu_write_review"
-                android:layout_centerVertical="true"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="レビュー投稿"
-                android:textColor="#000"
-                android:textSize="14dp"
-                android:layout_marginTop="21dp"
-                android:layout_marginBottom="21dp"
-                android:layout_toRightOf="@id/imgReview"
-                android:layout_centerVertical="true"
-                />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/relativeInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:layout_below="@id/relativeReview"
-            >
-
-            <ImageView
-                android:id="@+id/imgInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="8dp"
-                android:src="@drawable/leftmenu_info"
-                android:layout_centerVertical="true"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ハヤえもんについて"
-                android:textColor="#000"
-                android:textSize="14dp"
-                android:layout_marginTop="21dp"
-                android:layout_marginBottom="21dp"
-                android:layout_toRightOf="@id/imgInfo"
-                android:layout_centerVertical="true"
-                />
-
-        </RelativeLayout>
-
-        <View
+            android:id="@+id/dividerMenuBottom"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="#CCC"

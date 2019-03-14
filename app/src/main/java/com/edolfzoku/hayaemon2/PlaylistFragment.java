@@ -156,6 +156,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public boolean isSorting() { return bSorting; }
     public void setPlayingPlaylist(int nPlaylist) { nPlayingPlaylist = nPlaylist; }
     public int getSongCount(int nPlaylist) { return arPlaylists.get(nPlaylist).size(); }
+    public SongsAdapter getSongsAdapter() { return songsAdapter; }
     public boolean isFinish() { return bFinish; }
     public void setProgress(int nProgress) { progress.setProgress(nProgress); }
     public boolean isLock(int nSong) {
