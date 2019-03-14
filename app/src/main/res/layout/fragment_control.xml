@@ -7,10 +7,12 @@
     >
     <TextView
         android:id="@+id/textSpeed"
-        android:text="速度:"
+        android:text="速度："
+        android:textSize="15dp"
+        android:textColor="#000"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
+        android:layout_marginLeft="10dp"
         android:layout_alignBaseline="@id/btnResetSpeed"
         android:focusable="true"
         android:focusableInTouchMode="true">
@@ -24,6 +26,23 @@
         android:layout_alignBaseline="@id/btnResetSpeed"
         android:layout_toRightOf="@id/textSpeed"
         />
+    <Button
+        android:id="@+id/btnResetSpeed"
+        android:text="リセット"
+        android:textSize="11dp"
+        android:textColor="#007AFF"
+        android:background="@drawable/resetbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:layout_marginRight="8dp"
+        android:minHeight="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/btnLockSpeed"
+        android:clickable="true"
+        android:gravity="center"
+        />
     <ImageButton
         android:id="@+id/btnLockSpeed"
         android:contentDescription="速度をロック"
@@ -33,23 +52,14 @@
         android:src="@drawable/ic_control_unlock"
         android:scaleType="centerInside"
         android:layout_marginRight="8dp"
-        android:layout_marginVertical="8dp"
-        android:layout_alignTop="@id/btnResetSpeed"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="4dp"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:clickable="true"
         />
-    <Button
-        android:id="@+id/btnResetSpeed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:layout_alignParentTop="true"
-        android:text="リセット"
-        android:layout_toLeftOf="@+id/btnLockSpeed"
-        android:clickable="true"
-        android:gravity="center"
-        />
     <View
+        android:id="@+id/deviderSpeedPitch"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="#BFBFBF"
@@ -57,10 +67,12 @@
         />
     <TextView
         android:id="@+id/textPitch"
-        android:text="音程:"
+        android:text="音程："
+        android:textSize="15dp"
+        android:textColor="#000"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
+        android:layout_marginLeft="10dp"
         android:layout_alignBaseline="@id/btnResetPitch"
         />
     <EditText
@@ -72,6 +84,23 @@
         android:layout_alignLeft="@+id/textSpeedValue"
         android:layout_alignRight="@+id/textSpeedValue"
         />
+    <Button
+        android:id="@+id/btnResetPitch"
+        android:text="リセット"
+        android:textSize="11dp"
+        android:textColor="#007AFF"
+        android:background="@drawable/resetbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:layout_marginRight="8dp"
+        android:minHeight="30dp"
+        android:layout_below="@+id/deviderSpeedPitch"
+        android:layout_toLeftOf="@+id/btnLockPitch"
+        android:clickable="true"
+        android:gravity="center"
+        />
     <ImageButton
         android:id="@+id/btnLockPitch"
         android:contentDescription="音程をロック"
@@ -81,21 +110,11 @@
         android:src="@drawable/ic_control_unlock"
         android:scaleType="centerInside"
         android:layout_marginRight="8dp"
-        android:layout_marginVertical="8dp"
-        android:layout_alignTop="@id/btnResetPitch"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="4dp"
+        android:layout_below="@+id/deviderSpeedPitch"
         android:layout_alignParentRight="true"
         android:clickable="true"
-        />
-    <Button
-        android:id="@+id/btnResetPitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:text="リセット"
-        android:layout_toLeftOf="@+id/btnLockPitch"
-        android:clickable="true"
-        android:gravity="center"
-        android:layout_below="@id/btnResetSpeed"
         />
     <View
         android:layout_width="match_parent"
