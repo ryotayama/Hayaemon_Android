@@ -35,6 +35,7 @@ import java.util.ArrayList;
 public class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
 {
     private WaveView mWaveView;
+    private float fPeak = 0.0f;
 
     public WaveViewTask(WaveView view)
     {
@@ -91,6 +92,22 @@ public class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
                 if (this.isCancelled()) break;
             }
         }
+
+        BASS.BASS_ChannelSetPosition(hTempStream, 0, BASS.BASS_POS_BYTE);
+        float fTempPeak = 0.0f;
+        float[] arLevels = new float[2];
+        if(bStereo) {
+            while (BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_STEREO)) {
+                if (fTempPeak < arLevels[0]) fTempPeak = arLevels[0];
+                if (fTempPeak < arLevels[1]) fTempPeak = arLevels[1];
+            }
+        }
+        else {
+            while (BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_MONO)) {
+                if (fTempPeak < arLevels[0]) fTempPeak = arLevels[0];
+            }
+        }
+        fPeak = fTempPeak;
         return 0;
     }
 
@@ -98,5 +115,8 @@ public class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
     protected void onPostExecute(Integer result)
     {
         mWaveView.invalidate();
+        MainActivity activity = (MainActivity)mWaveView.getLoopFragment().getActivity();
+        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+        playlistFragment.setPeak(fPeak);
     }
 }

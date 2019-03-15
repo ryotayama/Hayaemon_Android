@@ -119,6 +119,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
         viewCurPos = getActivity().findViewById(R.id.viewCurPos);
         waveView = (WaveView)getActivity().findViewById(R.id.waveView);
+        waveView.setLoopFragment(this);
         waveView.setOnTouchListener(this);
         handler.post(new Runnable() {
             @Override

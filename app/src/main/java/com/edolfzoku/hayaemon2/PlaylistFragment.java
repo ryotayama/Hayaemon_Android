@@ -2083,7 +2083,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             eq.fCenter = equalizerFragment.getArCenters()[i];
             BASS.BASS_FXSetParameters(arHFX[i], eq);
         }
-        effectFragment.applyEffect(hTempStream);
+        effectFragment.applyEffect(hTempStream, item);
         String strPathTo;
         if(nPurpose == 0) // saveSongToLocal
         {
@@ -2749,7 +2749,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed);
         BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, controlFragment.fPitch);
         equalizerFragment.setEQ();
-        effectFragment.applyEffect(MainActivity.hStream);
+        effectFragment.applyEffect();
         activity.setSync();
         if(bPlay)
             BASS.BASS_ChannelPlay(MainActivity.hStream, false);
@@ -3204,6 +3204,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             else if(btnRepeat.getContentDescription().toString().equals("１曲リピート"))
                 nRepeat = 2;
             preferences.edit().putInt("repeatmode", nRepeat).commit();
+        }
+    }
+
+    public void setPeak(float fPeak)
+    {
+        if(nPlayingPlaylist < 0 || nPlayingPlaylist >= arPlaylists.size()) return;
+        ArrayList<SongItem> arSongs = arPlaylists.get(nPlayingPlaylist);
+        if(nPlaying < 0 || nPlaying >= arSongs.size()) return;
+        SongItem song = arSongs.get(nPlaying);
+        if(song.getPeak() != fPeak) {
+            song.setPeak(fPeak);
+            saveFiles(true, false, false, false, false);
+            EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+            effectFragment.setPeak(fPeak);
         }
     }
 }

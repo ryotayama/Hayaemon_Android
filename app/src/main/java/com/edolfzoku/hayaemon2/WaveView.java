@@ -55,6 +55,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class WaveView extends View {
 
+    private LoopFragment loopFragment = null;
     private int hTempStream = 0;
     private ArrayList<Bitmap> arBitmaps = null;
     private ArrayList<Canvas> arCanvases = null;
@@ -62,6 +63,8 @@ public class WaveView extends View {
     private float fZoom = 1.0f;
     private WaveViewTask task = null;
 
+    public LoopFragment getLoopFragment() { return loopFragment; }
+    public void setLoopFragment(LoopFragment loopFragment) { this.loopFragment = loopFragment; }
     public int getTempSteam() { return hTempStream; }
     public ArrayList<Bitmap> getBitmaps() { return arBitmaps; }
     public ArrayList<Canvas> getCanvases() { return arCanvases; }
@@ -384,9 +387,6 @@ public class WaveView extends View {
             }
             arCanvases.clear();
         }
-        // if(mBitmap == null) mBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        // if(mCanvas == null) mCanvas = new Canvas(mBitmap);
-        // mCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         if(bInvalidate) invalidate();
     }
 }

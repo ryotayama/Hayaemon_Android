@@ -18,8 +18,12 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -36,13 +40,17 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.un4seen.bass.BASS;
+import com.un4seen.bass.BASSFLAC;
+import com.un4seen.bass.BASS_AAC;
 import com.un4seen.bass.BASS_FX;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
@@ -62,6 +70,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private int hDspExchange = 0;
     private int hDspDoubling = 0;
     private int hDspPan = 0;
+    private int hDspNormalize = 0;
     private int hFxCompressor = 0;
     private int hDspPhaseReversal = 0;
     private int hFxEcho = 0;
@@ -78,6 +87,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private float fVol5 = 1.0f;
     private float fVol6 = 1.0f;
     private float fVol7 = 1.0f;
+    private float fPeak = 0.0f;
     private final int kEffectTypeRandom = 1;
     private final int kEffectTypeVocalCancel = 2;
     private final int kEffectTypeMonoral = 3;
@@ -88,42 +98,43 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private final int kEffectTypeTranscribeSideGuitar = 8;
     private final int kEffectTypeTranscribeBass = 9;
     private final int kEffectTypePan = 10;
-    private final int kEffectTypeCompressor = 11;
-    private final int kEffectTypeFrequency = 12;
-    private final int kEffectTypePhaseReversal = 13;
-    private final int kEffectTypeStadiumEcho = 14;
-    private final int kEffectTypeHallEcho = 15;
-    private final int kEffectTypeLiveHouseEcho = 16;
-    private final int kEffectTypeRoomEcho = 17;
-    private final int kEffectTypeBathroomEcho = 18;
-    private final int kEffectTypeVocalEcho = 19;
-    private final int kEffectTypeMountainEcho = 20;
-    private final int kEffectTypeReverb_Bathroom = 21;
-    private final int kEffectTypeReverb_SmallRoom = 22;
-    private final int kEffectTypeReverb_MediumRoom = 23;
-    private final int kEffectTypeReverb_LargeRoom = 24;
-    private final int kEffectTypeReverb_Church = 25;
-    private final int kEffectTypeReverb_Cathedral = 26;
-    private final int kEffectTypeChorus = 27;
-    private final int kEffectTypeFlanger = 28;
-    private final int kEffectTypeDistortion_Strong = 29;
-    private final int kEffectTypeDistortion_Middle = 30;
-    private final int kEffectTypeDistortion_Weak = 31;
-    private final int kEffectTypeReverse = 32;
-    private final int kEffectTypeOldRecord = 33;
-    private final int kEffectTypeLowBattery = 34;
-    private final int kEffectTypeNoSense_Strong = 35;
-    private final int kEffectTypeNoSense_Middle = 36;
-    private final int kEffectTypeNoSense_Weak = 37;
-    private final int kEffectTypeEarTraining = 38;
-    private final int kEffectTypeMetronome = 39;
-    private final int kEffectTypeRecordNoise = 40;
-    private final int kEffectTypeRoarOfWaves = 41;
-    private final int kEffectTypeRain = 42;
-    private final int kEffectTypeRiver = 43;
-    private final int kEffectTypeWar = 44;
-    private final int kEffectTypeFire = 45;
-    private final int kEffectTypeConcertHall = 46;
+    private final int kEffectTypeNormalize = 11;
+    private final int kEffectTypeCompressor = 12;
+    private final int kEffectTypeFrequency = 13;
+    private final int kEffectTypePhaseReversal = 14;
+    private final int kEffectTypeStadiumEcho = 15;
+    private final int kEffectTypeHallEcho = 16;
+    private final int kEffectTypeLiveHouseEcho = 17;
+    private final int kEffectTypeRoomEcho = 18;
+    private final int kEffectTypeBathroomEcho = 19;
+    private final int kEffectTypeVocalEcho = 20;
+    private final int kEffectTypeMountainEcho = 21;
+    private final int kEffectTypeReverb_Bathroom = 22;
+    private final int kEffectTypeReverb_SmallRoom = 23;
+    private final int kEffectTypeReverb_MediumRoom = 24;
+    private final int kEffectTypeReverb_LargeRoom = 25;
+    private final int kEffectTypeReverb_Church = 26;
+    private final int kEffectTypeReverb_Cathedral = 27;
+    private final int kEffectTypeChorus = 28;
+    private final int kEffectTypeFlanger = 29;
+    private final int kEffectTypeDistortion_Strong = 30;
+    private final int kEffectTypeDistortion_Middle = 31;
+    private final int kEffectTypeDistortion_Weak = 32;
+    private final int kEffectTypeReverse = 33;
+    private final int kEffectTypeOldRecord = 34;
+    private final int kEffectTypeLowBattery = 35;
+    private final int kEffectTypeNoSense_Strong = 36;
+    private final int kEffectTypeNoSense_Middle = 37;
+    private final int kEffectTypeNoSense_Weak = 38;
+    private final int kEffectTypeEarTraining = 39;
+    private final int kEffectTypeMetronome = 40;
+    private final int kEffectTypeRecordNoise = 41;
+    private final int kEffectTypeRoarOfWaves = 42;
+    private final int kEffectTypeRain = 43;
+    private final int kEffectTypeRiver = 44;
+    private final int kEffectTypeWar = 45;
+    private final int kEffectTypeFire = 46;
+    private final int kEffectTypeConcertHall = 47;
     private Timer timer;
     private int hSEStream;
     private int hSEStream2;
@@ -135,6 +146,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private float fVelo2 = 0.0f;
     private boolean isContinue = true;
     private Handler handlerLongClick;
+
+    public void setPeak(float fPeak) { this.fPeak = fPeak; }
 
     public boolean isSelectedItem(int nItem)
     {
@@ -376,49 +389,49 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             nBPM = nProgress + 10;
             textEffectDetail.setText(String.format("%d", nBPM));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRecordNoise).getEffectName()))
         {
             fVol1 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRoarOfWaves).getEffectName()))
         {
             fVol2 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRain).getEffectName()))
         {
             fVol3 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRiver).getEffectName()))
         {
             fVol4 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeWar).getEffectName()))
         {
             fVol5 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeFire).getEffectName()))
         {
             fVol6 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeConcertHall).getEffectName()))
         {
             fVol7 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         MainActivity activity = (MainActivity)getActivity();
         PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
@@ -450,49 +463,49 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             nBPM = nProgress + 10;
             textEffectDetail.setText(String.format("%d", nBPM));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRecordNoise).getEffectName()))
         {
             fVol1 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRoarOfWaves).getEffectName()))
         {
             fVol2 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRain).getEffectName()))
         {
             fVol3 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRiver).getEffectName()))
         {
             fVol4 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeWar).getEffectName()))
         {
             fVol5 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeFire).getEffectName()))
         {
             fVol6 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeConcertHall).getEffectName()))
         {
             fVol7 = nProgress / 100.0f;
             textEffectDetail.setText(String.format("%d", nProgress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         MainActivity activity = (MainActivity)getActivity();
         PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
@@ -531,6 +544,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         item = new EffectItem("ベースの耳コピ（オクターブ上げ）", false);
         arEffectItems.add(item);
         item = new EffectItem("パン", true);
+        arEffectItems.add(item);
+        item = new EffectItem("ノーマライズ", false);
         arEffectItems.add(item);
         item = new EffectItem("コンプレッサー", false);
         arEffectItems.add(item);
@@ -666,7 +681,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             handler.removeCallbacks(onTimer);
             handler = null;
         }
-        applyEffect(MainActivity.hStream);
+        applyEffect();
         effectsAdapter.notifyDataSetChanged();
         MainActivity activity = (MainActivity)getActivity();
         PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
@@ -838,13 +853,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             nBPM = progress + 10;
             textEffectDetail.setText(String.format("%d", nBPM));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
         }
         else if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeRecordNoise).getEffectName()))
         {
             fVol1 = progress / 100.0f;
             textEffectDetail.setText(String.format("%d", progress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
             if(arEffectItems.get(kEffectTypeRecordNoise).isSelected())
             {
                 int hSETemp = bSE1Playing ? hSEStream : hSEStream2;
@@ -855,7 +870,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             fVol2 = progress / 100.0f;
             textEffectDetail.setText(String.format("%d", progress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
             if(arEffectItems.get(kEffectTypeRoarOfWaves).isSelected())
             {
                 int hSETemp = bSE1Playing ? hSEStream : hSEStream2;
@@ -866,7 +881,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             fVol3 = progress / 100.0f;
             textEffectDetail.setText(String.format("%d", progress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
             if(arEffectItems.get(kEffectTypeRain).isSelected())
             {
                 int hSETemp = bSE1Playing ? hSEStream : hSEStream2;
@@ -877,7 +892,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             fVol4 = progress / 100.0f;
             textEffectDetail.setText(String.format("%d", progress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
             if(arEffectItems.get(kEffectTypeRiver).isSelected())
             {
                 int hSETemp = bSE1Playing ? hSEStream : hSEStream2;
@@ -888,7 +903,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             fVol5 = progress / 100.0f;
             textEffectDetail.setText(String.format("%d", progress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
             if(arEffectItems.get(kEffectTypeWar).isSelected())
             {
                 int hSETemp = bSE1Playing ? hSEStream : hSEStream2;
@@ -899,7 +914,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             fVol6 = progress / 100.0f;
             textEffectDetail.setText(String.format("%d", progress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
             if(arEffectItems.get(kEffectTypeFire).isSelected())
             {
                 int hSETemp = bSE1Playing ? hSEStream : hSEStream2;
@@ -910,7 +925,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             fVol7 = progress / 100.0f;
             textEffectDetail.setText(String.format("%d", progress));
-            applyEffect(MainActivity.hStream);
+            applyEffect();
             if(arEffectItems.get(kEffectTypeConcertHall).isSelected())
             {
                 int hSETemp = bSE1Playing ? hSEStream : hSEStream2;
@@ -1065,7 +1080,20 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
     }
 
-    public void applyEffect(int hStream)
+    public void applyEffect()
+    {
+        MainActivity activity = (MainActivity)getActivity();
+        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+        int nPlayingPlaylist = playlistFragment.getPlayingPlaylist();
+        if(nPlayingPlaylist < 0 || nPlayingPlaylist >= playlistFragment.getArPlaylists().size()) return;
+        ArrayList<SongItem> arSongs = playlistFragment.getArPlaylists().get(nPlayingPlaylist);
+        int nPlaying = playlistFragment.getPlaying();
+        if(nPlaying < 0 || nPlaying >= arSongs.size()) return;
+        SongItem song = arSongs.get(nPlaying);
+        applyEffect(MainActivity.hStream, song);
+    }
+
+    public void applyEffect(int hStream, SongItem song)
     {
         if(hDspVocalCancel != 0)
         {
@@ -1101,6 +1129,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             BASS.BASS_ChannelRemoveDSP(hStream, hDspPan);
             hDspPan = 0;
+        }
+        if(hDspNormalize != 0)
+        {
+            BASS.BASS_ChannelRemoveDSP(hStream, hDspNormalize);
+            hDspNormalize = 0;
         }
         if(hDspPhaseReversal != 0)
         {
@@ -1235,6 +1268,15 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             {
                 if(info.chans != 1)
                     hDspPan = BASS.BASS_ChannelSetDSP(hStream, panDSP, this, 0);
+            }
+            else if(strEffect.equals("ノーマライズ"))
+            {
+                if(song.getPeak() == 0.0f) {
+                    if(hStream != MainActivity.hStream) getPeak(song);
+                    else fPeak = 1.0f;
+                }
+                else fPeak = song.getPeak();
+                hDspNormalize = BASS.BASS_ChannelSetDSP(hStream, normalizeDSP, this, 0);
             }
             else if(strEffect.equals("コンプレッサー"))
             {
@@ -1638,6 +1680,102 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 }
             }
         }
+    }
+
+    public void getPeak(SongItem song)
+    {
+        if(song == null) return;
+        File file = new File(song.getPath());
+        int hTempStream = 0;
+        if(file.getParent().equals(getContext().getFilesDir().toString()))
+            hTempStream = BASS.BASS_StreamCreateFile(song.getPath(), 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+        else
+        {
+            BASS.BASS_FILEPROCS fileprocs=new BASS.BASS_FILEPROCS() {
+                @Override
+                public boolean FILESEEKPROC(long offset, Object user) {
+                    FileChannel fc=(FileChannel)user;
+                    try {
+                        fc.position(offset);
+                        return true;
+                    } catch (IOException e) {
+                    }
+                    return false;
+                }
+
+                @Override
+                public int FILEREADPROC(ByteBuffer buffer, int length, Object user) {
+                    FileChannel fc=(FileChannel)user;
+                    try {
+                        return fc.read(buffer);
+                    } catch (IOException e) {
+                    }
+                    return 0;
+                }
+
+                @Override
+                public long FILELENPROC(Object user) {
+                    FileChannel fc=(FileChannel)user;
+                    try {
+                        return fc.size();
+                    } catch (IOException e) {
+                    }
+                    return 0;
+                }
+
+                @Override
+                public void FILECLOSEPROC(Object user) {
+                    FileChannel fc=(FileChannel)user;
+                    try {
+                        fc.close();
+                    } catch (IOException e) {
+                    }
+                }
+            };
+
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            boolean bError = false;
+            try {
+                mmr.setDataSource(getContext(), Uri.parse(song.getPath()));
+            }
+            catch(Exception e) {
+                bError = true;
+            }
+            String strMimeType = null;
+            if(!bError)
+                strMimeType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
+            ContentResolver cr = getContext().getContentResolver();
+            try {
+                AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(song.getPath()), "r");
+                FileChannel fc = afd.createInputStream().getChannel();
+                if(strMimeType == "audio/mp4")
+                    hTempStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, fileprocs, fc);
+                else if(strMimeType == "audio/flac")
+                    hTempStream = BASSFLAC.BASS_FLAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, fileprocs, fc);
+                else
+                    hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, fileprocs, fc);
+            } catch (IOException e) {
+            }
+        }
+
+        BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
+        BASS.BASS_ChannelGetInfo(hTempStream, info);
+        Boolean bStereo = true;
+        if(info.chans == 1) bStereo = false;
+        float fTempPeak = 0.0f;
+        float[] arLevels = new float[2];
+        if(bStereo) {
+            while (BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_STEREO)) {
+                if (fTempPeak < arLevels[0]) fTempPeak = arLevels[0];
+                if (fTempPeak < arLevels[1]) fTempPeak = arLevels[1];
+            }
+        }
+        else {
+            while (BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_MONO)) {
+                if (fTempPeak < arLevels[0]) fTempPeak = arLevels[0];
+            }
+        }
+        fPeak = fTempPeak;
     }
 
     Runnable onTimer = new Runnable()
@@ -2338,6 +2476,25 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     b[a] = b[a] * (1.0f - effectFragment.fPan);
                 else
                     b[a + 1] = b[a + 1] * (1.0f + effectFragment.fPan);
+            }
+            ibuffer.rewind();
+            ibuffer.put(b);
+        }
+    };
+
+    private final BASS.DSPPROC normalizeDSP = new BASS.DSPPROC()
+    {
+        public void DSPPROC(int handle, int channel, ByteBuffer buffer, int length, Object user)
+        {
+            EffectFragment effectFragment = (EffectFragment)user;
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
+            FloatBuffer ibuffer = buffer.asFloatBuffer();
+            float[] b = new float[length / 4];
+            ibuffer.get(b);
+            if(effectFragment.fPeak != 0.0f)
+            {
+                for(int a = 0; a < length / 4; a++)
+                    b[a] /= effectFragment.fPeak;
             }
             ibuffer.rewind();
             ibuffer.put(b);

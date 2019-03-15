@@ -23,6 +23,7 @@ public class SongItem {
     private String strTitle = null;
     private String strArtist = null;
     private String strPath = null;
+    private float fPeak = 0.0f;
 
     public void setNumber(String strNumber) { this.strNumber = strNumber; }
     public String getNumber() { return strNumber; }
@@ -32,6 +33,8 @@ public class SongItem {
     public String getArtist() { return strArtist; }
     public void setPath(String strPath) { this.strPath = strPath; }
     public String getPath() { return strPath; }
+    public void setPeak(float fPeak) { this.fPeak = fPeak; }
+    public float getPeak() { return fPeak; }
 
     public SongItem() {};
 
@@ -41,5 +44,6 @@ public class SongItem {
         this.strTitle = strTitle;
         this.strArtist = strArtist;
         this.strPath = strPath;
+        this.fPeak = 0.0f;
     }
 }
