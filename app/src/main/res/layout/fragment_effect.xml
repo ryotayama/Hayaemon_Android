@@ -14,56 +14,75 @@
         android:visibility="invisible"
         >
 
-        <TextView
-            android:id="@+id/textEffectName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="エフェクト名"
-            android:textColor="#000000"
-            android:textSize="22dp"
-            android:textStyle="bold"
-            android:layout_margin="12dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
+        <RelativeLayout
+            android:id="@+id/relativeEffectTitle"
+            android:background="#F9F9F9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textEffectName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="エフェクト名"
+                android:textColor="#000000"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:layout_margin="12dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                />
+
+            <Button
+                android:id="@+id/btnFinish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="完了"
+                android:textColor="#007AFF"
+                android:textSize="15dp"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                />
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/viewSepEffect"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#CCC"
+            android:layout_below="@id/relativeEffectTitle"
             />
 
-        <Button
-            android:id="@+id/btnFinish"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/textEffectLabel"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="完了"
-            android:layout_margin="2dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
+            android:text="音量"
+            android:textSize="15dp"
+            android:textColor="#000000"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="12dp"
+            android:layout_below="@id/viewSepEffect"
             />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/btnFinish"
+            android:layout_marginLeft="16dp"
+            android:layout_below="@id/textEffectLabel"
             >
-
-            <TextView
-                android:id="@+id/textEffectLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="音量"
-                android:textSize="15dp"
-                android:textColor="#000000"
-                android:layout_marginVertical="12dp"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="8dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"
-                />
 
             <SeekBar
                 android:id="@+id/seekEffectDetail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/textEffectLabel"
+                android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@id/textEffectDetail"
+                android:thumb="@drawable/thumb"
                 />
 
             <TextView
