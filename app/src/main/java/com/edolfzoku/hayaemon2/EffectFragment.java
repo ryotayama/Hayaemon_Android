@@ -211,16 +211,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     public void setEffectItems(ArrayList<EffectItem> arEffectItems)
     {
-        this.arEffectItems = new ArrayList<>();
-        for(int i = 0; i < arEffectItems.size(); i++)
+        for(int i = 0; i < this.arEffectItems.size(); i++)
         {
-            EffectItem itemFrom = arEffectItems.get(i);
-            EffectItem itemTo = new EffectItem();
-            itemTo.setEffectName(itemFrom.getEffectName());
-            itemTo.setSelected(itemFrom.isSelected());
-            itemTo.setbEditEnabled(itemFrom.isEditEnabled());
-            this.arEffectItems.add(itemTo);
+            EffectItem item = this.arEffectItems.get(i);
+            for(int j = 0; j < arEffectItems.size(); j++)
+            {
+                EffectItem itemSaved = arEffectItems.get(j);
+                if(item.getEffectName().equals(itemSaved.getEffectName()))
+                    item.setSelected(itemSaved.isSelected());
+            }
         }
+
         effectsAdapter.notifyDataSetChanged();
     }
 
