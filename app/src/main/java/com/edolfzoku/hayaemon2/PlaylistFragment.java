@@ -1753,6 +1753,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         saver.setVol7(effectFragment.getVol7());
         saver.setTimeOfIncreaseSpeed(effectFragment.getTimeOfIncreaseSpeed());
         saver.setIncreaseSpeed(effectFragment.getIncreaseSpeed());
+        saver.setTimeOfDecreaseSpeed(effectFragment.getTimeOfDecreaseSpeed());
+        saver.setDecreaseSpeed(effectFragment.getDecreaseSpeed());
         if(nSelectedPlaylist == nPlayingPlaylist && nSelectedItem == nPlaying) {
             LinearLayout ABButton = (LinearLayout)activity.findViewById(R.id.ABButton);
             LinearLayout MarkerButton = (LinearLayout)activity.findViewById(R.id.MarkerButton);
@@ -1830,6 +1832,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             saver.setVol7(effectFragment.getVol7());
             saver.setTimeOfIncreaseSpeed(effectFragment.getTimeOfIncreaseSpeed());
             saver.setIncreaseSpeed(effectFragment.getIncreaseSpeed());
+            saver.setTimeOfDecreaseSpeed(effectFragment.getTimeOfDecreaseSpeed());
+            saver.setDecreaseSpeed(effectFragment.getDecreaseSpeed());
             LinearLayout ABButton = (LinearLayout)activity.findViewById(R.id.ABButton);
             LinearLayout MarkerButton = (LinearLayout)activity.findViewById(R.id.MarkerButton);
             ImageButton btnLoopmarker = (ImageButton)activity.findViewById(R.id.btnLoopmarker);
@@ -1909,6 +1913,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         effectFragment.setVol7(saver.getVol7());
         effectFragment.setTimeOfIncreaseSpeed(saver.getTimeOfIncreaseSpeed());
         effectFragment.setIncreaseSpeed(saver.getIncreaseSpeed());
+        effectFragment.setTimeOfDecreaseSpeed(saver.getTimeOfDecreaseSpeed());
+        effectFragment.setDecreaseSpeed(saver.getDecreaseSpeed());
         ImageButton btnLoopmarker = (ImageButton)activity.findViewById(R.id.btnLoopmarker);
         TabLayout tabLayout = (TabLayout)getActivity().findViewById(R.id.abTab_Layout);
         if(saver.isABLoop()) tabLayout.getTabAt(0).select();

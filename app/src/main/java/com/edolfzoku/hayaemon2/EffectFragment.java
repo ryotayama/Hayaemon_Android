@@ -91,6 +91,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private float fPeak = 0.0f;
     private float fTimeOfIncreaseSpeed = 1.0f;
     private float fIncreaseSpeed = 0.1f;
+    private float fTimeOfDecreaseSpeed = 1.0f;
+    private float fDecreaseSpeed = 0.1f;
     private final int kEffectTypeRandom = 1;
     private final int kEffectTypeVocalCancel = 2;
     private final int kEffectTypeMonoral = 3;
@@ -125,20 +127,21 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private final int kEffectTypeDistortion_Weak = 32;
     private final int kEffectTypeReverse = 33;
     private final int kEffectTypeIncreaseSpeed = 34;
-    private final int kEffectTypeOldRecord = 35;
-    private final int kEffectTypeLowBattery = 36;
-    private final int kEffectTypeNoSense_Strong = 37;
-    private final int kEffectTypeNoSense_Middle = 38;
-    private final int kEffectTypeNoSense_Weak = 39;
-    private final int kEffectTypeEarTraining = 40;
-    private final int kEffectTypeMetronome = 41;
-    private final int kEffectTypeRecordNoise = 42;
-    private final int kEffectTypeRoarOfWaves = 43;
-    private final int kEffectTypeRain = 44;
-    private final int kEffectTypeRiver = 45;
-    private final int kEffectTypeWar = 46;
-    private final int kEffectTypeFire = 47;
-    private final int kEffectTypeConcertHall = 48;
+    private final int kEffectTypeDecreaseSpeed = 35;
+    private final int kEffectTypeOldRecord = 36;
+    private final int kEffectTypeLowBattery = 37;
+    private final int kEffectTypeNoSense_Strong = 38;
+    private final int kEffectTypeNoSense_Middle = 39;
+    private final int kEffectTypeNoSense_Weak = 40;
+    private final int kEffectTypeEarTraining = 41;
+    private final int kEffectTypeMetronome = 42;
+    private final int kEffectTypeRecordNoise = 43;
+    private final int kEffectTypeRoarOfWaves = 44;
+    private final int kEffectTypeRain = 45;
+    private final int kEffectTypeRiver = 46;
+    private final int kEffectTypeWar = 47;
+    private final int kEffectTypeFire = 48;
+    private final int kEffectTypeConcertHall = 49;
     private Timer timer;
     private int hSEStream;
     private int hSEStream2;
@@ -155,18 +158,43 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     public float getTimeOfIncreaseSpeed() { return fTimeOfIncreaseSpeed; }
     public void setTimeOfIncreaseSpeed(float fTimeOfIncreaseSpeed) {
         this.fTimeOfIncreaseSpeed = fTimeOfIncreaseSpeed;
-        EditText editTimeEffectDetail = getActivity().findViewById(R.id.editTimeEffectDetail);
-        editTimeEffectDetail.setText(String.format("%.1f秒", fTimeOfIncreaseSpeed));
+        TextView textEffectName = activity.findViewById(R.id.textEffectName);
+        if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeIncreaseSpeed).getEffectName())) {
+            EditText editTimeEffectDetail = getActivity().findViewById(R.id.editTimeEffectDetail);
+            editTimeEffectDetail.setText(String.format("%.1f秒", fTimeOfIncreaseSpeed));
+        }
     }
     public float getIncreaseSpeed() { return fIncreaseSpeed; }
     public void setIncreaseSpeed(float fIncreaseSpeed) {
         this.fIncreaseSpeed = fIncreaseSpeed;
-        EditText editSpeedEffectDetail = getActivity().findViewById(R.id.editSpeedEffectDetail);
-        editSpeedEffectDetail.setText(String.format("%.1f%%", fIncreaseSpeed));
+        TextView textEffectName = activity.findViewById(R.id.textEffectName);
+        if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeIncreaseSpeed).getEffectName())) {
+            EditText editSpeedEffectDetail = getActivity().findViewById(R.id.editSpeedEffectDetail);
+            editSpeedEffectDetail.setText(String.format("%.1f%%", fIncreaseSpeed));
+        }
+    }
+    public float getTimeOfDecreaseSpeed() { return fTimeOfDecreaseSpeed; }
+    public void setTimeOfDecreaseSpeed(float fTimeOfDecreaseSpeed) {
+        this.fTimeOfDecreaseSpeed = fTimeOfDecreaseSpeed;
+        TextView textEffectName = activity.findViewById(R.id.textEffectName);
+        if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeDecreaseSpeed).getEffectName())) {
+            EditText editTimeEffectDetail = getActivity().findViewById(R.id.editTimeEffectDetail);
+            editTimeEffectDetail.setText(String.format("%.1f秒", fTimeOfDecreaseSpeed));
+        }
+    }
+    public float getDecreaseSpeed() { return fDecreaseSpeed; }
+    public void setDecreaseSpeed(float fDecreaseSpeed) {
+        this.fDecreaseSpeed = fDecreaseSpeed;
+        TextView textEffectName = activity.findViewById(R.id.textEffectName);
+        if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeDecreaseSpeed).getEffectName())) {
+            EditText editSpeedEffectDetail = getActivity().findViewById(R.id.editSpeedEffectDetail);
+            editSpeedEffectDetail.setText(String.format("%.1f%%", fDecreaseSpeed));
+        }
     }
 
     public boolean isSelectedItem(int nItem)
     {
+        if(nItem >= arEffectItems.size()) return false;
         EffectItem item = arEffectItems.get(nItem);
         return item.isSelected();
     }
@@ -609,6 +637,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         arEffectItems.add(item);
         item = new EffectItem("だんだん速く", true);
         arEffectItems.add(item);
+        item = new EffectItem("だんだん遅く", true);
+        arEffectItems.add(item);
         item = new EffectItem("古びたレコード再生", false);
         arEffectItems.add(item);
         item = new EffectItem("電池切れ", false);
@@ -740,6 +770,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         effectsAdapter.notifyDataSetChanged();
         setTimeOfIncreaseSpeed(1.0f);
         setIncreaseSpeed(0.1f);
+        setTimeOfDecreaseSpeed(1.0f);
+        setDecreaseSpeed(0.1f);
     }
 
     public void onEffectDetailClick(int nEffect)
@@ -774,6 +806,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             editTimeEffectDetail.setText(String.format("%.1f秒", fTimeOfIncreaseSpeed));
             EditText editSpeedEffectDetail = getActivity().findViewById(R.id.editSpeedEffectDetail);
             editSpeedEffectDetail.setText(String.format("%.1f%%", fIncreaseSpeed));
+        }
+        else if(nEffect == kEffectTypeDecreaseSpeed)
+        {
+            textEffectLabel.setText("指定時間ごとに減速");
+            EditText editTimeEffectDetail = getActivity().findViewById(R.id.editTimeEffectDetail);
+            editTimeEffectDetail.setText(String.format("%.1f秒", fTimeOfDecreaseSpeed));
+            EditText editSpeedEffectDetail = getActivity().findViewById(R.id.editSpeedEffectDetail);
+            editSpeedEffectDetail.setText(String.format("%.1f%%", fDecreaseSpeed));
         }
         else if(nEffect == kEffectTypeMetronome)
         {
@@ -853,7 +893,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         RelativeLayout relativeSliderEffectDatail = (RelativeLayout) activity.findViewById(R.id.relativeSliderEffectDatail);
         RelativeLayout relativeRollerEffectDetail = (RelativeLayout) activity.findViewById(R.id.relativeRollerEffectDatail);
-        if(nEffect == kEffectTypeIncreaseSpeed) {
+        if(nEffect == kEffectTypeIncreaseSpeed || nEffect == kEffectTypeDecreaseSpeed) {
             relativeSliderEffectDatail.setVisibility(View.GONE);
             relativeRollerEffectDetail.setVisibility(View.VISIBLE);
         }
@@ -1083,9 +1123,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     if(i != nSelect) deselectEffect(i);
                 if(nSelect != kEffectTypeLowBattery) deselectEffect(kEffectTypeLowBattery);
             }
-            if(kEffectTypeOldRecord <= nSelect && nSelect <= kEffectTypeMetronome)
+            if(kEffectTypeIncreaseSpeed <= nSelect && nSelect <= kEffectTypeMetronome)
             {
-                for(int i = kEffectTypeOldRecord; i <= kEffectTypeMetronome; i++)
+                for(int i = kEffectTypeIncreaseSpeed; i <= kEffectTypeMetronome; i++)
                     if(i != nSelect) deselectEffect(i);
             }
             if(nSelect == kEffectTypeOldRecord || (kEffectTypeMetronome <= nSelect && nSelect <= kEffectTypeConcertHall))
@@ -1564,6 +1604,19 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             else if(strEffect.equals("だんだん速く"))
             {
+                if(handler != null) {
+                    handler.removeCallbacks(onTimer);
+                    handler = null;
+                }
+                handler = new Handler();
+                handler.post(onTimer);
+            }
+            else if(strEffect.equals("だんだん遅く"))
+            {
+                if(handler != null) {
+                    handler.removeCallbacks(onTimer);
+                    handler = null;
+                }
                 handler = new Handler();
                 handler.post(onTimer);
             }
@@ -1837,6 +1890,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 fSpeed += fIncreaseSpeed;
                 ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 if(fSpeed + 100.0f > 400.0f) fSpeed = 300.0f;
+                if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PAUSED)
+                    controlFragment.setSpeed(fSpeed, false);
+                handler.postDelayed(this, (long)(fTimeOfIncreaseSpeed * 1000.0f));
+                return;
+            }
+            else if(arEffectItems.get(kEffectTypeDecreaseSpeed).isSelected())
+            {
+                Float fSpeed = 0.0f;
+                BASS.BASS_ChannelGetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, fSpeed);
+                fSpeed -= fDecreaseSpeed;
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
+                if(fSpeed + 100.0f < 10.0f) fSpeed = -90.0f;
                 if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PAUSED)
                     controlFragment.setSpeed(fSpeed, false);
                 handler.postDelayed(this, (long)(fTimeOfIncreaseSpeed * 1000.0f));

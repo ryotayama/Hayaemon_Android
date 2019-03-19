@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 
 public class SpeedEffectDetailFragmentDialog extends DialogFragment {
     NumberPicker intNumberPicker;
@@ -18,7 +19,11 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
         EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.speedeffectdetailpicker, null, false);
-        float fTime = effectFragment.getIncreaseSpeed();
+        float fTime = 0.0f;
+        TextView textEffectName = activity.findViewById(R.id.textEffectName);
+        if(textEffectName.getText().toString().equals("だんだん速く"))
+            fTime = effectFragment.getIncreaseSpeed();
+        else fTime = effectFragment.getDecreaseSpeed();
         int nInt = (int)fTime;
         int nDecimal = (int)((fTime - (float)nInt) * 10.0f + 0.05f);
         String strInt = null;
@@ -45,7 +50,10 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
 
                 MainActivity activity = (MainActivity) getActivity();
                 EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-                effectFragment.setIncreaseSpeed(fTime);
+                TextView textEffectName = activity.findViewById(R.id.textEffectName);
+                if(textEffectName.getText().toString().equals("だんだん速く"))
+                    effectFragment.setIncreaseSpeed(fTime);
+                else effectFragment.setDecreaseSpeed(fTime);
             }
         });
         for(int i = 0; i < arInts.length; i++)
@@ -71,7 +79,10 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
 
                 MainActivity activity = (MainActivity) getActivity();
                 EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-                effectFragment.setIncreaseSpeed(fTime);
+                TextView textEffectName = activity.findViewById(R.id.textEffectName);
+                if(textEffectName.getText().toString().equals("だんだん速く"))
+                    effectFragment.setIncreaseSpeed(fTime);
+                else effectFragment.setDecreaseSpeed(fTime);
             }
         });
         for(int i = 0; i < arDecimals.length; i++)
