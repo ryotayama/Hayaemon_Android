@@ -1751,6 +1751,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         saver.setVol5(effectFragment.getVol5());
         saver.setVol6(effectFragment.getVol6());
         saver.setVol7(effectFragment.getVol7());
+        saver.setTimeOfIncreaseSpeed(effectFragment.getTimeOfIncreaseSpeed());
+        saver.setIncreaseSpeed(effectFragment.getIncreaseSpeed());
         if(nSelectedPlaylist == nPlayingPlaylist && nSelectedItem == nPlaying) {
             LinearLayout ABButton = (LinearLayout)activity.findViewById(R.id.ABButton);
             LinearLayout MarkerButton = (LinearLayout)activity.findViewById(R.id.MarkerButton);
@@ -1826,6 +1828,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             saver.setVol5(effectFragment.getVol5());
             saver.setVol6(effectFragment.getVol6());
             saver.setVol7(effectFragment.getVol7());
+            saver.setTimeOfIncreaseSpeed(effectFragment.getTimeOfIncreaseSpeed());
+            saver.setIncreaseSpeed(effectFragment.getIncreaseSpeed());
             LinearLayout ABButton = (LinearLayout)activity.findViewById(R.id.ABButton);
             LinearLayout MarkerButton = (LinearLayout)activity.findViewById(R.id.MarkerButton);
             ImageButton btnLoopmarker = (ImageButton)activity.findViewById(R.id.btnLoopmarker);
@@ -1903,6 +1907,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         effectFragment.setVol5(saver.getVol5());
         effectFragment.setVol6(saver.getVol6());
         effectFragment.setVol7(saver.getVol7());
+        effectFragment.setTimeOfIncreaseSpeed(saver.getTimeOfIncreaseSpeed());
+        effectFragment.setIncreaseSpeed(saver.getIncreaseSpeed());
         ImageButton btnLoopmarker = (ImageButton)activity.findViewById(R.id.btnLoopmarker);
         TabLayout tabLayout = (TabLayout)getActivity().findViewById(R.id.abTab_Layout);
         if(saver.isABLoop()) tabLayout.getTabAt(0).select();

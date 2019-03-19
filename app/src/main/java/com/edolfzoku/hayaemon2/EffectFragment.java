@@ -34,6 +34,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -57,7 +58,7 @@ import java.util.Timer;
 
 import static java.lang.Boolean.FALSE;
 
-public class EffectFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener, SeekBar.OnSeekBarChangeListener
+public class EffectFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener, SeekBar.OnSeekBarChangeListener, View.OnFocusChangeListener
 {
     private MainActivity activity = null;
     private RecyclerView recyclerEffects;
@@ -88,6 +89,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private float fVol6 = 1.0f;
     private float fVol7 = 1.0f;
     private float fPeak = 0.0f;
+    private float fTimeOfIncreaseSpeed = 1.0f;
+    private float fIncreaseSpeed = 0.1f;
     private final int kEffectTypeRandom = 1;
     private final int kEffectTypeVocalCancel = 2;
     private final int kEffectTypeMonoral = 3;
@@ -121,20 +124,21 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private final int kEffectTypeDistortion_Middle = 31;
     private final int kEffectTypeDistortion_Weak = 32;
     private final int kEffectTypeReverse = 33;
-    private final int kEffectTypeOldRecord = 34;
-    private final int kEffectTypeLowBattery = 35;
-    private final int kEffectTypeNoSense_Strong = 36;
-    private final int kEffectTypeNoSense_Middle = 37;
-    private final int kEffectTypeNoSense_Weak = 38;
-    private final int kEffectTypeEarTraining = 39;
-    private final int kEffectTypeMetronome = 40;
-    private final int kEffectTypeRecordNoise = 41;
-    private final int kEffectTypeRoarOfWaves = 42;
-    private final int kEffectTypeRain = 43;
-    private final int kEffectTypeRiver = 44;
-    private final int kEffectTypeWar = 45;
-    private final int kEffectTypeFire = 46;
-    private final int kEffectTypeConcertHall = 47;
+    private final int kEffectTypeIncreaseSpeed = 34;
+    private final int kEffectTypeOldRecord = 35;
+    private final int kEffectTypeLowBattery = 36;
+    private final int kEffectTypeNoSense_Strong = 37;
+    private final int kEffectTypeNoSense_Middle = 38;
+    private final int kEffectTypeNoSense_Weak = 39;
+    private final int kEffectTypeEarTraining = 40;
+    private final int kEffectTypeMetronome = 41;
+    private final int kEffectTypeRecordNoise = 42;
+    private final int kEffectTypeRoarOfWaves = 43;
+    private final int kEffectTypeRain = 44;
+    private final int kEffectTypeRiver = 45;
+    private final int kEffectTypeWar = 46;
+    private final int kEffectTypeFire = 47;
+    private final int kEffectTypeConcertHall = 48;
     private Timer timer;
     private int hSEStream;
     private int hSEStream2;
@@ -148,6 +152,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private Handler handlerLongClick;
 
     public void setPeak(float fPeak) { this.fPeak = fPeak; }
+    public float getTimeOfIncreaseSpeed() { return fTimeOfIncreaseSpeed; }
+    public void setTimeOfIncreaseSpeed(float fTimeOfIncreaseSpeed) {
+        this.fTimeOfIncreaseSpeed = fTimeOfIncreaseSpeed;
+        EditText editTimeEffectDetail = getActivity().findViewById(R.id.editTimeEffectDetail);
+        editTimeEffectDetail.setText(String.format("%.1f秒", fTimeOfIncreaseSpeed));
+    }
+    public float getIncreaseSpeed() { return fIncreaseSpeed; }
+    public void setIncreaseSpeed(float fIncreaseSpeed) {
+        this.fIncreaseSpeed = fIncreaseSpeed;
+        EditText editSpeedEffectDetail = getActivity().findViewById(R.id.editSpeedEffectDetail);
+        editSpeedEffectDetail.setText(String.format("%.1f%%", fIncreaseSpeed));
+    }
 
     public boolean isSelectedItem(int nItem)
     {
@@ -591,6 +607,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         arEffectItems.add(item);
         item = new EffectItem("逆回転再生", false);
         arEffectItems.add(item);
+        item = new EffectItem("だんだん速く", true);
+        arEffectItems.add(item);
         item = new EffectItem("古びたレコード再生", false);
         arEffectItems.add(item);
         item = new EffectItem("電池切れ", false);
@@ -635,6 +653,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         buttonEffectPlus.setOnClickListener(this);
         buttonEffectPlus.setOnLongClickListener(this);
         buttonEffectPlus.setOnTouchListener(this);
+
+        getActivity().findViewById(R.id.editTimeEffectDetail).setOnFocusChangeListener(this);
+        getActivity().findViewById(R.id.editSpeedEffectDetail).setOnFocusChangeListener(this);
     }
 
     public void onEffectItemClick(int nEffect)
@@ -717,6 +738,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         fPan = 0.0f;
         fFreq = 1.0f;
         effectsAdapter.notifyDataSetChanged();
+        setTimeOfIncreaseSpeed(1.0f);
+        setIncreaseSpeed(0.1f);
     }
 
     public void onEffectDetailClick(int nEffect)
@@ -743,6 +766,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、最大値に39を設定（本来は1～40にしたい）
             seek.setMax(39);
             seek.setProgress((int)(fFreq * 10.0f) - 1);
+        }
+        else if(nEffect == kEffectTypeIncreaseSpeed)
+        {
+            textEffectLabel.setText("指定時間ごとに加速");
+            EditText editTimeEffectDetail = getActivity().findViewById(R.id.editTimeEffectDetail);
+            editTimeEffectDetail.setText(String.format("%.1f秒", fTimeOfIncreaseSpeed));
+            EditText editSpeedEffectDetail = getActivity().findViewById(R.id.editSpeedEffectDetail);
+            editSpeedEffectDetail.setText(String.format("%.1f%%", fIncreaseSpeed));
         }
         else if(nEffect == kEffectTypeMetronome)
         {
@@ -820,7 +851,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             buttonEffectPlus.setContentDescription("プラス");
         }
 
-        seek.setOnSeekBarChangeListener(this);
+        RelativeLayout relativeSliderEffectDatail = (RelativeLayout) activity.findViewById(R.id.relativeSliderEffectDatail);
+        RelativeLayout relativeRollerEffectDetail = (RelativeLayout) activity.findViewById(R.id.relativeRollerEffectDatail);
+        if(nEffect == kEffectTypeIncreaseSpeed) {
+            relativeSliderEffectDatail.setVisibility(View.GONE);
+            relativeRollerEffectDetail.setVisibility(View.VISIBLE);
+        }
+        else {
+            relativeSliderEffectDatail.setVisibility(View.VISIBLE);
+            relativeRollerEffectDetail.setVisibility(View.GONE);
+            seek.setOnSeekBarChangeListener(this);
+        }
+
         RelativeLayout relativeEffectDetail = (RelativeLayout) activity.findViewById(R.id.relativeEffectDetail);
         relativeEffectDetail.setVisibility(View.VISIBLE);
         RelativeLayout relativeEffect = (RelativeLayout) activity.findViewById(R.id.relativeEffects);
@@ -1520,6 +1562,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     activity.setSync();
                 }
             }
+            else if(strEffect.equals("だんだん速く"))
+            {
+                handler = new Handler();
+                handler.post(onTimer);
+            }
             else if(strEffect.equals("古びたレコード再生"))
             {
                 EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
@@ -1783,7 +1830,19 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         @Override
         public void run()
         {
-            if(arEffectItems.get(kEffectTypeOldRecord).isSelected())
+            if(arEffectItems.get(kEffectTypeIncreaseSpeed).isSelected())
+            {
+                Float fSpeed = 0.0f;
+                BASS.BASS_ChannelGetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, fSpeed);
+                fSpeed += fIncreaseSpeed;
+                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
+                if(fSpeed + 100.0f > 400.0f) fSpeed = 300.0f;
+                if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PAUSED)
+                    controlFragment.setSpeed(fSpeed, false);
+                handler.postDelayed(this, (long)(fTimeOfIncreaseSpeed * 1000.0f));
+                return;
+            }
+            else if(arEffectItems.get(kEffectTypeOldRecord).isSelected())
             {
                 Float fFreq = new Float(0.0f);
                 BASS.BASS_ChannelGetAttribute(MainActivity.hStream, BASS.BASS_ATTRIB_FREQ, fFreq);
@@ -2515,4 +2574,36 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             ibuffer.put(b);
         }
     };
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus)
+    {
+        if(hasFocus)
+        {
+            if(v.getId() == R.id.editTimeEffectDetail)
+                showTimeEffectDialog();
+            else if(v.getId() == R.id.editSpeedEffectDetail)
+                showSpeedEffectDialog();
+        }
+    }
+
+    public void showTimeEffectDialog()
+    {
+        TimeEffectDetailFragmentDialog dialog = new TimeEffectDetailFragmentDialog();
+        dialog.show(getFragmentManager(), "span_setting_dialog");
+    }
+
+    public void showSpeedEffectDialog()
+    {
+        SpeedEffectDetailFragmentDialog dialog = new SpeedEffectDetailFragmentDialog();
+        dialog.show(getFragmentManager(), "span_setting_dialog");
+    }
+
+    public void clearFocus()
+    {
+        EditText editTimeEffectDetail = getActivity().findViewById(R.id.editTimeEffectDetail);
+        editTimeEffectDetail.clearFocus();
+        EditText editSpeedEffectDetail = getActivity().findViewById(R.id.editSpeedEffectDetail);
+        editSpeedEffectDetail.clearFocus();
+    }
 }

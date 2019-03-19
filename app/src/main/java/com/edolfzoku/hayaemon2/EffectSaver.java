@@ -67,6 +67,8 @@ public class EffectSaver {
     private float fVol5 = 0.0f;
     private float fVol6 = 0.0f;
     private float fVol7 = 0.0f;
+    private float fTimeOfIncreaseSpeed = 1.0f;
+    private float fIncreaseSpeed = 0.1f;
     private boolean bABLoop = false;
     private boolean bLoop = false;
     private boolean bLoopA = false;
@@ -133,6 +135,8 @@ public class EffectSaver {
     public void setVol5(float fVol5) { this.fVol5 = fVol5; }
     public void setVol6(float fVol6) { this.fVol6 = fVol6; }
     public void setVol7(float fVol7) { this.fVol7 = fVol7; }
+    public void setTimeOfIncreaseSpeed(float fTimeOfIncreaseSpeed) { this.fTimeOfIncreaseSpeed = fTimeOfIncreaseSpeed; }
+    public void setIncreaseSpeed(float fIncreaseSpeed) { this.fIncreaseSpeed = fIncreaseSpeed; }
     public void setIsABLoop(boolean bABLoop) { this.bABLoop = bABLoop; }
     public void setIsLoop(boolean bLoop) { this.bLoop = bLoop; }
     public void setIsLoopA(boolean bLoopA) { this.bLoopA = bLoopA; }
@@ -189,6 +193,8 @@ public class EffectSaver {
     public float getVol5() { return fVol5; }
     public float getVol6() { return fVol6; }
     public float getVol7() { return fVol7; }
+    public float getTimeOfIncreaseSpeed() { return fTimeOfIncreaseSpeed; }
+    public float getIncreaseSpeed() { return fIncreaseSpeed; }
     public boolean isABLoop() { return bABLoop; }
     public boolean isLoop() { return bLoop; }
     public boolean isLoopA() { return bLoopA; }
@@ -252,6 +258,8 @@ public class EffectSaver {
         fVol5 = saver.fVol5;
         fVol6 = saver.fVol6;
         fVol7 = saver.fVol7;
+        fTimeOfIncreaseSpeed = saver.fTimeOfIncreaseSpeed;
+        fIncreaseSpeed = saver.fIncreaseSpeed;
         bABLoop = saver.bABLoop;
         bLoop = saver.bLoop;
         bLoopA = saver.bLoopA;
