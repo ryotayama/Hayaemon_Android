@@ -77,10 +77,13 @@
 
         <TextView
             android:id="@+id/textA"
-            android:text="A: "
+            android:text="Ａ："
+            android:textSize="15dp"
+            android:textColor="#000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_gravity="center_vertical"
             android:focusable="true"
             android:focusableInTouchMode="true">
             <requestFocus/>
@@ -89,23 +92,38 @@
         <EditText
             android:id="@+id/textAValue"
             android:text="00:00:00.00"
-            android:layout_width="wrap_content"
+            android:textSize="13dp"
+            android:layout_width="90dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/editborder"
             />
 
         <TextView
             android:id="@+id/textB"
-            android:text="B: "
+            android:text="Ｂ："
+            android:textSize="15dp"
+            android:textColor="#000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="16dp"
             />
 
         <EditText
             android:id="@+id/textBValue"
             android:text="00:00:00.00"
-            android:layout_width="wrap_content"
+            android:textSize="13dp"
+            android:layout_width="90dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/editborder"
             />
 
     </LinearLayout>

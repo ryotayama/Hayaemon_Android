@@ -153,6 +153,7 @@
             <EditText
                 android:id="@+id/editTimeEffectDetail"
                 android:text="10.0秒"
+                android:textSize="13dp"
                 android:layout_width="64dp"
                 android:layout_height="wrap_content"
                 android:gravity="end"
@@ -176,6 +177,7 @@
             <EditText
                 android:id="@+id/editSpeedEffectDetail"
                 android:text="10.0%"
+                android:textSize="13dp"
                 android:layout_width="64dp"
                 android:layout_height="wrap_content"
                 android:gravity="end"

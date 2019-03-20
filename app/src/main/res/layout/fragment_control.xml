@@ -21,8 +21,11 @@
     <EditText
         android:id="@+id/textSpeedValue"
         android:text="100.0%"
-        android:layout_width="wrap_content"
+        android:textSize="13dp"
+        android:layout_width="64dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/editborder"
+        android:gravity="end"
         android:layout_alignBaseline="@id/btnResetSpeed"
         android:layout_toRightOf="@id/textSpeed"
         />
@@ -78,8 +81,12 @@
     <EditText
         android:id="@+id/textPitchValue"
         android:text="　0.0"
-        android:layout_width="wrap_content"
+        android:textSize="13dp"
+        android:layout_width="64dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/editborder"
+        android:gravity="end"
+        android:paddingRight="15dp"
         android:layout_alignBaseline="@id/btnResetPitch"
         android:layout_alignLeft="@+id/textSpeedValue"
         android:layout_alignRight="@+id/textSpeedValue"
