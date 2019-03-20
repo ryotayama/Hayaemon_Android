@@ -45,8 +45,8 @@
     <View
         android:id="@+id/viewSepSetting"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#CCC"
+        android:layout_height="1px"
+        android:background="#BFBFBF"
         android:layout_below="@+id/relativeSettingTitle"
         />
 
@@ -84,8 +84,8 @@
                 <View
                     android:id="@+id/viewSepPlayHeader"
                     android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="#CCC"
+                    android:layout_height="1px"
+                    android:background="#BFBFBF"
                     android:layout_below="@+id/textPlayHeader"
                     />
 
@@ -126,8 +126,8 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="#CCC"
+                    android:layout_height="1px"
+                    android:background="#BFBFBF"
                     android:layout_below="@+id/relativeRepeat"
                     />
 
@@ -158,8 +158,8 @@
                 <View
                     android:id="@+id/viewSepPurchasedHeader"
                     android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="#CCC"
+                    android:layout_height="1px"
+                    android:background="#BFBFBF"
                     android:layout_below="@id/textPurchasedHeader"
                     />
 
@@ -212,8 +212,8 @@
                 <View
                     android:id="@+id/viewDivider"
                     android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="#CCC"
+                    android:layout_height="1px"
+                    android:background="#BFBFBF"
                     android:layout_below="@id/relativePurple"
                     />
 
@@ -265,8 +265,8 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="#CCC"
+                    android:layout_height="1px"
+                    android:background="#BFBFBF"
                     android:layout_below="@id/relativeElegant"
                     />
 

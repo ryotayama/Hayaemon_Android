@@ -42,7 +42,7 @@
         <View
             android:id="@+id/devider1"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="1px"
             android:background="#BFBFBF"
             android:layout_below="@+id/btnSortPlaylist"
             />
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="#BFBFBF"
-            android:dividerHeight="0.5dp"
+            android:dividerHeight="1px"
             android:paddingBottom="80dp"
             android:clipToPadding="false"
             android:layout_below="@+id/devider1"
@@ -109,7 +109,7 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:divider="#BFBFBF"
-            android:dividerHeight="0.5dp"
+            android:dividerHeight="1px"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/buttonLeft"
             android:layout_toLeftOf="@+id/buttonAddPlaylist_small"
@@ -132,7 +132,7 @@
         <View
             android:id="@+id/devider2"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="1px"
             android:background="#BFBFBF"
             android:layout_below="@+id/recyclerTab"
             />
@@ -142,7 +142,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="#BFBFBF"
-            android:dividerHeight="0.5dp"
+            android:dividerHeight="1px"
             android:paddingBottom="80dp"
             android:clipToPadding="false"
             android:layout_below="@+id/devider2"

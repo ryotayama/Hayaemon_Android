@@ -42,7 +42,7 @@ public class BottomMenu extends BottomSheetDialog {
                     setCancelable(true);
                     for(int i = 0; i < linearLayout.getChildCount(); i++) {
                         View childView = linearLayout.getChildAt(i);
-                        if(childView.getHeight() != (int) (0.5 * getContext().getResources().getDisplayMetrics().density + 0.5))
+                        if(childView.getHeight() != 1)
                             childView.setBackgroundColor(Color.argb(255, 255, 255, 255));
                     }
                 }
@@ -94,7 +94,7 @@ public class BottomMenu extends BottomSheetDialog {
         paramViewSep.bottomMargin = (int) (8 * getContext().getResources().getDisplayMetrics().density + 0.5);
         paramViewSep.leftMargin = (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5);
         paramViewSep.rightMargin = (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5);
-        paramViewSep.height = (int) (0.5 * getContext().getResources().getDisplayMetrics().density + 0.5);
+        paramViewSep.height = 1;
         linearLayoutParent.addView(viewSep, paramViewSep);
 
         linearLayoutParent.addView(scroll);
@@ -108,7 +108,7 @@ public class BottomMenu extends BottomSheetDialog {
         paramViewSep.bottomMargin = (int) (8 * getContext().getResources().getDisplayMetrics().density + 0.5);
         paramViewSep.leftMargin = (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5);
         paramViewSep.rightMargin = (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5);
-        paramViewSep.height = (int) (0.5 * getContext().getResources().getDisplayMetrics().density + 0.5);
+        paramViewSep.height = 1;
         linearLayout.addView(viewSep, paramViewSep);
         nHeight += paramViewSep.topMargin + paramViewSep.bottomMargin + paramViewSep.height;
     }
@@ -211,7 +211,7 @@ public class BottomMenu extends BottomSheetDialog {
         paramViewSep.bottomMargin = 0;
         paramViewSep.leftMargin = (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5);
         paramViewSep.rightMargin = (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5);
-        paramViewSep.height = (int) (0.5 * getContext().getResources().getDisplayMetrics().density + 0.5);
+        paramViewSep.height = 1;
         linearLayoutParent.addView(viewSep, paramViewSep);
 
         final TextView textCancel = new TextView(getContext());
@@ -243,7 +243,7 @@ public class BottomMenu extends BottomSheetDialog {
         linearLayoutParent.addView(textCancel, param);
 
         int nSpaceHeight = (int) (8 * getContext().getResources().getDisplayMetrics().density + 0.5);
-        int nSepHeight = (int) (0.5 * getContext().getResources().getDisplayMetrics().density + 0.5);
+        int nSepHeight = 1;
         int nMenuHeight = (int) (48 * getContext().getResources().getDisplayMetrics().density + 0.5);
         int nScrollMaxHeight = getContext().getResources().getDisplayMetrics().heightPixels - getStatusBarHeight() - nSpaceHeight * 4 - nMenuHeight * 2 - nSepHeight * 2;
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams)scroll.getLayoutParams();

@@ -61,7 +61,7 @@
     <View
         android:id="@+id/deviderSpeedPitch"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="1px"
         android:background="#BFBFBF"
         android:layout_below="@+id/btnResetSpeed"
         />
@@ -118,7 +118,7 @@
         />
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="1px"
         android:background="#BFBFBF"
         android:layout_below="@+id/btnResetPitch"
         />
@@ -133,8 +133,8 @@
         <View
             android:id="@+id/line1"
             android:layout_width="0dp"
-            android:layout_height="1px"
-            android:background="@android:color/darker_gray"
+            android:layout_height="1dp"
+            android:background="#CCC"
             android:layout_toRightOf="@+id/btnSpeedDown"
             android:layout_toLeftOf="@+id/btnSpeedUp"
             android:layout_centerVertical="true"
@@ -142,9 +142,9 @@
             />
         <View
             android:id="@+id/line2"
-            android:layout_width="1px"
+            android:layout_width="1dp"
             android:layout_height="0dp"
-            android:background="@android:color/darker_gray"
+            android:background="#CCC"
             android:layout_below="@+id/btnPitchUp"
             android:layout_above="@+id/btnPitchDown"
             android:layout_centerHorizontal="true"

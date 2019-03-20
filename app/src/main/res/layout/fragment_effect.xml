@@ -50,8 +50,8 @@
         <View
             android:id="@+id/viewSepEffect"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#CCC"
+            android:layout_height="1px"
+            android:background="#BFBFBF"
             android:layout_below="@id/relativeEffectTitle"
             />
 
@@ -201,7 +201,7 @@
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:divider="#BFBFBF"
-            android:dividerHeight="0.5dp"
+            android:dividerHeight="1px"
             android:clipToPadding="false"
             />
 

@@ -19,7 +19,7 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:divider="#BFBFBF"
-        android:dividerHeight="0.5dp"
+        android:dividerHeight="1px"
         android:clipToPadding="false"
         android:layout_below="@+id/tabEqualizer"
         />

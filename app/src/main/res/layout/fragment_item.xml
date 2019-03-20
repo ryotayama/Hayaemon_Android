@@ -45,8 +45,8 @@
     <View
         android:id="@+id/viewSepItem"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#CCC"
+        android:layout_height="1px"
+        android:background="#BFBFBF"
         android:layout_below="@+id/relativeItemTitle"
         />
 
@@ -75,7 +75,16 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"/>
 
+        <View
+            android:id="@+id/viewSepItemHeader"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#BFBFBF"
+            android:layout_below="@+id/textItemHeader"
+            />
+
         <RelativeLayout
+            android:id="@+id/relativeItems"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#FFF"
@@ -83,7 +92,7 @@
             android:paddingBottom="8dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:layout_below="@id/textItemHeader"
+            android:layout_below="@id/viewSepItemHeader"
             >
 
             <TextView
@@ -263,6 +272,13 @@
                 />
 
         </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#BFBFBF"
+            android:layout_below="@+id/relativeItems"
+            />
 
     </RelativeLayout>
 
