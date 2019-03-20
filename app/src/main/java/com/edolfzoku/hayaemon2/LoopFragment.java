@@ -623,9 +623,29 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             {
                 if (MainActivity.hStream != 0)
                 {
+                    double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     dPos -= 5.0;
-                    if(dPos <= 0.0) dPos = 0.0;
+                    EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+                    boolean bReverse = effectFragment.isReverse();
+                    if(bReverse) {
+                        if(dPos <= 0.0f) {
+                            if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
+                                activity.onEnded(true);
+                                return true;
+                            }
+                            dPos = 0.0f;
+                        }
+                    }
+                    else {
+                        if(dLength <= dPos) {
+                            if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
+                                activity.onEnded(true);
+                                return true;
+                            }
+                            dPos = dLength;
+                        }
+                    }
                     LinearLayout ABButton = (LinearLayout)getActivity().findViewById(R.id.ABButton);
                     if(ABButton.getVisibility() == View.VISIBLE && ((activity.bLoopA && dPos < activity.dLoopA) || (activity.bLoopB && activity.dLoopB < dPos)))
                         dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA));
@@ -643,7 +663,26 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     dPos += 5.0;
-                    if (dPos >= dLength) dPos = dLength - 1.0;
+                    EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+                    boolean bReverse = effectFragment.isReverse();
+                    if(bReverse) {
+                        if(dPos <= 0.0f) {
+                            if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
+                                activity.onEnded(true);
+                                return true;
+                            }
+                            dPos = 0.0f;
+                        }
+                    }
+                    else {
+                        if(dLength <= dPos) {
+                            if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
+                                activity.onEnded(true);
+                                return true;
+                            }
+                            dPos = dLength;
+                        }
+                    }
                     LinearLayout ABButton = (LinearLayout)getActivity().findViewById(R.id.ABButton);
                     if(ABButton.getVisibility() == View.VISIBLE && ((activity.bLoopA && dPos < activity.dLoopA) || (activity.bLoopB && activity.dLoopB < dPos)))
                         dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA));
@@ -918,20 +957,36 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             float fY = event.getY();
             viewCurPos = getActivity().findViewById(R.id.viewCurPos);
             int nBkWidth = waveView.getWidth();
-            long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
-            long nPos = (long)(nLength * fX / nBkWidth);
-
-            double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, nPos);
+            double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
+            double dPos = dLength * fX / nBkWidth;
             LinearLayout ABButton = (LinearLayout)getActivity().findViewById(R.id.ABButton);
             if(ABButton.getVisibility() == View.VISIBLE && ((activity.bLoopA && dPos < activity.dLoopA) || (activity.bLoopB && activity.dLoopB < dPos)))
-                nPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA);
-            BASS.BASS_ChannelSetPosition(MainActivity.hStream, nPos, BASS.BASS_POS_BYTE);
-            activity.setSync();
-
-            double dCurPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, nPos);
-            int i = 0;
+                dPos = activity.dLoopA;
             EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
             boolean bReverse = effectFragment.isReverse();
+            if(bReverse) {
+                if(dPos <= 0.0f) {
+                    if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
+                        activity.onEnded(true);
+                        return true;
+                    }
+                    dPos = 0.0f;
+                }
+            }
+            else {
+                if(dLength <= dPos) {
+                    if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
+                        activity.onEnded(true);
+                        return true;
+                    }
+                    dPos = dLength;
+                }
+            }
+            BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dPos), BASS.BASS_POS_BYTE);
+            activity.setSync();
+
+            double dCurPos = dPos;
+            int i = 0;
             for( ; i < arMarkerTime.size(); i++) {
                 dPos = arMarkerTime.get(i);
                 if((!bReverse && dCurPos < dPos) || (bReverse && dCurPos < dPos - 1.0))

@@ -594,14 +594,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public void onPlayBtnClicked()
     {
         if(BASS.BASS_ChannelIsActive(activity.hStream) == BASS.BASS_ACTIVE_PLAYING)
-        {
             pause();
-        }
         else
         {
             if(BASS.BASS_ChannelIsActive(activity.hStream) == BASS.BASS_ACTIVE_PAUSED)
             {
-                play();
+                double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
+                double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
+                EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+                if(!effectFragment.isReverse() && dPos >= dLength - 0.75) {
+                    play();
+                    activity.onEnded(false);
+                }
+                else play();
             }
             else
             {
@@ -2389,6 +2394,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
     public void playPrev()
     {
+        activity.setWaitEnd(false);
         if(MainActivity.hStream == 0) return;
         nPlaying--;
         if(nPlaying < 0) return;
@@ -2396,6 +2402,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     }
 
     public void playNext(boolean bPlay) {
+        activity.setWaitEnd(false);
         int nTempPlaying = nPlaying;
         MainActivity activity = (MainActivity) getActivity();
         ArrayList<SongItem> arSongs = arPlaylists.get(nPlayingPlaylist);
@@ -2514,6 +2521,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
     public void playSong(int nSong, boolean bPlay)
     {
+        activity.setWaitEnd(false);
         final MainActivity activity = (MainActivity)getActivity();
         activity.clearLoop(false);
 
@@ -2863,6 +2871,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
     public void stop()
     {
+        activity.setWaitEnd(false);
+
         if(MainActivity.hStream == 0) return;
 
         final RelativeLayout relativePlaying = (RelativeLayout)activity.findViewById(R.id.relativePlaying);

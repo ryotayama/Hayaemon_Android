@@ -43,6 +43,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ServiceConnection mServiceConn;
     private boolean bShowUpdateLog;
     private boolean bPlayNextByBPos;
+    private boolean bWaitEnd = false;
     private BroadcastReceiver receiver;
     private AdView mAdView;
     private boolean mBound = false;
@@ -138,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public IInAppBillingService getService() { return mService; }
     public void setPlayNextByBPos(boolean bPlayNextByBPos) { this.bPlayNextByBPos = bPlayNextByBPos; }
     public boolean isPlayNextByBPos() { return bPlayNextByBPos; }
+    public void setWaitEnd(boolean bWaitEnd) { this.bWaitEnd = bWaitEnd; }
 
     public MainActivity() {
         bLoopA = false;
@@ -1249,86 +1252,103 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         EffectFragment effectFragment = (EffectFragment)mSectionsPagerAdapter.getItem(4);
         if(effectFragment.isReverse()) {
             if(ABButton.getVisibility() == View.VISIBLE && bLoopA) // ABループ中でA位置が設定されている
-                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopA), EndSync, null);
+                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopA), EndSync, this);
             else if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) // マーカー再生中
             {
                 LoopFragment loopFragment = (LoopFragment)mSectionsPagerAdapter.getItem(1);
-                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, loopFragment.getMarkerDstPos()), EndSync, null);
+                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, loopFragment.getMarkerDstPos()), EndSync, this);
             }
             else
-                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_END, 0, EndSync, null);
+                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_END, 0, EndSync, this);
         }
         else {
+            double dLength = BASS.BASS_ChannelBytes2Seconds(hStream, BASS.BASS_ChannelGetLength(hStream, BASS.BASS_POS_BYTE));
             if(ABButton.getVisibility() == View.VISIBLE && bLoopB) // ABループ中でB位置が設定されている
-                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopB), EndSync, null);
+                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopB), EndSync, this);
             else if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) // マーカー再生中
             {
                 LoopFragment loopFragment = (LoopFragment)mSectionsPagerAdapter.getItem(1);
-                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, loopFragment.getMarkerDstPos()), EndSync, null);
+                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, loopFragment.getMarkerDstPos()), EndSync, this);
             }
             else
-                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_END, 0, EndSync, null);
+                hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, dLength - 0.75), EndSync, this);
         }
+    }
+
+    public void onEnded(final boolean bForce)
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LoopFragment loopFragment = (LoopFragment) mSectionsPagerAdapter.getItem(1);
+                EffectFragment effectFragment = (EffectFragment) mSectionsPagerAdapter.getItem(4);
+                LinearLayout ABButton = (LinearLayout) findViewById(R.id.ABButton);
+                LinearLayout MarkerButton = (LinearLayout) findViewById(R.id.MarkerButton);
+                ImageButton btnLoopmarker = (ImageButton) findViewById(R.id.btnLoopmarker);
+
+                if (ABButton.getVisibility() == View.VISIBLE && (bLoopA || bLoopB) && !bPlayNextByBPos) {
+                    if (effectFragment.isReverse())
+                        BASS.BASS_ChannelSetPosition(hStream, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopB), BASS.BASS_POS_BYTE);
+                    else
+                        BASS.BASS_ChannelSetPosition(hStream, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopA), BASS.BASS_POS_BYTE);
+                    setSync();
+                    if (BASS.BASS_ChannelIsActive(hStream) != BASS.BASS_ACTIVE_PLAYING)
+                        BASS.BASS_ChannelPlay(hStream, false);
+                } else if (MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) {
+                    BASS.BASS_ChannelSetPosition(hStream, BASS.BASS_ChannelSeconds2Bytes(hStream, loopFragment.getMarkerSrcPos()), BASS.BASS_POS_BYTE);
+                    setSync();
+                    if (BASS.BASS_ChannelIsActive(hStream) != BASS.BASS_ACTIVE_PLAYING)
+                        BASS.BASS_ChannelPlay(hStream, false);
+                } else {
+                    bWaitEnd = true;
+                    final Handler handler = new Handler();
+                    Runnable timer = new Runnable() {
+                        public void run() {
+                            if (!bForce && BASS.BASS_ChannelIsActive(hStream) == BASS.BASS_ACTIVE_PLAYING) {
+                                if(bWaitEnd) {
+                                    handler.postDelayed(this, 100);
+                                    return;
+                                }
+                            }
+                            bWaitEnd = false;
+
+                            ImageButton btnShuffle = (ImageButton) findViewById(R.id.btnShuffle);
+                            boolean bShuffle = false;
+                            boolean bSingle = false;
+                            if (btnShuffle.getContentDescription().toString().equals("シャッフルあり"))
+                                bShuffle = true;
+                            else if (btnShuffle.getContentDescription().toString().equals("１曲のみ"))
+                                bSingle = true;
+
+                            ImageButton btnRepeat = (ImageButton) findViewById(R.id.btnRepeat);
+                            boolean bRepeatAll = false;
+                            boolean bRepeatSingle = false;
+                            if (btnRepeat.getContentDescription().toString().equals("全曲リピート"))
+                                bRepeatAll = true;
+                            else if (btnRepeat.getContentDescription().toString().equals("１曲リピート"))
+                                bRepeatSingle = true;
+
+                            PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
+                            if (bSingle)
+                                playlistFragment.playNext(false);
+                            else if (bRepeatSingle)
+                                BASS.BASS_ChannelPlay(hStream, true);
+                            else
+                                playlistFragment.playNext(true);
+                        }
+                    };
+                    handler.postDelayed(timer, 0);
+                }
+            }
+        });
     }
 
     private final BASS.SYNCPROC EndSync = new BASS.SYNCPROC()
     {
         public void SYNCPROC(int handle, int channel, int data, Object user)
         {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    LoopFragment loopFragment = (LoopFragment)mSectionsPagerAdapter.getItem(1);
-                    EffectFragment effectFragment = (EffectFragment)mSectionsPagerAdapter.getItem(4);
-                    LinearLayout ABButton = (LinearLayout)findViewById(R.id.ABButton);
-                    LinearLayout MarkerButton = (LinearLayout)findViewById(R.id.MarkerButton);
-                    ImageButton btnLoopmarker = (ImageButton)findViewById(R.id.btnLoopmarker);
-
-                    if(ABButton.getVisibility() == View.VISIBLE && (bLoopA || bLoopB) && !bPlayNextByBPos)
-                    {
-                        if(effectFragment.isReverse())
-                            BASS.BASS_ChannelSetPosition(hStream, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopB), BASS.BASS_POS_BYTE);
-                        else
-                            BASS.BASS_ChannelSetPosition(hStream, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopA), BASS.BASS_POS_BYTE);
-                        setSync();
-                        if(BASS.BASS_ChannelIsActive(hStream) != BASS.BASS_ACTIVE_PLAYING)
-                            BASS.BASS_ChannelPlay(hStream, false);
-                    }
-                    else if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected())
-                    {
-                        BASS.BASS_ChannelSetPosition(hStream, BASS.BASS_ChannelSeconds2Bytes(hStream, loopFragment.getMarkerSrcPos()), BASS.BASS_POS_BYTE);
-                        setSync();
-                        if(BASS.BASS_ChannelIsActive(hStream) != BASS.BASS_ACTIVE_PLAYING)
-                            BASS.BASS_ChannelPlay(hStream, false);
-                    }
-                    else
-                    {
-                        ImageButton btnShuffle = (ImageButton)findViewById(R.id.btnShuffle);
-                        boolean bShuffle = false;
-                        boolean bSingle = false;
-                        if(btnShuffle.getContentDescription().toString().equals("シャッフルあり"))
-                            bShuffle = true;
-                        else if(btnShuffle.getContentDescription().toString().equals("１曲のみ"))
-                            bSingle = true;
-
-                        ImageButton btnRepeat = (ImageButton)findViewById(R.id.btnRepeat);
-                        boolean bRepeatAll = false;
-                        boolean bRepeatSingle = false;
-                        if(btnRepeat.getContentDescription().toString().equals("全曲リピート"))
-                            bRepeatAll = true;
-                        else if(btnRepeat.getContentDescription().toString().equals("１曲リピート"))
-                            bRepeatSingle = true;
-
-                        PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
-                        if(bSingle)
-                            playlistFragment.playNext(false);
-                        else if(bRepeatSingle)
-                            BASS.BASS_ChannelPlay(hStream, true);
-                        else
-                            playlistFragment.playNext(true);
-                    }
-                }
-            });
+            MainActivity activity = (MainActivity)user;
+            activity.onEnded(false);
         }
     };
 
