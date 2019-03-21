@@ -105,6 +105,7 @@
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:background="#a0a0a0"
+            android:visibility="invisible"
             android:layout_below="@+id/linearControl"/>
         <com.edolfzoku.hayaemon2.HoldableViewPager
             android:id="@+id/container"

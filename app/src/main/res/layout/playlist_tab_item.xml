@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativePlaylistTab"
     android:layout_width="wrap_content"
     android:layout_height="48dp"
+    android:layout_marginLeft="2dp"
+    android:layout_marginRight="2dp"
+    android:layout_marginBottom="-1px"
+    android:background="@drawable/playlisttab_normal"
     >
 
     <TextView
@@ -13,9 +18,22 @@
         android:textSize="13dp"
         android:textColor="#000000"
         android:gravity="center"
-        android:paddingHorizontal="16dp"
+        android:paddingLeft="16dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        />
+
+    <com.edolfzoku.hayaemon2.AnimationButton
+        android:id="@+id/btnPlaylistMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/button_more_blue"
+        android:background="@null"
+        android:paddingRight="4dp"
+        android:layout_toRightOf="@+id/textPlaylistTab"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
         />
 
 </RelativeLayout>

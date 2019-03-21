@@ -25,6 +25,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -37,11 +38,15 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
     private LayoutInflater inflater;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+        RelativeLayout relativePlaylistTab;
         TextView textPlaylistTab;
+        AnimationButton btnPlaylistMenu;
 
         ViewHolder(View view) {
             super(view);
-            textPlaylistTab = (TextView) view.findViewById(R.id.textPlaylistTab);
+            relativePlaylistTab = view.findViewById(R.id.relativePlaylistTab);
+            textPlaylistTab = view.findViewById(R.id.textPlaylistTab);
+            btnPlaylistMenu = view.findViewById(R.id.btnPlaylistMenu);
         }
     }
 
@@ -73,17 +78,29 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
         if(position == playlistFragment.getSelectedPlaylist()) {
             holder.textPlaylistTab.setContentDescription(item + "、選択ずみ");
             holder.textPlaylistTab.setTypeface(Typeface.DEFAULT_BOLD);
-            holder.textPlaylistTab.setBackgroundColor(Color.argb(255, 170, 170, 170));
+            holder.relativePlaylistTab.setBackgroundResource(R.drawable.playlisttab_select);
+            holder.textPlaylistTab.setPadding(holder.textPlaylistTab.getPaddingLeft(), holder.textPlaylistTab.getPaddingTop(), 0, holder.textPlaylistTab.getPaddingBottom());
+            holder.btnPlaylistMenu.setVisibility(View.VISIBLE);
+            holder.btnPlaylistMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    playlistFragment.showPlaylistMenu(position);
+                }
+            });
         }
         else if(playlistFragment.getPlayingPlaylist() == position && playlistFragment.getPlaying() != -1) {
             holder.textPlaylistTab.setContentDescription(item);
             holder.textPlaylistTab.setTypeface(Typeface.DEFAULT);
-            holder.textPlaylistTab.setBackgroundColor(Color.argb(255, 224, 239, 255));
+            holder.relativePlaylistTab.setBackgroundResource(R.drawable.playlisttab_play);
+            holder.textPlaylistTab.setPadding(holder.textPlaylistTab.getPaddingLeft(), holder.textPlaylistTab.getPaddingTop(), (int) (16 * activity.getResources().getDisplayMetrics().density + 0.5), holder.textPlaylistTab.getPaddingBottom());
+            holder.btnPlaylistMenu.setVisibility(View.GONE);
         }
         else {
             holder.textPlaylistTab.setContentDescription(item);
             holder.textPlaylistTab.setTypeface(Typeface.DEFAULT);
-            holder.textPlaylistTab.setBackgroundColor(Color.argb(255, 255, 255, 255));
+            holder.relativePlaylistTab.setBackgroundResource(R.drawable.playlisttab_normal);
+            holder.textPlaylistTab.setPadding(holder.textPlaylistTab.getPaddingLeft(), holder.textPlaylistTab.getPaddingTop(), (int) (16 * activity.getResources().getDisplayMetrics().density + 0.5), holder.textPlaylistTab.getPaddingBottom());
+            holder.btnPlaylistMenu.setVisibility(View.GONE);
         }
 
         holder.textPlaylistTab.setOnClickListener(new View.OnClickListener() {
