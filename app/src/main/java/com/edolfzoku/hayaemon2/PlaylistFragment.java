@@ -387,6 +387,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             playlistsAdapter.notifyDataSetChanged();
             RelativeLayout relativePlaylists = (RelativeLayout)activity.findViewById(R.id.relativePlaylists);
             relativePlaylists.setVisibility(View.VISIBLE);
+            activity.findViewById(R.id.viewSep1).setVisibility(View.VISIBLE);
         }
         else if(v.getId() == R.id.buttonAddPlaylist_small)
         {
@@ -505,6 +506,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 relativeSongs.setVisibility(View.VISIBLE);
                 RelativeLayout relativeLyrics = (RelativeLayout)activity.findViewById(R.id.relativeLyrics);
                 relativeLyrics.setVisibility(View.INVISIBLE);
+                activity.findViewById(R.id.viewSep1).setVisibility(View.INVISIBLE);
             }
             else {
                 TextView textLyrics = (TextView)activity.findViewById(R.id.textLyrics);
@@ -1778,6 +1780,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         relativeSongs.setVisibility(View.INVISIBLE);
         RelativeLayout relativeLyrics = (RelativeLayout)activity.findViewById(R.id.relativeLyrics);
         relativeLyrics.setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.viewSep1).setVisibility(View.VISIBLE);
     }
 
     public void setSavingEffect()
@@ -2577,6 +2580,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         relativeSongs.setVisibility(View.VISIBLE);
         RelativeLayout relativePlaylists = (RelativeLayout)activity.findViewById(R.id.relativePlaylists);
         relativePlaylists.setVisibility(View.INVISIBLE);
+        activity.findViewById(R.id.viewSep1).setVisibility(View.INVISIBLE);
     }
 
     public void onSongItemClick(int nSong)

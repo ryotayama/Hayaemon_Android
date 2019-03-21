@@ -1187,6 +1187,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onPageSelected(int position) {
                 TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+                PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
+                if(position == 0 && findViewById(R.id.relativeSongs).getVisibility() == View.VISIBLE) findViewById(R.id.viewSep1).setVisibility(View.INVISIBLE);
+                else findViewById(R.id.viewSep1).setVisibility(View.VISIBLE);
                 for(int i = 0; i < 5; i++) {
                     TextView tab = (TextView) tabLayout.getTabAt(i).getCustomView();
                     if(i == position) {
