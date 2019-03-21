@@ -1563,6 +1563,78 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 alertDialog.show();
             }
         });
+        menu.addMenu("再生リストをコピー", R.drawable.actionsheet_copy, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle("再生リストをコピー");
+                final EditText editText = new EditText (activity);
+                editText.setHint("再生リスト");
+                editText.setHintTextColor(Color.argb(255, 192, 192, 192));
+                editText.setText(arPlaylistNames.get(nPosition)+" のコピー");
+                builder.setView(editText);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        int nFrom = nPosition;
+                        int nTo = nPosition + 1;
+                        arPlaylistNames.add(nTo, editText.getText().toString());
+                        ArrayList<SongItem> arSongs = new ArrayList<>();
+                        arPlaylists.add(nTo, arSongs);
+                        ArrayList<EffectSaver> arEffectSavers = new ArrayList<>();
+                        arEffects.add(nTo, arEffectSavers);
+                        ArrayList<String> arTempLyrics = new ArrayList<>();
+                        arLyrics.add(nTo, arTempLyrics);
+
+                        ArrayList<SongItem> arSongsFrom = arPlaylists.get(nFrom);
+                        for(SongItem item : arSongsFrom) {
+                            File file = new File(item.getPath());
+                            String strPath = item.getPath();
+                            if(file.getParent().equals(activity.getFilesDir()))
+                                strPath = activity.copyFile(Uri.parse(item.getPath())).toString();
+                            SongItem itemTo = new SongItem(String.format("%d", arSongs.size()+1), item.getTitle(), item.getArtist(), strPath);
+                            arSongs.add(itemTo);
+                        }
+
+                        ArrayList<EffectSaver> arEffectSaversFrom = arEffects.get(nFrom);
+                        for(EffectSaver saver : arEffectSaversFrom) {
+                            if(saver.isSave()) {
+                                EffectSaver saverTo = new EffectSaver(saver);
+                                arEffectSavers.add(saverTo);
+                            }
+                            else {
+                                EffectSaver saverTo = new EffectSaver();
+                                arEffectSavers.add(saverTo);
+                            }
+                        }
+
+                        ArrayList<String> arLyricsFrom = arLyrics.get(nSelectedPlaylist);
+                        for(String strLyrics : arLyricsFrom)
+                            arTempLyrics.add(strLyrics);
+
+                        tabAdapter.notifyDataSetChanged();
+                        playlistsAdapter.notifyDataSetChanged();
+                        selectPlaylist(nTo);
+                        if(activity != null)
+                            saveFiles(true, true, true, true, false);
+                    }
+                });
+                builder.setNegativeButton("キャンセル", null);
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        editText.requestFocus();
+                        editText.setSelection(editText.getText().toString().length());
+                        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if (null != imm) imm.showSoftInput(editText, 0);
+                    }
+                });
+                alertDialog.show();
+            }
+        });
         menu.addDestructiveMenu("再生リストを空にする", R.drawable.actionsheet_folder_erase, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
