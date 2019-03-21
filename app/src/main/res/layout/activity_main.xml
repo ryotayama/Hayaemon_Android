@@ -23,95 +23,95 @@
         tools:context="com.edolfzoku.hayaemon2.MainActivity"
         tools:showIn="@layout/activity_main">
 
-            <LinearLayout
-                android:id="@+id/linearControl"
-                android:layout_width="match_parent"
-                android:layout_height="49dp"
-                android:layout_alignParentTop="true"
-                android:orientation="horizontal">
-                <com.edolfzoku.hayaemon2.AnimationButton
-                    android:id="@+id/btnMenu"
-                    android:contentDescription="メニュー"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/bar_button_menu"
-                    android:background="@null"
-                    android:layout_marginTop="2.5dp"
-                    />
-                <com.edolfzoku.hayaemon2.AnimationButton
-                    android:id="@+id/btnRewind"
-                    android:contentDescription="前へ"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/bar_button_rewind"
-                    android:background="@null"
-                    android:layout_marginTop="2.5dp"
-                    />
-                <com.edolfzoku.hayaemon2.AnimationButton
-                    android:id="@+id/btnPlay"
-                    android:contentDescription="再生"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/bar_button_play"
-                    android:background="@null"
-                    android:layout_marginTop="2.5dp"
-                    />
-                <com.edolfzoku.hayaemon2.AnimationButton
-                    android:id="@+id/btnForward"
-                    android:contentDescription="次へ"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/bar_button_forward"
-                    android:background="@null"
-                    android:layout_marginTop="2.5dp"
-                    />
-                <com.edolfzoku.hayaemon2.AnimationButton
-                    android:id="@+id/btnShuffle"
-                    android:contentDescription="シャッフルなし"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/bar_button_mode_shuffle"
-                    android:background="@null"
-                    android:layout_marginTop="2.5dp"
-                    />
-                <com.edolfzoku.hayaemon2.AnimationButton
-                    android:id="@+id/btnRepeat"
-                    android:contentDescription="リピートなし"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/bar_button_mode_repeat"
-                    android:background="@null"
-                    android:layout_marginTop="2.5dp"
-                    />
-                <com.edolfzoku.hayaemon2.AnimationButton
-                    android:id="@+id/btnRecord"
-                    android:contentDescription="録音"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/bar_button_rec"
-                    android:background="@null"
-                    android:layout_marginTop="2.5dp"
-                    />
-            </LinearLayout>
-            <View
-                android:id="@+id/viewSep1"
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="#a0a0a0"
-                android:layout_below="@+id/linearControl"/>
-            <com.edolfzoku.hayaemon2.HoldableViewPager
-                android:id="@+id/container"
-                android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/linearControl"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal">
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnMenu"
+                android:contentDescription="メニュー"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/viewSep1"
-                android:layout_above="@+id/relativePlaying"/>
+                android:layout_weight="1"
+                android:src="@drawable/bar_button_menu"
+                android:background="@null"
+                android:layout_marginTop="2.5dp"
+                />
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnRewind"
+                android:contentDescription="前へ"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/bar_button_rewind"
+                android:background="@null"
+                android:layout_marginTop="2.5dp"
+                />
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnPlay"
+                android:contentDescription="再生"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/bar_button_play"
+                android:background="@null"
+                android:layout_marginTop="2.5dp"
+                />
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnForward"
+                android:contentDescription="次へ"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/bar_button_forward"
+                android:background="@null"
+                android:layout_marginTop="2.5dp"
+                />
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnShuffle"
+                android:contentDescription="シャッフルなし"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/bar_button_mode_shuffle"
+                android:background="@null"
+                android:layout_marginTop="2.5dp"
+                />
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnRepeat"
+                android:contentDescription="リピートなし"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/bar_button_mode_repeat"
+                android:background="@null"
+                android:layout_marginTop="2.5dp"
+                />
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnRecord"
+                android:contentDescription="録音"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/bar_button_rec"
+                android:background="@null"
+                android:layout_marginTop="2.5dp"
+                />
+        </LinearLayout>
+        <View
+            android:id="@+id/viewSep1"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#a0a0a0"
+            android:layout_below="@+id/linearControl"/>
+        <com.edolfzoku.hayaemon2.HoldableViewPager
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/viewSep1"
+            android:layout_above="@+id/relativeRecordind"/>
 
         <View
             android:id="@+id/viewShadowOfPlayingBar"
@@ -122,6 +122,58 @@
             android:layout_above="@+id/relativePlaying"
             android:background="@drawable/topshadow"
             />
+
+        <RelativeLayout
+            android:id="@+id/relativeRecordind"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:background="#007AFF"
+            android:animateLayoutChanges="true"
+            android:visibility="gone"
+            android:layout_above="@+id/relativePlaying">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_rec_now"
+                android:layout_marginLeft="8dp"
+                android:layout_centerVertical="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="録音中"
+                android:textSize="20dp"
+                android:textColor="#FFF"
+                android:layout_marginLeft="46dp"
+                android:gravity="center_vertical"
+                />
+
+            <TextView
+                android:id="@+id/textRecordingTime"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="00:00:00.00"
+                android:textSize="16dp"
+                android:textColor="#FFF"
+                android:layout_marginRight="16dp"
+                android:layout_toLeftOf="@+id/btnStopRecording"
+                android:gravity="center_vertical"
+                />
+
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnStopRecording"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_rec_stop"
+                android:background="@null"
+                android:layout_marginRight="8dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/relativePlaying"
@@ -210,7 +262,7 @@
 
         </RelativeLayout>
 
-        <android.support.design.widget.TabLayout
+    <android.support.design.widget.TabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

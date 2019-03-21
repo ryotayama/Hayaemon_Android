@@ -69,6 +69,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -791,31 +792,31 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             builder.show();
             return;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("録音中…");
-        RelativeLayout relative = new RelativeLayout(activity);
-        final TextView text = new TextView (activity);
-        text.setText("00:00:00.00");
-        text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
 
-        RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        param.addRule(RelativeLayout.CENTER_IN_PARENT);
-        param.topMargin = 32;
-        relative.addView(text, param);
-        builder.setView(relative);
-        builder.setPositiveButton("完了", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+        final RelativeLayout relativeRecording = activity.findViewById(R.id.relativeRecordind);
+        final TextView text = activity.findViewById(R.id.textRecordingTime);
+        final AnimationButton btnStopRecording = activity.findViewById(R.id.btnStopRecording);
+        btnStopRecording.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 stopRecord();
             }
         });
-        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                BASS.BASS_ChannelStop(hRecord);
-                hRecord = 0;
-            }
-        });
 
-        builder.show();
+        activity.findViewById(R.id.btnAddPlaylist).setVisibility(View.INVISIBLE);
+        activity.findViewById(R.id.btnAddSong).setVisibility(View.INVISIBLE);
+        activity.findViewById(R.id.btnEdit).setVisibility(View.INVISIBLE);
+        relativeRecording.setTranslationY((int)(64 * getResources().getDisplayMetrics().density + 0.5));
+        relativeRecording.setVisibility(View.VISIBLE);
+        relativeRecording.animate()
+                .translationY(0)
+                .setDuration(200)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                    }
+                });
 
         BASS.BASS_RecordInit(-1);
         recbuf = ByteBuffer.allocateDirect(200000);
@@ -885,6 +886,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
     public void stopRecord()
     {
+        activity.findViewById(R.id.relativeRecordind).setVisibility(View.GONE);
+        activity.findViewById(R.id.btnAddPlaylist).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.btnAddSong).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.btnEdit).setVisibility(View.VISIBLE);
+
         BASS.BASS_ChannelStop(hRecord);
         hRecord = 0;
         recbuf.limit(recbuf.position());
