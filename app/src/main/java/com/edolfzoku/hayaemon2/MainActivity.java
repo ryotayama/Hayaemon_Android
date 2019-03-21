@@ -36,6 +36,9 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.effect.Effect;
@@ -55,6 +58,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -1174,32 +1178,78 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mViewPager.setSwipeHold(true);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setOffscreenPageLimit(4);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+                for(int i = 0; i < 5; i++) {
+                    TextView tab = (TextView) tabLayout.getTabAt(i).getCustomView();
+                    if(i == position) {
+                        int color = Color.parseColor("#FF007AFF");
+                        tab.setTextColor(color);
+                        for (Drawable drawable : tab.getCompoundDrawables()) {
+                            if (drawable != null)
+                                drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                        }
+                    }
+                    else {
+                        int color = Color.parseColor("#FF808080");
+                        tab.setTextColor(color);
+                        for (Drawable drawable : tab.getCompoundDrawables()) {
+                            if (drawable != null)
+                                drawable.setColorFilter(null);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         TextView tab0 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
         tab0.setText("再生リスト");
         tab0.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_playlist, 0, 0);
+        int color = Color.parseColor("#FF007AFF");
+        tab0.setTextColor(color);
+        for (Drawable drawable : tab0.getCompoundDrawables()) {
+            if (drawable != null)
+                drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+        }
         tabLayout.getTabAt(0).setCustomView(tab0);
 
         TextView tab1 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
         tab1.setText("ループ");
         tab1.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_abloop, 0, 0);
+        color = Color.parseColor("#FF808080");
+        tab1.setTextColor(color);
         tabLayout.getTabAt(1).setCustomView(tab1);
 
         TextView tab2 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
         tab2.setText("コントロール");
         tab2.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_control, 0, 0);
+        tab2.setTextColor(color);
         tabLayout.getTabAt(2).setCustomView(tab2);
 
         TextView tab3 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
         tab3.setText("イコライザ");
         tab3.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_equalizer, 0, 0);
+        tab3.setTextColor(color);
         tabLayout.getTabAt(3).setCustomView(tab3);
 
         TextView tab4 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
         tab4.setText("エフェクト");
         tab4.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_effect, 0, 0);
+        tab4.setTextColor(color);
         tabLayout.getTabAt(4).setCustomView(tab4);
 
         AnimationButton btnMenu = (AnimationButton)findViewById(R.id.btnMenu);
