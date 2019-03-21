@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -121,31 +122,48 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         waveView = (WaveView)getActivity().findViewById(R.id.waveView);
         waveView.setLoopFragment(this);
         waveView.setOnTouchListener(this);
+        final long lDelay = 250;
         handler.post(new Runnable() {
             @Override
             public void run() {
-                double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                 if (activity != null) {
                     LinearLayout ABButton = (LinearLayout)activity.findViewById(R.id.ABButton);
                     EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-                    if(ABButton.getVisibility() == View.VISIBLE && ((activity.bLoopA && dPos < activity.dLoopA) || (activity.bLoopB && activity.dLoopB < dPos)) && !activity.isPlayNextByBPos()) {
-                        if(effectFragment.isReverse())
-                            dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB));
-                        else
-                            dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA));
-                        BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dPos), BASS.BASS_POS_BYTE);
-                    }
-                    long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
-                    long nPos = BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE);
+                    long nLength = 0;
+                    long nPos = 0;
                     int nScreenWidth = waveView.getWidth();
                     int nMaxWidth = (int)(nScreenWidth * waveView.getZoom());
-                    int nLeft = (int) (nMaxWidth * nPos / nLength);
+                    int nLeft = -1;
+                    EditText textCurValue = activity.findViewById(R.id.textCurValue);
+                    if(MainActivity.hStream != 0) {
+                        double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
+                        if (ABButton.getVisibility() == View.VISIBLE && ((activity.bLoopA && dPos < activity.dLoopA) || (activity.bLoopB && activity.dLoopB < dPos)) && !activity.isPlayNextByBPos()) {
+                            if (effectFragment.isReverse())
+                                dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB));
+                            else
+                                dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA));
+                            BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dPos), BASS.BASS_POS_BYTE);
+                        }
+                        if (dPos < 0) dPos = 0;
+                        int nMinute = (int) (dPos / 60);
+                        int nSecond = (int) (dPos % 60);
+                        int nHour = (int) (nMinute / 60);
+                        nMinute = nMinute % 60;
+                        int nDec = (int) ((dPos * 100) % 100);
+                        textCurValue.setText(String.format("%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
+                        nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
+                        nPos = BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE);
+                        nLeft = (int) (nMaxWidth * nPos / nLength);
+                    }
+                    else
+                        textCurValue.setText("00:00:00.00");
                     int nTop = viewCurPos.getTop();
                     if(nLeft < nScreenWidth / 2) {
                         viewCurPos.animate()
                                 .x(nLeft)
                                 .y(nTop)
-                                .setDuration(0)
+                                .setDuration(lDelay)
+                                .setInterpolator(new LinearInterpolator())
                                 .start();
                         if(!bContinue) waveView.invalidate();
                     }
@@ -153,7 +171,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         viewCurPos.animate()
                                 .x(nScreenWidth / 2)
                                 .y(nTop)
-                                .setDuration(0)
+                                .setDuration(lDelay)
+                                .setInterpolator(new LinearInterpolator())
                                 .start();
                         if(!bContinue) waveView.invalidate();
                     }
@@ -161,14 +180,17 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         viewCurPos.animate()
                                 .x(nScreenWidth - (nMaxWidth - nLeft))
                                 .y(nTop)
-                                .setDuration(0)
+                                .setDuration(lDelay)
+                                .setInterpolator(new LinearInterpolator())
                                 .start();
                         if(!bContinue) waveView.invalidate();
                     }
                     View viewMaskA = getActivity().findViewById(R.id.viewMaskA);
                     View viewMaskB = getActivity().findViewById(R.id.viewMaskB);
                     if(activity.bLoopA) {
-                        long nPosA = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA);
+                        long nPosA = 0;
+                        if(MainActivity.hStream != 0)
+                            nPosA = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA);
                         nPosA = nPos - nPosA;
                         int nLeftA = (int) (viewCurPos.getX() - nMaxWidth * nPosA / nLength);
                         if(nLeftA < 0) nLeftA = 0;
@@ -176,7 +198,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         viewMaskA.requestLayout();
                     }
                     if(activity.bLoopB) {
-                        long nPosB = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB);
+                        long nPosB = 0;
+                        if(MainActivity.hStream != 0)
+                            nPosB = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB);
                         nPosB = nPos - nPosB;
                         int nLeftB = (int) (viewCurPos.getX() - nMaxWidth * nPosB / nLength);
                         if(nLeftB < 0) nLeftB = 0;
@@ -185,18 +209,22 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         viewMaskB.getLayoutParams().width = waveView.getWidth() - nLeftB;
                         viewMaskB.requestLayout();
                     }
-                    for(int i = 0; i < arMarkerTime.size(); i++) {
-                        TextView textView = arMarkerText.get(i);
-                        double dMarkerPos = arMarkerTime.get(i).doubleValue();
-                        long nMarkerPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dMarkerPos);
-                        nMarkerPos = nPos - nMarkerPos;
-                        int nMarkerLeft = (int) (viewCurPos.getX() - nMaxWidth * nMarkerPos / nLength - textView.getMeasuredWidth() / 2);
-                        if(nMarkerLeft < -textView.getMeasuredWidth()) nMarkerLeft = -textView.getMeasuredWidth();
-                        textView.setTranslationX(nMarkerLeft);
-                        textView.requestLayout();
+                    final LinearLayout MarkerButton = (LinearLayout)getActivity().findViewById(R.id.MarkerButton);
+                    if(MarkerButton.getVisibility() == View.VISIBLE) {
+                        for (int i = 0; i < arMarkerTime.size(); i++) {
+                            TextView textView = arMarkerText.get(i);
+                            double dMarkerPos = arMarkerTime.get(i).doubleValue();
+                            long nMarkerPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dMarkerPos);
+                            nMarkerPos = nPos - nMarkerPos;
+                            int nMarkerLeft = (int) (viewCurPos.getX() - nMaxWidth * nMarkerPos / nLength - textView.getMeasuredWidth() / 2);
+                            if (nMarkerLeft < -textView.getMeasuredWidth())
+                                nMarkerLeft = -textView.getMeasuredWidth();
+                            textView.setTranslationX(nMarkerLeft);
+                            textView.requestLayout();
+                        }
                     }
                 }
-                handler.postDelayed(this, 50);
+                handler.postDelayed(this, lDelay);
             }
         });
         RelativeLayout relativeZoomOut = (RelativeLayout)getActivity().findViewById(R.id.relativeZoomOut);
@@ -205,18 +233,26 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         RelativeLayout relativeZoomIn = (RelativeLayout)getActivity().findViewById(R.id.relativeZoomIn);
         relativeZoomIn.setOnTouchListener(this);
         relativeZoomIn.setOnLongClickListener(this);
-        ImageButton btnRewind5Sec = (ImageButton)getActivity().findViewById(R.id.btnRewind5Sec);
-        btnRewind5Sec.setOnTouchListener(this);
+        getActivity().findViewById(R.id.viewBtnALeft).setOnTouchListener(this);
         ImageButton btnA = (ImageButton)getActivity().findViewById(R.id.btnA);
         btnA.setSelected(false);
         btnA.setImageResource(R.drawable.ic_abloop_a);
         btnA.setOnTouchListener(this);
+        getActivity().findViewById(R.id.viewBtnARight).setOnTouchListener(this);
+        getActivity().findViewById(R.id.viewBtnRiwindLeft).setOnTouchListener(this);
+        ImageButton btnRewind5Sec = (ImageButton)getActivity().findViewById(R.id.btnRewind5Sec);
+        btnRewind5Sec.setOnTouchListener(this);
+        getActivity().findViewById(R.id.viewBtnRiwindRight).setOnTouchListener(this);
+        getActivity().findViewById(R.id.viewBtnForwardLeft).setOnTouchListener(this);
+        ImageButton btnForward5Sec = (ImageButton)getActivity().findViewById(R.id.btnForward5Sec);
+        btnForward5Sec.setOnTouchListener(this);
+        getActivity().findViewById(R.id.viewBtnForwardRight).setOnTouchListener(this);
+        getActivity().findViewById(R.id.viewBtnBLeft).setOnTouchListener(this);
         ImageButton btnB = (ImageButton)getActivity().findViewById(R.id.btnB);
         btnB.setSelected(false);
         btnB.setImageResource(R.drawable.ic_abloop_b);
         btnB.setOnTouchListener(this);
-        ImageButton btnForward5Sec = (ImageButton)getActivity().findViewById(R.id.btnForward5Sec);
-        btnForward5Sec.setOnTouchListener(this);
+        getActivity().findViewById(R.id.viewBtnBRight).setOnTouchListener(this);
 
         ImageButton btnRewind5sec2 = (ImageButton)getActivity().findViewById(R.id.btnRewind5Sec2);
         btnRewind5sec2.setOnTouchListener(this);
@@ -235,6 +271,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         ImageButton btnForward5Sec2 = (ImageButton)getActivity().findViewById(R.id.btnForward5Sec2);
         btnForward5Sec2.setOnTouchListener(this);
 
+        final EditText textCurValue = getActivity().findViewById(R.id.textCurValue);
         final LinearLayout ABLabel = (LinearLayout)getActivity().findViewById(R.id.ABLabel);
         final LinearLayout ABButton = (LinearLayout)getActivity().findViewById(R.id.ABButton);
         final LinearLayout MarkerButton = (LinearLayout)getActivity().findViewById(R.id.MarkerButton);
@@ -246,6 +283,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if(tab.getText()=="ABループ"){
+                    textCurValue.setVisibility(View.VISIBLE);
                     ABLabel.setVisibility(View.VISIBLE);
                     ABButton.setVisibility(View.VISIBLE);
                     if(activity.bLoopA) viewMaskA.setVisibility(View.VISIBLE);
@@ -272,6 +310,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 if(tab.getText()=="ABループ"){
+                    textCurValue.setVisibility(View.INVISIBLE);
                     ABLabel.setVisibility(View.INVISIBLE);
                     ABButton.setVisibility(View.INVISIBLE);
                     viewMaskA.setVisibility(View.INVISIBLE);
@@ -294,11 +333,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         });
 
 
-        EditText textAValue = (EditText)getActivity().findViewById(R.id.textAValue);
-        textAValue.setOnFocusChangeListener(this);
-
-        EditText textBValue = (EditText)getActivity().findViewById(R.id.textBValue);
-        textBValue.setOnFocusChangeListener(this);
+        getActivity().findViewById(R.id.textAValue).setOnFocusChangeListener(this);
+        getActivity().findViewById(R.id.textBValue).setOnFocusChangeListener(this);
+        getActivity().findViewById(R.id.textCurValue).setOnFocusChangeListener(this);
     }
 
     public void setZoomOut() {
@@ -382,13 +419,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         if(hasFocus)
         {
             if(v.getId() == R.id.textAValue)
-            {
                 showABLoopPicker(true);
-            }
             else if(v.getId() == R.id.textBValue)
-            {
                 showABLoopPicker(false);
-            }
+            else if(v.getId() == R.id.textCurValue)
+                showCurPicker();
         }
     }
 
@@ -482,13 +517,121 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         builder.show();
     }
 
+    public void showCurPicker() {
+        MainActivity activity = (MainActivity)getActivity();
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.ablooppicker, null, false);
+        EditText textCurValue = activity.findViewById(R.id.textCurValue);
+        String strCurPos = textCurValue.getText().toString();
+        String strHour = strCurPos.substring(0, 2);
+        String strMinute = strCurPos.substring(3, 5);
+        String strSecond = strCurPos.substring(6, 8);
+        String strDec = strCurPos.substring(9, 11);
+
+        final NumberPicker hourPicker = (NumberPicker)view.findViewById(R.id.abLoopHourPicker);
+        final NumberPicker minutePicker = (NumberPicker)view.findViewById(R.id.abLoopMinutePicker);
+        final NumberPicker secondPicker = (NumberPicker)view.findViewById(R.id.abLoopSecondPicker);
+        final NumberPicker decimalPicker = (NumberPicker)view.findViewById(R.id.abLoopDecimalPicker);
+
+        final String[] arInts = {"59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
+        final String[] arDecimals = {"99", "98", "97", "96", "95", "94", "93", "92", "91", "90", "89", "88", "87", "86", "85", "84", "83", "82", "81", "80", "79", "78", "77", "76", "75", "74", "73", "72", "71", "70", "69", "68", "67", "66", "65", "64", "63", "62", "61", "60", "59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
+
+        hourPicker.setDisplayedValues(arInts);
+        hourPicker.setMinValue(0);
+        hourPicker.setMaxValue(59);
+        hourPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
+                int nHour = Integer.parseInt(arInts[nNewValue]);
+                int nMinute = Integer.parseInt(arInts[minutePicker.getValue()]);
+                int nSecond = Integer.parseInt(arInts[secondPicker.getValue()]);
+                double dDec = Double.parseDouble(arDecimals[decimalPicker.getValue()]);
+                double dPos = nHour * 3600 + nMinute * 60 + nSecond + dDec / 100.0;
+                setCurPos(dPos);
+            }
+        });
+        for(int i = 0; i < arInts.length; i++)
+        {
+            if(arInts[i].equals(strHour))
+                hourPicker.setValue(i);
+        }
+        minutePicker.setDisplayedValues(arInts);
+        minutePicker.setMinValue(0);
+        minutePicker.setMaxValue(59);
+        minutePicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
+                int nHour = Integer.parseInt(arInts[hourPicker.getValue()]);
+                int nMinute = Integer.parseInt(arInts[nNewValue]);
+                int nSecond = Integer.parseInt(arInts[secondPicker.getValue()]);
+                double dDec = Double.parseDouble(arDecimals[decimalPicker.getValue()]);
+                double dPos = nHour * 3600 + nMinute * 60 + nSecond + dDec / 100.0;
+                setCurPos(dPos);
+            }
+        });
+        for(int i = 0; i < arInts.length; i++)
+        {
+            if(arInts[i].equals(strMinute))
+                minutePicker.setValue(i);
+        }
+        secondPicker.setDisplayedValues(arInts);
+        secondPicker.setMinValue(0);
+        secondPicker.setMaxValue(59);
+        secondPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
+                int nHour = Integer.parseInt(arInts[hourPicker.getValue()]);
+                int nMinute = Integer.parseInt(arInts[minutePicker.getValue()]);
+                int nSecond = Integer.parseInt(arInts[nNewValue]);
+                double dDec = Double.parseDouble(arDecimals[decimalPicker.getValue()]);
+                double dPos = nHour * 3600 + nMinute * 60 + nSecond + dDec / 100.0;
+                setCurPos(dPos);
+            }
+        });
+        for(int i = 0; i < arInts.length; i++)
+        {
+            if(arInts[i].equals(strSecond))
+                secondPicker.setValue(i);
+        }
+
+        decimalPicker.setDisplayedValues(arDecimals);
+        decimalPicker.setMinValue(0);
+        decimalPicker.setMaxValue(99);
+        decimalPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
+                int nHour = Integer.parseInt(arInts[hourPicker.getValue()]);
+                int nMinute = Integer.parseInt(arInts[minutePicker.getValue()]);
+                int nSecond = Integer.parseInt(arInts[secondPicker.getValue()]);
+                double dDec = Double.parseDouble(arDecimals[nNewValue]);
+                double dPos = nHour * 3600 + nMinute * 60 + nSecond + dDec / 100.0;
+                setCurPos(dPos);
+            }
+        });
+        for(int i = 0; i < arDecimals.length; i++)
+        {
+            if(arDecimals[i].equals(strDec))
+                decimalPicker.setValue(i);
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("再生位置の調整");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                clearFocus();
+            }
+        });
+        builder.setView(view);
+        builder.show();
+    }
+
     public void clearFocus()
     {
-        EditText textAValue = (EditText)getActivity().findViewById(R.id.textAValue);
-        textAValue.clearFocus();
-
-        EditText textBValue = (EditText)getActivity().findViewById(R.id.textBValue);
-        textBValue.clearFocus();
+        getActivity().findViewById(R.id.textAValue).clearFocus();
+        getActivity().findViewById(R.id.textBValue).clearFocus();
+        getActivity().findViewById(R.id.textCurValue).clearFocus();
     }
 
     public void setLoopA(double dLoopA)
@@ -595,6 +738,49 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         }
     }
 
+    public void setCurPos(double dPos)
+    {
+        if(MainActivity.hStream == 0) return;
+
+        double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
+        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+        boolean bReverse = effectFragment.isReverse();
+        if(bReverse) {
+            if(dPos <= 0.0f) {
+                if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
+                    activity.onEnded(true);
+                    return;
+                }
+                dPos = 0.0f;
+            }
+        }
+        else {
+            if(dLength <= dPos) {
+                if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
+                    activity.onEnded(true);
+                    return;
+                }
+                dPos = dLength;
+            }
+        }
+        BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dPos), BASS.BASS_POS_BYTE);
+        activity.setSync();
+
+        double dCurPos = dPos;
+        int i = 0;
+        for( ; i < arMarkerTime.size(); i++) {
+            dPos = arMarkerTime.get(i);
+            if((!bReverse && dCurPos < dPos) || (bReverse && dCurPos < dPos - 1.0))
+                break;
+        }
+        nMarker = i - 1;
+
+        activity.setSync();
+
+        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+        playlistFragment.updateSavingEffect();
+    }
+
     @Override
     public boolean onTouch(View v, MotionEvent event)
     {
@@ -617,7 +803,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 waveView.redrawWaveForm();
             }
         }
-        else if(v.getId() == R.id.btnRewind5Sec || v.getId() == R.id.btnRewind5Sec2)
+        else if(v.getId() == R.id.viewBtnRiwindLeft || v.getId() == R.id.viewBtnRiwindRight || v.getId() == R.id.btnRewind5Sec || v.getId() == R.id.btnRewind5Sec2)
         {
             if (event.getAction() == MotionEvent.ACTION_UP)
             {
@@ -654,7 +840,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 }
             }
         }
-        else if(v.getId() == R.id.btnForward5Sec || v.getId() == R.id.btnForward5Sec2)
+        else if(v.getId() == R.id.viewBtnForwardLeft || v.getId() == R.id.viewBtnForwardRight || v.getId() == R.id.btnForward5Sec || v.getId() == R.id.btnForward5Sec2)
         {
             if (event.getAction() == MotionEvent.ACTION_UP)
             {
@@ -691,7 +877,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 }
             }
         }
-        else if(v.getId() == R.id.btnA)
+        else if(v.getId() == R.id.viewBtnALeft || v.getId() == R.id.viewBtnARight || v.getId() == R.id.btnA)
         {
             if(event.getAction() == MotionEvent.ACTION_UP)
             {
@@ -738,7 +924,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 }
             }
         }
-        else if(v.getId() == R.id.btnB)
+        else if(v.getId() == R.id.viewBtnBLeft || v.getId() == R.id.viewBtnBRight || v.getId() == R.id.btnB)
         {
             if(event.getAction() == MotionEvent.ACTION_UP)
             {
@@ -962,43 +1148,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             LinearLayout ABButton = (LinearLayout)getActivity().findViewById(R.id.ABButton);
             if(ABButton.getVisibility() == View.VISIBLE && ((activity.bLoopA && dPos < activity.dLoopA) || (activity.bLoopB && activity.dLoopB < dPos)))
                 dPos = activity.dLoopA;
-            EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-            boolean bReverse = effectFragment.isReverse();
-            if(bReverse) {
-                if(dPos <= 0.0f) {
-                    if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
-                        activity.onEnded(true);
-                        return true;
-                    }
-                    dPos = 0.0f;
-                }
-            }
-            else {
-                if(dLength <= dPos) {
-                    if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
-                        activity.onEnded(true);
-                        return true;
-                    }
-                    dPos = dLength;
-                }
-            }
-            BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dPos), BASS.BASS_POS_BYTE);
-            activity.setSync();
-
-            double dCurPos = dPos;
-            int i = 0;
-            for( ; i < arMarkerTime.size(); i++) {
-                dPos = arMarkerTime.get(i);
-                if((!bReverse && dCurPos < dPos) || (bReverse && dCurPos < dPos - 1.0))
-                    break;
-            }
-            nMarker = i - 1;
-
-            activity.setSync();
-
-            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-            playlistFragment.updateSavingEffect();
-
+            setCurPos(dPos);
             return true;
         }
 
