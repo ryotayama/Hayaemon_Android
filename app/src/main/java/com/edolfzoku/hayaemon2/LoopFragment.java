@@ -279,7 +279,6 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int nItem) {
                 if(nItem == R.id.radioButtonABLoop) {
-                    textCurValue.setVisibility(View.VISIBLE);
                     ABLabel.setVisibility(View.VISIBLE);
                     ABButton.setVisibility(View.VISIBLE);
                     if(activity.bLoopA) viewMaskA.setVisibility(View.VISIBLE);
@@ -308,7 +307,6 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
                     playlistFragment.updateSavingEffect();
 
-                    textCurValue.setVisibility(View.INVISIBLE);
                     ABLabel.setVisibility(View.INVISIBLE);
                     ABButton.setVisibility(View.INVISIBLE);
                     viewMaskA.setVisibility(View.INVISIBLE);
