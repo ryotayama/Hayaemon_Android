@@ -43,6 +43,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
@@ -137,35 +138,20 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final TabLayout tabLayout = (TabLayout)getActivity().findViewById(R.id.tabEqualizer);
-        tabLayout.addTab(tabLayout.newTab().setText("プリセット"));
-
-        tabLayout.addTab(tabLayout.newTab().setText("カスタマイズ"));
-
         final ScrollView scrollView = (ScrollView)getActivity().findViewById(R.id.scrollCustomEqualizer);
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if(tab.getText()=="プリセット") {
-                    recyclerEqualizers.setVisibility(View.VISIBLE);
-                }
-                else{
-                    scrollView.setVisibility(View.VISIBLE);
-                }
-            }
 
+        final RadioGroup radioGroupEqualizer = getActivity().findViewById(R.id.radioGroupEqualizer);
+        radioGroupEqualizer.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                if(tab.getText()=="プリセット"){
-                    recyclerEqualizers.setVisibility(View.INVISIBLE);
-                }
-                else{
+            public void onCheckedChanged(RadioGroup radioGroup, int nItem) {
+                if(nItem == R.id.radioButtonPreset) {
+                    recyclerEqualizers.setVisibility(View.VISIBLE);
                     scrollView.setVisibility(View.INVISIBLE);
                 }
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+                else {
+                    scrollView.setVisibility(View.VISIBLE);
+                    recyclerEqualizers.setVisibility(View.INVISIBLE);
+                }
             }
         });
 

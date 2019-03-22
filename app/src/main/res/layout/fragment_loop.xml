@@ -17,7 +17,7 @@
             android:id="@+id/radioGroupLoopMode"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:checkedButton="@+id/leftBtn"
+            android:checkedButton="@+id/radioButtonABLoop"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="8dp"
             android:layout_centerVertical="true"

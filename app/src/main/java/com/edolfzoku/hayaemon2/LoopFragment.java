@@ -274,7 +274,6 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         final MainActivity activity = (MainActivity)getActivity();
 
         final RadioGroup radioGroupLoopMode = getActivity().findViewById(R.id.radioGroupLoopMode);
-        radioGroupLoopMode.check(R.id.radioButtonABLoop);
         radioGroupLoopMode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int nItem) {
