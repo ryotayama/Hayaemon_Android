@@ -23,7 +23,6 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -35,6 +34,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -68,7 +68,6 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             textView.setText("▼");
             RelativeLayout layout = (RelativeLayout)getActivity().findViewById(R.id.relative_loop);
             layout.addView(textView);
-            final TabLayout tabLayout = (TabLayout)getActivity().findViewById(R.id.abTab_Layout);
             textView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
             int nLeft = (int) (viewCurPos.getX() - nMaxWidth * dPos / dLength - textView.getMeasuredWidth() / 2);
             int nTop = waveView.getTop() - textView.getMeasuredHeight();
@@ -112,11 +111,6 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        final TabLayout tabLayout = (TabLayout)getActivity().findViewById(R.id.abTab_Layout);
-        tabLayout.addTab(tabLayout.newTab().setText("ABループ"));
-
-        tabLayout.addTab(tabLayout.newTab().setText("マーカー再生"));
 
         viewCurPos = getActivity().findViewById(R.id.viewCurPos);
         waveView = (WaveView)getActivity().findViewById(R.id.waveView);
@@ -279,10 +273,12 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         final View viewMaskB = getActivity().findViewById(R.id.viewMaskB);
         final MainActivity activity = (MainActivity)getActivity();
 
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        final RadioGroup radioGroupLoopMode = getActivity().findViewById(R.id.radioGroupLoopMode);
+        radioGroupLoopMode.check(R.id.radioButtonABLoop);
+        radioGroupLoopMode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if(tab.getText()=="ABループ"){
+            public void onCheckedChanged(RadioGroup radioGroup, int nItem) {
+                if(nItem == R.id.radioButtonABLoop) {
                     textCurValue.setVisibility(View.VISIBLE);
                     ABLabel.setVisibility(View.VISIBLE);
                     ABButton.setVisibility(View.VISIBLE);
@@ -292,8 +288,15 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     MainActivity activity = (MainActivity)getActivity();
                     PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
                     playlistFragment.updateSavingEffect();
+
+                    MarkerButton.setVisibility(View.INVISIBLE);
+                    for(int i = 0 ; i < arMarkerText.size(); i++)
+                    {
+                        TextView textView = arMarkerText.get(i);
+                        textView.setVisibility(View.INVISIBLE);
+                    }
                 }
-                else{
+                else {
                     MarkerButton.setVisibility(View.VISIBLE);
                     for(int i = 0 ; i < arMarkerText.size(); i++)
                     {
@@ -304,34 +307,15 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     MainActivity activity = (MainActivity)getActivity();
                     PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
                     playlistFragment.updateSavingEffect();
-                }
-            }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                if(tab.getText()=="ABループ"){
                     textCurValue.setVisibility(View.INVISIBLE);
                     ABLabel.setVisibility(View.INVISIBLE);
                     ABButton.setVisibility(View.INVISIBLE);
                     viewMaskA.setVisibility(View.INVISIBLE);
                     viewMaskB.setVisibility(View.INVISIBLE);
                 }
-                else{
-                    MarkerButton.setVisibility(View.INVISIBLE);
-                    for(int i = 0 ; i < arMarkerText.size(); i++)
-                    {
-                        TextView textView = arMarkerText.get(i);
-                        textView.setVisibility(View.INVISIBLE);
-                    }
-                }
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
             }
         });
-
 
         getActivity().findViewById(R.id.textAValue).setOnFocusChangeListener(this);
         getActivity().findViewById(R.id.textBValue).setOnFocusChangeListener(this);
@@ -1043,7 +1027,6 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     textView.setText("▼");
                     RelativeLayout layout = (RelativeLayout)getActivity().findViewById(R.id.relative_loop);
                     layout.addView(textView);
-                    final TabLayout tabLayout = (TabLayout)getActivity().findViewById(R.id.abTab_Layout);
                     textView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
                     int nLeft = (int) (viewCurPos.getX() - nMaxWidth * dCurPos / dLength - textView.getMeasuredWidth() / 2);
                     RelativeLayout relativeWave = (RelativeLayout)getActivity().findViewById(R.id.relativeWave);

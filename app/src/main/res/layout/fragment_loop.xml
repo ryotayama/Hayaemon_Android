@@ -13,20 +13,48 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/abTab_Layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+        <RadioGroup
+            android:id="@+id/radioGroupLoopMode"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:checkedButton="@+id/leftBtn"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_toLeftOf="@+id/relativeZoomIn"
-            />
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/radioButtonABLoop"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/radio_left"
+                android:button="@null"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="ABループ"
+                android:textColor="@drawable/radio_text_color" />
+
+            <RadioButton
+                android:id="@+id/radioButtonMarkerPlay"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/radio_right"
+                android:button="@null"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="マーカー再生"
+                android:textColor="@drawable/radio_text_color" />
+
+        </RadioGroup>
 
         <RelativeLayout
             android:id="@+id/relativeZoomIn"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:layout_toLeftOf="@+id/relativeZoomOut"
+            android:layout_centerVertical="true"
             >
 
             <ImageView
@@ -42,9 +70,10 @@
 
         <RelativeLayout
             android:id="@+id/relativeZoomOut"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             >
 
             <ImageView
