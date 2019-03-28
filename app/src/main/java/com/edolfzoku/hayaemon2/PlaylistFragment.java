@@ -21,6 +21,8 @@ package com.edolfzoku.hayaemon2;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -38,6 +40,9 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
@@ -52,6 +57,7 @@ import android.os.Handler;
 import android.os.StatFs;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.renderscript.Sampler;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -69,7 +75,9 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -80,8 +88,10 @@ import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
@@ -132,7 +142,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private int nPlaying;
     private int nSelectedItem;
     private boolean bSorting = false;
-    private int hRecord;
+    public int hRecord = 0;
     private ByteBuffer recbuf;
     private SongSavingTask task;
     private VideoSavingTask videoSavingTask;
@@ -336,46 +346,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         {
             if(activity.hStream == 0) return;
             playNext(true);
-        }
-        else if(v.getId() == R.id.btnShuffle)
-        {
-            AnimationButton btnShuffle = (AnimationButton)activity.findViewById(R.id.btnShuffle);
-            if(btnShuffle.getContentDescription().toString().equals("シャッフルなし"))
-            {
-                btnShuffle.setContentDescription("シャッフルあり");
-                btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle_on);
-            }
-            else if(btnShuffle.getContentDescription().toString().equals("シャッフルあり"))
-            {
-                btnShuffle.setContentDescription("１曲のみ");
-                btnShuffle.setImageResource(R.drawable.bar_button_mode_single_on);
-            }
-            else
-            {
-                btnShuffle.setContentDescription("シャッフルなし");
-                btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle);
-            }
-            saveFiles(false, false, false, false, true);
-        }
-        else if(v.getId() == R.id.btnRepeat)
-        {
-            AnimationButton btnRepeat = (AnimationButton)activity.findViewById(R.id.btnRepeat);
-            if(btnRepeat.getContentDescription().toString().equals("リピートなし"))
-            {
-                btnRepeat.setContentDescription("全曲リピート");
-                btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_all_on);
-            }
-            else if(btnRepeat.getContentDescription().toString().equals("全曲リピート"))
-            {
-                btnRepeat.setContentDescription("１曲リピート");
-                btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_single_on);
-            }
-            else
-            {
-                btnRepeat.setContentDescription("リピートなし");
-                btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat);
-            }
-            saveFiles(false, false, false, false, true);
         }
         else if(v.getId() == R.id.btnRecord)
         {
@@ -796,7 +766,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
-        final RelativeLayout relativeRecording = activity.findViewById(R.id.relativeRecordind);
+        final RelativeLayout relativeRecording = activity.findViewById(R.id.relativeRecording);
         final TextView text = activity.findViewById(R.id.textRecordingTime);
         final AnimationButton btnStopRecording = activity.findViewById(R.id.btnStopRecording);
         btnStopRecording.setOnClickListener(new View.OnClickListener() {
@@ -805,6 +775,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 stopRecord();
             }
         });
+
+        final RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams)activity.findViewById(R.id.container).getLayoutParams();
+        final RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams)activity.findViewById(R.id.relativeRecording).getLayoutParams();
+        paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativeRecording);
+        paramContainer.bottomMargin = 0;
+        if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
+            paramRecording.addRule(RelativeLayout.ABOVE, R.id.adView);
+        else paramRecording.addRule(RelativeLayout.ABOVE, R.id.relativePlaying);
+        if(MainActivity.hStream == 0) paramRecording.bottomMargin = 0;
+        else {
+            if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
+                paramRecording.bottomMargin = (int) (60 * getResources().getDisplayMetrics().density + 0.5);
+            else paramRecording.bottomMargin = (int) (-22 * getResources().getDisplayMetrics().density + 0.5);
+        }
 
         activity.findViewById(R.id.btnAddPlaylist).setVisibility(View.INVISIBLE);
         activity.findViewById(R.id.btnAddSong).setVisibility(View.INVISIBLE);
@@ -889,7 +873,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
     public void stopRecord()
     {
-        activity.findViewById(R.id.relativeRecordind).setVisibility(View.GONE);
+        final RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams)activity.findViewById(R.id.container).getLayoutParams();
+        final RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams)activity.findViewById(R.id.relativeRecording).getLayoutParams();
+        paramRecording.bottomMargin = 0;
+        if(MainActivity.hStream == 0) paramContainer.bottomMargin = 0;
+        else paramContainer.bottomMargin = (int) (-22 * getResources().getDisplayMetrics().density + 0.5);
+
+        activity.findViewById(R.id.relativeRecording).setVisibility(View.GONE);
         activity.findViewById(R.id.btnAddPlaylist).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.btnAddSong).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.btnEdit).setVisibility(View.VISIBLE);
@@ -1032,12 +1022,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         AnimationButton btnForward = (AnimationButton) activity.findViewById(R.id.btnForward);
         btnForward.setOnClickListener(this);
-
-        AnimationButton btnShuffle = (AnimationButton) activity.findViewById(R.id.btnShuffle);
-        btnShuffle.setOnClickListener(this);
-
-        AnimationButton btnRepeat = (AnimationButton) activity.findViewById(R.id.btnRepeat);
-        btnRepeat.setOnClickListener(this);
 
         AnimationButton btnRecord = (AnimationButton) activity.findViewById(R.id.btnRecord);
         btnRecord.setOnClickListener(this);
@@ -1188,65 +1172,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             public void onClick(View view)
             {
                 menu.dismiss();
-                ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
-                final SongItem songItem = arSongs.get(nItem);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("タイトルとアーティスト名を変更");
-                LinearLayout linearLayout = new LinearLayout(activity);
-                linearLayout.setOrientation(LinearLayout.VERTICAL);
-                final EditText editTitle = new EditText (activity);
-                editTitle.setHint("タイトル");
-                editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
-                editTitle.setText(songItem.getTitle());
-                final EditText editArtist = new EditText (activity);
-                editArtist.setHint("アーティスト名");
-                editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
-                editArtist.setText(songItem.getArtist());
-                linearLayout.addView(editTitle);
-                linearLayout.addView(editArtist);
-                builder.setView(linearLayout);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        songItem.setTitle(editTitle.getText().toString());
-                        songItem.setArtist(editArtist.getText().toString());
-
-                        if(nSelectedPlaylist == nPlayingPlaylist && nItem == nPlaying)
-                        {
-                            TextView textTitleInPlayingBar = (TextView)activity.findViewById(R.id.textTitleInPlayingBar);
-                            textTitleInPlayingBar.setText(songItem.getTitle());
-                            TextView textArtistInPlayingBar = (TextView)activity.findViewById(R.id.textArtistInPlayingBar);
-                            if(songItem.getArtist() == null || songItem.getArtist().equals(""))
-                            {
-                                textArtistInPlayingBar.setTextColor(Color.argb(255, 147, 156, 160));
-                                textArtistInPlayingBar.setText("〈不明なアーティスト〉");
-                            }
-                            else
-                            {
-                                textArtistInPlayingBar.setTextColor(Color.argb(255, 102, 102, 102));
-                                textArtistInPlayingBar.setText(songItem.getArtist());
-                            }
-                        }
-
-                        songsAdapter.notifyDataSetChanged();
-
-                        saveFiles(true, true, true, true, false);
-                    }
-                });
-                builder.setNegativeButton("キャンセル", null);
-                final AlertDialog alertDialog = builder.create();
-                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
-                {
-                    @Override
-                    public void onShow(DialogInterface arg0)
-                    {
-                        editTitle.requestFocus();
-                        editTitle.setSelection(editTitle.getText().toString().length());
-                        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        if (null != imm) imm.showSoftInput(editTitle, 0);
-                    }
-                });
-                alertDialog.show();
+                changeTitleAndArtist(nItem);
             }
         });
         menu.addMenu("歌詞を表示", R.drawable.actionsheet_file_text, new View.OnClickListener() {
@@ -1449,6 +1375,69 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         });
         menu.setCancelMenu();
         menu.show();
+    }
+
+    public void changeTitleAndArtist(final int nItem)
+    {
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        final SongItem songItem = arSongs.get(nItem);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("タイトルとアーティスト名を変更");
+        LinearLayout linearLayout = new LinearLayout(activity);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        final EditText editTitle = new EditText (activity);
+        editTitle.setHint("タイトル");
+        editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
+        editTitle.setText(songItem.getTitle());
+        final EditText editArtist = new EditText (activity);
+        editArtist.setHint("アーティスト名");
+        editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
+        editArtist.setText(songItem.getArtist());
+        linearLayout.addView(editTitle);
+        linearLayout.addView(editArtist);
+        builder.setView(linearLayout);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                songItem.setTitle(editTitle.getText().toString());
+                songItem.setArtist(editArtist.getText().toString());
+
+                if(nSelectedPlaylist == nPlayingPlaylist && nItem == nPlaying)
+                {
+                    TextView textTitleInPlayingBar = (TextView)activity.findViewById(R.id.textTitleInPlayingBar);
+                    textTitleInPlayingBar.setText(songItem.getTitle());
+                    TextView textArtistInPlayingBar = (TextView)activity.findViewById(R.id.textArtistInPlayingBar);
+                    if(songItem.getArtist() == null || songItem.getArtist().equals(""))
+                    {
+                        textArtistInPlayingBar.setTextColor(Color.argb(255, 147, 156, 160));
+                        textArtistInPlayingBar.setText("〈不明なアーティスト〉");
+                    }
+                    else
+                    {
+                        textArtistInPlayingBar.setTextColor(Color.argb(255, 102, 102, 102));
+                        textArtistInPlayingBar.setText(songItem.getArtist());
+                    }
+                }
+
+                songsAdapter.notifyDataSetChanged();
+
+                saveFiles(true, true, true, true, false);
+            }
+        });
+        builder.setNegativeButton("キャンセル", null);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+        {
+            @Override
+            public void onShow(DialogInterface arg0)
+            {
+                editTitle.requestFocus();
+                editTitle.setSelection(editTitle.getText().toString().length());
+                InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (null != imm) imm.showSoftInput(editTitle, 0);
+            }
+        });
+        alertDialog.show();
     }
 
     public void showPlaylistMenu(final int nPosition)
@@ -2457,7 +2446,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         btnPlay.setContentDescription("一時停止");
         btnPlay.setImageResource(R.drawable.bar_button_pause);
         AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
-        btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_pause);
+        if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
+            btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_pause);
+        else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_pause);
         songsAdapter.notifyDataSetChanged();
         playlistsAdapter.notifyDataSetChanged();
         tabAdapter.notifyDataSetChanged();
@@ -2471,7 +2462,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         btnPlay.setContentDescription("再生");
         btnPlay.setImageResource(R.drawable.bar_button_play);
         AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
-        btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_play);
+        if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
+            btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_play);
+        else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_play);
         songsAdapter.notifyDataSetChanged();
     }
 
@@ -2742,8 +2735,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         }
         if(MainActivity.hStream == 0) return;
 
-        RelativeLayout relativePlaying = (RelativeLayout)activity.findViewById(R.id.relativePlaying);
-        View viewShadowOfPlayingBar = (View)activity.findViewById(R.id.viewShadowOfPlayingBar);
+        final RelativeLayout relativePlaying = (RelativeLayout)activity.findViewById(R.id.relativePlaying);
         ImageView imgViewArtworkInPlayingBar = (ImageView)activity.findViewById(R.id.imgViewArtworkInPlayingBar);
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         Bitmap bitmap = null;
@@ -2778,7 +2770,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         if(relativePlaying.getVisibility() != View.VISIBLE)
         {
-            relativePlaying.setTranslationY((int) (70 * getResources().getDisplayMetrics().density + 0.5));
+            final RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams)activity.findViewById(R.id.container).getLayoutParams();
+            final RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams)activity.findViewById(R.id.relativeRecording).getLayoutParams();
+            if(hRecord == 0) {
+                paramContainer.bottomMargin = (int) (-22 * getResources().getDisplayMetrics().density + 0.5);
+                paramRecording.bottomMargin = 0;
+            }
+            else {
+                paramContainer.bottomMargin = 0;
+                paramRecording.bottomMargin = (int) (-22 * getResources().getDisplayMetrics().density + 0.5);
+            }
+            relativePlaying.setTranslationY((int) (82 * getResources().getDisplayMetrics().density + 0.5));
             relativePlaying.setVisibility(View.VISIBLE);
             relativePlaying.animate()
                     .translationY(0)
@@ -2791,11 +2793,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                                          loopFragment.drawWaveForm(strPath);
                                      }
                                  });
-            viewShadowOfPlayingBar.setTranslationY((int) (70 * getResources().getDisplayMetrics().density + 0.5));
-            viewShadowOfPlayingBar.setAlpha(1.0f);
-            viewShadowOfPlayingBar.animate()
-                    .translationY(0)
-                    .setDuration(200);
         }
         else
         {
@@ -2861,7 +2858,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         btnPlay.setContentDescription("一時停止");
         btnPlay.setImageResource(R.drawable.bar_button_pause);
         AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
-        btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_pause);
+        if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
+            btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_pause);
+        else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_pause);
         songsAdapter.notifyDataSetChanged();
         playlistsAdapter.notifyDataSetChanged();
         tabAdapter.notifyDataSetChanged();
@@ -2960,22 +2959,32 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         if(MainActivity.hStream == 0) return;
 
         final RelativeLayout relativePlaying = (RelativeLayout)activity.findViewById(R.id.relativePlaying);
-        View viewShadowOfPlayingBar = (View)activity.findViewById(R.id.viewShadowOfPlayingBar);
 
-        relativePlaying.setVisibility(View.VISIBLE);
-        relativePlaying.animate()
-                .translationY((int)(70 * getResources().getDisplayMetrics().density + 0.5))
-                .setDuration(200)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        relativePlaying.setVisibility(View.GONE);
-                    }
-                });
-        viewShadowOfPlayingBar.animate()
-                .translationY((int)(70 * getResources().getDisplayMetrics().density + 0.5))
-                .setDuration(200);
+        SeekBar seekCurPos = activity.findViewById(R.id.seekCurPos);
+        if(seekCurPos.getVisibility() == View.VISIBLE)
+            activity.downViewPlaying(true);
+        else {
+            relativePlaying.setVisibility(View.VISIBLE);
+            relativePlaying.animate()
+                    .translationY((int) (82 * getResources().getDisplayMetrics().density + 0.5))
+                    .setDuration(200)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            relativePlaying.setVisibility(View.GONE);
+                            final RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams) activity.findViewById(R.id.container).getLayoutParams();
+                            final RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams) activity.findViewById(R.id.relativeRecording).getLayoutParams();
+                            if (hRecord == 0) {
+                                paramContainer.bottomMargin = 0;
+                                paramRecording.bottomMargin = 0;
+                            } else {
+                                paramContainer.bottomMargin = 0;
+                                paramRecording.bottomMargin = 0;
+                            }
+                        }
+                    });
+        }
 
         nPlaying = -1;
         BASS.BASS_ChannelStop(MainActivity.hStream);
@@ -2984,7 +2993,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         btnPlay.setContentDescription("再生");
         btnPlay.setImageResource(R.drawable.bar_button_play);
         AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
-        btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_play);
+        if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
+            btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_play);
+        else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_play);
         MainActivity activity = (MainActivity)getActivity();
         activity.clearLoop();
         songsAdapter.notifyDataSetChanged();

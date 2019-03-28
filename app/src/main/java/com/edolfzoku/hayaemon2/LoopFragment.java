@@ -36,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.un4seen.bass.BASS;
@@ -142,6 +143,21 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         int nMinute = (int) (dPos / 60);
                         int nSecond = (int) (dPos % 60);
                         int nHour = (int) (nMinute / 60);
+
+                        double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
+                        if(dLength < 0) dLength = 0;
+                        double dRemain = dLength - dPos;
+                        int nRemainMinute = (int)(dRemain / 60);
+                        int nRemainSecond = (int)(dRemain % 60);
+
+                        TextView textCurPos = activity.findViewById(R.id.textCurPos);
+                        textCurPos.setText(String.format("%d:%02d", nMinute, nSecond));
+                        TextView textRemain = activity.findViewById(R.id.textRemain);
+                        textRemain.setText(String.format("-%d:%02d", nRemainMinute, nRemainSecond));
+                        SeekBar seekCurPos = activity.findViewById(R.id.seekCurPos);
+                        seekCurPos.setMax((int)dLength);
+                        seekCurPos.setProgress((int)dPos);
+
                         nMinute = nMinute % 60;
                         int nDec = (int) ((dPos * 100) % 100);
                         textCurValue.setText(String.format("%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));

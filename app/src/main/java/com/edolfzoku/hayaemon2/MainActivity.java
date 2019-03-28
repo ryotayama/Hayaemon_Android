@@ -19,6 +19,9 @@
 package com.edolfzoku.hayaemon2;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -36,8 +39,10 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
@@ -66,7 +71,9 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -81,6 +88,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -154,6 +162,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bShowUpdateLog = false;
     }
 
+    private GestureDetector gestureDetector;
+    private int nLastX = 0, nLastY = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -224,6 +234,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mBound = true;
         }
 
+        findViewById(R.id.btnShuffle).setOnClickListener(this);
+        findViewById(R.id.btnRepeat).setOnClickListener(this);
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.addDrawerListener(this);
         RelativeLayout relativeSave = (RelativeLayout)findViewById(R.id.relativeSave);
@@ -258,7 +271,65 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnForwardInPlayingBar.setOnClickListener(this);
         btnForwardInPlayingBar.setOnLongClickListener(this);
         btnForwardInPlayingBar.setOnTouchListener(this);
+        AnimationButton btnRewindInPlayingBar = findViewById(R.id.btnRewindInPlayingBar);
+        btnRewindInPlayingBar.setOnClickListener(this);
+        btnRewindInPlayingBar.setOnLongClickListener(this);
+        btnRewindInPlayingBar.setOnTouchListener(this);
         findViewById(R.id.btnCloseInPlayingBar).setOnClickListener(this);
+        findViewById(R.id.btnShuffleInPlayingBar).setOnClickListener(this);
+        findViewById(R.id.btnRepeatInPlayingBar).setOnClickListener(this);
+        findViewById(R.id.btnMoreInPlayingBar).setOnClickListener(this);
+        final RelativeLayout relativePlaying = findViewById(R.id.relativePlaying);
+        final SeekBar seekCurPos = findViewById(R.id.seekCurPos);
+        seekCurPos.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        seekCurPos.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                LoopFragment loopFragment = (LoopFragment)mSectionsPagerAdapter.getItem(1);
+                loopFragment.setCurPos((double)seekBar.getProgress());
+            }
+        });
+        final ImageView imgViewDown = findViewById(R.id.imgViewDown);
+        imgViewDown.setOnClickListener(this);
+        imgViewDown.setOnTouchListener(this);
+        relativePlaying.setOnClickListener(this);
+        gestureDetector = new GestureDetector(this, new SingleTapConfirm());
+        relativePlaying.setOnTouchListener(this);
+    }
+
+    private class SingleTapConfirm extends GestureDetector.SimpleOnGestureListener
+    {
+        @Override
+        public boolean onSingleTapUp(MotionEvent event)
+        {
+            return true;
+        }
+    }
+
+    public void advanceAnimation(View view, String strTarget, int nFrom, int nTo, float fProgress)
+    {
+        RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)view.getLayoutParams();
+        if(strTarget.equals("height")) param.height = (int) (nFrom + (nTo - nFrom) * fProgress);
+        else if(strTarget.equals("width")) param.width = (int) (nFrom + (nTo - nFrom) * fProgress);
+        else if(strTarget.equals("leftMargin")) param.leftMargin = (int) (nFrom + (nTo - nFrom) * fProgress);
+        else if(strTarget.equals("topMargin")) param.topMargin = (int) (nFrom + (nTo - nFrom) * fProgress);
+        else if(strTarget.equals("rightMargin")) param.rightMargin = (int) (nFrom + (nTo - nFrom) * fProgress);
+        view.setLayoutParams(param);
+    }
+
+    public int getStatusBarHeight(){
+        final Rect rect = new Rect();
+        getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+        return rect.top;
     }
 
     public void verifyStoragePermissions(Activity activity) {
@@ -692,7 +763,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onLongClick(View v)
     {
-        if(v.getId() == R.id.btnRewind)
+        if(v.getId() == R.id.btnRewind || v.getId() == R.id.btnRewindInPlayingBar)
         {
             if(hStream == 0) return false;
             int chan = BASS_FX.BASS_FX_TempoGetSource(hStream);
@@ -718,6 +789,100 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onTouch(View v, MotionEvent event)
     {
+        if(v.getId() == R.id.relativePlaying || v.getId() == R.id.imgViewDown)
+        {
+            final SeekBar seekCurPos = findViewById(R.id.seekCurPos);
+            final RelativeLayout relativePlaying = findViewById(R.id.relativePlaying);
+            int nX = (int) event.getRawX();
+            int nY = (int) event.getRawY();
+            if (gestureDetector.onTouchEvent(event)) return false;
+            if(seekCurPos.getVisibility() != View.VISIBLE) {
+                PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams) findViewById(R.id.container).getLayoutParams();
+                    RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams) findViewById(R.id.relativeRecording).getLayoutParams();
+                    if (playlistFragment.hRecord != 0) {
+                        paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativeRecording);
+                        paramContainer.bottomMargin = 0;
+                        paramRecording.addRule(RelativeLayout.ABOVE, R.id.adView);
+                        paramRecording.bottomMargin = (int) (60.0 * getResources().getDisplayMetrics().density + 0.5);
+                    } else {
+                        paramContainer.addRule(RelativeLayout.ABOVE, R.id.adView);
+                        paramContainer.bottomMargin = (int) (60.0 * getResources().getDisplayMetrics().density + 0.5);
+                    }
+                    RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) relativePlaying.getLayoutParams();
+                    int nHeight = param.height - (nY - nLastY);
+                    int nMinHeight = (int) (82.0 * getResources().getDisplayMetrics().density + 0.5);
+                    int nMaxHeight = (int) (142.0 * getResources().getDisplayMetrics().density + 0.5);
+                    if (nHeight < nMinHeight) nHeight = nMinHeight;
+                    else if (nHeight > nMaxHeight) nHeight = nMaxHeight;
+                    param.height = nHeight;
+                    relativePlaying.setLayoutParams(param);
+                }
+                nLastX = nX;
+                nLastY = nY;
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) relativePlaying.getLayoutParams();
+                    int nMinHeight = (int) (82.0 * getResources().getDisplayMetrics().density + 0.5);
+                    if (param.height > nMinHeight) return false;
+                    else {
+                        RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams) findViewById(R.id.container).getLayoutParams();
+                        RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams) findViewById(R.id.relativeRecording).getLayoutParams();
+                        if (playlistFragment.hRecord != 0) {
+                            paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativeRecording);
+                            paramContainer.bottomMargin = 0;
+                            paramRecording.addRule(RelativeLayout.ABOVE, R.id.relativePlaying);
+                            paramRecording.bottomMargin = (int) (-22 * getResources().getDisplayMetrics().density + 0.5);
+                        } else {
+                            paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativePlaying);
+                            paramContainer.bottomMargin = (int) (-22 * getResources().getDisplayMetrics().density + 0.5);
+                        }
+                    }
+                }
+            }
+            else {
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    final TabLayout tabLayout = findViewById(R.id.tabs);
+                    final int nCurrentHeight = getResources().getDisplayMetrics().heightPixels - tabLayout.getHeight() - findViewById(R.id.linearControl).getHeight() - getStatusBarHeight() + (int) (16.0 * getResources().getDisplayMetrics().density + 0.5);
+                    final int nMaxHeight = getResources().getDisplayMetrics().heightPixels - tabLayout.getHeight() - getStatusBarHeight() + (int) (22.0 * getResources().getDisplayMetrics().density + 0.5);
+                    final int nMinHeight = (int) (82.0 * getResources().getDisplayMetrics().density + 0.5);
+                    int nMinTranslationY = nCurrentHeight - nMaxHeight;
+                    int nMaxTranslationY = nCurrentHeight - nMinHeight;
+                    int nTranslationY = nY - nLastY;
+                    if(nTranslationY < nMinTranslationY) nTranslationY = nMinTranslationY;
+                    else if(nTranslationY > nMaxTranslationY) nTranslationY = nMaxTranslationY;
+                    relativePlaying.setTranslationY(nTranslationY);
+                }
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    nLastX = nX;
+                    nLastY = (int)relativePlaying.getTranslationY() + nY;
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if(relativePlaying.getTranslationY() > (int) (100.0 * getResources().getDisplayMetrics().density + 0.5)) {
+                        downViewPlaying(false);
+                    }
+                    else {
+                        final int nTranslationYFrom = (int)relativePlaying.getTranslationY();
+                        final int nTranslationY = 0;
+
+                        ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
+                        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                            @Override
+                            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                                float fProgress = valueAnimator.getAnimatedFraction();
+                                relativePlaying.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
+                            }
+                        });
+                        anim.setDuration(200).start();
+                    }
+                }
+            }
+            if(event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_UP)
+                return true;
+            if(v.getId() == R.id.relativePlaying && seekCurPos.getVisibility() == View.VISIBLE) return true;
+            else return false;
+        }
+
         if(event.getAction() == MotionEvent.ACTION_UP)
         {
             findViewById(R.id.relativeSave).setBackgroundColor(Color.argb(255, 255, 255, 255));
@@ -728,7 +893,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             findViewById(R.id.relativeReport).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeReview).setBackgroundColor(Color.argb(255, 255, 255, 255));
             findViewById(R.id.relativeInfo).setBackgroundColor(Color.argb(255, 255, 255, 255));
-            if(v.getId() == R.id.btnRewind)
+            if(v.getId() == R.id.btnRewind || v.getId() == R.id.btnRewindInPlayingBar)
             {
                 if(hStream == 0) return false;
                 int chan = BASS_FX.BASS_FX_TempoGetSource(hStream);
@@ -833,6 +998,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             mDrawerLayout.openDrawer(Gravity.START);
         }
+        else if(v.getId() == R.id.btnShuffle || v.getId() == R.id.btnShuffleInPlayingBar)
+        {
+            AnimationButton btnShuffle = findViewById(R.id.btnShuffle);
+            AnimationButton btnShuffleInPlayingBar = findViewById(R.id.btnShuffleInPlayingBar);
+            if(btnShuffle.getContentDescription().toString().equals("シャッフルなし"))
+            {
+                btnShuffle.setContentDescription("シャッフルあり");
+                btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle_on);
+                btnShuffleInPlayingBar.setContentDescription("シャッフルあり");
+                btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_shuffle_on);
+            }
+            else if(btnShuffle.getContentDescription().toString().equals("シャッフルあり"))
+            {
+                btnShuffle.setContentDescription("１曲のみ");
+                btnShuffle.setImageResource(R.drawable.bar_button_mode_single_on);
+                btnShuffleInPlayingBar.setContentDescription("１曲のみ");
+                btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_single_on);
+            }
+            else
+            {
+                btnShuffle.setContentDescription("シャッフルなし");
+                btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle);
+                btnShuffleInPlayingBar.setContentDescription("シャッフルなし");
+                btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_shuffle);
+            }
+            playlistFragment.saveFiles(false, false, false, false, true);
+        }
+        else if(v.getId() == R.id.btnRepeat || v.getId() == R.id.btnRepeatInPlayingBar)
+        {
+            AnimationButton btnRepeat = findViewById(R.id.btnRepeat);
+            AnimationButton btnRepeatInPlayingBar = findViewById(R.id.btnRepeatInPlayingBar);
+            if(btnRepeat.getContentDescription().toString().equals("リピートなし"))
+            {
+                btnRepeat.setContentDescription("全曲リピート");
+                btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_all_on);
+                btnRepeatInPlayingBar.setContentDescription("全曲リピート");
+                btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_all_on);
+            }
+            else if(btnRepeat.getContentDescription().toString().equals("全曲リピート"))
+            {
+                btnRepeat.setContentDescription("１曲リピート");
+                btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_single_on);
+                btnRepeatInPlayingBar.setContentDescription("１曲リピート");
+                btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_one_on);
+            }
+            else
+            {
+                btnRepeat.setContentDescription("リピートなし");
+                btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat);
+                btnRepeatInPlayingBar.setContentDescription("リピートなし");
+                btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_all);
+            }
+            playlistFragment.saveFiles(false, false, false, false, true);
+        }
         else if(v.getId() == R.id.relativeLock)
         {
             mDrawerLayout.closeDrawer(Gravity.START);
@@ -855,35 +1074,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(v.getId() == R.id.relativeSave)
         {
             mDrawerLayout.closeDrawer(Gravity.START);
-
-            final BottomMenu menu = new BottomMenu(this);
-            menu.setTitle("保存／エクスポート");
-            final Activity activity = this;
-            menu.addMenu("アプリ内に保存", R.drawable.actionsheet_save, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    menu.dismiss();
-                    playlistFragment.saveSongToLocal();
-                }
-            });
-            if(Build.VERSION.SDK_INT >= 18) {
-                menu.addMenu("ギャラリーに保存", R.drawable.actionsheet_film, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        menu.dismiss();
-                        playlistFragment.saveSongToGallery();
-                    }
-                });
-            }
-            menu.addMenu("他のアプリにエクスポート", R.drawable.actionsheet_share, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    menu.dismiss();
-                    playlistFragment.export();
-                }
-            });
-            menu.setCancelMenu();
-            menu.show();
+            showSaveExportMenu();
         }
         else if(v.getId() == R.id.relativeAddSong)
         {
@@ -1025,8 +1216,427 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             playlistFragment.onPlayBtnClicked();
         else if(v.getId() == R.id.btnForwardInPlayingBar)
             playlistFragment.playNext(true);
+        else if(v.getId() == R.id.btnRewindInPlayingBar) {
+            if(hStream == 0) return;
+            EffectFragment effectFragment = (EffectFragment)mSectionsPagerAdapter.getItem(4);
+            if(!effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(hStream, BASS.BASS_ChannelGetPosition(hStream, BASS.BASS_POS_BYTE)) > dLoopA + 1.0)
+                BASS.BASS_ChannelSetPosition(hStream, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopA), BASS.BASS_POS_BYTE);
+            else if(effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(hStream, BASS.BASS_ChannelGetPosition(hStream, BASS.BASS_POS_BYTE)) < dLoopA - 1.0)
+                BASS.BASS_ChannelSetPosition(hStream, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopB), BASS.BASS_POS_BYTE);
+            else
+                playlistFragment.playPrev();
+        }
+        else if(v.getId() == R.id.relativePlaying)
+            upViewPlaying();
+        else if(v.getId() == R.id.imgViewDown)
+            downViewPlaying(false);
         else if(v.getId() == R.id.btnCloseInPlayingBar)
             playlistFragment.stop();
+        else if(v.getId() == R.id.btnMoreInPlayingBar) {
+            final BottomMenu menu = new BottomMenu(this);
+            final int nPlaying = playlistFragment.getPlaying();
+            playlistFragment.setSelectedItem(nPlaying);
+            SongItem item = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist()).get(nPlaying);
+            menu.setTitle(item.getTitle());
+            menu.addMenu("保存／エクスポート", R.drawable.actionsheet_save, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    menu.dismiss();
+                    showSaveExportMenu();
+                }
+            });
+            menu.addMenu("タイトルとアーティスト名を変更", R.drawable.actionsheet_edit, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    menu.dismiss();
+                    playlistFragment.changeTitleAndArtist(nPlaying);
+                }
+            });
+            menu.addMenu("歌詞を表示", R.drawable.actionsheet_file_text, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    menu.dismiss();
+                    downViewPlaying(false);
+                    playlistFragment.showLyrics();
+                    mViewPager.setCurrentItem(0);
+                }
+            });
+            ArrayList<EffectSaver> arEffectSavers = playlistFragment.getArEffects().get(playlistFragment.getSelectedPlaylist());
+            final EffectSaver saver = arEffectSavers.get(nPlaying);
+            if(saver.isSave())
+            {
+                menu.addMenu("各画面の設定保持を解除", R.drawable.actionsheet_unlock, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        saver.setSave(false);
+                        playlistFragment.getSongsAdapter().notifyDataSetChanged();
+
+                        playlistFragment.saveFiles(false, true, false, false, false);
+                        menu.dismiss();
+                    }
+                });
+            }
+            else
+            {
+                menu.addMenu("各画面の設定を保持", R.drawable.actionsheet_lock, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        playlistFragment.setSavingEffect();
+                        playlistFragment.getSongsAdapter().notifyDataSetChanged();
+                        menu.dismiss();
+                    }
+                });
+            }
+            menu.setCancelMenu();
+            menu.show();
+        }
+    }
+
+    public void upViewPlaying()
+    {
+        final PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
+        playlistFragment.selectPlaylist(playlistFragment.getPlayingPlaylist());
+        final ImageView imgViewDown = findViewById(R.id.imgViewDown);
+        final SeekBar seekCurPos = findViewById(R.id.seekCurPos);
+        final RelativeLayout relativePlaying = findViewById(R.id.relativePlaying);
+        relativePlaying.setOnClickListener(null);
+        final long lDuration = 400;
+        int nScreenWidth = getResources().getDisplayMetrics().widthPixels;
+        relativePlaying.setBackgroundResource(R.drawable.playingview);
+        RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams) findViewById(R.id.container).getLayoutParams();
+        RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams) findViewById(R.id.relativeRecording).getLayoutParams();
+        if (playlistFragment.hRecord != 0) {
+            paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativeRecording);
+            paramContainer.bottomMargin = 0;
+            paramRecording.addRule(RelativeLayout.ABOVE, R.id.adView);
+            paramRecording.bottomMargin = (int) (60.0 * getResources().getDisplayMetrics().density + 0.5);
+        } else {
+            paramContainer.addRule(RelativeLayout.ABOVE, R.id.adView);
+            paramContainer.bottomMargin = (int) (60.0 * getResources().getDisplayMetrics().density + 0.5);
+        }
+
+        final TabLayout tabLayout = findViewById(R.id.tabs);
+        final AdView adView = findViewById(R.id.adView);
+        final ImageView imgViewArtwork = findViewById(R.id.imgViewArtworkInPlayingBar);
+        final TextView textTitle = findViewById(R.id.textTitleInPlayingBar);
+        final TextView textArtist = findViewById(R.id.textArtistInPlayingBar);
+        final AnimationButton btnPlay = findViewById(R.id.btnPlayInPlayingBar);
+        final AnimationButton btnForward = findViewById(R.id.btnForwardInPlayingBar);
+        final TextView textCurPos = findViewById(R.id.textCurPos);
+        final TextView textRemain = findViewById(R.id.textRemain);
+        final AnimationButton btnRewind = findViewById(R.id.btnRewindInPlayingBar);
+        final AnimationButton btnMore = findViewById(R.id.btnMoreInPlayingBar);
+        final AnimationButton btnShuffle = findViewById(R.id.btnShuffleInPlayingBar);
+        final AnimationButton btnRepeat = findViewById(R.id.btnRepeatInPlayingBar);
+
+        final RelativeLayout.LayoutParams paramTitle = (RelativeLayout.LayoutParams) textTitle.getLayoutParams();
+        final RelativeLayout.LayoutParams paramArtist = (RelativeLayout.LayoutParams) textArtist.getLayoutParams();
+        final RelativeLayout.LayoutParams paramBtnPlay = (RelativeLayout.LayoutParams) btnPlay.getLayoutParams();
+        final RelativeLayout.LayoutParams paramBtnForward = (RelativeLayout.LayoutParams) btnForward.getLayoutParams();
+
+        textTitle.setGravity(Gravity.CENTER);
+        textArtist.setGravity(Gravity.CENTER);
+        paramTitle.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+        paramArtist.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+
+        final int nTranslationYFrom = (int)relativePlaying.getTranslationY();
+        final int nTranslationY = 0;
+        final int nRelativePlayingHeightFrom = relativePlaying.getHeight();
+        final int nRelativePlayingHeight = getResources().getDisplayMetrics().heightPixels - tabLayout.getHeight() - findViewById(R.id.linearControl).getHeight() - getStatusBarHeight() + (int) (16.0 * getResources().getDisplayMetrics().density + 0.5);
+        final int nArtworkWidthFrom = imgViewArtwork.getWidth();
+        final int nArtworkWidth = nScreenWidth / 2;
+        final int nArtworkMarginFrom = (int) (8.0 * getResources().getDisplayMetrics().density + 0.5);
+        final int nArtworkLeftMargin = nScreenWidth / 2 - nArtworkWidth / 2;
+        final int nArtworkTopMargin = (int) (64.0 * getResources().getDisplayMetrics().density + 0.5);
+        final int nTitleTopMarginFrom = paramTitle.topMargin;
+        final int nTitleLeftMarginFrom = paramTitle.leftMargin;
+        final int nTitleRightMarginFrom = paramTitle.rightMargin;
+        final int nTitleMargin = (int) (32.0 * getResources().getDisplayMetrics().density + 0.5);
+        final int nTitleTopMargin = nArtworkTopMargin + nArtworkWidth + (int) (32.0 * getResources().getDisplayMetrics().density) + (int) (24.0 * getResources().getDisplayMetrics().density) + (int) (34.0 * getResources().getDisplayMetrics().density);
+        final int nArtistTopMarginFrom = paramArtist.topMargin;
+        final int nArtistTopMargin = nTitleTopMargin + textTitle.getHeight() + (int) (4.0 * getResources().getDisplayMetrics().density + 0.5);
+        final int nBtnPlayTopMargin = nArtistTopMargin + textArtist.getHeight() + (int) (20.0 * getResources().getDisplayMetrics().density + 0.5);
+        final int nBtnPlayRightMarginFrom = paramBtnPlay.rightMargin;
+        final int nBtnPlayRightMargin = nScreenWidth / 2 - btnPlay.getWidth() / 2;
+        final int nBtnForwardRightMarginFrom = paramBtnForward.rightMargin;
+        final int nBtnForwardRightMargin = nBtnPlayRightMargin - btnForward.getWidth() - (int) (16.0 * getResources().getDisplayMetrics().density + 0.5);
+        final float fTitleFontFrom = 13.0f;
+        final float fTitleFont = 15.0f;
+        Paint paint = new Paint();
+        paint.setTextSize(textTitle.getTextSize());
+        final int nTitleWidthFrom = (int) paint.measureText(textTitle.getText().toString());
+        final int nTitleWidth = nScreenWidth;
+        final float fArtistFontFrom = 10.0f;
+        final float fArtistFont = 13.0f;
+        paint.setTextSize(textArtist.getTextSize());
+        final int nArtistWidthFrom = (int) paint.measureText(textArtist.getText().toString());
+        final int nArtistWidth = nScreenWidth;
+        final int nBtnHeightFrom = (int) (60.0 * getResources().getDisplayMetrics().density + 0.5);
+        final int nBtnHeight = (int) (44.0 * getResources().getDisplayMetrics().density + 0.5);
+
+        ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float fProgress = valueAnimator.getAnimatedFraction();
+                relativePlaying.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
+                advanceAnimation(relativePlaying, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
+                advanceAnimation(imgViewArtwork, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
+                advanceAnimation(imgViewArtwork, "height", nArtworkWidthFrom, nArtworkWidth, fProgress);
+                advanceAnimation(imgViewArtwork, "leftMargin", nArtworkMarginFrom, nArtworkLeftMargin, fProgress);
+                advanceAnimation(imgViewArtwork, "topMargin", nArtworkMarginFrom, nArtworkTopMargin, fProgress);
+                advanceAnimation(textTitle, "width", nTitleWidthFrom, nTitleWidth, fProgress);
+                advanceAnimation(textTitle, "topMargin", nTitleTopMarginFrom, nTitleTopMargin, fProgress);
+                advanceAnimation(textTitle, "leftMargin", nTitleLeftMarginFrom, nTitleMargin, fProgress);
+                advanceAnimation(textTitle, "rightMargin", nTitleRightMarginFrom, nTitleMargin, fProgress);
+                textTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fTitleFontFrom + (fTitleFont - fTitleFontFrom) * fProgress);
+                advanceAnimation(textArtist, "width", nArtistWidthFrom, nArtistWidth, fProgress);
+                advanceAnimation(textArtist, "topMargin", nArtistTopMarginFrom, nArtistTopMargin, fProgress);
+                advanceAnimation(textArtist, "leftMargin", nTitleLeftMarginFrom, nTitleMargin, fProgress);
+                advanceAnimation(textArtist, "rightMargin", nTitleRightMarginFrom, nTitleMargin, fProgress);
+                textArtist.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fArtistFontFrom + (fArtistFont - fArtistFontFrom) * fProgress);
+                advanceAnimation(btnPlay, "topMargin", 0, nBtnPlayTopMargin, fProgress);
+                advanceAnimation(btnForward, "topMargin", 0, nBtnPlayTopMargin, fProgress);
+                advanceAnimation(btnPlay, "rightMargin", nBtnPlayRightMarginFrom, nBtnPlayRightMargin, fProgress);
+                advanceAnimation(btnPlay, "height", nBtnHeightFrom, nBtnHeight, fProgress);
+                advanceAnimation(btnForward, "height", nBtnHeightFrom, nBtnHeight, fProgress);
+                advanceAnimation(btnRewind, "height", nBtnHeightFrom, nBtnHeight, fProgress);
+                advanceAnimation(btnForward, "rightMargin", nBtnForwardRightMarginFrom, nBtnForwardRightMargin, fProgress);
+                btnMore.requestLayout();
+                btnShuffle.requestLayout();
+                btnRepeat.requestLayout();
+            }
+        });
+        anim.setDuration(lDuration).start();
+
+        imgViewDown.setVisibility(View.VISIBLE);
+        seekCurPos.setVisibility(View.VISIBLE);
+        textCurPos.setVisibility(View.VISIBLE);
+        textRemain.setVisibility(View.VISIBLE);
+        btnRewind.setVisibility(View.VISIBLE);
+        btnMore.setVisibility(View.VISIBLE);
+        btnShuffle.setVisibility(View.VISIBLE);
+        btnRepeat.setVisibility(View.VISIBLE);
+
+        if (BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING)
+            btnPlay.setImageResource(R.drawable.playing_large_play);
+        else btnPlay.setImageResource(R.drawable.playing_large_pause);
+        btnForward.setImageResource(R.drawable.playing_large_forward);
+
+        imgViewDown.animate().alpha(1.0f).setDuration(lDuration);
+        seekCurPos.animate().alpha(1.0f).setDuration(lDuration);
+        textCurPos.animate().alpha(1.0f).setDuration(lDuration);
+        textRemain.animate().alpha(1.0f).setDuration(lDuration);
+        btnRewind.animate().alpha(1.0f).setDuration(lDuration);
+        btnMore.animate().alpha(1.0f).setDuration(lDuration);
+        btnShuffle.animate().alpha(1.0f).setDuration(lDuration);
+        btnRepeat.animate().alpha(1.0f).setDuration(lDuration);
+        findViewById(R.id.btnCloseInPlayingBar).animate().alpha(0.0f).setDuration(lDuration);
+        adView.animate().translationY(tabLayout.getHeight() + adView.getHeight()).setDuration(lDuration);
+        tabLayout.animate().translationY(tabLayout.getHeight() + adView.getHeight()).setDuration(lDuration);
+        findViewById(R.id.viewSep2).animate().translationY(tabLayout.getHeight()).setDuration(lDuration);
+    }
+
+    public void downViewPlaying(final boolean bBottom)
+    {
+        final MainActivity activity = this;
+        final RelativeLayout relativePlaying = findViewById(R.id.relativePlaying);
+        final ImageView imgViewDown = findViewById(R.id.imgViewDown);
+        final SeekBar seekCurPos = findViewById(R.id.seekCurPos);
+        final long lDuration = 400;
+        relativePlaying.setBackgroundResource(R.drawable.topshadow);
+
+        final TabLayout tabLayout = findViewById(R.id.tabs);
+        final AdView adView = findViewById(R.id.adView);
+        final ImageView imgViewArtwork = findViewById(R.id.imgViewArtworkInPlayingBar);
+        final TextView textTitle = findViewById(R.id.textTitleInPlayingBar);
+        final TextView textArtist = findViewById(R.id.textArtistInPlayingBar);
+        final AnimationButton btnPlay = findViewById(R.id.btnPlayInPlayingBar);
+        final AnimationButton btnForward = findViewById(R.id.btnForwardInPlayingBar);
+        final TextView textCurPos = findViewById(R.id.textCurPos);
+        final TextView textRemain = findViewById(R.id.textRemain);
+        final AnimationButton btnRewind = findViewById(R.id.btnRewindInPlayingBar);
+        final AnimationButton btnMore = findViewById(R.id.btnMoreInPlayingBar);
+        final AnimationButton btnShuffle = findViewById(R.id.btnShuffleInPlayingBar);
+        final AnimationButton btnRepeat = findViewById(R.id.btnRepeatInPlayingBar);
+
+        final RelativeLayout.LayoutParams paramArtwork = (RelativeLayout.LayoutParams) imgViewArtwork.getLayoutParams();
+        final RelativeLayout.LayoutParams paramTitle = (RelativeLayout.LayoutParams) textTitle.getLayoutParams();
+        final RelativeLayout.LayoutParams paramArtist = (RelativeLayout.LayoutParams) textArtist.getLayoutParams();
+        final RelativeLayout.LayoutParams paramBtnPlay = (RelativeLayout.LayoutParams) btnPlay.getLayoutParams();
+        final RelativeLayout.LayoutParams paramBtnForward = (RelativeLayout.LayoutParams) btnForward.getLayoutParams();
+
+        final int nTranslationYFrom = (int)relativePlaying.getTranslationY();
+        final int nTranslationY = 0;
+        final int nRelativePlayingHeightFrom = getResources().getDisplayMetrics().heightPixels - tabLayout.getMeasuredHeight() - findViewById(R.id.linearControl).getMeasuredHeight() - getStatusBarHeight() + (int) (16.0 * getResources().getDisplayMetrics().density + 0.5);
+        int nTempRelativePlayingHeight = (int) (82.0 * getResources().getDisplayMetrics().density + 0.5);
+        if(bBottom) nTempRelativePlayingHeight = 0;
+        final int nRelativePlayingHeight = nTempRelativePlayingHeight;
+        final int nArtworkWidthFrom = imgViewArtwork.getWidth();
+        final int nArtworkWidth = (int) (44.0 * getResources().getDisplayMetrics().density + 0.5);
+        final int nArtworkLeftMarginFrom = paramArtwork.leftMargin;
+        final int nArtworkLeftMargin = (int) (8.0 * getResources().getDisplayMetrics().density + 0.5);
+        final int nArtworkTopMarginFrom = paramArtwork.topMargin;
+        final int nArtworkTopMargin = (int) (8.0 * getResources().getDisplayMetrics().density + 0.5);
+        final int nTitleTopMarginFrom = paramTitle.topMargin;
+        final int nTitleLeftMarginFrom = paramTitle.leftMargin;
+        final int nTitleRightMarginFrom = paramTitle.rightMargin;
+        final float fTitleFontFrom = 15.0f;
+        final float fTitleFont = 13.0f;
+        Paint paint = new Paint();
+        textTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fTitleFont);
+        paint.setTextSize(textTitle.getTextSize());
+        textTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fTitleFontFrom);
+        final int nTitleWidthFrom = paramTitle.width;
+        final int nTitleWidth = (int) paint.measureText(textTitle.getText().toString());
+        final int nArtistTopMarginFrom = paramArtist.topMargin;
+        final float fArtistFontFrom = 13.0f;
+        final float fArtistFont = 10.0f;
+        textArtist.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fArtistFont);
+        paint.setTextSize(textArtist.getTextSize());
+        textArtist.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fArtistFontFrom);
+        final int nArtistWidthFrom = paramArtist.width;
+        final int nArtistWidth = (int) paint.measureText(textArtist.getText().toString());
+        final int nBtnPlayTopMarginFrom = paramBtnPlay.topMargin;
+        final int nBtnPlayRightMarginFrom = paramBtnPlay.rightMargin;
+        final int nBtnPlayRightMargin = (int) (88.0 * getResources().getDisplayMetrics().density + 0.5);
+        final int nBtnHeightFrom = (int) (44.0 * getResources().getDisplayMetrics().density + 0.5);
+        final int nBtnHeight = (int) (60.0 * getResources().getDisplayMetrics().density + 0.5);
+        final int nBtnForwardRightMarginFrom = paramBtnForward.rightMargin;
+        final int nBtnForwardRightMargin = (int) (44.0 * getResources().getDisplayMetrics().density + 0.5);
+
+        ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float fProgress = valueAnimator.getAnimatedFraction();
+                relativePlaying.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
+                advanceAnimation(relativePlaying, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
+                advanceAnimation(imgViewArtwork, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
+                advanceAnimation(imgViewArtwork, "height", nArtworkWidthFrom, nArtworkWidth, fProgress);
+                advanceAnimation(imgViewArtwork, "leftMargin", nArtworkLeftMarginFrom, nArtworkLeftMargin, fProgress);
+                advanceAnimation(imgViewArtwork, "topMargin", nArtworkTopMarginFrom, nArtworkTopMargin, fProgress);
+                advanceAnimation(textTitle, "width", nTitleWidthFrom, nTitleWidth, fProgress);
+                advanceAnimation(textTitle, "topMargin", nTitleTopMarginFrom, (int) (14.0 * getResources().getDisplayMetrics().density + 0.5), fProgress);
+                advanceAnimation(textTitle, "leftMargin", nTitleLeftMarginFrom, (int) (60.0 * getResources().getDisplayMetrics().density + 0.5), fProgress);
+                advanceAnimation(textTitle, "rightMargin", nTitleRightMarginFrom, (int) (132.0 * getResources().getDisplayMetrics().density + 0.5), fProgress);
+                textTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fTitleFontFrom + (fTitleFont - fTitleFontFrom) * fProgress);
+                advanceAnimation(textArtist, "width", nArtistWidthFrom, nArtistWidth, fProgress);
+                advanceAnimation(textArtist, "topMargin", nArtistTopMarginFrom, (int) (33.0 * getResources().getDisplayMetrics().density + 0.5), fProgress);
+                advanceAnimation(textArtist, "leftMargin", nTitleLeftMarginFrom, (int) (60.0 * getResources().getDisplayMetrics().density + 0.5), fProgress);
+                advanceAnimation(textArtist, "rightMargin", nTitleRightMarginFrom, (int) (132.0 * getResources().getDisplayMetrics().density + 0.5), fProgress);
+                textArtist.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fArtistFontFrom + (fArtistFont - fArtistFontFrom) * fProgress);
+                advanceAnimation(btnPlay, "topMargin", nBtnPlayTopMarginFrom, 0, fProgress);
+                advanceAnimation(btnForward, "topMargin", nBtnPlayTopMarginFrom, 0, fProgress);
+                advanceAnimation(btnPlay, "rightMargin", nBtnPlayRightMarginFrom, nBtnPlayRightMargin, fProgress);
+                advanceAnimation(btnPlay, "height", nBtnHeightFrom, nBtnHeight, fProgress);
+                advanceAnimation(btnForward, "height", nBtnHeightFrom, nBtnHeight, fProgress);
+                advanceAnimation(btnRewind, "height", nBtnHeightFrom, nBtnHeight, fProgress);
+                advanceAnimation(btnForward, "rightMargin", nBtnForwardRightMarginFrom, nBtnForwardRightMargin, fProgress);
+            }
+        });
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                textTitle.setGravity(Gravity.LEFT);
+                paramTitle.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
+                textArtist.setGravity(Gravity.LEFT);
+                paramArtist.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
+                imgViewDown.clearAnimation();
+                imgViewDown.setVisibility(View.GONE);
+                seekCurPos.clearAnimation();
+                seekCurPos.setVisibility(View.GONE);
+                textCurPos.clearAnimation();
+                textCurPos.setVisibility(View.GONE);
+                textRemain.clearAnimation();
+                textRemain.setVisibility(View.GONE);
+                btnRewind.clearAnimation();
+                btnRewind.setVisibility(View.GONE);
+                btnMore.clearAnimation();
+                btnMore.setVisibility(View.GONE);
+                btnShuffle.clearAnimation();
+                btnShuffle.setVisibility(View.GONE);
+                btnRepeat.clearAnimation();
+                btnRepeat.setVisibility(View.GONE);
+                relativePlaying.setOnClickListener(activity);
+
+                final PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
+                RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams) findViewById(R.id.container).getLayoutParams();
+                RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams) findViewById(R.id.relativeRecording).getLayoutParams();
+                if (playlistFragment.hRecord != 0) {
+                    paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativeRecording);
+                    paramContainer.bottomMargin = 0;
+                    paramRecording.addRule(RelativeLayout.ABOVE, R.id.relativePlaying);
+                    if(bBottom) paramRecording.bottomMargin = 0;
+                    else paramRecording.bottomMargin = (int) (-22 * getResources().getDisplayMetrics().density + 0.5);
+                } else {
+                    paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativePlaying);
+                    if(bBottom) paramContainer.bottomMargin = 0;
+                    else paramContainer.bottomMargin = (int) (-22 * getResources().getDisplayMetrics().density + 0.5);
+                }
+
+                if(bBottom) {
+                    relativePlaying.setVisibility(View.GONE);
+                    RelativeLayout.LayoutParams paramPlaying = (RelativeLayout.LayoutParams) findViewById(R.id.relativePlaying).getLayoutParams();
+                    paramPlaying.height = (int) (82.0 * getResources().getDisplayMetrics().density + 0.5);
+                }
+            }
+        });
+        anim.setDuration(lDuration).start();
+
+        if (BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING)
+            btnPlay.setImageResource(R.drawable.bar_button_play);
+        else btnPlay.setImageResource(R.drawable.bar_button_pause);
+        btnForward.setImageResource(R.drawable.bar_button_forward);
+
+        imgViewDown.animate().alpha(0.0f).setDuration(lDuration);
+        seekCurPos.animate().alpha(0.0f).setDuration(lDuration);
+        textCurPos.animate().alpha(0.0f).setDuration(lDuration);
+        textRemain.animate().alpha(0.0f).setDuration(lDuration);
+        btnRewind.animate().alpha(0.0f).setDuration(lDuration);
+        btnMore.animate().alpha(0.0f).setDuration(lDuration);
+        btnShuffle.animate().alpha(0.0f).setDuration(lDuration);
+        btnRepeat.animate().alpha(0.0f).setDuration(lDuration);
+        findViewById(R.id.btnCloseInPlayingBar).animate().alpha(1.0f).setDuration(lDuration);
+        adView.animate().translationY(0).setDuration(lDuration);
+        tabLayout.animate().translationY(0).setDuration(lDuration);
+        findViewById(R.id.viewSep2).animate().translationY(0).setDuration(lDuration);
+    }
+
+    public void showSaveExportMenu()
+    {
+        final PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
+        final BottomMenu menu = new BottomMenu(this);
+        menu.setTitle("保存／エクスポート");
+        final Activity activity = this;
+        menu.addMenu("アプリ内に保存", R.drawable.actionsheet_save, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                playlistFragment.saveSongToLocal();
+            }
+        });
+        if(Build.VERSION.SDK_INT >= 18) {
+            menu.addMenu("ギャラリーに保存", R.drawable.actionsheet_film, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    menu.dismiss();
+                    playlistFragment.saveSongToGallery();
+                }
+            });
+        }
+        menu.addMenu("他のアプリにエクスポート", R.drawable.actionsheet_share, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                playlistFragment.export();
+            }
+        });
+        menu.setCancelMenu();
+        menu.show();
     }
 
     public void openItem()

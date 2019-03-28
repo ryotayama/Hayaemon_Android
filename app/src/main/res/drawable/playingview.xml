@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- drop shadow -->
     <item><shape>
         <padding android:top="1dp" /><solid android:color="#00000000" />
     </shape></item>
@@ -67,11 +66,11 @@
     <item><shape>
         <padding android:top="1dp" /><solid android:color="#01000000" />
     </shape></item>
-
-    <!-- background -->
-    <item>
-        <shape android:shape="rectangle">
+    <item android:bottom="-72px">
+        <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
             <solid android:color="@android:color/white"/>
+            <corners android:topLeftRadius="12dp" android:topRightRadius="12dp"/>
+            <stroke android:width="1px" android:color="#BFBFBF" />
         </shape>
     </item>
 </layer-list>
