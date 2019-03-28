@@ -2082,8 +2082,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return true;
                 }
             }
-            return false;
         }
-        return false;
+        return super.onKeyDown(keyCode, event);
     }
 }
