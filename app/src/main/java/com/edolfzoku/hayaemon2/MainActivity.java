@@ -323,6 +323,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(strTarget.equals("leftMargin")) param.leftMargin = (int) (nFrom + (nTo - nFrom) * fProgress);
         else if(strTarget.equals("topMargin")) param.topMargin = (int) (nFrom + (nTo - nFrom) * fProgress);
         else if(strTarget.equals("rightMargin")) param.rightMargin = (int) (nFrom + (nTo - nFrom) * fProgress);
+        else if(strTarget.equals("bottomMargin")) param.bottomMargin = (int) (nFrom + (nTo - nFrom) * fProgress);
         view.setLayoutParams(param);
     }
 
@@ -1318,6 +1319,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         final TabLayout tabLayout = findViewById(R.id.tabs);
+        final View viewSep2 = findViewById(R.id.viewSep2);
         final AdView adView = findViewById(R.id.adView);
         final ImageView imgViewArtwork = findViewById(R.id.imgViewArtworkInPlayingBar);
         final TextView textTitle = findViewById(R.id.textTitleInPlayingBar);
@@ -1381,6 +1383,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 float fProgress = valueAnimator.getAnimatedFraction();
+                advanceAnimation(tabLayout, "bottomMargin", 0, -tabLayout.getHeight(), fProgress);
+                advanceAnimation(viewSep2, "bottomMargin", 0, tabLayout.getHeight(), fProgress);
                 relativePlaying.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
                 advanceAnimation(relativePlaying, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
                 advanceAnimation(imgViewArtwork, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
@@ -1449,6 +1453,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         relativePlaying.setBackgroundResource(R.drawable.topshadow);
 
         final TabLayout tabLayout = findViewById(R.id.tabs);
+        final View viewSep2 = findViewById(R.id.viewSep2);
         final AdView adView = findViewById(R.id.adView);
         final ImageView imgViewArtwork = findViewById(R.id.imgViewArtworkInPlayingBar);
         final TextView textTitle = findViewById(R.id.textTitleInPlayingBar);
@@ -1512,6 +1517,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 float fProgress = valueAnimator.getAnimatedFraction();
+                advanceAnimation(tabLayout, "bottomMargin", -tabLayout.getHeight(), 0, fProgress);
+                advanceAnimation(viewSep2, "bottomMargin", tabLayout.getHeight(), 0, fProgress);
                 relativePlaying.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
                 advanceAnimation(relativePlaying, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
                 advanceAnimation(imgViewArtwork, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
