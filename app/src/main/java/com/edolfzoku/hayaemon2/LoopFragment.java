@@ -249,13 +249,17 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         btnA.setImageResource(R.drawable.ic_abloop_a);
         btnA.setOnTouchListener(this);
         getActivity().findViewById(R.id.viewBtnARight).setOnTouchListener(this);
-        getActivity().findViewById(R.id.viewBtnRiwindLeft).setOnTouchListener(this);
+        getActivity().findViewById(R.id.viewBtnRewindLeft).setOnTouchListener(this);
         ImageButton btnRewind5Sec = (ImageButton)getActivity().findViewById(R.id.btnRewind5Sec);
         btnRewind5Sec.setOnTouchListener(this);
-        getActivity().findViewById(R.id.viewBtnRiwindRight).setOnTouchListener(this);
+        btnRewind5Sec.setOnLongClickListener(this);
+        btnRewind5Sec.setTag(5);
+        getActivity().findViewById(R.id.viewBtnRewindRight).setOnTouchListener(this);
         getActivity().findViewById(R.id.viewBtnForwardLeft).setOnTouchListener(this);
         ImageButton btnForward5Sec = (ImageButton)getActivity().findViewById(R.id.btnForward5Sec);
         btnForward5Sec.setOnTouchListener(this);
+        btnForward5Sec.setOnLongClickListener(this);
+        btnForward5Sec.setTag(5);
         getActivity().findViewById(R.id.viewBtnForwardRight).setOnTouchListener(this);
         getActivity().findViewById(R.id.viewBtnBLeft).setOnTouchListener(this);
         ImageButton btnB = (ImageButton)getActivity().findViewById(R.id.btnB);
@@ -264,8 +268,10 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         btnB.setOnTouchListener(this);
         getActivity().findViewById(R.id.viewBtnBRight).setOnTouchListener(this);
 
-        ImageButton btnRewind5sec2 = (ImageButton)getActivity().findViewById(R.id.btnRewind5Sec2);
-        btnRewind5sec2.setOnTouchListener(this);
+        ImageButton btnRewind5Sec2 = (ImageButton)getActivity().findViewById(R.id.btnRewind5Sec2);
+        btnRewind5Sec2.setOnTouchListener(this);
+        btnRewind5Sec2.setOnLongClickListener(this);
+        btnRewind5Sec2.setTag(5);
         ImageButton btnPrevmarker = (ImageButton)getActivity().findViewById(R.id.btnPrevmarker);
         btnPrevmarker.setOnTouchListener(this);
         ImageButton btnDelmarker= (ImageButton)getActivity().findViewById(R.id.btnDelmarker);
@@ -280,6 +286,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         btnLoopmarker.setOnTouchListener(this);
         ImageButton btnForward5Sec2 = (ImageButton)getActivity().findViewById(R.id.btnForward5Sec2);
         btnForward5Sec2.setOnTouchListener(this);
+        btnForward5Sec.setOnLongClickListener(this);
+        btnForward5Sec.setTag(5);
 
         final EditText textCurValue = getActivity().findViewById(R.id.textCurValue);
         final LinearLayout ABLabel = (LinearLayout)getActivity().findViewById(R.id.ABLabel);
@@ -406,6 +414,122 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             bContinue = true;
             handler.post(repeatZoomIn);
             return true;
+        }
+        else if(v.getId() == R.id.btnRewind5Sec || v.getId() == R.id.btnRewind5Sec2) {
+            final BottomMenu menu = new BottomMenu(getActivity());
+            menu.setTitle("戻すボタン選択");
+            final ImageButton btnRewind5Sec = activity.findViewById(R.id.btnRewind5Sec);
+            final ImageButton btnRewind5Sec2 = activity.findViewById(R.id.btnRewind5Sec2);
+            menu.addMenu("1秒戻す", R.drawable.ic_actionsheet_01sec_prev, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btnRewind5Sec.setImageResource(R.drawable.ic_abloop_01sec_prev);
+                    btnRewind5Sec2.setImageResource(R.drawable.ic_abloop_01sec_prev);
+                    btnRewind5Sec.setTag(1);
+                    btnRewind5Sec2.setTag(1);
+                    menu.dismiss();
+                }
+            });
+            menu.addMenu("2秒戻す", R.drawable.ic_actionsheet_02sec_prev, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btnRewind5Sec.setImageResource(R.drawable.ic_abloop_02sec_prev);
+                    btnRewind5Sec2.setImageResource(R.drawable.ic_abloop_02sec_prev);
+                    btnRewind5Sec.setTag(2);
+                    btnRewind5Sec2.setTag(2);
+                    menu.dismiss();
+                }
+            });
+            menu.addMenu("3秒戻す", R.drawable.ic_actionsheet_03sec_prev, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btnRewind5Sec.setImageResource(R.drawable.ic_abloop_03sec_prev);
+                    btnRewind5Sec2.setImageResource(R.drawable.ic_abloop_03sec_prev);
+                    btnRewind5Sec.setTag(3);
+                    btnRewind5Sec2.setTag(3);
+                    menu.dismiss();
+                }
+            });
+            menu.addMenu("5秒戻す", R.drawable.ic_actionsheet_05sec_prev, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btnRewind5Sec.setImageResource(R.drawable.ic_abloop_05sec_prev);
+                    btnRewind5Sec2.setImageResource(R.drawable.ic_abloop_05sec_prev);
+                    btnRewind5Sec.setTag(5);
+                    btnRewind5Sec2.setTag(5);
+                    menu.dismiss();
+                }
+            });
+            menu.addMenu("10秒戻す", R.drawable.ic_actionsheet_10sec_prev, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btnRewind5Sec.setImageResource(R.drawable.ic_abloop_10sec_prev);
+                    btnRewind5Sec2.setImageResource(R.drawable.ic_abloop_10sec_prev);
+                    btnRewind5Sec.setTag(10);
+                    btnRewind5Sec2.setTag(10);
+                    menu.dismiss();
+                }
+            });
+            menu.setCancelMenu();
+            menu.show();
+        }
+        else if(v.getId() == R.id.btnForward5Sec || v.getId() == R.id.btnForward5Sec2) {
+            final BottomMenu menu = new BottomMenu(getActivity());
+            menu.setTitle("進めるボタン選択");
+            final ImageButton btnForward5Sec = activity.findViewById(R.id.btnForward5Sec);
+            final ImageButton btnForward5Sec2 = activity.findViewById(R.id.btnForward5Sec2);
+            menu.addMenu("1秒進める", R.drawable.ic_actionsheet_01sec_next, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btnForward5Sec.setImageResource(R.drawable.ic_abloop_01sec_next);
+                    btnForward5Sec2.setImageResource(R.drawable.ic_abloop_01sec_next);
+                    btnForward5Sec.setTag(1);
+                    btnForward5Sec2.setTag(1);
+                    menu.dismiss();
+                }
+            });
+            menu.addMenu("2秒進める", R.drawable.ic_actionsheet_02sec_next, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btnForward5Sec.setImageResource(R.drawable.ic_abloop_02sec_next);
+                    btnForward5Sec2.setImageResource(R.drawable.ic_abloop_02sec_next);
+                    btnForward5Sec.setTag(2);
+                    btnForward5Sec2.setTag(2);
+                    menu.dismiss();
+                }
+            });
+            menu.addMenu("3秒進める", R.drawable.ic_actionsheet_03sec_next, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btnForward5Sec.setImageResource(R.drawable.ic_abloop_03sec_next);
+                    btnForward5Sec2.setImageResource(R.drawable.ic_abloop_03sec_next);
+                    btnForward5Sec.setTag(3);
+                    btnForward5Sec2.setTag(3);
+                    menu.dismiss();
+                }
+            });
+            menu.addMenu("5秒進める", R.drawable.ic_actionsheet_05sec_next, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btnForward5Sec.setImageResource(R.drawable.ic_abloop_05sec_next);
+                    btnForward5Sec2.setImageResource(R.drawable.ic_abloop_05sec_next);
+                    btnForward5Sec.setTag(5);
+                    btnForward5Sec2.setTag(5);
+                    menu.dismiss();
+                }
+            });
+            menu.addMenu("10秒進める", R.drawable.ic_actionsheet_10sec_next, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btnForward5Sec.setImageResource(R.drawable.ic_abloop_10sec_next);
+                    btnForward5Sec2.setImageResource(R.drawable.ic_abloop_10sec_next);
+                    btnForward5Sec.setTag(10);
+                    btnForward5Sec2.setTag(10);
+                    menu.dismiss();
+                }
+            });
+            menu.setCancelMenu();
+            menu.show();
         }
         return false;
     }
@@ -800,15 +924,20 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 waveView.redrawWaveForm();
             }
         }
-        else if(v.getId() == R.id.viewBtnRiwindLeft || v.getId() == R.id.viewBtnRiwindRight || v.getId() == R.id.btnRewind5Sec || v.getId() == R.id.btnRewind5Sec2)
+        else if(v.getId() == R.id.viewBtnRewindLeft || v.getId() == R.id.viewBtnRewindRight || v.getId() == R.id.btnRewind5Sec || v.getId() == R.id.btnRewind5Sec2)
         {
             if (event.getAction() == MotionEvent.ACTION_UP)
             {
                 if (MainActivity.hStream != 0)
                 {
+                    ImageButton btnRewind5Sec = activity.findViewById(R.id.btnRewind5Sec);
                     double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
-                    dPos -= 5.0;
+                    if((Integer)btnRewind5Sec.getTag() == 1) dPos -= 1.0;
+                    else if((Integer)btnRewind5Sec.getTag() == 2) dPos -= 2.0;
+                    else if((Integer)btnRewind5Sec.getTag() == 3) dPos -= 3.0;
+                    else if((Integer)btnRewind5Sec.getTag() == 5) dPos -= 5.0;
+                    else if((Integer)btnRewind5Sec.getTag() == 10) dPos -= 10.0;
                     EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
                     boolean bReverse = effectFragment.isReverse();
                     if(bReverse) {
@@ -843,9 +972,14 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             {
                 if (MainActivity.hStream != 0)
                 {
+                    ImageButton btnForward5Sec = activity.findViewById(R.id.btnForward5Sec);
                     double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
-                    dPos += 5.0;
+                    if((Integer)btnForward5Sec.getTag() == 1) dPos += 1.0;
+                    else if((Integer)btnForward5Sec.getTag() == 2) dPos += 2.0;
+                    else if((Integer)btnForward5Sec.getTag() == 3) dPos += 3.0;
+                    else if((Integer)btnForward5Sec.getTag() == 5) dPos += 5.0;
+                    else if((Integer)btnForward5Sec.getTag() == 10) dPos += 10.0;
                     EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
                     boolean bReverse = effectFragment.isReverse();
                     if(bReverse) {
