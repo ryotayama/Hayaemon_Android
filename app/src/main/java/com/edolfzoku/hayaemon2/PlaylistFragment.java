@@ -42,6 +42,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.media.MediaCodec;
 import android.media.MediaExtractor;
@@ -843,8 +844,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             }
         };
         if(hRecord != 0) {
-            BASS.BASS_ChannelStop(hRecord);
-            hRecord = 0;
+            stopRecord();
+            return;
         }
         if(Build.VERSION.SDK_INT >= 23) {
             if (activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -853,6 +854,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             }
         }
         hRecord = BASS.BASS_RecordStart(44100, 1, 0, RecordingCallback, 0);
+
+        AnimationButton btnRecord = activity.findViewById(R.id.btnRecord);
+        btnRecord.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#FF007AFF"), PorterDuff.Mode.SRC_IN));
 
         final Handler handler = new Handler();
         Runnable timer=new Runnable() {
@@ -886,6 +890,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         BASS.BASS_ChannelStop(hRecord);
         hRecord = 0;
+
+        AnimationButton btnRecord = activity.findViewById(R.id.btnRecord);
+        btnRecord.clearColorFilter();
+
         recbuf.limit(recbuf.position());
         recbuf.putInt(4, recbuf.position()-8);
         recbuf.putInt(40, recbuf.position()-44);
