@@ -191,9 +191,9 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
         float fX = 0.0f;
         if(fSpeed >= 0.0)
-            fX = nBkLeft + fCenter + (fSpeed / fMaxSpeed) * fCenter;
+            fX = nBkLeft + fCenter + (fSpeed / fMaxSpeed) * (fCenter - nPtWidth / 2);
         else
-            fX = nBkLeft + fCenter - (fSpeed / fMinSpeed) * fCenter;
+            fX = nBkLeft + fCenter - (fSpeed / fMinSpeed) * (fCenter - nPtWidth / 2);
         float fY = imgPoint.getY() + nPtHeight / 2;
         imgPoint.animate()
             .x(fX - nPtWidth / 2)
