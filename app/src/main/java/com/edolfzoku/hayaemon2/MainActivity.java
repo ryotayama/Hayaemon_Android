@@ -789,6 +789,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
             ControlFragment controlFragment = (ControlFragment)mSectionsPagerAdapter.getItem(2);
             BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed + 100);
+            AnimationButton btnRewind = findViewById(R.id.btnRewind);
+            btnRewind.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#FF007AFF"), PorterDuff.Mode.SRC_IN));
+            AnimationButton btnRewindInPlayingBar = findViewById(R.id.btnRewindInPlayingBar);
+            btnRewindInPlayingBar.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#FF007AFF"), PorterDuff.Mode.SRC_IN));
             return true;
         }
         else if(v.getId() == R.id.btnForward || v.getId() == R.id.btnForwardInPlayingBar)
@@ -796,6 +800,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if(hStream == 0) return false;
             ControlFragment controlFragment = (ControlFragment)mSectionsPagerAdapter.getItem(2);
             BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed + 100);
+            AnimationButton btnForward = findViewById(R.id.btnForward);
+            btnForward.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#FF007AFF"), PorterDuff.Mode.SRC_IN));
+            AnimationButton btnForwardInPlayingBar = findViewById(R.id.btnForwardInPlayingBar);
+            btnForwardInPlayingBar.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#FF007AFF"), PorterDuff.Mode.SRC_IN));
             return true;
         }
         return false;
@@ -919,12 +927,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
                 ControlFragment controlFragment = (ControlFragment)mSectionsPagerAdapter.getItem(2);
                 BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed);
+                AnimationButton btnRewind = findViewById(R.id.btnRewind);
+                btnRewind.clearColorFilter();
+                AnimationButton btnRewindInPlayingBar = findViewById(R.id.btnRewindInPlayingBar);
+                btnRewindInPlayingBar.clearColorFilter();
             }
             else if(v.getId() == R.id.btnForward || v.getId() == R.id.btnForwardInPlayingBar)
             {
                 if(hStream == 0) return false;
                 ControlFragment controlFragment = (ControlFragment)mSectionsPagerAdapter.getItem(2);
                 BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed);
+                AnimationButton btnForward = findViewById(R.id.btnForward);
+                btnForward.clearColorFilter();
+                AnimationButton btnForwardInPlayingBar = findViewById(R.id.btnForwardInPlayingBar);
+                btnForwardInPlayingBar.clearColorFilter();
             }
         }
         if(event.getAction() == MotionEvent.ACTION_DOWN)
