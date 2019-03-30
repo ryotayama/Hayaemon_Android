@@ -1106,7 +1106,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             if(kEffectTypeStadiumEcho <= nSelect && nSelect <= kEffectTypeMountainEcho)
             {
                 for(int i = kEffectTypeStadiumEcho; i <= kEffectTypeMountainEcho; i++)
-                    deselectEffect(i);
+                    if(i != nSelect) deselectEffect(i);
             }
             if(kEffectTypeReverb_Bathroom <= nSelect && nSelect <= kEffectTypeReverb_Cathedral)
             {
