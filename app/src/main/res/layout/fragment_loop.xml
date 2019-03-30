@@ -254,7 +254,7 @@
             android:focusable="true"
             />
 
-        <ImageButton
+        <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnA"
             android:contentDescription="Ａ位置設定"
             android:src="@drawable/ic_abloop_a"
@@ -283,7 +283,7 @@
             android:focusable="true"
             />
 
-        <ImageButton
+        <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnRewind5Sec"
             android:contentDescription="５秒戻す"
             android:src="@drawable/ic_abloop_05sec_prev"
@@ -335,7 +335,7 @@
             android:focusable="true"
             />
 
-        <ImageButton
+        <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnForward5Sec"
             android:contentDescription="５秒進める"
             android:src="@drawable/ic_abloop_05sec_next"
@@ -364,7 +364,7 @@
             android:focusable="true"
             />
 
-        <ImageButton
+        <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnB"
             android:contentDescription="Ｂ位置設定"
             android:src="@drawable/ic_abloop_b"
@@ -396,7 +396,7 @@
         >
 
 
-        <ImageButton
+        <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnRewind5Sec2"
             android:contentDescription="５秒戻す"
             android:src="@drawable/ic_abloop_05sec_prev"
@@ -408,7 +408,7 @@
             android:gravity="center"
             />
 
-        <ImageButton
+        <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnPrevmarker"
             android:contentDescription="前のマーカーに移動"
             android:src="@drawable/ic_prevmarker"
@@ -420,7 +420,7 @@
             android:gravity="center"
             />
 
-        <ImageButton
+        <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnDelmarker"
             android:contentDescription="前のマーカーの削除"
             android:src="@drawable/ic_delmarker"
@@ -432,7 +432,7 @@
             android:gravity="center"
             />
 
-        <ImageButton
+        <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnAddmarker"
             android:contentDescription="マーカーの追加"
             android:src="@drawable/ic_addmarker"
@@ -444,7 +444,7 @@
             android:gravity="center"
             />
 
-        <ImageButton
+        <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnNextmarker"
             android:contentDescription="次のマーカーに移動"
             android:src="@drawable/ic_nextmarker"
@@ -456,7 +456,7 @@
             android:gravity="center"
             />
 
-        <ImageButton
+        <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnLoopmarker"
             android:contentDescription="マーカー間のループ"
             android:src="@drawable/ic_abloop_marker_loop"
@@ -468,7 +468,7 @@
             android:gravity="center"
             />
 
-        <ImageButton
+        <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnForward5Sec2"
             android:contentDescription="５秒進める"
             android:src="@drawable/ic_abloop_05sec_next"

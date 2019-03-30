@@ -237,33 +237,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btnShuffle).setOnClickListener(this);
         findViewById(R.id.btnRepeat).setOnClickListener(this);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.addDrawerListener(this);
-        RelativeLayout relativeSave = (RelativeLayout)findViewById(R.id.relativeSave);
+        RelativeLayout relativeSave = findViewById(R.id.relativeSave);
         relativeSave.setOnTouchListener(this);
         relativeSave.setOnClickListener(this);
-        RelativeLayout relativeLock = (RelativeLayout)findViewById(R.id.relativeLock);
+        RelativeLayout relativeLock = findViewById(R.id.relativeLock);
         relativeLock.setOnTouchListener(this);
         relativeLock.setOnClickListener(this);
-        RelativeLayout relativeAddSong = (RelativeLayout)findViewById(R.id.relativeAddSong);
+        RelativeLayout relativeAddSong = findViewById(R.id.relativeAddSong);
         relativeAddSong.setOnTouchListener(this);
         relativeAddSong.setOnClickListener(this);
-        RelativeLayout relativeItem = (RelativeLayout)findViewById(R.id.relativeItem);
+        RelativeLayout relativeItem = findViewById(R.id.relativeItem);
         relativeItem.setOnTouchListener(this);
         relativeItem.setOnClickListener(this);
-        RelativeLayout relativeReport = (RelativeLayout)findViewById(R.id.relativeReport);
+        RelativeLayout relativeReport = findViewById(R.id.relativeReport);
         relativeReport.setOnTouchListener(this);
         relativeReport.setOnClickListener(this);
-        RelativeLayout relativeReview = (RelativeLayout)findViewById(R.id.relativeReview);
+        RelativeLayout relativeReview = findViewById(R.id.relativeReview);
         relativeReview.setOnTouchListener(this);
         relativeReview.setOnClickListener(this);
-        RelativeLayout relativeHideAds = (RelativeLayout)findViewById(R.id.relativeHideAds);
+        RelativeLayout relativeHideAds = findViewById(R.id.relativeHideAds);
         relativeHideAds.setOnTouchListener(this);
         relativeHideAds.setOnClickListener(this);
-        RelativeLayout relativeInfo = (RelativeLayout)findViewById(R.id.relativeInfo);
+        RelativeLayout relativeInfo = findViewById(R.id.relativeInfo);
         relativeInfo.setOnTouchListener(this);
         relativeInfo.setOnClickListener(this);
-        AnimationButton btnSetting = (AnimationButton)findViewById(R.id.btnSetting);
+        AnimationButton btnSetting = findViewById(R.id.btnSetting);
         btnSetting.setOnClickListener(this);
 
         findViewById(R.id.btnPlayInPlayingBar).setOnClickListener(this);
@@ -506,7 +506,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             title.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
             builder.setView(layout);
 
-            TextView textViewBlog = (TextView)layout.findViewById(R.id.textViewBlog);
+            TextView textViewBlog = layout.findViewById(R.id.textViewBlog);
             String strBlog = "この内容は<a href=\"http://hayaemon.jp/blog/\">開発者ブログ</a>から";
             CharSequence blogChar = Html.fromHtml(strBlog);
             textViewBlog.setText(blogChar);
@@ -514,31 +514,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             textViewBlog.setMovementMethod(mMethod);
             textViewBlog.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
 
-            TextView textViewArticle = (TextView)layout.findViewById(R.id.textViewArticle);
+            TextView textViewArticle = layout.findViewById(R.id.textViewArticle);
             String strArticle = "<a href=\"http://hayaemon.jp/blog/archives/6620\">→該当記事へ</a>";
             CharSequence blogChar2 = Html.fromHtml(strArticle);
             textViewArticle.setText(blogChar2);
             textViewArticle.setMovementMethod(mMethod);
 
-            TextView textView = (TextView)layout.findViewById(R.id.textView);
+            TextView textView = layout.findViewById(R.id.textView);
             textView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
             textView.setMovementMethod(ScrollingMovementMethod.getInstance());
             textView.setText(readChangeLog());
 
             final AlertDialog alertDialog = builder.create();
             alertDialog.show();
-            Button buttonClose = (Button)layout.findViewById(R.id.buttonClose);
+            Button buttonClose = layout.findViewById(R.id.buttonClose);
             buttonClose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Switch switchNextHidden = (Switch)layout.findViewById(R.id.switchNextHidden);
+                    Switch switchNextHidden = layout.findViewById(R.id.switchNextHidden);
                     boolean bChecked = switchNextHidden.isChecked();
                     SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                     preferences.edit().putBoolean("hideupdatelognext", bChecked).commit();
                     alertDialog.dismiss();
                 }
             });
-            Button buttonShare = (Button)layout.findViewById(R.id.buttonShare);
+            Button buttonShare = layout.findViewById(R.id.buttonShare);
             buttonShare.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -1808,7 +1808,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         MobileAds.initialize(this, "ca-app-pub-9499594730627438~9516019647");
 
-        mAdView = (AdView) findViewById(R.id.adView);
+        mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
@@ -1821,7 +1821,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        mViewPager = (HoldableViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setSwipeHold(true);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setOffscreenPageLimit(4);
@@ -1833,7 +1833,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onPageSelected(int position) {
-                TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+                TabLayout tabLayout = findViewById(R.id.tabs);
                 PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
                 if(position == 0 && findViewById(R.id.relativeSongs).getVisibility() == View.VISIBLE) findViewById(R.id.viewSep1).setVisibility(View.INVISIBLE);
                 else findViewById(R.id.viewSep1).setVisibility(View.VISIBLE);
@@ -1863,7 +1863,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         TextView tab0 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
@@ -1947,7 +1947,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         LinearLayout ABButton = (LinearLayout)findViewById(R.id.ABButton);
         LinearLayout MarkerButton = (LinearLayout)findViewById(R.id.MarkerButton);
-        ImageButton btnLoopmarker = (ImageButton)findViewById(R.id.btnLoopmarker);
+        AnimationButton btnLoopmarker = findViewById(R.id.btnLoopmarker);
 
         EffectFragment effectFragment = (EffectFragment)mSectionsPagerAdapter.getItem(4);
         if(effectFragment.isReverse()) {
@@ -1982,9 +1982,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 LoopFragment loopFragment = (LoopFragment) mSectionsPagerAdapter.getItem(1);
                 EffectFragment effectFragment = (EffectFragment) mSectionsPagerAdapter.getItem(4);
-                LinearLayout ABButton = (LinearLayout) findViewById(R.id.ABButton);
-                LinearLayout MarkerButton = (LinearLayout) findViewById(R.id.MarkerButton);
-                ImageButton btnLoopmarker = (ImageButton) findViewById(R.id.btnLoopmarker);
+                LinearLayout ABButton = findViewById(R.id.ABButton);
+                LinearLayout MarkerButton = findViewById(R.id.MarkerButton);
+                AnimationButton btnLoopmarker = findViewById(R.id.btnLoopmarker);
 
                 if (ABButton.getVisibility() == View.VISIBLE && (bLoopA || bLoopB) && !bPlayNextByBPos) {
                     if (effectFragment.isReverse())
@@ -2012,7 +2012,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                             bWaitEnd = false;
 
-                            ImageButton btnShuffle = (ImageButton) findViewById(R.id.btnShuffle);
+                            AnimationButton btnShuffle = findViewById(R.id.btnShuffle);
                             boolean bShuffle = false;
                             boolean bSingle = false;
                             if (btnShuffle.getContentDescription().toString().equals("シャッフルあり"))
@@ -2020,7 +2020,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             else if (btnShuffle.getContentDescription().toString().equals("１曲のみ"))
                                 bSingle = true;
 
-                            ImageButton btnRepeat = (ImageButton) findViewById(R.id.btnRepeat);
+                            AnimationButton btnRepeat = findViewById(R.id.btnRepeat);
                             boolean bRepeatAll = false;
                             boolean bRepeatSingle = false;
                             if (btnRepeat.getContentDescription().toString().equals("全曲リピート"))
@@ -2106,7 +2106,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK){
-            TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+            TabLayout tabLayout = findViewById(R.id.tabs);
             if(tabLayout.getSelectedTabPosition() == 0) { // 再生リスト画面
                 if(findViewById(R.id.relativeLyrics).getVisibility() == View.VISIBLE) {
                     findViewById(R.id.btnFinishLyrics).performClick();

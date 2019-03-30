@@ -64,7 +64,7 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
                 intNumberPicker.setValue(i);
         }
 
-        decimalNumberPicker = (NumberPicker)view.findViewById(R.id.decimalTimeEffectDetailPicker);
+        decimalNumberPicker = view.findViewById(R.id.decimalTimeEffectDetailPicker);
         decimalNumberPicker.setDisplayedValues(arDecimals);
         decimalNumberPicker.setMaxValue(9);
         decimalNumberPicker.setMinValue(0);

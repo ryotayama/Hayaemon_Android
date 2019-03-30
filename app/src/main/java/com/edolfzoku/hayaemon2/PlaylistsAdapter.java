@@ -52,12 +52,12 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
 
         ViewHolder(View view) {
             super(view);
-            playlistItem = (RelativeLayout) view.findViewById(R.id.playlistItem);
-            textName = (TextView) view.findViewById(R.id.textName);
-            textSongCount = (TextView) view.findViewById(R.id.textSongCount);
-            imgRight = (ImageView) view.findViewById(R.id.imgRight);
-            framePlaylistMenu = (FrameLayout)view.findViewById(R.id.framePlaylistMenu);
-            imgPlaylistMenu = (ImageView) view.findViewById(R.id.imgPlaylistMenu);
+            playlistItem = view.findViewById(R.id.playlistItem);
+            textName = view.findViewById(R.id.textName);
+            textSongCount = view.findViewById(R.id.textSongCount);
+            imgRight = view.findViewById(R.id.imgRight);
+            framePlaylistMenu = view.findViewById(R.id.framePlaylistMenu);
+            imgPlaylistMenu = view.findViewById(R.id.imgPlaylistMenu);
         }
     }
 

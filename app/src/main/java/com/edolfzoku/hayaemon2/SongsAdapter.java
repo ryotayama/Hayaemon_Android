@@ -59,14 +59,14 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
 
         ViewHolder(View view) {
             super(view);
-            songItem = (RelativeLayout) view.findViewById(R.id.songItem);
-            textNumber = (TextView) view.findViewById(R.id.textNumber);
-            textTitle = (TextView) view.findViewById(R.id.textTitle);
-            textArtist = (TextView) view.findViewById(R.id.textArtist);
-            imgStatus = (ImageView) view.findViewById(R.id.imgStatus);
-            imgLock = (ImageView) view.findViewById(R.id.imgLock);
-            frameSongMenu = (FrameLayout) view.findViewById(R.id.frameSongMenu);
-            imgSongMenu = (ImageView) view.findViewById(R.id.imgSongMenu);
+            songItem = view.findViewById(R.id.songItem);
+            textNumber = view.findViewById(R.id.textNumber);
+            textTitle = view.findViewById(R.id.textTitle);
+            textArtist = view.findViewById(R.id.textArtist);
+            imgStatus = view.findViewById(R.id.imgStatus);
+            imgLock = view.findViewById(R.id.imgLock);
+            frameSongMenu = view.findViewById(R.id.frameSongMenu);
+            imgSongMenu = view.findViewById(R.id.imgSongMenu);
         }
     }
 

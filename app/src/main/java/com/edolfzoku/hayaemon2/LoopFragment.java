@@ -67,7 +67,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
             TextView textView = new TextView(getActivity());
             textView.setText("▼");
-            RelativeLayout layout = (RelativeLayout)getActivity().findViewById(R.id.relative_loop);
+            RelativeLayout layout = getActivity().findViewById(R.id.relative_loop);
             layout.addView(textView);
             textView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
             int nLeft = (int) (viewCurPos.getX() - nMaxWidth * dPos / dLength - textView.getMeasuredWidth() / 2);
@@ -114,7 +114,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         super.onViewCreated(view, savedInstanceState);
 
         viewCurPos = getActivity().findViewById(R.id.viewCurPos);
-        waveView = (WaveView)getActivity().findViewById(R.id.waveView);
+        waveView = getActivity().findViewById(R.id.waveView);
         waveView.setLoopFragment(this);
         waveView.setOnTouchListener(this);
         final long lDelay = 250;
@@ -122,7 +122,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             @Override
             public void run() {
                 if (activity != null) {
-                    LinearLayout ABButton = (LinearLayout)activity.findViewById(R.id.ABButton);
+                    LinearLayout ABButton = activity.findViewById(R.id.ABButton);
                     EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
                     long nLength = 0;
                     long nPos = 0;
@@ -219,7 +219,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         viewMaskB.getLayoutParams().width = waveView.getWidth() - nLeftB;
                         viewMaskB.requestLayout();
                     }
-                    final LinearLayout MarkerButton = (LinearLayout)getActivity().findViewById(R.id.MarkerButton);
+                    final LinearLayout MarkerButton = getActivity().findViewById(R.id.MarkerButton);
                     if(MarkerButton.getVisibility() == View.VISIBLE) {
                         for (int i = 0; i < arMarkerTime.size(); i++) {
                             TextView textView = arMarkerText.get(i);
@@ -237,62 +237,62 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 handler.postDelayed(this, lDelay);
             }
         });
-        RelativeLayout relativeZoomOut = (RelativeLayout)getActivity().findViewById(R.id.relativeZoomOut);
+        RelativeLayout relativeZoomOut = getActivity().findViewById(R.id.relativeZoomOut);
         relativeZoomOut.setOnTouchListener(this);
         relativeZoomOut.setOnLongClickListener(this);
-        RelativeLayout relativeZoomIn = (RelativeLayout)getActivity().findViewById(R.id.relativeZoomIn);
+        RelativeLayout relativeZoomIn = getActivity().findViewById(R.id.relativeZoomIn);
         relativeZoomIn.setOnTouchListener(this);
         relativeZoomIn.setOnLongClickListener(this);
         getActivity().findViewById(R.id.viewBtnALeft).setOnTouchListener(this);
-        ImageButton btnA = (ImageButton)getActivity().findViewById(R.id.btnA);
+        AnimationButton btnA = getActivity().findViewById(R.id.btnA);
         btnA.setSelected(false);
         btnA.setImageResource(R.drawable.ic_abloop_a);
         btnA.setOnTouchListener(this);
         getActivity().findViewById(R.id.viewBtnARight).setOnTouchListener(this);
         getActivity().findViewById(R.id.viewBtnRewindLeft).setOnTouchListener(this);
-        ImageButton btnRewind5Sec = (ImageButton)getActivity().findViewById(R.id.btnRewind5Sec);
+        AnimationButton btnRewind5Sec = getActivity().findViewById(R.id.btnRewind5Sec);
         btnRewind5Sec.setOnTouchListener(this);
         btnRewind5Sec.setOnLongClickListener(this);
         btnRewind5Sec.setTag(5);
         getActivity().findViewById(R.id.viewBtnRewindRight).setOnTouchListener(this);
         getActivity().findViewById(R.id.viewBtnForwardLeft).setOnTouchListener(this);
-        ImageButton btnForward5Sec = (ImageButton)getActivity().findViewById(R.id.btnForward5Sec);
+        AnimationButton btnForward5Sec = getActivity().findViewById(R.id.btnForward5Sec);
         btnForward5Sec.setOnTouchListener(this);
         btnForward5Sec.setOnLongClickListener(this);
         btnForward5Sec.setTag(5);
         getActivity().findViewById(R.id.viewBtnForwardRight).setOnTouchListener(this);
         getActivity().findViewById(R.id.viewBtnBLeft).setOnTouchListener(this);
-        ImageButton btnB = (ImageButton)getActivity().findViewById(R.id.btnB);
+        AnimationButton btnB = getActivity().findViewById(R.id.btnB);
         btnB.setSelected(false);
         btnB.setImageResource(R.drawable.ic_abloop_b);
         btnB.setOnTouchListener(this);
         getActivity().findViewById(R.id.viewBtnBRight).setOnTouchListener(this);
 
-        ImageButton btnRewind5Sec2 = (ImageButton)getActivity().findViewById(R.id.btnRewind5Sec2);
+        AnimationButton btnRewind5Sec2 = getActivity().findViewById(R.id.btnRewind5Sec2);
         btnRewind5Sec2.setOnTouchListener(this);
         btnRewind5Sec2.setOnLongClickListener(this);
         btnRewind5Sec2.setTag(5);
-        ImageButton btnPrevmarker = (ImageButton)getActivity().findViewById(R.id.btnPrevmarker);
+        AnimationButton btnPrevmarker = getActivity().findViewById(R.id.btnPrevmarker);
         btnPrevmarker.setOnTouchListener(this);
-        ImageButton btnDelmarker= (ImageButton)getActivity().findViewById(R.id.btnDelmarker);
+        AnimationButton btnDelmarker= getActivity().findViewById(R.id.btnDelmarker);
         btnDelmarker.setOnTouchListener(this);
-        ImageButton btnAddmarker = (ImageButton)getActivity().findViewById(R.id.btnAddmarker);
+        AnimationButton btnAddmarker = getActivity().findViewById(R.id.btnAddmarker);
         btnAddmarker.setOnTouchListener(this);
-        ImageButton btnNextmarker = (ImageButton)getActivity().findViewById(R.id.btnNextmarker);
+        AnimationButton btnNextmarker = getActivity().findViewById(R.id.btnNextmarker);
         btnNextmarker.setOnTouchListener(this);
-        ImageButton btnLoopmarker = (ImageButton)getActivity().findViewById(R.id.btnLoopmarker);
+        AnimationButton btnLoopmarker = getActivity().findViewById(R.id.btnLoopmarker);
         btnLoopmarker.setSelected(false);
         btnLoopmarker.setImageResource(R.drawable.ic_abloop_marker_loop);
         btnLoopmarker.setOnTouchListener(this);
-        ImageButton btnForward5Sec2 = (ImageButton)getActivity().findViewById(R.id.btnForward5Sec2);
+        AnimationButton btnForward5Sec2 = getActivity().findViewById(R.id.btnForward5Sec2);
         btnForward5Sec2.setOnTouchListener(this);
         btnForward5Sec.setOnLongClickListener(this);
         btnForward5Sec.setTag(5);
 
         final EditText textCurValue = getActivity().findViewById(R.id.textCurValue);
-        final LinearLayout ABLabel = (LinearLayout)getActivity().findViewById(R.id.ABLabel);
-        final LinearLayout ABButton = (LinearLayout)getActivity().findViewById(R.id.ABButton);
-        final LinearLayout MarkerButton = (LinearLayout)getActivity().findViewById(R.id.MarkerButton);
+        final LinearLayout ABLabel = getActivity().findViewById(R.id.ABLabel);
+        final LinearLayout ABButton = getActivity().findViewById(R.id.ABButton);
+        final LinearLayout MarkerButton = getActivity().findViewById(R.id.MarkerButton);
         final View viewMaskA = getActivity().findViewById(R.id.viewMaskA);
         final View viewMaskB = getActivity().findViewById(R.id.viewMaskB);
         final MainActivity activity = (MainActivity)getActivity();
@@ -344,12 +344,12 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     }
 
     public void setZoomOut() {
-        waveView = (WaveView)getActivity().findViewById(R.id.waveView);
+        waveView = getActivity().findViewById(R.id.waveView);
         waveView.setZoom(waveView.getZoom() * 0.99f);
     }
 
     public void setZoomIn() {
-        waveView = (WaveView)getActivity().findViewById(R.id.waveView);
+        waveView = getActivity().findViewById(R.id.waveView);
         waveView.setZoom(waveView.getZoom() * 1.01f);
     }
 
@@ -418,8 +418,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         else if(v.getId() == R.id.btnRewind5Sec || v.getId() == R.id.btnRewind5Sec2) {
             final BottomMenu menu = new BottomMenu(getActivity());
             menu.setTitle("戻すボタン選択");
-            final ImageButton btnRewind5Sec = activity.findViewById(R.id.btnRewind5Sec);
-            final ImageButton btnRewind5Sec2 = activity.findViewById(R.id.btnRewind5Sec2);
+            final AnimationButton btnRewind5Sec = activity.findViewById(R.id.btnRewind5Sec);
+            final AnimationButton btnRewind5Sec2 = activity.findViewById(R.id.btnRewind5Sec2);
             menu.addMenu("1秒戻す", R.drawable.ic_actionsheet_01sec_prev, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -476,8 +476,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         else if(v.getId() == R.id.btnForward5Sec || v.getId() == R.id.btnForward5Sec2) {
             final BottomMenu menu = new BottomMenu(getActivity());
             menu.setTitle("進めるボタン選択");
-            final ImageButton btnForward5Sec = activity.findViewById(R.id.btnForward5Sec);
-            final ImageButton btnForward5Sec2 = activity.findViewById(R.id.btnForward5Sec2);
+            final AnimationButton btnForward5Sec = activity.findViewById(R.id.btnForward5Sec);
+            final AnimationButton btnForward5Sec2 = activity.findViewById(R.id.btnForward5Sec2);
             menu.addMenu("1秒進める", R.drawable.ic_actionsheet_01sec_next, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -565,7 +565,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         String strSecond = String.format("%02d", nSecond);
         String strDec = String.format("%02d", nDec);
 
-        final NumberPicker hourPicker = (NumberPicker)view.findViewById(R.id.abLoopHourPicker);
+        final NumberPicker hourPicker = view.findViewById(R.id.abLoopHourPicker);
         final String[] arInts = {"59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
         hourPicker.setDisplayedValues(arInts);
         hourPicker.setMinValue(0);
@@ -576,7 +576,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 hourPicker.setValue(i);
         }
 
-        final NumberPicker minutePicker = (NumberPicker)view.findViewById(R.id.abLoopMinutePicker);
+        final NumberPicker minutePicker = view.findViewById(R.id.abLoopMinutePicker);
         minutePicker.setDisplayedValues(arInts);
         minutePicker.setMinValue(0);
         minutePicker.setMaxValue(59);
@@ -585,7 +585,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             if(arInts[i].equals(strMinute))
                 minutePicker.setValue(i);
         }
-        final NumberPicker secondPicker = (NumberPicker)view.findViewById(R.id.abLoopSecondPicker);
+        final NumberPicker secondPicker = view.findViewById(R.id.abLoopSecondPicker);
         secondPicker.setDisplayedValues(arInts);
         secondPicker.setMinValue(0);
         secondPicker.setMaxValue(59);
@@ -595,7 +595,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 secondPicker.setValue(i);
         }
 
-        final NumberPicker decimalPicker = (NumberPicker)view.findViewById(R.id.abLoopDecimalPicker);
+        final NumberPicker decimalPicker = view.findViewById(R.id.abLoopDecimalPicker);
         final String[] arDecimals = {"99", "98", "97", "96", "95", "94", "93", "92", "91", "90", "89", "88", "87", "86", "85", "84", "83", "82", "81", "80", "79", "78", "77", "76", "75", "74", "73", "72", "71", "70", "69", "68", "67", "66", "65", "64", "63", "62", "61", "60", "59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
         decimalPicker.setDisplayedValues(arDecimals);
         decimalPicker.setMinValue(0);
@@ -649,10 +649,10 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         String strSecond = strCurPos.substring(6, 8);
         String strDec = strCurPos.substring(9, 11);
 
-        final NumberPicker hourPicker = (NumberPicker)view.findViewById(R.id.abLoopHourPicker);
-        final NumberPicker minutePicker = (NumberPicker)view.findViewById(R.id.abLoopMinutePicker);
-        final NumberPicker secondPicker = (NumberPicker)view.findViewById(R.id.abLoopSecondPicker);
-        final NumberPicker decimalPicker = (NumberPicker)view.findViewById(R.id.abLoopDecimalPicker);
+        final NumberPicker hourPicker = view.findViewById(R.id.abLoopHourPicker);
+        final NumberPicker minutePicker = view.findViewById(R.id.abLoopMinutePicker);
+        final NumberPicker secondPicker = view.findViewById(R.id.abLoopSecondPicker);
+        final NumberPicker decimalPicker = view.findViewById(R.id.abLoopDecimalPicker);
 
         final String[] arInts = {"59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
         final String[] arDecimals = {"99", "98", "97", "96", "95", "94", "93", "92", "91", "90", "89", "88", "87", "86", "85", "84", "83", "82", "81", "80", "79", "78", "77", "76", "75", "74", "73", "72", "71", "70", "69", "68", "67", "66", "65", "64", "63", "62", "61", "60", "59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
@@ -776,7 +776,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
         activity.dLoopA = dLoopA;
         activity.bLoopA = true;
-        ImageButton btnA = (ImageButton)getActivity().findViewById(R.id.btnA);
+        AnimationButton btnA = getActivity().findViewById(R.id.btnA);
         btnA.setSelected(true);
         btnA.setImageResource(R.drawable.ic_abloop_a_on);
 
@@ -826,7 +826,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
         activity.dLoopB = dLoopB;
         activity.bLoopB = true;
-        ImageButton btnB = (ImageButton)getActivity().findViewById(R.id.btnB);
+        AnimationButton btnB = getActivity().findViewById(R.id.btnB);
         btnB.setSelected(true);
         btnB.setImageResource(R.drawable.ic_abloop_b_on);
         long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
@@ -930,7 +930,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             {
                 if (MainActivity.hStream != 0)
                 {
-                    ImageButton btnRewind5Sec = activity.findViewById(R.id.btnRewind5Sec);
+                    AnimationButton btnRewind5Sec = activity.findViewById(R.id.btnRewind5Sec);
                     double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     if((Integer)btnRewind5Sec.getTag() == 1) dPos -= 1.0;
@@ -972,7 +972,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             {
                 if (MainActivity.hStream != 0)
                 {
-                    ImageButton btnForward5Sec = activity.findViewById(R.id.btnForward5Sec);
+                    AnimationButton btnForward5Sec = activity.findViewById(R.id.btnForward5Sec);
                     double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     if((Integer)btnForward5Sec.getTag() == 1) dPos += 1.0;
@@ -1014,7 +1014,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             {
                 if(MainActivity.hStream != 0)
                 {
-                    ImageButton btnA = (ImageButton)getActivity().findViewById(R.id.btnA);
+                    AnimationButton btnA = getActivity().findViewById(R.id.btnA);
                     if(btnA.isSelected()) {
                         activity.dLoopA = 0.0;
                         activity.bLoopA = false;
@@ -1061,7 +1061,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             {
                 if(MainActivity.hStream != 0)
                 {
-                    ImageButton btnB = (ImageButton)getActivity().findViewById(R.id.btnB);
+                    AnimationButton btnB = getActivity().findViewById(R.id.btnB);
                     if(btnB.isSelected()) {
                         activity.dLoopB = 0.0;
                         activity.bLoopB = false;
@@ -1235,7 +1235,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         {
             if(event.getAction() == MotionEvent.ACTION_UP)
             {
-                ImageButton btnLoopmarker = (ImageButton)getActivity().findViewById(R.id.btnLoopmarker);
+                AnimationButton btnLoopmarker = getActivity().findViewById(R.id.btnLoopmarker);
                 if(btnLoopmarker.isSelected())
                 {
                     btnLoopmarker.setSelected(false);
@@ -1296,7 +1296,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
         if(getActivity().findViewById(R.id.btnA) != null)
         {
-            ImageButton btnA = (ImageButton)getActivity().findViewById(R.id.btnA);
+            AnimationButton btnA = getActivity().findViewById(R.id.btnA);
             btnA.setSelected(false);
             btnA.setImageResource(R.drawable.ic_abloop_a);
         }
@@ -1309,7 +1309,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
         if(getActivity().findViewById(R.id.btnB) != null)
         {
-            ImageButton btnB = (ImageButton)getActivity().findViewById(R.id.btnB);
+            AnimationButton btnB = getActivity().findViewById(R.id.btnB);
             btnB.setSelected(false);
             btnB.setImageResource(R.drawable.ic_abloop_b);
         }
@@ -1353,7 +1353,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     {
         double dPos = 0.0;
         LinearLayout MarkerButton = (LinearLayout)getActivity().findViewById(R.id.MarkerButton);
-        ImageButton btnLoopmarker = (ImageButton)getActivity().findViewById(R.id.btnLoopmarker);
+        AnimationButton btnLoopmarker = getActivity().findViewById(R.id.btnLoopmarker);
 
         MainActivity activity = (MainActivity)getActivity();
         EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
@@ -1381,7 +1381,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     {
         double dPos = 0.0;
         LinearLayout MarkerButton = (LinearLayout)getActivity().findViewById(R.id.MarkerButton);
-        ImageButton btnLoopmarker = (ImageButton)getActivity().findViewById(R.id.btnLoopmarker);
+        AnimationButton btnLoopmarker = getActivity().findViewById(R.id.btnLoopmarker);
 
         MainActivity activity = (MainActivity)getActivity();
         EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);

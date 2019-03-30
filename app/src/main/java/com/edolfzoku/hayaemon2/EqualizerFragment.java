@@ -138,7 +138,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final ScrollView scrollView = (ScrollView)getActivity().findViewById(R.id.scrollCustomEqualizer);
+        final ScrollView scrollView = getActivity().findViewById(R.id.scrollCustomEqualizer);
 
         final RadioGroup radioGroupEqualizer = getActivity().findViewById(R.id.radioGroupEqualizer);
         radioGroupEqualizer.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -160,7 +160,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         loadData();
 
         MainActivity activity = (MainActivity)getActivity();
-        recyclerEqualizers = (RecyclerView)activity.findViewById(R.id.recyclerEqualizers);
+        recyclerEqualizers = activity.findViewById(R.id.recyclerEqualizers);
         recyclerEqualizers.setHasFixedSize(false);
         final LinearLayoutManager equalizersManager = new LinearLayoutManager(activity);
         recyclerEqualizers.setLayoutManager(equalizersManager);
@@ -286,10 +286,10 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             );
         }
 
-        Button btnAddEqualizer = (Button) activity.findViewById(R.id.btnAddEqualizer);
+        Button btnAddEqualizer = activity.findViewById(R.id.btnAddEqualizer);
         btnAddEqualizer.setOnClickListener(this);
 
-        TextView textFinishSortEqualizer = (TextView) activity.findViewById(R.id.textFinishSortEqualizer);
+        TextView textFinishSortEqualizer = activity.findViewById(R.id.textFinishSortEqualizer);
         textFinishSortEqualizer.setOnClickListener(this);
 
         arButtonMinus = new ArrayList<ImageButton>();
@@ -500,7 +500,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
             case R.id.textFinishSortEqualizer:
                 recyclerEqualizers.setPadding(0, 0, 0, 0);
-                TextView textFinishSortEqualizer = (TextView) activity.findViewById(R.id.textFinishSortEqualizer);
+                TextView textFinishSortEqualizer = activity.findViewById(R.id.textFinishSortEqualizer);
                 textFinishSortEqualizer.setVisibility(View.GONE);
                 bSorting = false;
                 equalizersAdapter.notifyDataSetChanged();
@@ -861,7 +861,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             public void onClick(View view) {
                 menu.dismiss();
                 recyclerEqualizers.setPadding(0, 0, 0, (int)(64 * getResources().getDisplayMetrics().density + 0.5));
-                TextView textFinishSortEqualizer = (TextView) activity.findViewById(R.id.textFinishSortEqualizer);
+                TextView textFinishSortEqualizer = activity.findViewById(R.id.textFinishSortEqualizer);
                 textFinishSortEqualizer.setVisibility(View.VISIBLE);
                 bSorting = true;
                 equalizersAdapter.notifyDataSetChanged();

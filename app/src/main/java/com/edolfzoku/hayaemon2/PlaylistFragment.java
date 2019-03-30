@@ -226,11 +226,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             if(bSorting)
             {
                 recyclerPlaylists.setPadding(0, 0, 0, (int)(80 * getResources().getDisplayMetrics().density + 0.5));
-                ImageButton btnAddPlaylist = (ImageButton) activity.findViewById(R.id.btnAddPlaylist);
+                AnimationButton btnAddPlaylist = activity.findViewById(R.id.btnAddPlaylist);
                 btnAddPlaylist.setVisibility(View.VISIBLE);
                 bSorting = false;
                 playlistsAdapter.notifyDataSetChanged();
-                Button btnSortPlaylist = (Button) activity.findViewById(R.id.btnSortPlaylist);
+                Button btnSortPlaylist = activity.findViewById(R.id.btnSortPlaylist);
                 btnSortPlaylist.setText("並べ替え");
 
                 playlistTouchHelper.attachToRecyclerView(null);
@@ -238,11 +238,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             else
             {
                 recyclerPlaylists.setPadding(0, 0, 0, 0);
-                ImageButton btnAddPlaylist = (ImageButton) activity.findViewById(R.id.btnAddPlaylist);
+                AnimationButton btnAddPlaylist = activity.findViewById(R.id.btnAddPlaylist);
                 btnAddPlaylist.setVisibility(View.GONE);
                 bSorting = true;
                 playlistsAdapter.notifyDataSetChanged();
-                Button btnSortPlaylist = (Button) activity.findViewById(R.id.btnSortPlaylist);
+                Button btnSortPlaylist = activity.findViewById(R.id.btnSortPlaylist);
                 btnSortPlaylist.setText("並べ替えを終了");
 
                 playlistTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
@@ -354,10 +354,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         }
         else if(v.getId() == R.id.buttonLeft)
         {
-            RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
+            RelativeLayout relativeSongs = activity.findViewById(R.id.relativeSongs);
             relativeSongs.setVisibility(View.INVISIBLE);
             playlistsAdapter.notifyDataSetChanged();
-            RelativeLayout relativePlaylists = (RelativeLayout)activity.findViewById(R.id.relativePlaylists);
+            RelativeLayout relativePlaylists = activity.findViewById(R.id.relativePlaylists);
             relativePlaylists.setVisibility(View.VISIBLE);
             activity.findViewById(R.id.viewSep1).setVisibility(View.VISIBLE);
         }
@@ -461,9 +461,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         else if(v.getId() == R.id.textFinishSort)
         {
             recyclerSongs.setPadding(0, 0, 0, (int)(80 * getResources().getDisplayMetrics().density + 0.5));
-            TextView textFinishSort = (TextView) activity.findViewById(R.id.textFinishSort);
+            TextView textFinishSort = activity.findViewById(R.id.textFinishSort);
             textFinishSort.setVisibility(View.GONE);
-            ImageButton btnAddSong = (ImageButton) activity.findViewById(R.id.btnAddSong);
+            AnimationButton btnAddSong = activity.findViewById(R.id.btnAddSong);
             btnAddSong.setVisibility(View.VISIBLE);
             bSorting = false;
             songsAdapter.notifyDataSetChanged();
@@ -472,21 +472,21 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         }
         else if(v.getId() == R.id.btnFinishLyrics)
         {
-            Button btnFinishLyrics = (Button)activity.findViewById(R.id.btnFinishLyrics);
+            Button btnFinishLyrics = activity.findViewById(R.id.btnFinishLyrics);
             if(btnFinishLyrics.getText().toString().equals("閉じる")) {
-                RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
+                RelativeLayout relativeSongs = activity.findViewById(R.id.relativeSongs);
                 relativeSongs.setVisibility(View.VISIBLE);
-                RelativeLayout relativeLyrics = (RelativeLayout)activity.findViewById(R.id.relativeLyrics);
+                RelativeLayout relativeLyrics = activity.findViewById(R.id.relativeLyrics);
                 relativeLyrics.setVisibility(View.INVISIBLE);
                 activity.findViewById(R.id.viewSep1).setVisibility(View.INVISIBLE);
             }
             else {
-                TextView textLyrics = (TextView)activity.findViewById(R.id.textLyrics);
-                EditText editLyrics = (EditText)activity.findViewById(R.id.editLyrics);
-                ImageButton btnEdit = (ImageButton)activity.findViewById(R.id.btnEdit);
-                TextView textNoLyrics = (TextView)activity.findViewById(R.id.textNoLyrics);
-                ImageView imgEdit = (ImageView)activity.findViewById(R.id.imgEdit);
-                TextView textTapEdit = (TextView)activity.findViewById(R.id.textTapEdit);
+                TextView textLyrics = activity.findViewById(R.id.textLyrics);
+                EditText editLyrics = activity.findViewById(R.id.editLyrics);
+                AnimationButton btnEdit = activity.findViewById(R.id.btnEdit);
+                TextView textNoLyrics = activity.findViewById(R.id.textNoLyrics);
+                ImageView imgEdit = activity.findViewById(R.id.imgEdit);
+                TextView textTapEdit = activity.findViewById(R.id.textTapEdit);
                 String strLyrics = editLyrics.getText().toString();
                 if(nSelectedPlaylist < 0) nSelectedPlaylist = 0;
                 else if(nSelectedPlaylist >= arLyrics.size()) nSelectedPlaylist = arLyrics.size() - 1;
@@ -524,13 +524,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             Runnable timer=new Runnable() {
                 public void run()
                 {
-                    TextView textLyrics = (TextView)activity.findViewById(R.id.textLyrics);
+                    TextView textLyrics = activity.findViewById(R.id.textLyrics);
                     textLyrics.setVisibility(View.INVISIBLE);
-                    Button btnFinishLyrics = (Button)activity.findViewById(R.id.btnFinishLyrics);
+                    Button btnFinishLyrics = activity.findViewById(R.id.btnFinishLyrics);
                     btnFinishLyrics.setText("完了");
-                    ImageButton btnEdit = (ImageButton)activity.findViewById(R.id.btnEdit);
+                    AnimationButton btnEdit = activity.findViewById(R.id.btnEdit);
                     btnEdit.setVisibility(View.INVISIBLE);
-                    EditText editLyrics = (EditText)activity.findViewById(R.id.editLyrics);
+                    EditText editLyrics = activity.findViewById(R.id.editLyrics);
                     editLyrics.setText(textLyrics.getText());
                     editLyrics.setVisibility(View.VISIBLE);
                     editLyrics.requestFocus();
@@ -544,20 +544,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         }
         else if(v.getId() == R.id.textNoLyrics)
         {
-            TextView textNoLyrics = (TextView)activity.findViewById(R.id.textNoLyrics);
+            TextView textNoLyrics = activity.findViewById(R.id.textNoLyrics);
             textNoLyrics.setVisibility(View.INVISIBLE);
-            ImageView imgEdit = (ImageView)activity.findViewById(R.id.imgEdit);
+            ImageView imgEdit = activity.findViewById(R.id.imgEdit);
             imgEdit.setVisibility(View.INVISIBLE);
-            TextView textTapEdit = (TextView)activity.findViewById(R.id.textTapEdit);
+            TextView textTapEdit = activity.findViewById(R.id.textTapEdit);
             textTapEdit.setVisibility(View.INVISIBLE);
 
-            TextView textLyrics = (TextView)activity.findViewById(R.id.textLyrics);
+            TextView textLyrics = activity.findViewById(R.id.textLyrics);
             textLyrics.setVisibility(View.INVISIBLE);
-            Button btnFinishLyrics = (Button)activity.findViewById(R.id.btnFinishLyrics);
+            Button btnFinishLyrics = activity.findViewById(R.id.btnFinishLyrics);
             btnFinishLyrics.setText("完了");
-            ImageButton btnEdit = (ImageButton)activity.findViewById(R.id.btnEdit);
+            AnimationButton btnEdit = activity.findViewById(R.id.btnEdit);
             btnEdit.setVisibility(View.INVISIBLE);
-            EditText editLyrics = (EditText)activity.findViewById(R.id.editLyrics);
+            EditText editLyrics = activity.findViewById(R.id.editLyrics);
             editLyrics.setText("");
             editLyrics.setVisibility(View.VISIBLE);
             editLyrics.requestFocus();
@@ -1001,64 +1001,64 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     {
         super.onActivityCreated(savedInstanceState);
 
-        recyclerPlaylists = (RecyclerView)activity.findViewById(R.id.recyclerPlaylists);
+        recyclerPlaylists = activity.findViewById(R.id.recyclerPlaylists);
         recyclerPlaylists.setHasFixedSize(false);
         LinearLayoutManager playlistsManager = new LinearLayoutManager(activity);
         recyclerPlaylists.setLayoutManager(playlistsManager);
         recyclerPlaylists.setAdapter(playlistsAdapter);
         recyclerPlaylists.setOnClickListener(this);
 
-        recyclerTab = (RecyclerView)activity.findViewById(R.id.recyclerTab);
+        recyclerTab = activity.findViewById(R.id.recyclerTab);
         recyclerTab.setHasFixedSize(false);
         LinearLayoutManager tabManager = new LinearLayoutManager(activity);
         tabManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerTab.setLayoutManager(tabManager);
         recyclerTab.setAdapter(tabAdapter);
 
-        recyclerSongs = (RecyclerView)activity.findViewById(R.id.recyclerSongs);
+        recyclerSongs = activity.findViewById(R.id.recyclerSongs);
         recyclerSongs.setHasFixedSize(false);
         LinearLayoutManager songsManager = new LinearLayoutManager(activity);
         recyclerSongs.setLayoutManager(songsManager);
         recyclerSongs.setAdapter(songsAdapter);
         recyclerSongs.setOnClickListener(this);
 
-        AnimationButton btnRewind = (AnimationButton) activity.findViewById(R.id.btnRewind);
+        AnimationButton btnRewind = activity.findViewById(R.id.btnRewind);
         btnRewind.setOnClickListener(this);
 
-        AnimationButton btnPlay = (AnimationButton) activity.findViewById(R.id.btnPlay);
+        AnimationButton btnPlay = activity.findViewById(R.id.btnPlay);
         btnPlay.setOnClickListener(this);
 
-        AnimationButton btnForward = (AnimationButton) activity.findViewById(R.id.btnForward);
+        AnimationButton btnForward = activity.findViewById(R.id.btnForward);
         btnForward.setOnClickListener(this);
 
-        AnimationButton btnRecord = (AnimationButton) activity.findViewById(R.id.btnRecord);
+        AnimationButton btnRecord = activity.findViewById(R.id.btnRecord);
         btnRecord.setOnClickListener(this);
 
-        Button btnSortPlaylist = (Button) activity.findViewById(R.id.btnSortPlaylist);
+        Button btnSortPlaylist = activity.findViewById(R.id.btnSortPlaylist);
         btnSortPlaylist.setOnClickListener(this);
 
-        ImageButton btnAddPlaylist = (ImageButton) activity.findViewById(R.id.btnAddPlaylist);
+        AnimationButton btnAddPlaylist = activity.findViewById(R.id.btnAddPlaylist);
         btnAddPlaylist.setOnClickListener(this);
 
-        ImageButton buttonLeft = (ImageButton) activity.findViewById(R.id.buttonLeft);
+        ImageButton buttonLeft = activity.findViewById(R.id.buttonLeft);
         buttonLeft.setOnClickListener(this);
 
-        ImageButton buttonAddPlaylist_small = (ImageButton) activity.findViewById(R.id.buttonAddPlaylist_small);
+        ImageButton buttonAddPlaylist_small = activity.findViewById(R.id.buttonAddPlaylist_small);
         buttonAddPlaylist_small.setOnClickListener(this);
 
-        ImageButton btnAddSong = (ImageButton) activity.findViewById(R.id.btnAddSong) ;
+        AnimationButton btnAddSong = activity.findViewById(R.id.btnAddSong) ;
         btnAddSong.setOnClickListener(this);
 
-        TextView textFinishSort = (TextView) activity.findViewById(R.id.textFinishSort);
+        TextView textFinishSort = activity.findViewById(R.id.textFinishSort);
         textFinishSort.setOnClickListener(this);
 
-        Button btnFinishLyrics = (Button) activity.findViewById(R.id.btnFinishLyrics);
+        Button btnFinishLyrics = activity.findViewById(R.id.btnFinishLyrics);
         btnFinishLyrics.setOnClickListener(this);
 
-        ImageButton btnEdit = (ImageButton)activity.findViewById(R.id.btnEdit);
+        AnimationButton btnEdit = activity.findViewById(R.id.btnEdit);
         btnEdit.setOnClickListener(this);
 
-        TextView textNoLyrics = (TextView)activity.findViewById(R.id.textNoLyrics);
+        TextView textNoLyrics = activity.findViewById(R.id.textNoLyrics);
         textNoLyrics.setOnClickListener(this);
     }
 
@@ -1412,9 +1412,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
                 if(nSelectedPlaylist == nPlayingPlaylist && nItem == nPlaying)
                 {
-                    TextView textTitleInPlayingBar = (TextView)activity.findViewById(R.id.textTitleInPlayingBar);
+                    TextView textTitleInPlayingBar = activity.findViewById(R.id.textTitleInPlayingBar);
                     textTitleInPlayingBar.setText(songItem.getTitle());
-                    TextView textArtistInPlayingBar = (TextView)activity.findViewById(R.id.textArtistInPlayingBar);
+                    TextView textArtistInPlayingBar = activity.findViewById(R.id.textArtistInPlayingBar);
                     if(songItem.getArtist() == null || songItem.getArtist().equals(""))
                     {
                         textArtistInPlayingBar.setTextColor(Color.argb(255, 147, 156, 160));
@@ -1461,9 +1461,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 public void onClick(View view) {
                     menu.dismiss();
                     recyclerSongs.setPadding(0, 0, 0, (int) (64 * getResources().getDisplayMetrics().density + 0.5));
-                    TextView textFinishSort = (TextView) activity.findViewById(R.id.textFinishSort);
+                    TextView textFinishSort = activity.findViewById(R.id.textFinishSort);
                     textFinishSort.setVisibility(View.VISIBLE);
-                    ImageButton btnAddSong = (ImageButton) activity.findViewById(R.id.btnAddSong);
+                    AnimationButton btnAddSong = activity.findViewById(R.id.btnAddSong);
                     btnAddSong.setVisibility(View.GONE);
                     bSorting = true;
                     menu.dismiss();
@@ -1651,7 +1651,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                         ArrayList<SongItem> arSongs;
                         ArrayList<EffectSaver> arEffectSavers;
                         ArrayList<String> arTempLyrics;
-                        RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
                         arSongs = arPlaylists.get(nPosition);
                         arEffectSavers = arEffects.get(nPosition);
                         arTempLyrics = arLyrics.get(nPosition);
@@ -1696,7 +1695,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 builder.setPositiveButton("やめる", null);
                 builder.setNegativeButton("削除する", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
                         if(nPosition == nPlayingPlaylist) stop();
                         else if(nPosition < nPlayingPlaylist) nPlayingPlaylist--;
                         ArrayList<SongItem> arSongs = arPlaylists.get(nPosition);
@@ -1747,17 +1745,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         ArrayList<String> arTempLyrics = arLyrics.get(nSelectedPlaylist);
         String strLyrics = arTempLyrics.get(nSelectedItem);
 
-        TextView textLyricsTitle = (TextView)activity.findViewById(R.id.textLyricsTitle);
+        TextView textLyricsTitle = activity.findViewById(R.id.textLyricsTitle);
         String strTitle = songItem.getTitle();
         if(songItem.getArtist() != null && !songItem.getArtist().equals(""))
             strTitle += " - " + songItem.getArtist();
         textLyricsTitle.setText(strTitle);
 
-        TextView textNoLyrics = (TextView)activity.findViewById(R.id.textNoLyrics);
-        TextView textLyrics = (TextView)activity.findViewById(R.id.textLyrics);
-        ImageButton btnEdit = (ImageButton)activity.findViewById(R.id.btnEdit);
-        ImageView imgEdit = (ImageView)activity.findViewById(R.id.imgEdit);
-        TextView textTapEdit = (TextView)activity.findViewById(R.id.textTapEdit);
+        TextView textNoLyrics = activity.findViewById(R.id.textNoLyrics);
+        TextView textLyrics = activity.findViewById(R.id.textLyrics);
+        AnimationButton btnEdit = activity.findViewById(R.id.btnEdit);
+        ImageView imgEdit = activity.findViewById(R.id.imgEdit);
+        TextView textTapEdit = activity.findViewById(R.id.textTapEdit);
         if(strLyrics == null || strLyrics.equals(""))
             strLyrics = getLyrics(nSelectedPlaylist, nSelectedItem);
         if(strLyrics == null || strLyrics.equals("")) {
@@ -1776,9 +1774,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             textTapEdit.setVisibility(View.INVISIBLE);
         }
 
-        RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
+        RelativeLayout relativeSongs = activity.findViewById(R.id.relativeSongs);
         relativeSongs.setVisibility(View.INVISIBLE);
-        RelativeLayout relativeLyrics = (RelativeLayout)activity.findViewById(R.id.relativeLyrics);
+        RelativeLayout relativeLyrics = activity.findViewById(R.id.relativeLyrics);
         relativeLyrics.setVisibility(View.VISIBLE);
         activity.findViewById(R.id.viewSep1).setVisibility(View.VISIBLE);
     }
@@ -1843,9 +1841,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         saver.setTimeOfDecreaseSpeed(effectFragment.getTimeOfDecreaseSpeed());
         saver.setDecreaseSpeed(effectFragment.getDecreaseSpeed());
         if(nSelectedPlaylist == nPlayingPlaylist && nSelectedItem == nPlaying) {
-            LinearLayout ABButton = (LinearLayout)activity.findViewById(R.id.ABButton);
-            LinearLayout MarkerButton = (LinearLayout)activity.findViewById(R.id.MarkerButton);
-            ImageButton btnLoopmarker = (ImageButton)activity.findViewById(R.id.btnLoopmarker);
+            LinearLayout ABButton = activity.findViewById(R.id.ABButton);
+            AnimationButton btnLoopmarker = activity.findViewById(R.id.btnLoopmarker);
             if(ABButton.getVisibility() == View.VISIBLE) saver.setIsABLoop(true);
             else saver.setIsABLoop(false);
             saver.setIsLoop(true);
@@ -1921,9 +1918,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             saver.setIncreaseSpeed(effectFragment.getIncreaseSpeed());
             saver.setTimeOfDecreaseSpeed(effectFragment.getTimeOfDecreaseSpeed());
             saver.setDecreaseSpeed(effectFragment.getDecreaseSpeed());
-            LinearLayout ABButton = (LinearLayout)activity.findViewById(R.id.ABButton);
-            LinearLayout MarkerButton = (LinearLayout)activity.findViewById(R.id.MarkerButton);
-            ImageButton btnLoopmarker = (ImageButton)activity.findViewById(R.id.btnLoopmarker);
+            LinearLayout ABButton = activity.findViewById(R.id.ABButton);
+            AnimationButton btnLoopmarker = activity.findViewById(R.id.btnLoopmarker);
             if(ABButton.getVisibility() == View.VISIBLE) saver.setIsABLoop(true);
             else saver.setIsABLoop(false);
             saver.setIsLoop(true);
@@ -2002,7 +1998,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         effectFragment.setIncreaseSpeed(saver.getIncreaseSpeed());
         effectFragment.setTimeOfDecreaseSpeed(saver.getTimeOfDecreaseSpeed());
         effectFragment.setDecreaseSpeed(saver.getDecreaseSpeed());
-        ImageButton btnLoopmarker = (ImageButton)activity.findViewById(R.id.btnLoopmarker);
+        AnimationButton btnLoopmarker = activity.findViewById(R.id.btnLoopmarker);
         final RadioGroup radioGroupLoopMode = getActivity().findViewById(R.id.radioGroupLoopMode);
         if(saver.isABLoop()) radioGroupLoopMode.check(R.id.radioButtonABLoop);
         else radioGroupLoopMode.check(R.id.radioButtonMarkerPlay);
@@ -2452,10 +2448,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     {
         if(MainActivity.hStream == 0) return;
         BASS.BASS_ChannelPlay(MainActivity.hStream, false);
-        AnimationButton btnPlay = (AnimationButton)getActivity().findViewById(R.id.btnPlay);
+        AnimationButton btnPlay = getActivity().findViewById(R.id.btnPlay);
         btnPlay.setContentDescription("一時停止");
         btnPlay.setImageResource(R.drawable.bar_button_pause);
-        AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
+        AnimationButton btnPlayInPlayingBar = getActivity().findViewById(R.id.btnPlayInPlayingBar);
         if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
             btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_pause);
         else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_pause);
@@ -2468,10 +2464,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     {
         if(MainActivity.hStream == 0) return;
         BASS.BASS_ChannelPause(MainActivity.hStream);
-        AnimationButton btnPlay = (AnimationButton)getActivity().findViewById(R.id.btnPlay);
+        AnimationButton btnPlay = getActivity().findViewById(R.id.btnPlay);
         btnPlay.setContentDescription("再生");
         btnPlay.setImageResource(R.drawable.bar_button_play);
-        AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
+        AnimationButton btnPlayInPlayingBar = getActivity().findViewById(R.id.btnPlayInPlayingBar);
         if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
             btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_play);
         else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_play);
@@ -2493,7 +2489,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         MainActivity activity = (MainActivity) getActivity();
         ArrayList<SongItem> arSongs = arPlaylists.get(nPlayingPlaylist);
 
-        ImageButton btnShuffle = (ImageButton)activity.findViewById(R.id.btnShuffle);
+        AnimationButton btnShuffle = activity.findViewById(R.id.btnShuffle);
         boolean bShuffle = false;
         boolean bSingle = false;
         if(btnShuffle.getContentDescription().toString().equals("シャッフルあり"))
@@ -2501,7 +2497,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         else if(btnShuffle.getContentDescription().toString().equals("１曲のみ"))
             bSingle = true;
 
-        ImageButton btnRepeat = (ImageButton)activity.findViewById(R.id.btnRepeat);
+        AnimationButton btnRepeat = activity.findViewById(R.id.btnRepeat);
         boolean bRepeatAll = false;
         boolean bRepeatSingle = false;
         if(btnRepeat.getContentDescription().toString().equals("全曲リピート"))
@@ -2580,9 +2576,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public void onPlaylistItemClick(int nPlaylist)
     {
         selectPlaylist(nPlaylist);
-        RelativeLayout relativeSongs = (RelativeLayout)activity.findViewById(R.id.relativeSongs);
+        RelativeLayout relativeSongs = activity.findViewById(R.id.relativeSongs);
         relativeSongs.setVisibility(View.VISIBLE);
-        RelativeLayout relativePlaylists = (RelativeLayout)activity.findViewById(R.id.relativePlaylists);
+        RelativeLayout relativePlaylists = activity.findViewById(R.id.relativePlaylists);
         relativePlaylists.setVisibility(View.INVISIBLE);
         activity.findViewById(R.id.viewSep1).setVisibility(View.INVISIBLE);
     }
@@ -2613,8 +2609,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         activity.clearLoop(false);
 
         boolean bReloadLyrics = false;
-        RelativeLayout relativeLyrics = (RelativeLayout)activity.findViewById(R.id.relativeLyrics);
-        TextView textLyrics = (TextView)activity.findViewById(R.id.textLyrics);
+        RelativeLayout relativeLyrics = activity.findViewById(R.id.relativeLyrics);
+        TextView textLyrics = activity.findViewById(R.id.textLyrics);
         if(relativeLyrics.getVisibility() == View.VISIBLE && textLyrics.getVisibility() == View.VISIBLE && nPlayingPlaylist == nSelectedPlaylist && nPlaying == nSelectedItem) {
             bReloadLyrics = true;
             nSelectedItem = nSong;
@@ -2745,8 +2741,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         }
         if(MainActivity.hStream == 0) return;
 
-        final RelativeLayout relativePlaying = (RelativeLayout)activity.findViewById(R.id.relativePlaying);
-        ImageView imgViewArtworkInPlayingBar = (ImageView)activity.findViewById(R.id.imgViewArtworkInPlayingBar);
+        final RelativeLayout relativePlaying = activity.findViewById(R.id.relativePlaying);
+        ImageView imgViewArtworkInPlayingBar = activity.findViewById(R.id.imgViewArtworkInPlayingBar);
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         Bitmap bitmap = null;
         boolean bError = false;
@@ -2764,9 +2760,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         }
         if(bitmap != null) imgViewArtworkInPlayingBar.setImageBitmap(bitmap);
         else imgViewArtworkInPlayingBar.setImageResource(R.drawable.playing_large_artwork);
-        TextView textTitleInPlayingBar = (TextView)activity.findViewById(R.id.textTitleInPlayingBar);
+        TextView textTitleInPlayingBar = activity.findViewById(R.id.textTitleInPlayingBar);
         textTitleInPlayingBar.setText(item.getTitle());
-        TextView textArtistInPlayingBar = (TextView)activity.findViewById(R.id.textArtistInPlayingBar);
+        TextView textArtistInPlayingBar = activity.findViewById(R.id.textArtistInPlayingBar);
         if(item.getArtist() == null || item.getArtist().equals(""))
         {
             textArtistInPlayingBar.setTextColor(Color.argb(255, 147, 156, 160));
@@ -2864,10 +2860,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         activity.setSync();
         if(bPlay)
             BASS.BASS_ChannelPlay(MainActivity.hStream, false);
-        AnimationButton btnPlay = (AnimationButton)getActivity().findViewById(R.id.btnPlay);
+        AnimationButton btnPlay = getActivity().findViewById(R.id.btnPlay);
         btnPlay.setContentDescription("一時停止");
         btnPlay.setImageResource(R.drawable.bar_button_pause);
-        AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
+        AnimationButton btnPlayInPlayingBar = getActivity().findViewById(R.id.btnPlayInPlayingBar);
         if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
             btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_pause);
         else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_pause);
@@ -2968,7 +2964,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         if(MainActivity.hStream == 0) return;
 
-        final RelativeLayout relativePlaying = (RelativeLayout)activity.findViewById(R.id.relativePlaying);
+        final RelativeLayout relativePlaying = activity.findViewById(R.id.relativePlaying);
 
         SeekBar seekCurPos = activity.findViewById(R.id.seekCurPos);
         if(seekCurPos.getVisibility() == View.VISIBLE)
@@ -2999,10 +2995,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         nPlaying = -1;
         BASS.BASS_ChannelStop(MainActivity.hStream);
         MainActivity.hStream = 0;
-        AnimationButton btnPlay = (AnimationButton)getActivity().findViewById(R.id.btnPlay);
+        AnimationButton btnPlay = getActivity().findViewById(R.id.btnPlay);
         btnPlay.setContentDescription("再生");
         btnPlay.setImageResource(R.drawable.bar_button_play);
-        AnimationButton btnPlayInPlayingBar = (AnimationButton)getActivity().findViewById(R.id.btnPlayInPlayingBar);
+        AnimationButton btnPlayInPlayingBar = getActivity().findViewById(R.id.btnPlayInPlayingBar);
         if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
             btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_play);
         else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_play);
@@ -3313,7 +3309,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
         if(bPlayMode)
         {
-            AnimationButton btnShuffle = (AnimationButton)activity.findViewById(R.id.btnShuffle);
+            AnimationButton btnShuffle = activity.findViewById(R.id.btnShuffle);
             int nShuffle = 0;
             if(btnShuffle.getContentDescription().toString().equals("シャッフルなし"))
                 nShuffle = 0;
@@ -3322,7 +3318,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             else if(btnShuffle.getContentDescription().toString().equals("１曲のみ"))
                 nShuffle = 2;
             preferences.edit().putInt("shufflemode", nShuffle).commit();
-            AnimationButton btnRepeat = (AnimationButton)activity.findViewById(R.id.btnRepeat);
+            AnimationButton btnRepeat = activity.findViewById(R.id.btnRepeat);
             int nRepeat = 0;
             if(btnRepeat.getContentDescription().toString().equals("リピートなし"))
                 nRepeat = 0;

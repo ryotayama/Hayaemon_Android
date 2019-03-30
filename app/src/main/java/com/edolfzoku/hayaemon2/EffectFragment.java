@@ -669,18 +669,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         item = new EffectItem("コンサート会場", true);
         arEffectItems.add(item);
         MainActivity activity = (MainActivity)getActivity();
-        recyclerEffects = (RecyclerView)activity.findViewById(R.id.recyclerEffects);
+        recyclerEffects = activity.findViewById(R.id.recyclerEffects);
         recyclerEffects.setHasFixedSize(false);
         LinearLayoutManager playlistsManager = new LinearLayoutManager(activity);
         recyclerEffects.setLayoutManager(playlistsManager);
         recyclerEffects.setAdapter(effectsAdapter);
-        Button btnFinith = (Button)activity.findViewById(R.id.btnFinish);
+        Button btnFinith = activity.findViewById(R.id.btnFinish);
         btnFinith.setOnClickListener(this);
-        ImageButton buttonEffectMinus = (ImageButton) activity.findViewById(R.id.buttonEffectMinus);
+        ImageButton buttonEffectMinus = activity.findViewById(R.id.buttonEffectMinus);
         buttonEffectMinus.setOnClickListener(this);
         buttonEffectMinus.setOnLongClickListener(this);
         buttonEffectMinus.setOnTouchListener(this);
-        ImageButton buttonEffectPlus = (ImageButton) activity.findViewById(R.id.buttonEffectPlus);
+        ImageButton buttonEffectPlus = activity.findViewById(R.id.buttonEffectPlus);
         buttonEffectPlus.setOnClickListener(this);
         buttonEffectPlus.setOnLongClickListener(this);
         buttonEffectPlus.setOnTouchListener(this);
@@ -875,8 +875,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             seek.setProgress((int)(fVol7 * 100));
         }
 
-        ImageButton buttonEffectMinus = (ImageButton)activity.findViewById(R.id.buttonEffectMinus);
-        ImageButton buttonEffectPlus = (ImageButton)activity.findViewById(R.id.buttonEffectPlus);
+        ImageButton buttonEffectMinus = activity.findViewById(R.id.buttonEffectMinus);
+        ImageButton buttonEffectPlus = activity.findViewById(R.id.buttonEffectPlus);
         if(nEffect == kEffectTypePan)
         {
             buttonEffectMinus.setImageResource(R.drawable.leftbutton);

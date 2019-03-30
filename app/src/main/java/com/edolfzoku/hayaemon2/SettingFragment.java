@@ -37,11 +37,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Button btnCloseSetting = (Button)getActivity().findViewById(R.id.btnCloseSetting);
+        Button btnCloseSetting = getActivity().findViewById(R.id.btnCloseSetting);
         btnCloseSetting.setOnClickListener(this);
 
         MainActivity activity = (MainActivity)getActivity();
-        Switch switchRepeat = (Switch)getActivity().findViewById(R.id.switchRepeat);
+        Switch switchRepeat = getActivity().findViewById(R.id.switchRepeat);
         switchRepeat.setChecked(!activity.isPlayNextByBPos());
         switchRepeat.setOnCheckedChangeListener(this);
 
@@ -49,27 +49,27 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
         Boolean bPurplePurchased = preferences.getBoolean("unipointer_p", false);
         Boolean bElegantPurchased = preferences.getBoolean("unipointer_e", false);
         if(bPurplePurchased || bElegantPurchased) {
-            RelativeLayout relativePurchaseSetting = (RelativeLayout)activity.findViewById(R.id.relativePurchaseSetting);
+            RelativeLayout relativePurchaseSetting = activity.findViewById(R.id.relativePurchaseSetting);
             relativePurchaseSetting.setVisibility(View.VISIBLE);
-            ImageView imgPoint = (ImageView)activity.findViewById(R.id.imgPoint);
+            ImageView imgPoint = activity.findViewById(R.id.imgPoint);
             int nTag = 0;
             if(imgPoint.getTag() != null) nTag = (Integer)imgPoint.getTag();
             if(bPurplePurchased) {
-                RelativeLayout relativePurple = (RelativeLayout) activity.findViewById(R.id.relativePurple);
+                RelativeLayout relativePurple = activity.findViewById(R.id.relativePurple);
                 relativePurple.setVisibility(View.VISIBLE);
-                Switch switchPurple = (Switch)getActivity().findViewById(R.id.switchPurple);
+                Switch switchPurple = getActivity().findViewById(R.id.switchPurple);
                 switchPurple.setChecked(nTag == 1);
                 switchPurple.setOnCheckedChangeListener(this);
             }
             if(bElegantPurchased) {
-                RelativeLayout relativeElegant = (RelativeLayout) activity.findViewById(R.id.relativeElegant);
+                RelativeLayout relativeElegant = activity.findViewById(R.id.relativeElegant);
                 relativeElegant.setVisibility(View.VISIBLE);
-                Switch switchElegant = (Switch)getActivity().findViewById(R.id.switchElegant);
+                Switch switchElegant = getActivity().findViewById(R.id.switchElegant);
                 switchElegant.setChecked(nTag == 2);
                 switchElegant.setOnCheckedChangeListener(this);
             }
             if(!bPurplePurchased || !bElegantPurchased) {
-                View viewDivider = (View)activity.findViewById(R.id.viewDivider);
+                View viewDivider = activity.findViewById(R.id.viewDivider);
                 viewDivider.setVisibility(View.GONE);
             }
         }
@@ -95,8 +95,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
             preferences.edit().putBoolean("bPlayNextByBPos", activity.isPlayNextByBPos()).commit();
         }
         else if(compoundButton.getId() == R.id.switchPurple) {
-            Switch switchElegant = (Switch)getActivity().findViewById(R.id.switchElegant);
-            ImageView imgPoint = (ImageView)activity.findViewById(R.id.imgPoint);
+            Switch switchElegant = getActivity().findViewById(R.id.switchElegant);
+            ImageView imgPoint = activity.findViewById(R.id.imgPoint);
             if(b) {
                 switchElegant.setChecked(false);
                 imgPoint.setImageResource(R.drawable.control_pointer_uni_murasaki);
@@ -115,8 +115,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
             imgPoint.requestLayout();
         }
         else if(compoundButton.getId() == R.id.switchElegant) {
-            Switch switchPurple = (Switch)getActivity().findViewById(R.id.switchPurple);
-            ImageView imgPoint = (ImageView)activity.findViewById(R.id.imgPoint);
+            Switch switchPurple = getActivity().findViewById(R.id.switchPurple);
+            ImageView imgPoint = activity.findViewById(R.id.imgPoint);
             if(b) {
                 switchPurple.setChecked(false);
                 imgPoint.setImageResource(R.drawable.control_pointer_uni_bafun);

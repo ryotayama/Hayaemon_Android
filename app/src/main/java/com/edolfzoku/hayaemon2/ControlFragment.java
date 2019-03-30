@@ -72,7 +72,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
 
         SharedPreferences preferences = getActivity().getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         int nImgPointTag = preferences.getInt("imgPointTag", 0);
-        ImageView imgPoint = (ImageView)getActivity().findViewById(R.id.imgPoint);
+        ImageView imgPoint = getActivity().findViewById(R.id.imgPoint);
         if(nImgPointTag == 1) {
             imgPoint.setImageResource(R.drawable.control_pointer_uni_murasaki);
             imgPoint.setTag(1);
@@ -91,38 +91,38 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
 
         getActivity().findViewById(R.id.btnLink).setOnTouchListener(this);
 
-        ImageButton btnLockSpeed = (ImageButton)getActivity().findViewById(R.id.btnLockSpeed);
+        AnimationButton btnLockSpeed = getActivity().findViewById(R.id.btnLockSpeed);
         btnLockSpeed.setOnTouchListener(this);
 
-        ImageButton btnLockPitch = (ImageButton)getActivity().findViewById(R.id.btnLockPitch);
+        AnimationButton btnLockPitch = getActivity().findViewById(R.id.btnLockPitch);
         btnLockPitch.setOnTouchListener(this);
 
-        Button btnResetSpeed = (Button)getActivity().findViewById(R.id.btnResetSpeed);
+        Button btnResetSpeed = getActivity().findViewById(R.id.btnResetSpeed);
         btnResetSpeed.setOnTouchListener(this);
 
-        Button btnResetPitch = (Button)getActivity().findViewById(R.id.btnResetPitch);
+        Button btnResetPitch = getActivity().findViewById(R.id.btnResetPitch);
         btnResetPitch.setOnTouchListener(this);
 
-        AnimationButton btnSpeedUp = (AnimationButton) getActivity().findViewById(R.id.btnSpeedUp);
+        AnimationButton btnSpeedUp = getActivity().findViewById(R.id.btnSpeedUp);
         btnSpeedUp.setOnTouchListener(this);
         btnSpeedUp.setOnLongClickListener(this);
 
-        AnimationButton btnSpeedDown = (AnimationButton)getActivity().findViewById(R.id.btnSpeedDown);
+        AnimationButton btnSpeedDown = getActivity().findViewById(R.id.btnSpeedDown);
         btnSpeedDown.setOnTouchListener(this);
         btnSpeedDown.setOnLongClickListener(this);
 
-        AnimationButton btnPitchUp = (AnimationButton)getActivity().findViewById(R.id.btnPitchUp);
+        AnimationButton btnPitchUp = getActivity().findViewById(R.id.btnPitchUp);
         btnPitchUp.setOnTouchListener(this);
         btnPitchUp.setOnLongClickListener(this);
 
-        AnimationButton btnPitchDown = (AnimationButton)getActivity().findViewById(R.id.btnPitchDown);
+        AnimationButton btnPitchDown = getActivity().findViewById(R.id.btnPitchDown);
         btnPitchDown.setOnTouchListener(this);
         btnPitchDown.setOnLongClickListener(this);
 
-        EditText textSpeedValue = (EditText)getActivity().findViewById(R.id.textSpeedValue);
+        EditText textSpeedValue = getActivity().findViewById(R.id.textSpeedValue);
         textSpeedValue.setOnFocusChangeListener(this);
 
-        EditText textPitchValue = (EditText)getActivity().findViewById(R.id.textPitchValue);
+        EditText textPitchValue = getActivity().findViewById(R.id.textPitchValue);
         textPitchValue.setOnFocusChangeListener(this);
     }
 
@@ -179,11 +179,11 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         this.fSpeed = fSpeed;
         if(MainActivity.hStream != 0)
             BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, fSpeed);
-        EditText textSpeedValue = (EditText)getActivity().findViewById(R.id.textSpeedValue);
+        EditText textSpeedValue = getActivity().findViewById(R.id.textSpeedValue);
         textSpeedValue.clearFocus();
         textSpeedValue.setText(String.format("%.1f%%", fSpeed + 100));
 
-        ImageView imgPoint = (ImageView)getActivity().findViewById(R.id.imgPoint);
+        ImageView imgPoint = getActivity().findViewById(R.id.imgPoint);
         int nPtWidth = imgPoint.getWidth();
         int nPtHeight = imgPoint.getHeight();
         View viewBk = getActivity().findViewById(R.id.imgBack);
@@ -269,7 +269,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         this.fPitch = fPitch;
         if(MainActivity.hStream != 0)
             BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, fPitch);
-        TextView textPitchValue = (TextView)getActivity().findViewById(R.id.textPitchValue);
+        TextView textPitchValue = getActivity().findViewById(R.id.textPitchValue);
         textPitchValue.clearFocus();
         if(fPitch > 0.05)
             textPitchValue.setText(String.format("♯%.1f", fPitch));
@@ -282,7 +282,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 textPitchValue.setText("　0.0");
         }
 
-        ImageView imgPoint = (ImageView)getActivity().findViewById(R.id.imgPoint);
+        ImageView imgPoint = getActivity().findViewById(R.id.imgPoint);
         int nPtWidth = imgPoint.getWidth();
         int nPtHeight = imgPoint.getHeight();
         View viewBk = getActivity().findViewById(R.id.imgBack);
@@ -319,10 +319,10 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
 
     public void clearFocus()
     {
-        EditText textSpeedValue = (EditText)getActivity().findViewById(R.id.textSpeedValue);
+        EditText textSpeedValue = getActivity().findViewById(R.id.textSpeedValue);
         textSpeedValue.clearFocus();
 
-        EditText textPitchValue = (EditText)getActivity().findViewById(R.id.textPitchValue);
+        EditText textPitchValue = getActivity().findViewById(R.id.textPitchValue);
         textPitchValue.clearFocus();
     }
 
@@ -411,9 +411,9 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         if(this.bLink) {
             btnLink.setImageResource(R.drawable.control_link_on);
             bLockSpeed = bLockPitch = false;
-            ImageButton btnLockSpeed = getActivity().findViewById(R.id.btnLockSpeed);
+            AnimationButton btnLockSpeed = getActivity().findViewById(R.id.btnLockSpeed);
             btnLockSpeed.setImageResource(R.drawable.ic_control_unlock);
-            ImageButton btnLockPitch = getActivity().findViewById(R.id.btnLockPitch);
+            AnimationButton btnLockPitch = getActivity().findViewById(R.id.btnLockPitch);
             btnLockPitch.setImageResource(R.drawable.ic_control_unlock);
         }
         else btnLink.setImageResource(R.drawable.control_link_off);
@@ -432,7 +432,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         {
             if(event.getAction() == MotionEvent.ACTION_UP)
             {
-                ImageButton btnLockSpeed = (ImageButton)v;
+                AnimationButton btnLockSpeed = (AnimationButton)v;
                 bLockSpeed = !bLockSpeed;
                 if(bLockSpeed) {
                     btnLockSpeed.setImageResource(R.drawable.ic_control_lock);
@@ -448,7 +448,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         {
             if(event.getAction() == MotionEvent.ACTION_UP)
             {
-                ImageButton btnLockPitch = (ImageButton)v;
+                AnimationButton btnLockPitch = (AnimationButton)v;
                 bLockPitch = !bLockPitch;
                 if(bLockPitch) {
                     btnLockPitch.setImageResource(R.drawable.ic_control_lock);
@@ -513,7 +513,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             if(event.getAction() == MotionEvent.ACTION_DOWN) bTouching = true;
             else if(event.getAction() == MotionEvent.ACTION_UP) bTouching = false;
 
-            ImageView imgPoint = (ImageView)getActivity().findViewById(R.id.imgPoint);
+            ImageView imgPoint = getActivity().findViewById(R.id.imgPoint);
             View viewBk = getActivity().findViewById(R.id.imgBack);
             int nPtWidth = imgPoint.getWidth();
             int nPtHeight = imgPoint.getHeight();
@@ -556,7 +556,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 if(MainActivity.hStream != 0)
                     BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, fPitch);
 
-                TextView textPitchValue = (TextView)getActivity().findViewById(R.id.textPitchValue);
+                TextView textPitchValue = getActivity().findViewById(R.id.textPitchValue);
                 if(fPitch > 0.05)
                     textPitchValue.setText(String.format("♯%.1f", fPitch));
                 else if(fPitch < -0.05)

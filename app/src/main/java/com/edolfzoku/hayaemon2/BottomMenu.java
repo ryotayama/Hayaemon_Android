@@ -62,7 +62,7 @@ public class BottomMenu extends BottomSheetDialog {
     }
 
     public void setDialogBorder(Dialog dialog) {
-        FrameLayout bottomSheet = (FrameLayout) dialog.getWindow().findViewById(android.support.design.R.id.design_bottom_sheet);
+        FrameLayout bottomSheet = dialog.getWindow().findViewById(android.support.design.R.id.design_bottom_sheet);
         setMargins(bottomSheet, (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5), 0, (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5), 0);
     }
 

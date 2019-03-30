@@ -46,7 +46,7 @@
         android:clickable="true"
         android:gravity="center"
         />
-    <ImageButton
+    <com.edolfzoku.hayaemon2.AnimationButton
         android:id="@+id/btnLockSpeed"
         android:contentDescription="速度をロック"
         android:layout_width="32dp"
@@ -118,7 +118,7 @@
         android:clickable="true"
         android:gravity="center"
         />
-    <ImageButton
+    <com.edolfzoku.hayaemon2.AnimationButton
         android:id="@+id/btnLockPitch"
         android:contentDescription="音程をロック"
         android:layout_width="32dp"

@@ -43,22 +43,22 @@ public class ItemFragment extends Fragment implements View.OnClickListener
         Boolean bPurplePurchased = preferences.getBoolean("unipointer_p", false);
         if(bPurplePurchased)
         {
-            Button btnPurplePurchase = (Button)activity.findViewById(R.id.btnPurplePurchase);
+            Button btnPurplePurchase = activity.findViewById(R.id.btnPurplePurchase);
             btnPurplePurchase.setBackgroundResource(R.drawable.itempurchased);
             btnPurplePurchase.setTextColor(Color.argb(255, 148, 148, 148));
             btnPurplePurchase.setText("購入済み");
-            Button btnPurpleSet = (Button)activity.findViewById(R.id.btnPurpleSet);
+            Button btnPurpleSet = activity.findViewById(R.id.btnPurpleSet);
             btnPurpleSet.setVisibility(View.VISIBLE);
         }
 
         Boolean bElegantPurchased = preferences.getBoolean("unipointer_e", false);
         if(bElegantPurchased)
         {
-            Button btnElegantPurchase = (Button)activity.findViewById(R.id.btnElegantPurchase);
+            Button btnElegantPurchase = activity.findViewById(R.id.btnElegantPurchase);
             btnElegantPurchase.setBackgroundResource(R.drawable.itempurchased);
             btnElegantPurchase.setTextColor(Color.argb(255, 148, 148, 148));
             btnElegantPurchase.setText("購入済み");
-            Button btnElegantSet = (Button)activity.findViewById(R.id.btnElegantSet);
+            Button btnElegantSet = activity.findViewById(R.id.btnElegantSet);
             btnElegantSet.setVisibility(View.VISIBLE);
         }
 
@@ -154,12 +154,12 @@ public class ItemFragment extends Fragment implements View.OnClickListener
     public void buyPurpleSeaUrchinPointer()
     {
         final MainActivity activity = (MainActivity)getActivity();
-        Button btnPurplePurchase = (Button)activity.findViewById(R.id.btnPurplePurchase);
+        Button btnPurplePurchase = activity.findViewById(R.id.btnPurplePurchase);
         btnPurplePurchase.setBackgroundResource(R.drawable.itempurchased);
         btnPurplePurchase.setTextColor(Color.argb(255, 148, 148, 148));
         btnPurplePurchase.setText("購入済み");
         btnPurplePurchase.setOnClickListener(null);
-        Button btnPurpleSet = (Button)activity.findViewById(R.id.btnPurpleSet);
+        Button btnPurpleSet = activity.findViewById(R.id.btnPurpleSet);
         btnPurpleSet.setVisibility(View.VISIBLE);
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         preferences.edit().putBoolean("unipointer_p", true).commit();
@@ -170,7 +170,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
         builder.setPositiveButton("する！", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                ImageView imgPoint = (ImageView)activity.findViewById(R.id.imgPoint);
+                ImageView imgPoint = activity.findViewById(R.id.imgPoint);
                 imgPoint.setImageResource(R.drawable.control_pointer_uni_murasaki);
                 imgPoint.setTag(1);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -186,12 +186,12 @@ public class ItemFragment extends Fragment implements View.OnClickListener
     public void buyElegantSeaUrchinPointer()
     {
         final MainActivity activity = (MainActivity)getActivity();
-        Button btnElegantPurchase = (Button)activity.findViewById(R.id.btnElegantPurchase);
+        Button btnElegantPurchase = activity.findViewById(R.id.btnElegantPurchase);
         btnElegantPurchase.setBackgroundResource(R.drawable.itempurchased);
         btnElegantPurchase.setTextColor(Color.argb(255, 148, 148, 148));
         btnElegantPurchase.setText("購入済み");
         btnElegantPurchase.setOnClickListener(null);
-        Button btnElegantSet = (Button)activity.findViewById(R.id.btnElegantSet);
+        Button btnElegantSet = activity.findViewById(R.id.btnElegantSet);
         btnElegantSet.setVisibility(View.VISIBLE);
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         preferences.edit().putBoolean("unipointer_e", true).commit();
@@ -202,7 +202,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
         builder.setPositiveButton("する！", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                ImageView imgPoint = (ImageView)activity.findViewById(R.id.imgPoint);
+                ImageView imgPoint = activity.findViewById(R.id.imgPoint);
                 imgPoint.setImageResource(R.drawable.control_pointer_uni_bafun);
                 imgPoint.setTag(2);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;

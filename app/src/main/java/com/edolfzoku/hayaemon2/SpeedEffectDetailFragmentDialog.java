@@ -62,7 +62,7 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
                 intNumberPicker.setValue(i);
         }
 
-        decimalNumberPicker = (NumberPicker)view.findViewById(R.id.decimalSpeedEffectDetailPicker);
+        decimalNumberPicker = view.findViewById(R.id.decimalSpeedEffectDetailPicker);
         decimalNumberPicker.setDisplayedValues(arDecimals);
         decimalNumberPicker.setMaxValue(9);
         decimalNumberPicker.setMinValue(0);

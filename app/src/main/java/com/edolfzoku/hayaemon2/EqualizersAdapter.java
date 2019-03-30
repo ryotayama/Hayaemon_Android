@@ -51,10 +51,10 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
 
         ViewHolder(View view) {
             super(view);
-            equalizerItem = (RelativeLayout) view.findViewById(R.id.equalizerItem);
-            textEqualizer = (TextView) view.findViewById(R.id.textEqualizer);
-            relativeEqualizerMenu = (RelativeLayout) view.findViewById(R.id.relativeEqualizerMenu);
-            imgEqualizerMenu = (ImageView) view.findViewById(R.id.imgEqualizerMenu);
+            equalizerItem = view.findViewById(R.id.equalizerItem);
+            textEqualizer = view.findViewById(R.id.textEqualizer);
+            relativeEqualizerMenu = view.findViewById(R.id.relativeEqualizerMenu);
+            imgEqualizerMenu = view.findViewById(R.id.imgEqualizerMenu);
         }
     }
 

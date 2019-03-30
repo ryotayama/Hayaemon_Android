@@ -50,10 +50,10 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
 
         ViewHolder(View view) {
             super(view);
-            effectItem = (RelativeLayout) view.findViewById(R.id.effectItem);
-            textEffect = (TextView) view.findViewById(R.id.textEffect);
-            buttonEffectDetail = (ImageButton) view.findViewById(R.id.buttonEffectDetail);
-            imgRight = (ImageView) view.findViewById(R.id.imgRight);
+            effectItem = view.findViewById(R.id.effectItem);
+            textEffect = view.findViewById(R.id.textEffect);
+            buttonEffectDetail = view.findViewById(R.id.buttonEffectDetail);
+            imgRight = view.findViewById(R.id.imgRight);
         }
     }
 
