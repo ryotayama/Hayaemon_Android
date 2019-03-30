@@ -1335,6 +1335,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             else if(strEffect.equals("ベースの耳コピ（オクターブ上げ）"))
             {
                 ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
+                controlFragment.setLink(false);
                 controlFragment.setPitch(12.0f);
                 EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
                 int[] array = new int[] {0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-20,-10,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0};

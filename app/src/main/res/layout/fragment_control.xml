@@ -68,6 +68,16 @@
         android:background="#BFBFBF"
         android:layout_below="@+id/btnResetSpeed"
         />
+    <com.edolfzoku.hayaemon2.AnimationButton
+        android:id="@+id/btnLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/control_link_off"
+        android:background="@null"
+        android:layout_marginTop="-22dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignTop="@+id/deviderSpeedPitch"
+        />
     <TextView
         android:id="@+id/textPitch"
         android:text="音程："

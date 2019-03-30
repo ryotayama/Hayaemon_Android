@@ -40,6 +40,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
 {
     float fSpeed = 0.0f;
     float fPitch = 0.0f;
+    boolean bTouching = false;
+    boolean bLink = false;
     boolean bLockSpeed = false;
     boolean bLockPitch = false;
     private boolean isContinue = true;
@@ -86,6 +88,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
 
         View viewBk = getActivity().findViewById(R.id.imgBack);
         viewBk.setOnTouchListener(this);
+
+        getActivity().findViewById(R.id.btnLink).setOnTouchListener(this);
 
         ImageButton btnLockSpeed = (ImageButton)getActivity().findViewById(R.id.btnLockSpeed);
         btnLockSpeed.setOnTouchListener(this);
@@ -166,7 +170,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
 
     public void setSpeed(float fSpeed)
     {
-        setSpeed(fSpeed, true);
+        if(bTouching) setSpeed(fSpeed, false);
+        else setSpeed(fSpeed, true);
     }
 
     public void setSpeed(float fSpeed, boolean bSave)
@@ -205,6 +210,36 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             MainActivity activity = (MainActivity)getActivity();
             PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
             playlistFragment.updateSavingEffect();
+        }
+
+        if(bLink) {
+            bLink = false;
+            if(fSpeed == 0.0f) setPitch(0, bSave);
+            else if(fSpeed > 0.0f) {
+                double dSpeed = ((double)fSpeed + 100.0) / 100.0;
+                double dSemitone = 0.1;
+                double dMinimum = Math.pow(2.0, 0.09 / 12.0);
+                while(true) {
+                    double dTempSpeed = dSpeed / Math.pow(2.0, dSemitone / 12.0);
+                    if(dTempSpeed < dMinimum) break;
+                    dSemitone += 0.1;
+                }
+                double dMaxPitch = 60.0;
+                if(dSemitone > dMaxPitch) dSemitone = dMaxPitch;
+                setPitch((float)dSemitone, bSave);
+            }
+            else {
+                double dSpeed = ((double)fSpeed + 100.0) / 100.0;
+                double dSemitone = -0.1;
+                double dMaximum = Math.pow(2.0, -0.09 / 12.0);
+                while(true) {
+                    double dTempSpeed = dSpeed / Math.pow(2.0, dSemitone / 12.0);
+                    if(dTempSpeed > dMaximum) break;
+                    dSemitone -= 0.1;
+                }
+                setPitch((float)dSemitone, bSave);
+            }
+            bLink = true;
         }
     }
 
@@ -272,6 +307,13 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             MainActivity activity = (MainActivity)getActivity();
             PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
             playlistFragment.updateSavingEffect();
+        }
+
+        if(bLink) {
+            bLink = false;
+            if(Math.pow(2.0, fPitch / 12.0) < 0.1) setSpeed(-90.0f, bSave);
+            else setSpeed((float)(Math.pow(2.0, fPitch / 12.0) * 100.0f - 100.0f), bSave);
+            bLink = true;
         }
     }
 
@@ -362,19 +404,43 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         return false;
     }
 
+    public void setLink(boolean bLink)
+    {
+        AnimationButton btnLink = getActivity().findViewById(R.id.btnLink);
+        this.bLink = bLink;
+        if(this.bLink) {
+            btnLink.setImageResource(R.drawable.control_link_on);
+            bLockSpeed = bLockPitch = false;
+            ImageButton btnLockSpeed = getActivity().findViewById(R.id.btnLockSpeed);
+            btnLockSpeed.setImageResource(R.drawable.ic_control_unlock);
+            ImageButton btnLockPitch = getActivity().findViewById(R.id.btnLockPitch);
+            btnLockPitch.setImageResource(R.drawable.ic_control_unlock);
+        }
+        else btnLink.setImageResource(R.drawable.control_link_off);
+    }
+
     @Override
     public boolean onTouch(View v, MotionEvent event)
     {
-        if(v.getId() == R.id.btnLockSpeed)
+        if(v.getId() == R.id.btnLink)
+        {
+            if(event.getAction() == MotionEvent.ACTION_UP)
+                setLink(!bLink);
+            return false;
+        }
+        else if(v.getId() == R.id.btnLockSpeed)
         {
             if(event.getAction() == MotionEvent.ACTION_UP)
             {
-                ImageButton btn = (ImageButton)v;
+                ImageButton btnLockSpeed = (ImageButton)v;
                 bLockSpeed = !bLockSpeed;
-                if(bLockSpeed)
-                    btn.setImageResource(R.drawable.ic_control_lock);
-                else
-                    btn.setImageResource(R.drawable.ic_control_unlock);
+                if(bLockSpeed) {
+                    btnLockSpeed.setImageResource(R.drawable.ic_control_lock);
+                    bLink = false;
+                    AnimationButton btnLink = getActivity().findViewById(R.id.btnLink);
+                    btnLink.setImageResource(R.drawable.control_link_off);
+                }
+                else btnLockSpeed.setImageResource(R.drawable.ic_control_unlock);
             }
             return false;
         }
@@ -382,12 +448,15 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         {
             if(event.getAction() == MotionEvent.ACTION_UP)
             {
-                ImageButton btn = (ImageButton)v;
+                ImageButton btnLockPitch = (ImageButton)v;
                 bLockPitch = !bLockPitch;
-                if(bLockPitch)
-                    btn.setImageResource(R.drawable.ic_control_lock);
-                else
-                    btn.setImageResource(R.drawable.ic_control_unlock);
+                if(bLockPitch) {
+                    btnLockPitch.setImageResource(R.drawable.ic_control_lock);
+                    bLink = false;
+                    AnimationButton btnLink = getActivity().findViewById(R.id.btnLink);
+                    btnLink.setImageResource(R.drawable.control_link_off);
+                }
+                else btnLockPitch.setImageResource(R.drawable.ic_control_unlock);
             }
             return false;
         }
@@ -441,6 +510,9 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         }
         else if(v.getId() == R.id.imgBack)
         {
+            if(event.getAction() == MotionEvent.ACTION_DOWN) bTouching = true;
+            else if(event.getAction() == MotionEvent.ACTION_UP) bTouching = false;
+
             ImageView imgPoint = (ImageView)getActivity().findViewById(R.id.imgPoint);
             View viewBk = getActivity().findViewById(R.id.imgBack);
             int nPtWidth = imgPoint.getWidth();
@@ -467,14 +539,10 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
                 if(fX >= nBkLeft + nBkWidth / 2) fSpeed = (fDX / fBkHalfWidth) * fMaxSpeed;
                 else fSpeed = (fDX / fBkHalfWidth) * -fMinSpeed;
-                if(MainActivity.hStream != 0)
-                    BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, fSpeed);
-
-                EditText textSpeedValue = (EditText)getActivity().findViewById(R.id.textSpeedValue);
-                textSpeedValue.setText(String.format("%.1f%%", fSpeed + 100));
+                setSpeed(fSpeed);
             }
 
-            if(!bLockPitch)
+            if(!bLockPitch && !bLink)
             {
                 fY = nBkTop + event.getY();
                 if(fY < nBkTop + nPtHeight / 2) fY = nBkTop + nPtHeight / 2;
@@ -501,15 +569,17 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 }
             }
 
-            imgPoint.animate()
-                .x(fX)
-                .y(fY)
-                .setDuration(0)
-                .start();
+            if(!bLink) {
+                imgPoint.animate()
+                        .x(fX)
+                        .y(fY)
+                        .setDuration(0)
+                        .start();
 
-            MainActivity activity = (MainActivity)getActivity();
-            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-            playlistFragment.updateSavingEffect();
+                MainActivity activity = (MainActivity) getActivity();
+                PlaylistFragment playlistFragment = (PlaylistFragment) activity.mSectionsPagerAdapter.getItem(0);
+                playlistFragment.updateSavingEffect();
+            }
 
             return true;
         }
