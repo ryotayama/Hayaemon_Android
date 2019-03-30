@@ -46,7 +46,7 @@ public class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
     protected Integer doInBackground(Integer... params)
     {
         Paint paint = new Paint();
-        paint.setStrokeWidth(mWaveView.getContext().getResources().getDisplayMetrics().density);
+        paint.setStrokeWidth(1.0f);
         int hTempStream = mWaveView.getTempSteam();
         long lMaxLength = BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE);
         int nMaxWidth = (int)(mWaveView.getWidth() * mWaveView.getZoom());
@@ -67,7 +67,7 @@ public class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
             nStart = nEnd;
             nEnd = (int)(lMaxLength * nTotalWidth / nMaxWidth);
             long lLength = nEnd - nStart;
-            for(int j = 0; j < nWidth; j += mWaveView.getContext().getResources().getDisplayMetrics().density)
+            for(int j = 0; j < nWidth; j++)
             {
                 BASS.BASS_ChannelSetPosition(hTempStream, nStart + lLength * j / nWidth, BASS.BASS_POS_BYTE);
                 float[] arLevels = new float[2];
