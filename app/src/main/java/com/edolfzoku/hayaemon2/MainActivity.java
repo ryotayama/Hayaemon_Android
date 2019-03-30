@@ -704,39 +704,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         int nShuffle = preferences.getInt("shufflemode", 0);
-        AnimationButton btnShuffle = (AnimationButton)findViewById(R.id.btnShuffle);
+        AnimationButton btnShuffle = findViewById(R.id.btnShuffle);
+        AnimationButton btnShuffleInPlayingBar = findViewById(R.id.btnShuffleInPlayingBar);
         if(nShuffle == 1)
         {
             btnShuffle.setContentDescription("シャッフルあり");
             btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle_on);
+            btnShuffleInPlayingBar.setContentDescription("シャッフルあり");
+            btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_shuffle_on);
         }
         else if(nShuffle == 2)
         {
             btnShuffle.setContentDescription("１曲のみ");
             btnShuffle.setImageResource(R.drawable.bar_button_mode_single_on);
+            btnShuffleInPlayingBar.setContentDescription("１曲のみ");
+            btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_single_on);
         }
         else
         {
             btnShuffle.setContentDescription("シャッフルなし");
             btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle);
+            btnShuffleInPlayingBar.setContentDescription("シャッフルなし");
+            btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_shuffle);
         }
 
         int nRepeat = preferences.getInt("repeatmode", 0);
-        AnimationButton btnRepeat = (AnimationButton)findViewById(R.id.btnRepeat);
+        AnimationButton btnRepeat = findViewById(R.id.btnRepeat);
+        AnimationButton btnRepeatInPlayingBar = findViewById(R.id.btnRepeatInPlayingBar);
         if(nRepeat == 1)
         {
             btnRepeat.setContentDescription("全曲リピート");
             btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_all_on);
+            btnRepeatInPlayingBar.setContentDescription("全曲リピート");
+            btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_all_on);
         }
         else if(nRepeat == 2)
         {
             btnRepeat.setContentDescription("１曲リピート");
             btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_single_on);
+            btnRepeatInPlayingBar.setContentDescription("１曲リピート");
+            btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_one_on);
         }
         else
         {
             btnRepeat.setContentDescription("リピートなし");
             btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat);
+            btnRepeatInPlayingBar.setContentDescription("リピートなし");
+            btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_all);
         }
     }
 
