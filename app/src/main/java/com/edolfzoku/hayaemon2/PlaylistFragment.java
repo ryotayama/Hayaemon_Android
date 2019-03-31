@@ -122,7 +122,7 @@ import java.text.DateFormat;
 
 import static android.app.Activity.RESULT_OK;
 
-public class PlaylistFragment extends Fragment implements View.OnClickListener {
+public class PlaylistFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
     private ArrayList<String> arPlaylistNames;
     private  ArrayList<ArrayList<SongItem>> arPlaylists;
     private ArrayList<ArrayList<EffectSaver>> arEffects;
@@ -150,6 +150,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     private DownloadTask downloadTask;
     private boolean bFinish = false;
     private ProgressBar progress;
+    private boolean bForceNormal = false;
+    private boolean bForceReverse = false;
 
     public ArrayList<ArrayList<SongItem>> getArPlaylists() { return arPlaylists; }
     public void setArPlaylists(ArrayList<ArrayList<SongItem>> arLists) { arPlaylists = arLists; }
@@ -564,6 +566,76 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(editLyrics, InputMethodManager.SHOW_IMPLICIT);
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v)
+    {
+        if(v.getId() == R.id.btnPlay) {
+            final BottomMenu menu = new BottomMenu(activity);
+            menu.setTitle("再生／停止");
+            final PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
+            final EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+            if(MainActivity.hStream == 0 || (MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING) || (MainActivity.hStream != 0 && effectFragment.isReverse())) {
+                menu.addMenu("再生", R.drawable.ic_actionsheet_play, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    menu.dismiss();
+                    if(effectFragment.isReverse()) effectFragment.onEffectItemClick(EffectFragment.kEffectTypeReverse);
+                    if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
+                        // 何もしない
+                    }
+                    else if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED) {
+                        play();
+                    }
+                    else {
+                        bForceNormal = true;
+                        onPlayBtnClicked();
+                    }
+                        }
+                });
+            }
+            if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
+                menu.addMenu("一時停止", R.drawable.ic_actionsheet_pause, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        menu.dismiss();
+                        pause();
+                    }
+                });
+            }
+            if(MainActivity.hStream == 0 || (MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING) || (MainActivity.hStream != 0 && !effectFragment.isReverse())) {
+                menu.addMenu("逆回転再生", R.drawable.ic_actionsheet_reverse, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        menu.dismiss();
+                        if(!effectFragment.isReverse()) effectFragment.onEffectItemClick(EffectFragment.kEffectTypeReverse);
+                        if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
+                            // 何もしない
+                        }
+                        else if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED) {
+                            play();
+                        }
+                        else {
+                            bForceReverse = true;
+                            onPlayBtnClicked();
+                        }
+                        }
+                });
+            }
+            if(MainActivity.hStream != 0) {
+                menu.addDestructiveMenu("停止", R.drawable.ic_actionsheet_stop, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        menu.dismiss();
+                        stop();
+                            }
+                    });
+            }
+            menu.setCancelMenu();
+            menu.show();
+        }
+        return false;
     }
 
     public void onPlayBtnClicked()
@@ -1027,6 +1099,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
         AnimationButton btnPlay = activity.findViewById(R.id.btnPlay);
         btnPlay.setOnClickListener(this);
+        btnPlay.setOnLongClickListener(this);
 
         AnimationButton btnForward = activity.findViewById(R.id.btnForward);
         btnForward.setOnClickListener(this);
@@ -1825,7 +1898,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         saver.setEQ25(equalizerFragment.getArSeek().get(30).getProgress() - 30);
         saver.setEQ20(equalizerFragment.getArSeek().get(31).getProgress() - 30);
         saver.setEffectItems(effectFragment.getEffectItems());
-        ArrayList<EffectItem> arItems = effectFragment.getEffectItems();
         saver.setPan(effectFragment.getPan());
         saver.setFreq(effectFragment.getFreq());
         saver.setBPM(effectFragment.getBPM());
@@ -2517,8 +2589,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 }
                 nTempPlaying = 0;
             }
-            playSong(nTempPlaying, bPlay);
-            if(!bPlay) pause();
         }
         else if(bShuffle) // シャッフル
         {
@@ -2554,7 +2624,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                     nTempPlaying = arTemp.get(nRandom);
                 }
             }
-            playSong(nTempPlaying, true);
         }
         else
         {
@@ -2568,9 +2637,23 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 }
                 nTempPlaying = 0;
             }
-            playSong(nTempPlaying, bPlay);
-            if(!bPlay) pause();
         }
+        ArrayList<EffectSaver> arEffectSavers = arEffects.get(nPlayingPlaylist);
+        EffectSaver saver = arEffectSavers.get(nTempPlaying);
+        if(saver.isSave()) {
+            ArrayList<EffectItem> arSavedEffectItems = saver.getEffectItems();
+            EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
+            for(int i = 0; i < arSavedEffectItems.size(); i++) {
+                EffectItem item = arSavedEffectItems.get(i);
+                if(item.getEffectName().equals(effectFragment.getEffectItems().get(EffectFragment.kEffectTypeReverse).getEffectName())) {
+                    if(bForceNormal) item.setSelected(false);
+                    else if(bForceReverse) item.setSelected(true);
+                }
+            }
+        }
+        bForceNormal = bForceReverse = false;
+        playSong(nTempPlaying, bPlay);
+        if(!bPlay) pause();
     }
 
     public void onPlaylistItemClick(int nPlaylist)
