@@ -2243,8 +2243,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         {
             int nLevel = equalizerFragment.getArSeek().get(i+1).getProgress() - 30;
             BASS_FX.BASS_BFX_PEAKEQ eq = new BASS_FX.BASS_BFX_PEAKEQ();
-            eq.fBandwidth = 0;
-            eq.fQ = 0.7f;
+            eq.fBandwidth = 0.7f;
+            eq.fQ = 0.0f;
             eq.lChannel = BASS_FX.BASS_BFX_CHANALL;
             eq.fGain = nLevel;
             eq.fCenter = equalizerFragment.getArCenters()[i];
