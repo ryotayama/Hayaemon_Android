@@ -21,20 +21,17 @@ package com.edolfzoku.hayaemon2;
 import java.util.ArrayList;
 
 public class EqualizerItem {
-    private String strEqualizerName = null;
+    private String strEqualizerName;
     private ArrayList<Integer> arPresets;
     private boolean bSelected = false;
 
-    public void setEqualizerName(String strEqualizerName) { this.strEqualizerName = strEqualizerName; }
-    public String getEqualizerName() { return strEqualizerName; }
-    public void setArPresets(ArrayList<Integer> arPresets) { this.arPresets = arPresets; }
-    public ArrayList<Integer> getArPresets() { return arPresets; }
-    public void setSelected(boolean bSelected) { this.bSelected = bSelected; }
+    void setEqualizerName(String strEqualizerName) { this.strEqualizerName = strEqualizerName; }
+    String getEqualizerName() { return strEqualizerName; }
+    ArrayList<Integer> getArPresets() { return arPresets; }
+    void setSelected(boolean bSelected) { this.bSelected = bSelected; }
     public boolean isSelected() { return bSelected; }
 
-    public EqualizerItem() {};
-
-    public EqualizerItem(String strEqualizerName, ArrayList<Integer> arPresets)
+    EqualizerItem(String strEqualizerName, ArrayList<Integer> arPresets)
     {
         this.strEqualizerName = strEqualizerName;
         this.arPresets = arPresets;

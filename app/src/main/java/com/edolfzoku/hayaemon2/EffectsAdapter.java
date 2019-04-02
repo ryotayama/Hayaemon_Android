@@ -20,6 +20,7 @@ package com.edolfzoku.hayaemon2;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,8 +36,7 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
 {
     MainActivity activity;
     private int resource;
-    private List<EffectItem> items = null;
-    private LayoutInflater inflater;
+    private List<EffectItem> items;
     private int nPosition;
 
     public void setPosition(int nPosition) { this.nPosition = nPosition; }
@@ -57,16 +57,15 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
         }
     }
 
-    public EffectsAdapter(Context context, int resource, List<EffectItem> items)
+    EffectsAdapter(Context context, int resource, List<EffectItem> items)
     {
         this.activity = (MainActivity)context;
         this.resource = resource;
         this.items = items;
-        this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
-    public EffectsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public @NonNull EffectsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(resource, parent, false);
 
@@ -74,7 +73,7 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(final EffectsAdapter.ViewHolder holder, final int position)
+    public void onBindViewHolder(@NonNull final EffectsAdapter.ViewHolder holder, int position)
     {
         EffectItem item = items.get(position);
         String name = item.getEffectName();
@@ -88,7 +87,7 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
         holder.effectItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                effectFragment.onEffectItemClick(position);
+                effectFragment.onEffectItemClick(holder.getAdapterPosition());
             }
         });
 
@@ -102,7 +101,7 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
             holder.buttonEffectDetail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    effectFragment.onEffectDetailClick(position);
+                    effectFragment.onEffectDetailClick(holder.getAdapterPosition());
                 }
             });
         }

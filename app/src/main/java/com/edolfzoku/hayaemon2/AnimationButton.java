@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
-import android.widget.ImageButton;
 
 public class AnimationButton extends android.support.v7.widget.AppCompatImageButton
 {

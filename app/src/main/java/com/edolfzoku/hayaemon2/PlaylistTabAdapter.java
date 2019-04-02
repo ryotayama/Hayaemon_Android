@@ -19,8 +19,8 @@
 package com.edolfzoku.hayaemon2;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +35,6 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
     MainActivity activity;
     private int resource;
     private List<String> items;
-    private LayoutInflater inflater;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout relativePlaylistTab;
@@ -50,16 +49,15 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
         }
     }
 
-    public PlaylistTabAdapter(Context context, int resource, List<String> items)
+    PlaylistTabAdapter(Context context, int resource, List<String> items)
     {
         this.activity = (MainActivity)context;
         this.resource = resource;
         this.items = items;
-        this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
-    public PlaylistTabAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public @NonNull PlaylistTabAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(resource, parent, false);
 
@@ -67,7 +65,7 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
     }
 
     @Override
-    public void onBindViewHolder(final PlaylistTabAdapter.ViewHolder holder, final int position)
+    public void onBindViewHolder(@NonNull final PlaylistTabAdapter.ViewHolder holder, int position)
     {
         String item = items.get(position);
         final PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
@@ -84,7 +82,7 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
             holder.btnPlaylistMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    playlistFragment.showPlaylistMenu(position);
+                    playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
                 }
             });
         }
@@ -106,14 +104,14 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
         holder.textPlaylistTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playlistFragment.selectPlaylist(position);
+                playlistFragment.selectPlaylist(holder.getAdapterPosition());
             }
         });
 
         holder.textPlaylistTab.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                playlistFragment.showPlaylistMenu(position);
+                playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
                 return true;
             }
         });

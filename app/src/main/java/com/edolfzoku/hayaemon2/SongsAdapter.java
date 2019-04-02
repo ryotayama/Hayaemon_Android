@@ -18,8 +18,10 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -39,13 +41,6 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
     MainActivity activity;
     private int resource;
     private List<SongItem> items = null;
-    private LayoutInflater inflater;
-
-    public String getTitle(int nPosition)
-    {
-        SongItem item = items.get(nPosition);
-        return item.getTitle();
-    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout songItem;
@@ -70,36 +65,35 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         }
     }
 
-    public SongsAdapter(Context context, int resource, List<SongItem> items)
+    SongsAdapter(Context context, int resource, List<SongItem> items)
     {
         this.activity = (MainActivity)context;
         this.resource = resource;
         this.items = items;
-        this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public SongsAdapter(Context context, int resource)
+    SongsAdapter(Context context, int resource)
     {
         this.activity = (MainActivity)context;
         this.resource = resource;
-        this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void changeItems(List<SongItem> items)
+    void changeItems(List<SongItem> items)
     {
         this.items = items;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public @NonNull ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(resource, parent, false);
 
         return new ViewHolder(view);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position)
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position)
     {
         SongItem item = items.get(position);
         final int nItem = Integer.parseInt(item.getNumber()) - 1;
@@ -159,13 +153,13 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             holder.frameSongMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    playlistFragment.showSongMenu(position);
+                    playlistFragment.showSongMenu(holder.getAdapterPosition());
                 }
             });
             holder.songItem.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    playlistFragment.showSongMenu(position);
+                    playlistFragment.showSongMenu(holder.getAdapterPosition());
                     return true;
                 }
             });

@@ -29,7 +29,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     private EqualizerFragment equalizerFragment;
     private EffectFragment effectFragment;
 
-    public SectionsPagerAdapter(FragmentManager fm)
+    SectionsPagerAdapter(FragmentManager fm)
     {
         super(fm);
         playlistFragment = new PlaylistFragment();

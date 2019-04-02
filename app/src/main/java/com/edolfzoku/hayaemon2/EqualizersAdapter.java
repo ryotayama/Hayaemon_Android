@@ -18,14 +18,15 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,12 +37,7 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
 {
     MainActivity activity;
     private int resource;
-    private List<EqualizerItem> items = null;
-    private LayoutInflater inflater;
-    private boolean bClicked = false;
-
-    public void setClicked(boolean bClicked) { this.bClicked = bClicked; }
-    public boolean isClicked() { return bClicked; }
+    private List<EqualizerItem> items;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout equalizerItem;
@@ -58,29 +54,29 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
         }
     }
 
-    public EqualizersAdapter(Context context, int resource, List<EqualizerItem> items)
+    EqualizersAdapter(Context context, int resource, List<EqualizerItem> items)
     {
         this.activity = (MainActivity)context;
         this.resource = resource;
         this.items = items;
-        this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void changeItems(List<EqualizerItem> items)
+    void changeItems(List<EqualizerItem> items)
     {
         this.items = items;
     }
 
     @Override
-    public EqualizersAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public @NonNull EqualizersAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(resource, parent, false);
 
         return new EqualizersAdapter.ViewHolder(view);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onBindViewHolder(final EqualizersAdapter.ViewHolder holder, final int position)
+    public void onBindViewHolder(@NonNull final EqualizersAdapter.ViewHolder holder, int position)
     {
         EqualizerItem item = items.get(position);
         String name = item.getEqualizerName();
@@ -94,7 +90,7 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
         holder.equalizerItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            equalizerFragment.onEqualizerItemClick(position);
+            equalizerFragment.onEqualizerItemClick(holder.getAdapterPosition());
             }
         });
 
@@ -115,8 +111,7 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
             holder.relativeEqualizerMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    bClicked = true;
-                    equalizerFragment.showMenu(position);
+                    equalizerFragment.showMenu(holder.getAdapterPosition());
                 }
             });
             holder.imgEqualizerMenu.setImageResource(R.drawable.ic_listmenu);

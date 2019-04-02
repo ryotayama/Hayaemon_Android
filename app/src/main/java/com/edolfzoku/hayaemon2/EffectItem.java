@@ -23,16 +23,16 @@ public class EffectItem {
     private boolean bSelected = false;
     private boolean bEditEnabled = false;
 
-    public void setEffectName(String strEffectName) { this.strEffectName = strEffectName; }
-    public String getEffectName() { return strEffectName; }
-    public void setSelected(boolean bSelected) { this.bSelected = bSelected; }
+    void setEffectName(String strEffectName) { this.strEffectName = strEffectName; }
+    String getEffectName() { return strEffectName; }
+    void setSelected(boolean bSelected) { this.bSelected = bSelected; }
     public boolean isSelected() { return bSelected; }
-    public void setbEditEnabled(boolean bEditEnabled) { this.bEditEnabled = bEditEnabled; }
-    public boolean isEditEnabled() { return bEditEnabled; }
+    void setbEditEnabled(boolean bEditEnabled) { this.bEditEnabled = bEditEnabled; }
+    boolean isEditEnabled() { return bEditEnabled; }
 
-    public EffectItem() {};
+    EffectItem() {}
 
-    public EffectItem(String strEffectName, boolean bEditEnabled)
+    EffectItem(String strEffectName, boolean bEditEnabled)
     {
         this.strEffectName = strEffectName;
         this.bEditEnabled = bEditEnabled;

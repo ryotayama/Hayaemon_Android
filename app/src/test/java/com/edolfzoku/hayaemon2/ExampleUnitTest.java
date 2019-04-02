@@ -1,4 +1,4 @@
-package com.edolfzoku.hayaemon;
+package com.edolfzoku.hayaemon2;
 
 import org.junit.Test;
 

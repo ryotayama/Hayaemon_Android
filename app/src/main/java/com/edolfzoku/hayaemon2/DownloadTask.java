@@ -5,7 +5,6 @@ import android.support.v7.app.AlertDialog;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,12 +13,12 @@ import java.net.URL;
 
 public class DownloadTask extends AsyncTask<Integer, Integer, Integer>
 {
-    private PlaylistFragment playlistFragment = null;
+    private PlaylistFragment playlistFragment;
     private URL url;
     private String strPathTo;
     private AlertDialog alert;
 
-    public DownloadTask(PlaylistFragment playlistFragment, URL url, String strPathTo, AlertDialog alert)
+    DownloadTask(PlaylistFragment playlistFragment, URL url, String strPathTo, AlertDialog alert)
     {
         this.playlistFragment = playlistFragment;
         this.url = url;
@@ -42,7 +41,7 @@ public class DownloadTask extends AsyncTask<Integer, Integer, Integer>
                 final FileOutputStream fileOutput = new FileOutputStream(strPathTo);
                 final DataOutputStream dataOut = new DataOutputStream(fileOutput);
                 final byte[] buffer = new byte[4096];
-                int readByte = 0;
+                int readByte;
                 int totalReatByte = 0;
                 int contentLength = connection.getContentLength();
 
@@ -61,7 +60,7 @@ public class DownloadTask extends AsyncTask<Integer, Integer, Integer>
             }
             else
             {
-                if(connection != null) connection.disconnect();
+                connection.disconnect();
                 return 1;
             }
         }

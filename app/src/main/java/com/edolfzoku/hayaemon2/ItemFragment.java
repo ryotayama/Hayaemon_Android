@@ -2,6 +2,7 @@ package com.edolfzoku.hayaemon2;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,28 +20,42 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.google.android.gms.ads.AdView;
-
 public class ItemFragment extends Fragment implements View.OnClickListener
 {
+    private MainActivity activity = null;
+
     public ItemFragment()
     {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof MainActivity) {
+            activity = (MainActivity) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        activity = null;
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_item, container, false);
-        return rootView;
+        return inflater.inflate(R.layout.fragment_item, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MainActivity activity = (MainActivity)getActivity();
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-        Boolean bPurplePurchased = preferences.getBoolean("unipointer_p", false);
+        boolean bPurplePurchased = preferences.getBoolean("unipointer_p", false);
         if(bPurplePurchased)
         {
             Button btnPurplePurchase = activity.findViewById(R.id.btnPurplePurchase);
@@ -51,7 +66,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             btnPurpleSet.setVisibility(View.VISIBLE);
         }
 
-        Boolean bElegantPurchased = preferences.getBoolean("unipointer_e", false);
+        boolean bElegantPurchased = preferences.getBoolean("unipointer_e", false);
         if(bElegantPurchased)
         {
             Button btnElegantPurchase = activity.findViewById(R.id.btnElegantPurchase);
@@ -62,16 +77,16 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             btnElegantSet.setVisibility(View.VISIBLE);
         }
 
-        getActivity().findViewById(R.id.btnCloseItem).setOnClickListener(this);
-        if(!bPurplePurchased) getActivity().findViewById(R.id.btnPurplePurchase).setOnClickListener(this);
-        if(!bElegantPurchased) getActivity().findViewById(R.id.btnElegantPurchase).setOnClickListener(this);
-        getActivity().findViewById(R.id.btnPurpleSet).setOnClickListener(this);
-        getActivity().findViewById(R.id.btnElegantSet).setOnClickListener(this);
+        activity.findViewById(R.id.btnCloseItem).setOnClickListener(this);
+        if(!bPurplePurchased) activity.findViewById(R.id.btnPurplePurchase).setOnClickListener(this);
+        if(!bElegantPurchased) activity.findViewById(R.id.btnElegantPurchase).setOnClickListener(this);
+        activity.findViewById(R.id.btnPurpleSet).setOnClickListener(this);
+        activity.findViewById(R.id.btnElegantSet).setOnClickListener(this);
     }
 
     public void close()
     {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
         transaction.remove(this);
@@ -85,23 +100,13 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             close();
         else if(view.getId() == R.id.btnPurplePurchase)
         {
-            MainActivity activity = (MainActivity)getActivity();
             try {
                 Bundle buyIntentBundle = activity.getService().getBuyIntent(3, activity.getPackageName(), "unipointer_p", "inapp", "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkVvqgLyPSTyJKuyNw3Z0luaxCnOtbFwj65HGYmDS4KiyGaJNgFsLOc9wpmIQaQI+zrntxbufWXsT0gIh1/MRRmX2FgA0G6WDS0+w39ZsbgJRbXsxOzOOZaHbSo2NLOA29GXPo9FraFtNrOL9v4vLu7hxDPdfqoFNR80BUWwQqMBsiMNFqJ12sq1HzxHd2MIk/QooBZIB3EeM0QX5EYIsWcaKIAyzetuKjRGvO9Oi2a86dOBUfOFnHMMCvQ5+dldx5UkzmnhlbTm/KBWQCO3AqNy82NKxN9ND6GWVrlHuQGYX1FRiApMeXCmEvmwEyU2ArztpV8CfHyK2d0mM4bp0bwIDAQAB");
                 int response = buyIntentBundle.getInt("RESPONSE_CODE");
                 if(response == 0) {
                     PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-                    activity.startIntentSenderForResult(
-                            pendingIntent.getIntentSender(),
-                            1002,
-                            new Intent(),
-                            Integer.valueOf(0),
-                            Integer.valueOf(0),
-                            Integer.valueOf(0)
-                    );
-                }
-                else if(response == 1) {
-                    // 購入がキャンセルされた
+                    if(pendingIntent != null)
+                        activity.startIntentSenderForResult(pendingIntent.getIntentSender(), 1002, new Intent(), 0, 0, 0);
                 }
                 else if(response == 7) {
                     buyPurpleSeaUrchinPointer();
@@ -113,28 +118,17 @@ public class ItemFragment extends Fragment implements View.OnClickListener
         }
         else if(view.getId() == R.id.btnPurpleSet) {
             close();
-            MainActivity activity = (MainActivity)getActivity();
             activity.openSetting();
         }
         else if(view.getId() == R.id.btnElegantPurchase)
         {
-            MainActivity activity = (MainActivity)getActivity();
             try {
                 Bundle buyIntentBundle = activity.getService().getBuyIntent(3, activity.getPackageName(), "unipointer_e", "inapp", "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkVvqgLyPSTyJKuyNw3Z0luaxCnOtbFwj65HGYmDS4KiyGaJNgFsLOc9wpmIQaQI+zrntxbufWXsT0gIh1/MRRmX2FgA0G6WDS0+w39ZsbgJRbXsxOzOOZaHbSo2NLOA29GXPo9FraFtNrOL9v4vLu7hxDPdfqoFNR80BUWwQqMBsiMNFqJ12sq1HzxHd2MIk/QooBZIB3EeM0QX5EYIsWcaKIAyzetuKjRGvO9Oi2a86dOBUfOFnHMMCvQ5+dldx5UkzmnhlbTm/KBWQCO3AqNy82NKxN9ND6GWVrlHuQGYX1FRiApMeXCmEvmwEyU2ArztpV8CfHyK2d0mM4bp0bwIDAQAB");
                 int response = buyIntentBundle.getInt("RESPONSE_CODE");
                 if(response == 0) {
                     PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-                    activity.startIntentSenderForResult(
-                            pendingIntent.getIntentSender(),
-                            1003,
-                            new Intent(),
-                            Integer.valueOf(0),
-                            Integer.valueOf(0),
-                            Integer.valueOf(0)
-                    );
-                }
-                else if(response == 1) {
-                    // 購入がキャンセルされた
+                    if(pendingIntent != null)
+                        activity.startIntentSenderForResult(pendingIntent.getIntentSender(), 1003, new Intent(), 0, 0, 0);
                 }
                 else if(response == 7) {
                     buyElegantSeaUrchinPointer();
@@ -146,14 +140,12 @@ public class ItemFragment extends Fragment implements View.OnClickListener
         }
         else if(view.getId() == R.id.btnElegantSet) {
             close();
-            MainActivity activity = (MainActivity)getActivity();
             activity.openSetting();
         }
     }
 
     public void buyPurpleSeaUrchinPointer()
     {
-        final MainActivity activity = (MainActivity)getActivity();
         Button btnPurplePurchase = activity.findViewById(R.id.btnPurplePurchase);
         btnPurplePurchase.setBackgroundResource(R.drawable.itempurchased);
         btnPurplePurchase.setTextColor(Color.argb(255, 148, 148, 148));
@@ -162,7 +154,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
         Button btnPurpleSet = activity.findViewById(R.id.btnPurpleSet);
         btnPurpleSet.setVisibility(View.VISIBLE);
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-        preferences.edit().putBoolean("unipointer_p", true).commit();
+        preferences.edit().putBoolean("unipointer_p", true).apply();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("【謹製】お布施ウニポインター【むらさき】");
@@ -175,7 +167,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
                 imgPoint.setTag(1);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                preferences.edit().putInt("imgPointTag", 1).commit();
+                preferences.edit().putInt("imgPointTag", 1).apply();
             }
         });
         builder.setNegativeButton("今はしない", null);
@@ -185,7 +177,6 @@ public class ItemFragment extends Fragment implements View.OnClickListener
 
     public void buyElegantSeaUrchinPointer()
     {
-        final MainActivity activity = (MainActivity)getActivity();
         Button btnElegantPurchase = activity.findViewById(R.id.btnElegantPurchase);
         btnElegantPurchase.setBackgroundResource(R.drawable.itempurchased);
         btnElegantPurchase.setTextColor(Color.argb(255, 148, 148, 148));
@@ -194,7 +185,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
         Button btnElegantSet = activity.findViewById(R.id.btnElegantSet);
         btnElegantSet.setVisibility(View.VISIBLE);
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-        preferences.edit().putBoolean("unipointer_e", true).commit();
+        preferences.edit().putBoolean("unipointer_e", true).apply();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("【謹製】お布施ウニポインター【ばふん】");
@@ -207,7 +198,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
                 imgPoint.setTag(2);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                preferences.edit().putInt("imgPointTag", 2).commit();
+                preferences.edit().putInt("imgPointTag", 2).apply();
             }
         });
         builder.setNegativeButton("今はしない", null);

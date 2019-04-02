@@ -1,5 +1,6 @@
 package com.edolfzoku.hayaemon2;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,13 +23,14 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class BottomMenu extends BottomSheetDialog {
-    LinearLayout linearLayoutParent;
-    LinearLayout linearLayout;
-    ScrollView scroll;
-    int nTag = 0;
-    int nHeight = 0;
+    private LinearLayout linearLayoutParent;
+    private LinearLayout linearLayout;
+    private ScrollView scroll;
+    private int nTag = 0;
+    private int nHeight = 0;
 
-    public BottomMenu(@NonNull Context context) {
+    @SuppressLint("ClickableViewAccessibility")
+    BottomMenu(@NonNull Context context) {
         super(context);
         linearLayoutParent = new LinearLayout(context);
         linearLayoutParent.setOrientation(LinearLayout.VERTICAL);
@@ -55,21 +58,25 @@ public class BottomMenu extends BottomSheetDialog {
         setDialogBorder(this);
     }
 
-    public int getStatusBarHeight(){
+    private int getStatusBarHeight(){
         final Rect rect = new Rect();
-        getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+        Window window = getWindow();
+        if(window != null) window.getDecorView().getWindowVisibleDisplayFrame(rect);
         return rect.top;
     }
 
-    public void setDialogBorder(Dialog dialog) {
-        FrameLayout bottomSheet = dialog.getWindow().findViewById(android.support.design.R.id.design_bottom_sheet);
-        setMargins(bottomSheet, (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5), 0, (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5), 0);
+    private void setDialogBorder(Dialog dialog) {
+        Window window = dialog.getWindow();
+        if(window != null) {
+            FrameLayout bottomSheet = window.findViewById(android.support.design.R.id.design_bottom_sheet);
+            setMargins(bottomSheet, (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5), (int) (16 * getContext().getResources().getDisplayMetrics().density + 0.5));
+        }
     }
 
-    private void setMargins(View view, int left, int top, int right, int bottom) {
+    private void setMargins(View view, int left, int right) {
         if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-            p.setMargins(left, top, right, bottom);
+            p.setMargins(left, 0, right, 0);
             view.requestLayout();
         }
     }
@@ -100,7 +107,7 @@ public class BottomMenu extends BottomSheetDialog {
         linearLayoutParent.addView(scroll);
     }
 
-    public void addSeparator() {
+    void addSeparator() {
         View viewSep = new View(getContext());
         viewSep.setBackgroundColor(Color.argb(255, 208, 208, 208));
         LinearLayout.LayoutParams paramViewSep = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -113,13 +120,14 @@ public class BottomMenu extends BottomSheetDialog {
         nHeight += paramViewSep.topMargin + paramViewSep.bottomMargin + paramViewSep.height;
     }
 
-    public void addMenu(String strText, int resID, android.view.View.OnClickListener listener) {
+    @SuppressLint("ClickableViewAccessibility")
+    void addMenu(String strText, int resID, android.view.View.OnClickListener listener) {
         final RelativeLayout relativeLocal = new RelativeLayout(getContext());
         relativeLocal.setTag(nTag);
         nTag += 1;
         ImageView imgLocal = new ImageView(getContext());
         imgLocal.setImageResource(resID);
-        imgLocal.setId(1000);
+        imgLocal.setId(R.id.imgLocal);
         RelativeLayout.LayoutParams paramImgLocal = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         paramImgLocal.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         paramImgLocal.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -129,7 +137,7 @@ public class BottomMenu extends BottomSheetDialog {
 
         TextView textLocal = new TextView(getContext());
         textLocal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        textLocal.setGravity(Gravity.LEFT | Gravity.CENTER);
+        textLocal.setGravity(Gravity.START | Gravity.CENTER);
         textLocal.setText(strText);
         textLocal.setTextColor(Color.argb(255, 0, 0, 0));
         relativeLocal.setOnClickListener(listener);
@@ -159,11 +167,12 @@ public class BottomMenu extends BottomSheetDialog {
         nHeight += (int) (48 * getContext().getResources().getDisplayMetrics().density + 0.5);
     }
 
-    public void addDestructiveMenu(String strText, int resID, android.view.View.OnClickListener listener) {
+    @SuppressLint("ClickableViewAccessibility")
+    void addDestructiveMenu(String strText, int resID, android.view.View.OnClickListener listener) {
         final RelativeLayout relativeLocal = new RelativeLayout(getContext());
         ImageView imgLocal = new ImageView(getContext());
         imgLocal.setImageResource(resID);
-        imgLocal.setId(1000);
+        imgLocal.setId(R.id.imgLocal);
         RelativeLayout.LayoutParams paramImgLocal = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         paramImgLocal.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         paramImgLocal.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -173,7 +182,7 @@ public class BottomMenu extends BottomSheetDialog {
 
         TextView textLocal = new TextView(getContext());
         textLocal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        textLocal.setGravity(Gravity.LEFT | Gravity.CENTER);
+        textLocal.setGravity(Gravity.START | Gravity.CENTER);
         textLocal.setText(strText);
         textLocal.setTextColor(Color.argb(255, 255, 45, 85));
         relativeLocal.setOnClickListener(listener);
@@ -203,7 +212,8 @@ public class BottomMenu extends BottomSheetDialog {
         nHeight += (int) (48 * getContext().getResources().getDisplayMetrics().density + 0.5);
     }
 
-    public void setCancelMenu() {
+    @SuppressLint("ClickableViewAccessibility")
+    void setCancelMenu() {
         View viewSep = new View(getContext());
         viewSep.setBackgroundColor(Color.argb(255, 208, 208, 208));
         LinearLayout.LayoutParams paramViewSep = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

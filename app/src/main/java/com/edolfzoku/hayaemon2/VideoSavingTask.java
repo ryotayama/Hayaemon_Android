@@ -39,15 +39,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
-    private PlaylistFragment playlistFragment = null;
+    private PlaylistFragment playlistFragment;
     private String strPathTo;
     private AlertDialog alert;
     private int nLength;
     private String strMP4Path;
 
-    public VideoSavingTask(PlaylistFragment playlistFragment, String strPathTo, AlertDialog alert, int nLength)
+    VideoSavingTask(PlaylistFragment playlistFragment, String strPathTo, AlertDialog alert, int nLength)
     {
         this.playlistFragment = playlistFragment;
         this.strPathTo = strPathTo;
@@ -55,23 +56,26 @@ public class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
         this.nLength = nLength;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected Integer doInBackground(Integer... params)
     {
         MediaCodec codec = null;
-        MediaMuxer mux = null;
+        MediaMuxer mux;
         File inputFile = new File(strPathTo);
         File inputMp4File = null;
-        FileInputStream fis = null;
+        FileInputStream fis;
         try {
             if (Build.VERSION.SDK_INT < 18) return 0;
 
             fis = new FileInputStream(inputFile);
-            fis.skip(44);
+            if(fis.skip(44) != 44) System.out.println("44バイトのスキップに失敗しました");
 
             String strTempPath = playlistFragment.getActivity().getExternalCacheDir() + "/temp.mp4";
             inputMp4File = new File(strTempPath);
-            if (inputMp4File.exists()) inputMp4File.delete();
+            if (inputMp4File.exists()) {
+                if(!inputMp4File.delete()) System.out.println("ファイルが削除できませんでした");
+            }
             SeekableByteChannel out = NIOUtils.writableFileChannel(strTempPath);
             AndroidSequenceEncoder encoder = new AndroidSequenceEncoder(out, Rational.R(1, 1));
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -80,7 +84,6 @@ public class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
             encoder.encodeImage(bitmap);
             encoder.encodeImage(bitmap);
             bitmap.recycle();
-            bitmap = null;
             encoder.finish();
             NIOUtils.closeQuietly(out);
 
@@ -92,14 +95,14 @@ public class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
             if (outputFile.exists()) {
                 int i = 2;
                 File fileForCheck;
-                String strTemp = null;
+                String strTemp;
                 while (true) {
-                    strTemp = Environment.getExternalStorageDirectory() + "/" + strTitle + String.format("%d", i) + ".mp4";
+                    strTemp = Environment.getExternalStorageDirectory() + "/" + strTitle + String.format(Locale.getDefault(), "%d", i) + ".mp4";
                     fileForCheck = new File(strTemp);
                     if (!fileForCheck.exists()) break;
                     i++;
                 }
-                strMP4Path = Environment.getExternalStorageDirectory() + "/" + strTitle + String.format("%d", i) + ".mp4";
+                strMP4Path = Environment.getExternalStorageDirectory() + "/" + strTitle + String.format(Locale.getDefault(), "%d", i) + ".mp4";
                 outputFile = new File(strMP4Path);
             }
 
@@ -143,7 +146,7 @@ public class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
                     inputBufIndex = codec.dequeueInputBuffer(5000);
 
                     if (inputBufIndex >= 0) {
-                        ByteBuffer dstBuf = null;
+                        ByteBuffer dstBuf;
                         if(Build.VERSION.SDK_INT < 21)
                             dstBuf = codecInputBuffers[inputBufIndex];
                         else dstBuf = codec.getInputBuffer(inputBufIndex);
@@ -166,7 +169,7 @@ public class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
                     if(playlistFragment.isFinish()) break;
                     outputBufIndex = codec.dequeueOutputBuffer(outBuffInfo, 5000);
                     if (outputBufIndex >= 0) {
-                        ByteBuffer encodedData = null;
+                        ByteBuffer encodedData;
                         if(Build.VERSION.SDK_INT < 21)
                             encodedData = codecOutputBuffers[outputBufIndex];
                         else encodedData = codec.getOutputBuffer(outputBufIndex);
@@ -176,8 +179,7 @@ public class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
                             codec.releaseOutputBuffer(outputBufIndex, false);
                         }else{
                             int outBitsSize   = outBuffInfo.size;
-                            int outPacketSize = outBitsSize;
-                            byte[] data = new byte[outPacketSize];
+                            byte[] data = new byte[outBitsSize];
                             encodedData.get(data, 0, outBitsSize);
                             encodedData.position(outBuffInfo.offset);
                             encodedData.limit(outBuffInfo.offset + outBuffInfo.size);
@@ -190,9 +192,6 @@ public class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
                         audioTrackIdx = mux.addTrack(outputFormat);
                         videoTrackIdx = mux.addTrack(videoFormat);
                         mux.start();
-                    } else if (outputBufIndex == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
-                    } else if (outputBufIndex == MediaCodec.INFO_TRY_AGAIN_LATER) {
-                    } else {
                     }
                 }
                 int nComplete = (int) Math.round(((float) totalBytesRead / (float) inputFile.length()) * 100.0 / 4.0);
@@ -242,7 +241,6 @@ public class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
             }
             mux.stop();
             mux.release();
-            mux = null;
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -253,8 +251,12 @@ public class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
                 codec.stop();
                 codec.release();
             }
-            if (inputFile.exists()) inputFile.delete();
-            if (inputMp4File.exists()) inputMp4File.delete();
+            if (inputFile.exists()) {
+                if(!inputFile.delete()) System.out.println("ファイルが削除できませんでした");
+            }
+            if (inputMp4File.exists()) {
+                if(!inputMp4File.delete()) System.out.println("ファイルが削除できませんでした");
+            }
         }
 
         return 0;

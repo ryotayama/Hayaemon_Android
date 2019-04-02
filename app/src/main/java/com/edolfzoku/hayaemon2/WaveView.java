@@ -47,7 +47,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
-import javax.microedition.khronos.opengles.GL10;
 
 /**
  * Created by yamauchiryouta on 2017/10/03.
@@ -62,12 +61,11 @@ public class WaveView extends View {
     private String strPath = null;
     private float fZoom = 1.0f;
     private WaveViewTask task = null;
+    private Rect srcRect = null;
+    private Rect dstRect = null;
 
     public LoopFragment getLoopFragment() { return loopFragment; }
     public void setLoopFragment(LoopFragment loopFragment) { this.loopFragment = loopFragment; }
-    public int getTempSteam() { return hTempStream; }
-    public ArrayList<Bitmap> getBitmaps() { return arBitmaps; }
-    public ArrayList<Canvas> getCanvases() { return arCanvases; }
     public float getZoom() { return fZoom; }
     public void setZoom(float fZoom) {
         if(this.fZoom == fZoom) return;
@@ -81,6 +79,8 @@ public class WaveView extends View {
         setWillNotDraw(false);
         arBitmaps = new ArrayList<>();
         arCanvases = new ArrayList<>();
+        srcRect = new Rect();
+        dstRect = new Rect();
     }
 
     public WaveView(Context context, AttributeSet attrs)
@@ -89,6 +89,8 @@ public class WaveView extends View {
         setWillNotDraw(false);
         arBitmaps = new ArrayList<>();
         arCanvases = new ArrayList<>();
+        srcRect = new Rect();
+        dstRect = new Rect();
     }
 
     public WaveView(Context context, AttributeSet attrs, int defStyleAttr)
@@ -109,8 +111,11 @@ public class WaveView extends View {
         int nScreenWidth = getWidth();
         int nMaxWidth = (int)(nScreenWidth * fZoom);
         int nLeft = (int) (nMaxWidth * nPos / nLength);
-        if(nLeft < nScreenWidth / 2)
-            canvas.drawBitmap(arBitmaps.get(0), new Rect(0, 0, getWidth(), getHeight()), new Rect(0, 0, getWidth(), getHeight()), null);
+        if(nLeft < nScreenWidth / 2) {
+            srcRect.set(0, 0, getWidth(), getHeight());
+            dstRect.set(0, 0, getWidth(), getHeight());
+            canvas.drawBitmap(arBitmaps.get(0), srcRect, dstRect, null);
+        }
         else if(nScreenWidth / 2 <= nLeft && nLeft < nMaxWidth - nScreenWidth / 2) {
             int nStart = nLeft - nScreenWidth / 2;
             int nEnd = nLeft + nScreenWidth / 2;
@@ -126,11 +131,15 @@ public class WaveView extends View {
                     if(nPaintLeft == 0) {
                         nX = nStart - nTotalWidth;
                         if(nX + nWidth > bitmap.getWidth()) nWidth = bitmap.getWidth() - nX;
-                        canvas.drawBitmap(bitmap, new Rect(nX, 0, nX + nWidth, getHeight()), new Rect(nPaintLeft, 0, nPaintLeft + nWidth, getHeight()), null);
+                        srcRect.set(nX, 0, nX + nWidth, getHeight());
+                        dstRect.set(nPaintLeft, 0, nPaintLeft + nWidth, getHeight());
+                        canvas.drawBitmap(bitmap, srcRect, dstRect, null);
                     }
                     else
                         nWidth -= nPaintLeft;
-                    canvas.drawBitmap(bitmap, new Rect(nX, 0, nX + nWidth, getHeight()), new Rect(nPaintLeft, 0, nPaintLeft + nWidth, getHeight()), null);
+                    srcRect.set(nX, 0, nX + nWidth, getHeight());
+                    dstRect.set(nPaintLeft, 0, nPaintLeft + nWidth, getHeight());
+                    canvas.drawBitmap(bitmap, srcRect, dstRect, null);
                     nPaintLeft += nWidth;
                 }
                 nTotalWidth += bitmap.getWidth();
@@ -152,11 +161,15 @@ public class WaveView extends View {
                     if(nPaintLeft == 0) {
                         nX = nStart - nTotalWidth;
                         if(nX + nWidth > bitmap.getWidth()) nWidth = bitmap.getWidth() - nX;
-                        canvas.drawBitmap(bitmap, new Rect(nX, 0, nX + nWidth, getHeight()), new Rect(nPaintLeft, 0, nPaintLeft + nWidth, getHeight()), null);
+                        srcRect.set(nX, 0, nX + nWidth, getHeight());
+                        dstRect.set(nPaintLeft, 0, nPaintLeft + nWidth, getHeight());
+                        canvas.drawBitmap(bitmap, srcRect, dstRect, null);
                     }
                     else
                         nWidth -= nPaintLeft;
-                    canvas.drawBitmap(bitmap, new Rect(nX, 0, nX + nWidth, getHeight()), new Rect(nPaintLeft, 0, nPaintLeft + nWidth, getHeight()), null);
+                    srcRect.set(nX, 0, nX + nWidth, getHeight());
+                    dstRect.set(nPaintLeft, 0, nPaintLeft + nWidth, getHeight());
+                    canvas.drawBitmap(bitmap, srcRect, dstRect, null);
                     nPaintLeft += nWidth;
                 }
                 nTotalWidth += bitmap.getWidth();
@@ -175,17 +188,10 @@ public class WaveView extends View {
             for(int i = 0; i < arBitmaps.size(); i++) {
                 Bitmap bitmap = arBitmaps.get(i);
                 bitmap.recycle();
-                bitmap = null;
             }
             arBitmaps.clear();
         }
-        if(arCanvases.size() > 0) {
-            for(int i = 0; i < arCanvases.size(); i++) {
-                Canvas canvas = arCanvases.get(i);
-                canvas = null;
-            }
-            arCanvases.clear();
-        }
+        if(arCanvases.size() > 0) arCanvases.clear();
         int nMaxWidth = (int)(getWidth() * fZoom);
         int nTotalWidth = 0;
         clearWaveForm(false);
@@ -200,7 +206,7 @@ public class WaveView extends View {
             arCanvases.add(canvas);
             nTotalWidth += nWidth;
         }
-        task = new WaveViewTask(this);
+        task = new WaveViewTask(this, hTempStream, getWidth(), getHeight(), fZoom, arBitmaps, arCanvases);
         task.execute(0);
     }
 
@@ -221,9 +227,6 @@ public class WaveView extends View {
         EGLConfig[] configs = new EGLConfig[1];
         int[] numConfig = new int[1];
         egl.eglChooseConfig(dpy, configAttr, configs, 1, numConfig);
-        if (numConfig[0] == 0) {
-            // TROUBLE! No config found.
-        }
         EGLConfig config = configs[0];
 
         int[] surfAttr = {
@@ -272,6 +275,7 @@ public class WaveView extends View {
                         fc.position(offset);
                         return true;
                     } catch (IOException e) {
+                        e.printStackTrace();
                     }
                     return false;
                 }
@@ -282,6 +286,7 @@ public class WaveView extends View {
                     try {
                         return fc.read(buffer);
                     } catch (IOException e) {
+                        e.printStackTrace();
                     }
                     return 0;
                 }
@@ -292,6 +297,7 @@ public class WaveView extends View {
                     try {
                         return fc.size();
                     } catch (IOException e) {
+                        e.printStackTrace();
                     }
                     return 0;
                 }
@@ -302,6 +308,7 @@ public class WaveView extends View {
                     try {
                         fc.close();
                     } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             };
@@ -320,14 +327,17 @@ public class WaveView extends View {
             ContentResolver cr = getContext().getContentResolver();
             try {
                 AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
-                FileChannel fc = afd.createInputStream().getChannel();
-                if(strMimeType == "audio/mp4")
-                    hTempStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-                else if(strMimeType == "audio/flac")
-                    hTempStream = BASSFLAC.BASS_FLAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-                else
-                    hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                if(afd != null) {
+                    FileChannel fc = afd.createInputStream().getChannel();
+                    if (strMimeType != null && strMimeType.equals("audio/mp4"))
+                        hTempStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                    else if (strMimeType != null && strMimeType.equals("audio/flac"))
+                        hTempStream = BASSFLAC.BASS_FLAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                    else
+                        hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                }
             } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -336,23 +346,15 @@ public class WaveView extends View {
     {
         if(task != null && task.getStatus() == AsyncTask.Status.RUNNING)
             task.cancel(true);
-        this.strPath = strPath;
         streamCreate();
         if(arBitmaps.size() > 0) {
             for(int i = 0; i < arBitmaps.size(); i++) {
                 Bitmap bitmap = arBitmaps.get(i);
                 bitmap.recycle();
-                bitmap = null;
             }
             arBitmaps.clear();
         }
-        if(arCanvases.size() > 0) {
-            for(int i = 0; i < arCanvases.size(); i++) {
-                Canvas canvas = arCanvases.get(i);
-                canvas = null;
-            }
-            arCanvases.clear();
-        }
+        if(arCanvases.size() > 0) arCanvases.clear();
         int nMaxWidth = (int)(getWidth() * fZoom);
         int nTotalWidth = 0;
         while(nTotalWidth < nMaxWidth) {
@@ -366,7 +368,7 @@ public class WaveView extends View {
             arCanvases.add(canvas);
             nTotalWidth += nWidth;
         }
-        task = new WaveViewTask(this);
+        task = new WaveViewTask(this, hTempStream, getWidth(), getHeight(), fZoom, arBitmaps, arCanvases);
         task.execute(0);
     }
 
@@ -376,17 +378,10 @@ public class WaveView extends View {
             for(int i = 0; i < arBitmaps.size(); i++) {
                 Bitmap bitmap = arBitmaps.get(i);
                 bitmap.recycle();
-                bitmap = null;
             }
             arBitmaps.clear();
         }
-        if(arCanvases.size() > 0) {
-            for(int i = 0; i < arCanvases.size(); i++) {
-                Canvas canvas = arCanvases.get(i);
-                canvas = null;
-            }
-            arCanvases.clear();
-        }
+        if(arCanvases.size() > 0) arCanvases.clear();
         if(bInvalidate) invalidate();
     }
 }

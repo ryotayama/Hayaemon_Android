@@ -20,24 +20,22 @@ package com.edolfzoku.hayaemon2;
 
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
-import android.widget.ProgressBar;
 
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASSenc;
 
-import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 
 public class SongSavingTask extends AsyncTask<Integer, Integer, Integer> {
     private int nPurpose; // 0: saveSongToLocal, 1: export, 2: saveSongToGallery
-    private PlaylistFragment playlistFragment = null;
-    private int hTempStream = 0;
-    private int hEncode = 0;
+    private PlaylistFragment playlistFragment;
+    private int hTempStream ;
+    private int hEncode;
     private String strPathTo;
     private AlertDialog alert;
     private double dEnd;
 
-    public SongSavingTask(int nPurpose, PlaylistFragment playlistFragment, int hTempStream, int hEncode, String strPathTo, AlertDialog alert, double dEnd)
+    SongSavingTask(int nPurpose, PlaylistFragment playlistFragment, int hTempStream, int hEncode, String strPathTo, AlertDialog alert, double dEnd)
     {
         this.nPurpose = nPurpose;
         this.playlistFragment = playlistFragment;
@@ -60,6 +58,7 @@ public class SongSavingTask extends AsyncTask<Integer, Integer, Integer> {
             if(playlistFragment.isFinish()) break;
 
             MainActivity activity = (MainActivity)playlistFragment.getActivity();
+            if(activity == null) return 0;
             EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
             if(effectFragment.isReverse())
                 publishProgress((int)((dEnd - dPos) / dEnd * 100.0));

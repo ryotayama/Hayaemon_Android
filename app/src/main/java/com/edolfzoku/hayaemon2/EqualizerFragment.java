@@ -18,22 +18,20 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.media.audiofx.Equalizer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.TabLayout;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,7 +42,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -54,7 +51,6 @@ import com.google.gson.reflect.TypeToken;
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_FX;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -68,8 +64,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     private float[] arCenters;
     private ArrayList<TextView> arTextValue;
     private ArrayList<SeekBar> arSeek;
-    private ArrayList<ImageButton> arButtonMinus;
-    private ArrayList<ImageButton> arButtonPlus;
     private int[] arHFX;
     private int nLastChecked = 0;
     private boolean bSorting = false;
@@ -79,7 +73,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
     public ArrayList<SeekBar> getArSeek() { return arSeek; }
     public float[] getArCenters() { return arCenters; }
-    public int[] getArHFX() { return arHFX; }
     ArrayList<EqualizerItem> getArEqualizerItems() {
         return arEqualizerItems;
     }
@@ -104,18 +97,17 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_equalizer, container, false);
-        return rootView;
+        return inflater.inflate(R.layout.fragment_equalizer, container, false);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context != null && context instanceof MainActivity) {
+        if (context instanceof MainActivity) {
             activity = (MainActivity) context;
         }
     }
@@ -134,13 +126,14 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         equalizersAdapter = new EqualizersAdapter(activity, R.layout.equalizer_item, arEqualizerItems);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final ScrollView scrollView = getActivity().findViewById(R.id.scrollCustomEqualizer);
+        final ScrollView scrollView = activity.findViewById(R.id.scrollCustomEqualizer);
 
-        final RadioGroup radioGroupEqualizer = getActivity().findViewById(R.id.radioGroupEqualizer);
+        final RadioGroup radioGroupEqualizer = activity.findViewById(R.id.radioGroupEqualizer);
         radioGroupEqualizer.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int nItem) {
@@ -159,80 +152,79 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
         loadData();
 
-        MainActivity activity = (MainActivity)getActivity();
         recyclerEqualizers = activity.findViewById(R.id.recyclerEqualizers);
         recyclerEqualizers.setHasFixedSize(false);
         final LinearLayoutManager equalizersManager = new LinearLayoutManager(activity);
         recyclerEqualizers.setLayoutManager(equalizersManager);
         recyclerEqualizers.setAdapter(equalizersAdapter);
 
-        arTextValue = new ArrayList<TextView>();
-        arTextValue.add((TextView)getActivity().findViewById(R.id.textVolValue));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text20KValue));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text16KValue));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text12_5KValue));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text10KValue));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text8KValue));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text6_3KValue));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text5KValue));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text4KValue));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text3_15KValue));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text2_5KValue));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text2KValue));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text1_6KValue));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text1_25KValue));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text1KValue));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text800Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text630Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text500Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text400Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text315Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text250Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text200Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text160Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text125Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text100Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text80Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text63Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text50Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text40Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text31_5Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text25Value));
-        arTextValue.add((TextView)getActivity().findViewById(R.id.text20Value));
+        arTextValue = new ArrayList<>();
+        arTextValue.add((TextView)activity.findViewById(R.id.textVolValue));
+        arTextValue.add((TextView)activity.findViewById(R.id.text20KValue));
+        arTextValue.add((TextView)activity.findViewById(R.id.text16KValue));
+        arTextValue.add((TextView)activity.findViewById(R.id.text12_5KValue));
+        arTextValue.add((TextView)activity.findViewById(R.id.text10KValue));
+        arTextValue.add((TextView)activity.findViewById(R.id.text8KValue));
+        arTextValue.add((TextView)activity.findViewById(R.id.text6_3KValue));
+        arTextValue.add((TextView)activity.findViewById(R.id.text5KValue));
+        arTextValue.add((TextView)activity.findViewById(R.id.text4KValue));
+        arTextValue.add((TextView)activity.findViewById(R.id.text3_15KValue));
+        arTextValue.add((TextView)activity.findViewById(R.id.text2_5KValue));
+        arTextValue.add((TextView)activity.findViewById(R.id.text2KValue));
+        arTextValue.add((TextView)activity.findViewById(R.id.text1_6KValue));
+        arTextValue.add((TextView)activity.findViewById(R.id.text1_25KValue));
+        arTextValue.add((TextView)activity.findViewById(R.id.text1KValue));
+        arTextValue.add((TextView)activity.findViewById(R.id.text800Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text630Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text500Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text400Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text315Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text250Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text200Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text160Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text125Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text100Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text80Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text63Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text50Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text40Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text31_5Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text25Value));
+        arTextValue.add((TextView)activity.findViewById(R.id.text20Value));
 
-        arSeek = new ArrayList<SeekBar>();
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seekVol));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek20K));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek16K));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek12_5K));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek10K));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek8K));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek6_3K));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek5K));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek4K));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek3_15K));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek2_5K));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek2K));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek1_6K));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek1_25K));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek1K));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek800));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek630));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek500));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek400));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek315));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek250));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek200));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek160));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek125));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek100));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek80));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek63));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek50));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek40));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek31_5));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek25));
-        arSeek.add((SeekBar)getActivity().findViewById(R.id.seek20));
+        arSeek = new ArrayList<>();
+        arSeek.add((SeekBar)activity.findViewById(R.id.seekVol));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek20K));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek16K));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek12_5K));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek10K));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek8K));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek6_3K));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek5K));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek4K));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek3_15K));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek2_5K));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek2K));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek1_6K));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek1_25K));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek1K));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek800));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek630));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek500));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek400));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek315));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek250));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek200));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek160));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek125));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek100));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek80));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek63));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek50));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek40));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek31_5));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek25));
+        arSeek.add((SeekBar)activity.findViewById(R.id.seek20));
 
         for(int i = 0; i < arSeek.size(); i++)
         {
@@ -292,39 +284,39 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         TextView textFinishSortEqualizer = activity.findViewById(R.id.textFinishSortEqualizer);
         textFinishSortEqualizer.setOnClickListener(this);
 
-        arButtonMinus = new ArrayList<ImageButton>();
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.buttonVolMinus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button20KMinus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button16KMinus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button12_5KMinus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button10KMinus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button8KMinus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button6_3KMinus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button5KMinus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button4KMinus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button3_15KMinus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button2_5KMinus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button2KMinus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button1_6KMinus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button1_25KMinus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button1KMinus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button800Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button630Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button500Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button400Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button315Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button250Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button200Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button160Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button125Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button100Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button80Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button63Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button50Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button40Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button31_5Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button25Minus));
-        arButtonMinus.add((ImageButton)getActivity().findViewById(R.id.button20Minus));
+        ArrayList<ImageButton> arButtonMinus = new ArrayList<>();
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.buttonVolMinus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button20KMinus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button16KMinus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button12_5KMinus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button10KMinus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button8KMinus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button6_3KMinus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button5KMinus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button4KMinus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button3_15KMinus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button2_5KMinus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button2KMinus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button1_6KMinus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button1_25KMinus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button1KMinus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button800Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button630Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button500Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button400Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button315Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button250Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button200Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button160Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button125Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button100Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button80Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button63Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button50Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button40Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button31_5Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button25Minus));
+        arButtonMinus.add((ImageButton)activity.findViewById(R.id.button20Minus));
 
         for(int i = 0; i < arButtonMinus.size(); i++)
         {
@@ -360,39 +352,39 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             });
         }
 
-        arButtonPlus = new ArrayList<ImageButton>();
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.buttonVolPlus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button20KPlus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button16KPlus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button12_5KPlus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button10KPlus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button8KPlus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button6_3KPlus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button5KPlus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button4KPlus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button3_15KPlus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button2_5KPlus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button2KPlus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button1_6KPlus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button1_25KPlus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button1KPlus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button800Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button630Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button500Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button400Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button315Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button250Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button200Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button160Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button125Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button100Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button80Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button63Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button50Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button40Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button31_5Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button25Plus));
-        arButtonPlus.add((ImageButton)getActivity().findViewById(R.id.button20Plus));
+        ArrayList<ImageButton> arButtonPlus = new ArrayList<>();
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.buttonVolPlus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button20KPlus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button16KPlus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button12_5KPlus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button10KPlus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button8KPlus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button6_3KPlus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button5KPlus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button4KPlus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button3_15KPlus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button2_5KPlus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button2KPlus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button1_6KPlus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button1_25KPlus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button1KPlus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button800Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button630Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button500Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button400Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button315Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button250Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button200Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button160Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button125Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button100Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button80Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button63Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button50Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button40Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button31_5Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button25Plus));
+        arButtonPlus.add((ImageButton)activity.findViewById(R.id.button20Plus));
 
         for(int i = 0; i < arButtonPlus.size(); i++)
         {
@@ -473,7 +465,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 builder.setView(linearLayout);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        ArrayList<Integer> arPresets = new ArrayList<Integer>();
+                        ArrayList<Integer> arPresets = new ArrayList<>();
                         for (int i = 0; i < 32; i++) {
                             arPresets.add(Integer.parseInt((String) arTextValue.get(i).getText()));
                         }
@@ -541,10 +533,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
     public void loadData()
     {
-        MainActivity activity = (MainActivity)getActivity();
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
-        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
         ArrayList<EqualizerItem> arEqualizerItems = gson.fromJson(preferences.getString("arEqualizerItems",""), new TypeToken<ArrayList<EqualizerItem>>(){}.getType());
         if(arEqualizerItems != null) setArEqualizerItems(arEqualizerItems);
         else resetPresets();
@@ -555,61 +545,60 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
     public void saveData()
     {
-        MainActivity activity = (MainActivity)getActivity();
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
-        preferences.edit().putString("arEqualizerItems", gson.toJson(arEqualizerItems)).commit();
+        preferences.edit().putString("arEqualizerItems", gson.toJson(arEqualizerItems)).apply();
     }
 
     public void resetPresets()
     {
         if(arEqualizerItems.size() > 0) arEqualizerItems.clear();
-        arEqualizerItems.add(new EqualizerItem("オフ",                              new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("ランダム",                          new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("ベースの耳コピ",                    new ArrayList<Integer>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("ボーカル強調",                      new ArrayList<Integer>(Arrays.asList(  0,-30,-20,-12, -7, -4, -3, -2, -1,  0,  0,  0,  0,  0, -1, -2, -3, -4, -7,-12,-20,-24,-27,-28,-29,-30,-30,-30,-30,-30,-30,-30))));
-        arEqualizerItems.add(new EqualizerItem("ボーカル抑制",                      new ArrayList<Integer>(Arrays.asList(  0,  0, -5, -8,-10,-12,-13,-14,-14,-15,-15,-15,-15,-15,-14,-14,-13,-12,-11, -8, -5, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("高音強調（超最強）",                new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
-        arEqualizerItems.add(new EqualizerItem("高音強調（最強）",                  new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -7,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
-        arEqualizerItems.add(new EqualizerItem("高音強調（強）",                    new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
-        arEqualizerItems.add(new EqualizerItem("高音強調（中）",                    new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -4, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
-        arEqualizerItems.add(new EqualizerItem("高音強調（弱）",                    new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
-        arEqualizerItems.add(new EqualizerItem("高音強調（最弱）",                  new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
-        arEqualizerItems.add(new EqualizerItem("中音強調（超最強）",                new ArrayList<Integer>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
-        arEqualizerItems.add(new EqualizerItem("中音強調（最強）",                  new ArrayList<Integer>(Arrays.asList(  0,-15,-15,-15,-15,-15,-15,-15,-15,-15, -7,  0,  0,  0,  0,  0,  0,  0,  0,  0, -7,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
-        arEqualizerItems.add(new EqualizerItem("中音強調（強）",                    new ArrayList<Integer>(Arrays.asList(  0,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
-        arEqualizerItems.add(new EqualizerItem("中音強調（中）",                    new ArrayList<Integer>(Arrays.asList(  0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -4,  0,  0,  0,  0,  0,  0,  0,  0,  0, -4, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
-        arEqualizerItems.add(new EqualizerItem("中音強調（弱）",                    new ArrayList<Integer>(Arrays.asList(  0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
-        arEqualizerItems.add(new EqualizerItem("中音強調（最弱）",                  new ArrayList<Integer>(Arrays.asList(  0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
-        arEqualizerItems.add(new EqualizerItem("低音強調（超最強）",                new ArrayList<Integer>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("低音強調（最強）",                  new ArrayList<Integer>(Arrays.asList(  0,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15, -7,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("低音強調（強）",                    new ArrayList<Integer>(Arrays.asList(  0,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("低音強調（中）",                    new ArrayList<Integer>(Arrays.asList(  0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("低音強調（弱）",                    new ArrayList<Integer>(Arrays.asList(  0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("低音強調（最弱）",                  new ArrayList<Integer>(Arrays.asList(  0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("高音カット（超最強）",              new ArrayList<Integer>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("高音カット（最強）",                new ArrayList<Integer>(Arrays.asList(  0,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15, -8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("高音カット（強）",                  new ArrayList<Integer>(Arrays.asList(  0,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("高音カット（中）",                  new ArrayList<Integer>(Arrays.asList(  0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -5,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("高音カット（弱）",                  new ArrayList<Integer>(Arrays.asList(  0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("高音カット（最弱）",                new ArrayList<Integer>(Arrays.asList(  0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("中音カット（超最強）",              new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("中音カット（最強）",                new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -8,-15,-15,-15,-15,-15,-15,-15,-15,-15, -8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("中音カット（強）",                  new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("中音カット（中）",                  new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -5, -9, -9, -9, -9, -9, -9, -9, -9, -9, -5,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("中音カット（弱）",                  new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("中音カット（最弱）",                new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("低音カット（超最強）",              new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
-        arEqualizerItems.add(new EqualizerItem("低音カット（最強）",                new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -8,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
-        arEqualizerItems.add(new EqualizerItem("低音カット（強）",                  new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
-        arEqualizerItems.add(new EqualizerItem("低音カット（中）",                  new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -5, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
-        arEqualizerItems.add(new EqualizerItem("低音カット（弱）",                  new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
-        arEqualizerItems.add(new EqualizerItem("低音カット（最弱）",                new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
-        arEqualizerItems.add(new EqualizerItem("Pop",                                new ArrayList<Integer>(Arrays.asList(  0, -6, -6, -6, -5, -5, -5, -5, -4, -3, -3, -2, -1, -1,  0,  0,  0,  0, -1, -1, -2, -3, -3, -4, -5, -5, -5, -5, -6, -6, -6, -6))));
-        arEqualizerItems.add(new EqualizerItem("Rock",                               new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -5, -6, -5, -4, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("Jazz",                               new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -5, -6, -6, -6, -6, -3, -2, -1, -2, -2, -2, -2, -2, -1, -1, -1,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("Electronic",                        new ArrayList<Integer>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -3, -2, -1, -3, -5, -7, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("Acoustic",                          new ArrayList<Integer>(Arrays.asList(  0, -2, -2, -2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -2, -3, -3, -3, -3, -3, -4, -4, -3, -2, -1, -1, -1,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("オフ",                              new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("ランダム",                          new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("ベースの耳コピ",                    new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("ボーカル強調",                      new ArrayList<>(Arrays.asList(  0,-30,-20,-12, -7, -4, -3, -2, -1,  0,  0,  0,  0,  0, -1, -2, -3, -4, -7,-12,-20,-24,-27,-28,-29,-30,-30,-30,-30,-30,-30,-30))));
+        arEqualizerItems.add(new EqualizerItem("ボーカル抑制",                      new ArrayList<>(Arrays.asList(  0,  0, -5, -8,-10,-12,-13,-14,-14,-15,-15,-15,-15,-15,-14,-14,-13,-12,-11, -8, -5, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("高音強調（超最強）",                new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
+        arEqualizerItems.add(new EqualizerItem("高音強調（最強）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -7,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
+        arEqualizerItems.add(new EqualizerItem("高音強調（強）",                    new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
+        arEqualizerItems.add(new EqualizerItem("高音強調（中）",                    new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -4, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
+        arEqualizerItems.add(new EqualizerItem("高音強調（弱）",                    new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
+        arEqualizerItems.add(new EqualizerItem("高音強調（最弱）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
+        arEqualizerItems.add(new EqualizerItem("中音強調（超最強）",                new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
+        arEqualizerItems.add(new EqualizerItem("中音強調（最強）",                  new ArrayList<>(Arrays.asList(  0,-15,-15,-15,-15,-15,-15,-15,-15,-15, -7,  0,  0,  0,  0,  0,  0,  0,  0,  0, -7,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
+        arEqualizerItems.add(new EqualizerItem("中音強調（強）",                    new ArrayList<>(Arrays.asList(  0,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
+        arEqualizerItems.add(new EqualizerItem("中音強調（中）",                    new ArrayList<>(Arrays.asList(  0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -4,  0,  0,  0,  0,  0,  0,  0,  0,  0, -4, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
+        arEqualizerItems.add(new EqualizerItem("中音強調（弱）",                    new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
+        arEqualizerItems.add(new EqualizerItem("中音強調（最弱）",                  new ArrayList<>(Arrays.asList(  0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
+        arEqualizerItems.add(new EqualizerItem("低音強調（超最強）",                new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("低音強調（最強）",                  new ArrayList<>(Arrays.asList(  0,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15, -7,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("低音強調（強）",                    new ArrayList<>(Arrays.asList(  0,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("低音強調（中）",                    new ArrayList<>(Arrays.asList(  0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("低音強調（弱）",                    new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("低音強調（最弱）",                  new ArrayList<>(Arrays.asList(  0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("高音カット（超最強）",              new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("高音カット（最強）",                new ArrayList<>(Arrays.asList(  0,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15, -8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("高音カット（強）",                  new ArrayList<>(Arrays.asList(  0,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("高音カット（中）",                  new ArrayList<>(Arrays.asList(  0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -5,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("高音カット（弱）",                  new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("高音カット（最弱）",                new ArrayList<>(Arrays.asList(  0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("中音カット（超最強）",              new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("中音カット（最強）",                new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -8,-15,-15,-15,-15,-15,-15,-15,-15,-15, -8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("中音カット（強）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("中音カット（中）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -5, -9, -9, -9, -9, -9, -9, -9, -9, -9, -5,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("中音カット（弱）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("中音カット（最弱）",                new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("低音カット（超最強）",              new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
+        arEqualizerItems.add(new EqualizerItem("低音カット（最強）",                new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -8,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
+        arEqualizerItems.add(new EqualizerItem("低音カット（強）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
+        arEqualizerItems.add(new EqualizerItem("低音カット（中）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -5, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
+        arEqualizerItems.add(new EqualizerItem("低音カット（弱）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
+        arEqualizerItems.add(new EqualizerItem("低音カット（最弱）",                new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
+        arEqualizerItems.add(new EqualizerItem("Pop",                                new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -5, -5, -5, -5, -4, -3, -3, -2, -1, -1,  0,  0,  0,  0, -1, -1, -2, -3, -3, -4, -5, -5, -5, -5, -6, -6, -6, -6))));
+        arEqualizerItems.add(new EqualizerItem("Rock",                               new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -5, -6, -5, -4, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("Jazz",                               new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -5, -6, -6, -6, -6, -3, -2, -1, -2, -2, -2, -2, -2, -1, -1, -1,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("Electronic",                        new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -3, -2, -1, -3, -5, -7, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem("Acoustic",                          new ArrayList<>(Arrays.asList(  0, -2, -2, -2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -2, -3, -3, -3, -3, -3, -4, -4, -3, -2, -1, -1, -1,  0,  0,  0,  0,  0,  0))));
         saveData();
         equalizersAdapter.notifyDataSetChanged();
     }
@@ -651,7 +640,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
     public void setEQ(int row)
     {
-        MainActivity activity = (MainActivity)getActivity();
         ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
         if(arEqualizerItems.get(nLastChecked).getEqualizerName().equals("ベースの耳コピ（オクターブ上げ）"))
             controlFragment.setPitch(0.0f);
@@ -746,7 +734,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             textView = arTextValue.get(i + 1);
             textView.setText(String.valueOf(nLevel));
         }
-        MainActivity activity = (MainActivity)getActivity();
         PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
         playlistFragment.updateSavingEffect();
     }
@@ -776,7 +763,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         textView.setText(String.valueOf(nLevel));
 
         if(bSave) {
-            MainActivity activity = (MainActivity)getActivity();
             PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
             playlistFragment.updateSavingEffect();
         }
@@ -806,7 +792,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         textView.setText(String.valueOf(nLevel));
 
         if (bSave) {
-            MainActivity activity = (MainActivity)getActivity();
             PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
             playlistFragment.updateSavingEffect();
         }

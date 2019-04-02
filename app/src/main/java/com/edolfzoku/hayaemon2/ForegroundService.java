@@ -5,29 +5,24 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.RemoteControlClient;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 
 import com.un4seen.bass.BASS;
 
 public class ForegroundService extends IntentService {
-    private Notification notification;
     private MainActivity mainActivity;
 
     public void setMainActivity(MainActivity mainActivity) { this.mainActivity = mainActivity; }
 
-    public class ForegroundServiceBinder extends Binder {
-        public ForegroundService getService() {
+    class ForegroundServiceBinder extends Binder {
+        ForegroundService getService() {
             return ForegroundService.this;
         }
     }
@@ -63,9 +58,11 @@ public class ForegroundService extends IntentService {
                     "ハヤえもんによる音声の再生",
                     NotificationManager.IMPORTANCE_LOW);
             channel.setDescription("ハヤえもんによる音声の再生");
-            notificationManager.createNotificationChannel(channel);
+            if(notificationManager != null)
+                notificationManager.createNotificationChannel(channel);
         }
 
+        Notification notification;
         if (Build.VERSION.SDK_INT >= 21) {
             Intent intentRewind = new Intent(getApplicationContext(), ForegroundService.class );
             intentRewind.setAction("action_rewind");
@@ -115,43 +112,43 @@ public class ForegroundService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if(intent.getAction() == null) return;
 
-        if(intent.getAction().equals("action_rewind")) {
-            final PlaylistFragment playlistFragment = (PlaylistFragment)mainActivity.mSectionsPagerAdapter.getItem(0);
-            if(MainActivity.hStream == 0) return;
-            EffectFragment effectFragment = (EffectFragment)mainActivity.mSectionsPagerAdapter.getItem(4);
-            if(!effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(mainActivity.hStream, BASS.BASS_ChannelGetPosition(mainActivity.hStream, BASS.BASS_POS_BYTE)) > mainActivity.dLoopA + 1.0)
-                BASS.BASS_ChannelSetPosition(mainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(mainActivity.hStream, mainActivity.dLoopA), BASS.BASS_POS_BYTE);
-            else if(effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(mainActivity.hStream, BASS.BASS_ChannelGetPosition(mainActivity.hStream, BASS.BASS_POS_BYTE)) < mainActivity.dLoopA - 1.0)
-                BASS.BASS_ChannelSetPosition(mainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(mainActivity.hStream, mainActivity.dLoopB), BASS.BASS_POS_BYTE);
-            else {
+        final PlaylistFragment playlistFragment = (PlaylistFragment) mainActivity.mSectionsPagerAdapter.getItem(0);
+        switch(intent.getAction()) {
+            case "action_rewind":
+                if (MainActivity.hStream == 0) return;
+                EffectFragment effectFragment = (EffectFragment) mainActivity.mSectionsPagerAdapter.getItem(4);
+                if (!effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) > mainActivity.dLoopA + 1.0)
+                    BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, mainActivity.dLoopA), BASS.BASS_POS_BYTE);
+                else if (effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) < mainActivity.dLoopA - 1.0)
+                    BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, mainActivity.dLoopB), BASS.BASS_POS_BYTE);
+                else {
+                    mainActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                        playlistFragment.playPrev();
+                        }
+                    });
+                }
+                break;
+            case "action_pause":
                 mainActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        playlistFragment.playPrev();
+                    if (BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING)
+                        playlistFragment.pause();
+                    else if (BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED)
+                        playlistFragment.play();
                     }
                 });
-            }
-        }
-        else if(intent.getAction().equals("action_pause")) {
-            final PlaylistFragment playlistFragment = (PlaylistFragment)mainActivity.mSectionsPagerAdapter.getItem(0);
-            mainActivity.runOnUiThread(new Runnable() {
-               @Override
-               public void run() {
-                   if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING)
-                       playlistFragment.pause();
-                   else if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED)
-                       playlistFragment.play();
-               }
-            });
-        }
-        else if(intent.getAction().equals("action_forward")) {
-            final PlaylistFragment playlistFragment = (PlaylistFragment)mainActivity.mSectionsPagerAdapter.getItem(0);
-            mainActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+                break;
+            case "action_forward":
+                mainActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
                     playlistFragment.playNext(true);
-                }
-            });
+                    }
+                });
+                break;
         }
     }
 }

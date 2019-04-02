@@ -19,23 +19,45 @@
 package com.edolfzoku.hayaemon2;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.NumberPicker;
 
+import java.util.Locale;
+
 public class PitchFragmentDialog extends DialogFragment {
+    private MainActivity activity = null;
     private NumberPicker intNumberPicker;
     private NumberPicker decimalNumberPicker;
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.pitchpicker, null, false);
-        MainActivity activity = (MainActivity)getActivity();
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof MainActivity) {
+            activity = (MainActivity) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        activity = null;
+    }
+
+    @Override
+    public @NonNull Dialog onCreateDialog(Bundle savedInstanceState) {
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View view = inflater.inflate(R.layout.pitchpicker, (ViewGroup)activity.findViewById(R.id.layout_root), false);
+
         ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
         float fPitch = controlFragment.fPitch;
         int nIntPitch = (int)fPitch;
@@ -50,17 +72,17 @@ public class PitchFragmentDialog extends DialogFragment {
         String strDecimalPitch;
         if(fPitch >= 0.05) {
             if(nIntPitch < 10)
-                strIntPitch = String.format("♯%d ", nIntPitch);
+                strIntPitch = String.format(Locale.getDefault(), "♯%d ", nIntPitch);
             else
-                strIntPitch = String.format("♯%d", nIntPitch);
-            strDecimalPitch = String.format("%d", nDecimalPitch);
+                strIntPitch = String.format(Locale.getDefault(), "♯%d", nIntPitch);
+            strDecimalPitch = String.format(Locale.getDefault(), "%d", nDecimalPitch);
         }
         else {
             if(nIntPitch > -10)
-                strIntPitch = String.format("♭%d ", nIntPitch * -1);
+                strIntPitch = String.format(Locale.getDefault(), "♭%d ", nIntPitch * -1);
             else
-                strIntPitch = String.format("♭%d", nIntPitch * -1);
-            strDecimalPitch = String.format("%d", nDecimalPitch * -1);
+                strIntPitch = String.format(Locale.getDefault(), "♭%d", nIntPitch * -1);
+            strDecimalPitch = String.format(Locale.getDefault(), "%d", nDecimalPitch * -1);
         }
 
         intNumberPicker = view.findViewById(R.id.intPitchPicker);
@@ -85,14 +107,12 @@ public class PitchFragmentDialog extends DialogFragment {
                 decimalNumberPicker.setValue(i);
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("音程の調整");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                View view = inflater.inflate(R.layout.pitchpicker, null, false);
                 String strInt = arInts[intNumberPicker.getValue()];
                 strInt = strInt.replace("♯", "");
                 strInt = strInt.replace("♭", "-");
@@ -100,7 +120,6 @@ public class PitchFragmentDialog extends DialogFragment {
                 String strPitch = strInt.trim() + "." + strDecimal;
                 float fPitch = Float.parseFloat(strPitch);
 
-                MainActivity activity = (MainActivity)getActivity();
                 ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 controlFragment.setPitch(fPitch);
             }
@@ -109,7 +128,6 @@ public class PitchFragmentDialog extends DialogFragment {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                MainActivity activity = (MainActivity)getActivity();
                 ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 controlFragment.clearFocus();
             }
@@ -119,7 +137,6 @@ public class PitchFragmentDialog extends DialogFragment {
     }
     @Override
     public void onCancel(DialogInterface dialog) {
-        MainActivity activity = (MainActivity) getActivity();
         ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(2);
         controlFragment.clearFocus();
     }

@@ -19,26 +19,24 @@
 package com.edolfzoku.hayaemon2;
 
 public class SongItem {
-    private String strNumber = null;
-    private String strTitle = null;
-    private String strArtist = null;
-    private String strPath = null;
-    private float fPeak = 0.0f;
+    private String strNumber;
+    private String strTitle;
+    private String strArtist;
+    private String strPath;
+    private float fPeak;
 
-    public void setNumber(String strNumber) { this.strNumber = strNumber; }
-    public String getNumber() { return strNumber; }
+    void setNumber(String strNumber) { this.strNumber = strNumber; }
+    String getNumber() { return strNumber; }
     public void setTitle(String strTitle) { this.strTitle = strTitle; }
-    public String getTitle() { return strTitle; }
-    public void setArtist(String strArtist) { this.strArtist = strArtist; }
-    public String getArtist() { return strArtist; }
+    String getTitle() { return strTitle; }
+    void setArtist(String strArtist) { this.strArtist = strArtist; }
+    String getArtist() { return strArtist; }
     public void setPath(String strPath) { this.strPath = strPath; }
     public String getPath() { return strPath; }
-    public void setPeak(float fPeak) { this.fPeak = fPeak; }
-    public float getPeak() { return fPeak; }
+    void setPeak(float fPeak) { this.fPeak = fPeak; }
+    float getPeak() { return fPeak; }
 
-    public SongItem() {};
-
-    public SongItem(String strNumber, String strTitle, String strArtist, String strPath)
+    SongItem(String strNumber, String strTitle, String strArtist, String strPath)
     {
         this.strNumber = strNumber;
         this.strTitle = strTitle;

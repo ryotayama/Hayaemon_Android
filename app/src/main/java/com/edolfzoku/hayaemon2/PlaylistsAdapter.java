@@ -18,9 +18,10 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -31,16 +32,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.un4seen.bass.BASS;
-
 import java.util.List;
+import java.util.Locale;
 
 public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.ViewHolder>
 {
     MainActivity activity;
     private int resource;
     private List<String> items;
-    private LayoutInflater inflater;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout playlistItem;
@@ -61,42 +60,35 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
         }
     }
 
-    public PlaylistsAdapter(Context context, int resource, List<String> items)
+    PlaylistsAdapter(Context context, int resource, List<String> items)
     {
         this.activity = (MainActivity)context;
         this.resource = resource;
         this.items = items;
-        this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
-
-    public PlaylistsAdapter(Context context, int resource)
-    {
-        this.activity = (MainActivity)context;
-        this.resource = resource;
-        this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
-    public PlaylistsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public @NonNull PlaylistsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(resource, parent, false);
 
         return new PlaylistsAdapter.ViewHolder(view);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onBindViewHolder(final PlaylistsAdapter.ViewHolder holder, final int position)
+    public void onBindViewHolder(@NonNull final PlaylistsAdapter.ViewHolder holder, int position)
     {
         String item = items.get(position);
         final PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
 
         holder.textName.setText(item);
-        holder.textSongCount.setText(String.format("%d曲", playlistFragment.getSongCount(position)));
+        holder.textSongCount.setText(String.format(Locale.getDefault(), "%d曲", playlistFragment.getSongCount(position)));
 
         holder.playlistItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playlistFragment.onPlaylistItemClick(position);
+                playlistFragment.onPlaylistItemClick(holder.getAdapterPosition());
             }
         });
         if(playlistFragment.isSorting()) {
@@ -118,13 +110,13 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             holder.framePlaylistMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    playlistFragment.showPlaylistMenu(position);
+                    playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
                 }
             });
             holder.playlistItem.setOnLongClickListener(new View.OnLongClickListener()
             {
                 public boolean onLongClick(View v) {
-                    playlistFragment.showPlaylistMenu(position);
+                    playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
                     return true;
                 }
             });

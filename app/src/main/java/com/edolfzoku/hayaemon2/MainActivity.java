@@ -18,12 +18,10 @@
  */
 package com.edolfzoku.hayaemon2;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -46,22 +44,15 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
-import android.media.effect.Effect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.storage.StorageManager;
-import android.os.storage.StorageVolume;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -71,7 +62,6 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -83,7 +73,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -110,9 +99,9 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static com.un4seen.bass.BASS_AAC.BASS_CONFIG_AAC_MP4;
 
@@ -163,7 +152,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private GestureDetector gestureDetector;
-    private int nLastX = 0, nLastY = 0;
+    private int nLastY = 0;
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -180,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = getIntent();
         if(intent != null && intent.getType() != null) {
-            if(intent.getType().indexOf("audio/") != -1) {
+            if(intent.getType().contains("audio/")) {
                 PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
                 if(Build.VERSION.SDK_INT < 16)
                 {
@@ -206,10 +196,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 playlistFragment.updateSongs();
                 SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 Gson gson = new Gson();
-                preferences.edit().putString("arPlaylists", gson.toJson(playlistFragment.getArPlaylists())).commit();
-                preferences.edit().putString("arEffects", gson.toJson(playlistFragment.getArEffects())).commit();
-                preferences.edit().putString("arLyrics", gson.toJson(playlistFragment.getArLyrics())).commit();
-                preferences.edit().putString("arPlaylistNames", gson.toJson(playlistFragment.getArPlaylistNames())).commit();
+                preferences.edit().putString("arPlaylists", gson.toJson(playlistFragment.getArPlaylists())).apply();
+                preferences.edit().putString("arEffects", gson.toJson(playlistFragment.getArEffects())).apply();
+                preferences.edit().putString("arLyrics", gson.toJson(playlistFragment.getArLyrics())).apply();
+                preferences.edit().putString("arPlaylistNames", gson.toJson(playlistFragment.getArPlaylistNames())).apply();
             }
         }
 
@@ -318,12 +308,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void advanceAnimation(View view, String strTarget, int nFrom, int nTo, float fProgress)
     {
         RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)view.getLayoutParams();
-        if(strTarget.equals("height")) param.height = (int) (nFrom + (nTo - nFrom) * fProgress);
-        else if(strTarget.equals("width")) param.width = (int) (nFrom + (nTo - nFrom) * fProgress);
-        else if(strTarget.equals("leftMargin")) param.leftMargin = (int) (nFrom + (nTo - nFrom) * fProgress);
-        else if(strTarget.equals("topMargin")) param.topMargin = (int) (nFrom + (nTo - nFrom) * fProgress);
-        else if(strTarget.equals("rightMargin")) param.rightMargin = (int) (nFrom + (nTo - nFrom) * fProgress);
-        else if(strTarget.equals("bottomMargin")) param.bottomMargin = (int) (nFrom + (nTo - nFrom) * fProgress);
+        switch (strTarget) {
+            case "height":
+                param.height = (int) (nFrom + (nTo - nFrom) * fProgress);
+                break;
+            case "width":
+                param.width = (int) (nFrom + (nTo - nFrom) * fProgress);
+                break;
+            case "leftMargin":
+                param.leftMargin = (int) (nFrom + (nTo - nFrom) * fProgress);
+                break;
+            case "topMargin":
+                param.topMargin = (int) (nFrom + (nTo - nFrom) * fProgress);
+                break;
+            case "rightMargin":
+                param.rightMargin = (int) (nFrom + (nTo - nFrom) * fProgress);
+                break;
+            case "bottomMargin":
+                param.bottomMargin = (int) (nFrom + (nTo - nFrom) * fProgress);
+                break;
+        }
         view.setLayoutParams(param);
     }
 
@@ -332,25 +336,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
         return rect.top;
     }
-
-    public void verifyStoragePermissions(Activity activity) {
-        int readPermission = ContextCompat.checkSelfPermission(this, mPermissions[0]);
-        int writePermission = ContextCompat.checkSelfPermission(this, mPermissions[1]);
-
-        if (writePermission != PackageManager.PERMISSION_GRANTED ||
-                readPermission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    mPermissions,
-                    2
-            );
-        }
-    }
-
-    private String[] mPermissions = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-    };
 
     @Override
     public void onDrawerOpened(@NonNull View drawerView)
@@ -389,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String strPath;
         File file;
         while(true) {
-            strPath = getFilesDir() + "/copied" + String.format("%d", i);
+            strPath = getFilesDir() + "/copied" + String.format(Locale.getDefault(), "%d", i);
             file = new File(strPath);
             if(!file.exists()) break;
             i++;
@@ -399,8 +384,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             FileOutputStream out = new FileOutputStream(file);
             byte[] buf = new byte[1024];
             int len;
-            while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
-            in.close();
+            if(in != null) {
+                while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+                in.close();
+            }
             out.close();
         } catch (IOException e) {
             return null;
@@ -420,7 +407,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if(intent.getAction() == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
+                if(intent.getAction() == null) return;
+                if(intent.getAction().equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
                     if(BASS.BASS_ChannelIsActive(hStream) == BASS.BASS_ACTIVE_PLAYING) {
                         PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
                         playlistFragment.pause();
@@ -434,12 +422,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
                         ArrayList<String> purchaseDataList =
                                 ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
-                        for(int i = 0; i < purchaseDataList.size(); i++) {
-                            String purchaseData = purchaseDataList.get(i);
-                            String sku = ownedSkus.get(i);
+                        if(purchaseDataList != null && ownedSkus != null) {
+                            for (int i = 0; i < purchaseDataList.size(); i++) {
+                                String sku = ownedSkus.get(i);
 
-                            if(sku.equals("hideads")) {
-                                hideAds();
+                                if (sku.equals("hideads")) {
+                                    hideAds();
+                                }
                             }
                         }
                     }
@@ -459,12 +448,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
                 ArrayList<String> purchaseDataList =
                         ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
-                for(int i = 0; i < purchaseDataList.size(); i++) {
-                    String purchaseData = purchaseDataList.get(i);
-                    String sku = ownedSkus.get(i);
+                if(purchaseDataList != null && ownedSkus != null) {
+                    for (int i = 0; i < purchaseDataList.size(); i++) {
+                        String sku = ownedSkus.get(i);
 
-                    if(sku.equals("hideads"))
-                        hideAds();
+                        if (sku.equals("hideads"))
+                            hideAds();
+                    }
                 }
             }
         } catch(Exception e) {
@@ -485,14 +475,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(bShowUpdateLog) {
             bShowUpdateLog = false;
 
-            final LayoutInflater inflater = (LayoutInflater)this.getSystemService(
-                    LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = getLayoutInflater();
             final View layout = inflater.inflate(R.layout.updatelogdialog,
                     (ViewGroup)findViewById(R.id.layout_root));
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             TextView title = new TextView(this);
             try {
-                title.setText("ハヤえもんAndroid版ver." + getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName + "に\nアップデートされました！");
+                title.setText(String.format(Locale.getDefault(), "ハヤえもんAndroid版ver.%sに\nアップデートされました！", getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName));
             }
             catch(PackageManager.NameNotFoundException e) {
                 title.setText("ハヤえもんAndroid版が\nアップデートされました！");
@@ -534,7 +523,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Switch switchNextHidden = layout.findViewById(R.id.switchNextHidden);
                     boolean bChecked = switchNextHidden.isChecked();
                     SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                    preferences.edit().putBoolean("hideupdatelognext", bChecked).commit();
+                    preferences.edit().putBoolean("hideupdatelognext", bChecked).apply();
                     alertDialog.dismiss();
                 }
             });
@@ -553,7 +542,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     sendIntent.setType("*/*");
                     File file = getScreenshot(layout.getRootView());
                     Uri uri = FileProvider.getUriForFile(getApplicationContext(), "com.edolfzoku.hayaemon2", file);
-                    List<ResolveInfo> resInfoList = getApplicationContext().getPackageManager().queryIntentActivities(sendIntent, PackageManager.MATCH_ALL);
+                    int flag;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) flag = PackageManager.MATCH_ALL;
+                    else flag = PackageManager.MATCH_DEFAULT_ONLY;
+                    List<ResolveInfo> resInfoList = getApplicationContext().getPackageManager().queryIntentActivities(sendIntent, flag);
                     for (ResolveInfo resolveInfo : resInfoList) {
                         String packageName = resolveInfo.activityInfo.packageName;
                         getApplicationContext().grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -576,7 +568,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         view.setDrawingCacheEnabled(false);
 
         File file = new File(getExternalCacheDir() + "/export/capture.jpeg");
-        file.getParentFile().mkdir();
+        if(!file.getParentFile().mkdir()) System.out.println("ディレクトリが作成できませんでした");
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(file, false);
@@ -657,7 +649,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         String strVersionName = preferences.getString("versionname", null);
-        Boolean bHideUpdateLogNext = preferences.getBoolean("hideupdatelognext", false);
+        boolean bHideUpdateLogNext = preferences.getBoolean("hideupdatelognext", false);
         String strCurrentVersionName;
         try {
             strCurrentVersionName = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
@@ -668,11 +660,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(!bHideUpdateLogNext)
         {
             if(strVersionName != null && !strCurrentVersionName.equals(strVersionName))
-            {
                 bShowUpdateLog = true;
-            }
         }
-        preferences.edit().putString("versionname", strCurrentVersionName).commit();
+        preferences.edit().putString("versionname", strCurrentVersionName).apply();
 
         bPlayNextByBPos = preferences.getBoolean("bPlayNextByBPos", false);
 
@@ -688,12 +678,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
                     ArrayList<String> purchaseDataList =
                             ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
-                    for(int i = 0; i < purchaseDataList.size(); i++) {
-                        String purchaseData = purchaseDataList.get(i);
-                        String sku = ownedSkus.get(i);
+                    if(purchaseDataList != null && ownedSkus != null) {
+                        for (int i = 0; i < purchaseDataList.size(); i++) {
+                            String sku = ownedSkus.get(i);
 
-                        if(sku.equals("hideads"))
-                            hideAds();
+                            if (sku.equals("hideads"))
+                                hideAds();
+                        }
                     }
                 }
             }
@@ -755,7 +746,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
         if (requestCode == 1)
         {
@@ -809,6 +800,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return false;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event)
     {
@@ -816,7 +808,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             final SeekBar seekCurPos = findViewById(R.id.seekCurPos);
             final RelativeLayout relativePlaying = findViewById(R.id.relativePlaying);
-            int nX = (int) event.getRawX();
             int nY = (int) event.getRawY();
             if (gestureDetector.onTouchEvent(event)) return false;
             if(seekCurPos.getVisibility() != View.VISIBLE) {
@@ -842,7 +833,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     param.height = nHeight;
                     relativePlaying.setLayoutParams(param);
                 }
-                nLastX = nX;
                 nLastY = nY;
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) relativePlaying.getLayoutParams();
@@ -876,10 +866,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     else if(nTranslationY > nMaxTranslationY) nTranslationY = nMaxTranslationY;
                     relativePlaying.setTranslationY(nTranslationY);
                 }
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    nLastX = nX;
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
                     nLastY = (int)relativePlaying.getTranslationY() + nY;
-                }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if(relativePlaying.getTranslationY() > (int) (100.0 * getResources().getDisplayMetrics().density + 0.5)) {
                         downViewPlaying(false);
@@ -902,8 +890,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             if(event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_UP)
                 return true;
-            if(v.getId() == R.id.relativePlaying && seekCurPos.getVisibility() == View.VISIBLE) return true;
-            else return false;
+            return (v.getId() == R.id.relativePlaying && seekCurPos.getVisibility() == View.VISIBLE);
         }
 
         if(event.getAction() == MotionEvent.ACTION_UP)
@@ -982,7 +969,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 playlistFragment.setSelectedItem(playlistFragment.getPlaying());
 
                 SongItem item = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist()).get(playlistFragment.getPlaying());
-                ImageView imgViewArtworkInMenu = (ImageView)findViewById(R.id.imgViewArtworkInMenu);
+                ImageView imgViewArtworkInMenu = findViewById(R.id.imgViewArtworkInMenu);
                 MediaMetadataRetriever mmr = new MediaMetadataRetriever();
                 Bitmap bitmap = null;
                 boolean bError = false;
@@ -1000,9 +987,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 if(bitmap != null) imgViewArtworkInMenu.setImageBitmap(bitmap);
                 else imgViewArtworkInMenu.setImageResource(R.drawable.playing_large_artwork);
-                TextView textTitleInMenu = (TextView)findViewById(R.id.textTitleInMenu);
+                TextView textTitleInMenu = findViewById(R.id.textTitleInMenu);
                 textTitleInMenu.setText(item.getTitle());
-                TextView textArtistInMenu = (TextView)findViewById(R.id.textArtistInMenu);
+                TextView textArtistInMenu = findViewById(R.id.textArtistInMenu);
                 if(item.getArtist() == null || item.getArtist().equals(""))
                 {
                     textArtistInMenu.setTextColor(Color.argb(255, 147, 156, 160));
@@ -1033,26 +1020,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             AnimationButton btnShuffle = findViewById(R.id.btnShuffle);
             AnimationButton btnShuffleInPlayingBar = findViewById(R.id.btnShuffleInPlayingBar);
-            if(btnShuffle.getContentDescription().toString().equals("シャッフルなし"))
-            {
-                btnShuffle.setContentDescription("シャッフルあり");
-                btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle_on);
-                btnShuffleInPlayingBar.setContentDescription("シャッフルあり");
-                btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_shuffle_on);
-            }
-            else if(btnShuffle.getContentDescription().toString().equals("シャッフルあり"))
-            {
-                btnShuffle.setContentDescription("１曲のみ");
-                btnShuffle.setImageResource(R.drawable.bar_button_mode_single_on);
-                btnShuffleInPlayingBar.setContentDescription("１曲のみ");
-                btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_single_on);
-            }
-            else
-            {
-                btnShuffle.setContentDescription("シャッフルなし");
-                btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle);
-                btnShuffleInPlayingBar.setContentDescription("シャッフルなし");
-                btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_shuffle);
+            switch(btnShuffle.getContentDescription().toString()) {
+                case "シャッフルなし":
+                    btnShuffle.setContentDescription("シャッフルあり");
+                    btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle_on);
+                    btnShuffleInPlayingBar.setContentDescription("シャッフルあり");
+                    btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_shuffle_on);
+                    break;
+                case "シャッフルあり":
+                    btnShuffle.setContentDescription("１曲のみ");
+                    btnShuffle.setImageResource(R.drawable.bar_button_mode_single_on);
+                    btnShuffleInPlayingBar.setContentDescription("１曲のみ");
+                    btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_single_on);
+                    break;
+                default:
+                    btnShuffle.setContentDescription("シャッフルなし");
+                    btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle);
+                    btnShuffleInPlayingBar.setContentDescription("シャッフルなし");
+                    btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_shuffle);
             }
             playlistFragment.saveFiles(false, false, false, false, true);
         }
@@ -1060,26 +1045,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             AnimationButton btnRepeat = findViewById(R.id.btnRepeat);
             AnimationButton btnRepeatInPlayingBar = findViewById(R.id.btnRepeatInPlayingBar);
-            if(btnRepeat.getContentDescription().toString().equals("リピートなし"))
-            {
-                btnRepeat.setContentDescription("全曲リピート");
-                btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_all_on);
-                btnRepeatInPlayingBar.setContentDescription("全曲リピート");
-                btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_all_on);
-            }
-            else if(btnRepeat.getContentDescription().toString().equals("全曲リピート"))
-            {
-                btnRepeat.setContentDescription("１曲リピート");
-                btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_single_on);
-                btnRepeatInPlayingBar.setContentDescription("１曲リピート");
-                btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_one_on);
-            }
-            else
-            {
-                btnRepeat.setContentDescription("リピートなし");
-                btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat);
-                btnRepeatInPlayingBar.setContentDescription("リピートなし");
-                btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_all);
+            switch (btnRepeat.getContentDescription().toString()) {
+                case "リピートなし":
+                    btnRepeat.setContentDescription("全曲リピート");
+                    btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_all_on);
+                    btnRepeatInPlayingBar.setContentDescription("全曲リピート");
+                    btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_all_on);
+                    break;
+                case "全曲リピート":
+                    btnRepeat.setContentDescription("１曲リピート");
+                    btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_single_on);
+                    btnRepeatInPlayingBar.setContentDescription("１曲リピート");
+                    btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_one_on);
+                    break;
+                default:
+                    btnRepeat.setContentDescription("リピートなし");
+                    btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat);
+                    btnRepeatInPlayingBar.setContentDescription("リピートなし");
+                    btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_all);
             }
             playlistFragment.saveFiles(false, false, false, false, true);
         }
@@ -1089,8 +1072,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             ArrayList<EffectSaver> arEffectSavers = playlistFragment.getArEffects().get(playlistFragment.getPlayingPlaylist());
             EffectSaver saver = arEffectSavers.get(playlistFragment.getPlaying());
-            ImageView imgLock = findViewById(R.id.imgLockInMenu);
-            TextView textLock = findViewById(R.id.textLock);
             if(saver.isSave()) {
                 saver.setSave(false);
                 playlistFragment.getSongsAdapter().notifyDataSetChanged();
@@ -1178,23 +1159,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int response = buyIntentBundle.getInt("RESPONSE_CODE");
                 if(response == 0) {
                     PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-                    startIntentSenderForResult(
-                            pendingIntent.getIntentSender(),
-                            1001,
-                            new Intent(),
-                            Integer.valueOf(0),
-                            Integer.valueOf(0),
-                            Integer.valueOf(0)
-                    );
-                }
-                else if(response == 1) {
-                    // 購入がキャンセルされた
+                    if(pendingIntent != null)
+                        startIntentSenderForResult(pendingIntent.getIntentSender(), 1001, new Intent(), 0, 0, 0);
                 }
                 else if(response == 7){
                     hideAds();
                 }
             }
             catch(Exception e) {
+                e.printStackTrace();
             }
             mDrawerLayout.closeDrawer(Gravity.START);
         }
@@ -1578,9 +1551,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                textTitle.setGravity(Gravity.LEFT);
+                textTitle.setGravity(Gravity.START);
                 paramTitle.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
-                textArtist.setGravity(Gravity.LEFT);
+                textArtist.setGravity(Gravity.START);
                 paramArtist.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
                 imgViewDown.clearAnimation();
                 imgViewDown.setVisibility(View.GONE);
@@ -1648,7 +1621,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
         final BottomMenu menu = new BottomMenu(this);
         menu.setTitle("保存／エクスポート");
-        final Activity activity = this;
         menu.addMenu("アプリ内に保存", R.drawable.actionsheet_save, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1705,7 +1677,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else
         {
-            final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+            final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("audio/*");
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -1724,7 +1696,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else
         {
-            final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+            final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("video/*");
             playlistFragment.startActivityForResult(intent, 2);
@@ -1741,55 +1713,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
 
-            if (resultCode == RESULT_OK)
-            {
-                try {
-                    JSONObject jo = new JSONObject(purchaseData);
-                    String productId = jo.getString("productId");
+            try {
+                JSONObject jo = new JSONObject(purchaseData);
+                jo.getString("productId");
 
-                    hideAds();
-                }
-                catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                hideAds();
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
             }
         }
         else if(requestCode == 1002)
         {
             String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
 
-            if (resultCode == RESULT_OK)
-            {
-                try {
-                    JSONObject jo = new JSONObject(purchaseData);
-                    String productId = jo.getString("productId");
+            try {
+                JSONObject jo = new JSONObject(purchaseData);
+                jo.getString("productId");
 
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    ItemFragment itemFragment = (ItemFragment)fragmentManager.findFragmentById(R.id.relativeMain);
-                    itemFragment.buyPurpleSeaUrchinPointer();
-                }
-                catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                ItemFragment itemFragment = (ItemFragment)fragmentManager.findFragmentById(R.id.relativeMain);
+                itemFragment.buyPurpleSeaUrchinPointer();
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
             }
         }
         else if(requestCode == 1003)
         {
             String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
 
-            if (resultCode == RESULT_OK)
-            {
-                try {
-                    JSONObject jo = new JSONObject(purchaseData);
-                    String productId = jo.getString("productId");
+            try {
+                JSONObject jo = new JSONObject(purchaseData);
+                jo.getString("productId");
 
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    ItemFragment itemFragment = (ItemFragment)fragmentManager.findFragmentById(R.id.relativeMain);
-                    itemFragment.buyElegantSeaUrchinPointer();
-                }
-                catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                ItemFragment itemFragment = (ItemFragment)fragmentManager.findFragmentById(R.id.relativeMain);
+                itemFragment.buyElegantSeaUrchinPointer();
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -1800,10 +1763,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mAdView.setVisibility(AdView.GONE);
 
             SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-            preferences.edit().putBoolean("hideads", mAdView.getVisibility() == AdView.GONE).commit();
+            preferences.edit().putBoolean("hideads", mAdView.getVisibility() == AdView.GONE).apply();
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initialize()
     {
         MobileAds.initialize(this, "ca-app-pub-9499594730627438~9516019647");
@@ -1834,23 +1798,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onPageSelected(int position) {
                 TabLayout tabLayout = findViewById(R.id.tabs);
-                PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
                 if(position == 0 && findViewById(R.id.relativeSongs).getVisibility() == View.VISIBLE) findViewById(R.id.viewSep1).setVisibility(View.INVISIBLE);
                 else findViewById(R.id.viewSep1).setVisibility(View.VISIBLE);
                 for(int i = 0; i < 5; i++) {
-                    TextView tab = (TextView) tabLayout.getTabAt(i).getCustomView();
+                    TabLayout.Tab tab = tabLayout.getTabAt(i);
+                    if(tab == null) continue;
+                    TextView textView = (TextView)tab.getCustomView();
+                    if(textView == null) continue;
                     if(i == position) {
                         int color = Color.parseColor("#FF007AFF");
-                        tab.setTextColor(color);
-                        for (Drawable drawable : tab.getCompoundDrawables()) {
+                        textView.setTextColor(color);
+                        for (Drawable drawable : textView.getCompoundDrawables()) {
                             if (drawable != null)
                                 drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
                         }
                     }
                     else {
                         int color = Color.parseColor("#FF808080");
-                        tab.setTextColor(color);
-                        for (Drawable drawable : tab.getCompoundDrawables()) {
+                        textView.setTextColor(color);
+                        for (Drawable drawable : textView.getCompoundDrawables()) {
                             if (drawable != null)
                                 drawable.setColorFilter(null);
                         }
@@ -1866,50 +1832,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        TextView tab0 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
-        tab0.setText("再生リスト");
-        tab0.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_playlist, 0, 0);
+        ViewGroup vg = findViewById(R.id.layout_root);
+        TextView textView0 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, vg);
+        textView0.setText("再生リスト");
+        textView0.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_playlist, 0, 0);
         int color = Color.parseColor("#FF007AFF");
-        tab0.setTextColor(color);
-        for (Drawable drawable : tab0.getCompoundDrawables()) {
+        textView0.setTextColor(color);
+        for (Drawable drawable : textView0.getCompoundDrawables()) {
             if (drawable != null)
                 drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
         }
-        tabLayout.getTabAt(0).setCustomView(tab0);
+        TabLayout.Tab tab0 = tabLayout.getTabAt(0);
+        if(tab0 != null) tab0.setCustomView(textView0);
 
-        TextView tab1 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
-        tab1.setText("ループ");
-        tab1.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_abloop, 0, 0);
+        TextView textView1 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, vg);
+        textView1.setText("ループ");
+        textView1.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_abloop, 0, 0);
         color = Color.parseColor("#FF808080");
-        tab1.setTextColor(color);
-        tabLayout.getTabAt(1).setCustomView(tab1);
+        textView1.setTextColor(color);
+        TabLayout.Tab tab1 = tabLayout.getTabAt(1);
+        if(tab1 != null) tab1.setCustomView(textView1);
 
-        TextView tab2 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
-        tab2.setText("コントロール");
-        tab2.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_control, 0, 0);
-        tab2.setTextColor(color);
-        tabLayout.getTabAt(2).setCustomView(tab2);
+        TextView textView2 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, vg);
+        textView2.setText("コントロール");
+        textView2.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_control, 0, 0);
+        textView2.setTextColor(color);
+        TabLayout.Tab tab2 = tabLayout.getTabAt(2);
+        if(tab2 != null) tab2.setCustomView(textView2);
 
-        TextView tab3 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
-        tab3.setText("イコライザ");
-        tab3.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_equalizer, 0, 0);
-        tab3.setTextColor(color);
-        tabLayout.getTabAt(3).setCustomView(tab3);
+        TextView textView3 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, vg);
+        textView3.setText("イコライザ");
+        textView3.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_equalizer, 0, 0);
+        textView3.setTextColor(color);
+        TabLayout.Tab tab3 = tabLayout.getTabAt(3);
+        if(tab3 != null) tab3.setCustomView(textView3);
 
-        TextView tab4 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
-        tab4.setText("エフェクト");
-        tab4.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_effect, 0, 0);
-        tab4.setTextColor(color);
-        tabLayout.getTabAt(4).setCustomView(tab4);
+        TextView textView4 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, vg);
+        textView4.setText("エフェクト");
+        textView4.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_effect, 0, 0);
+        textView4.setTextColor(color);
+        TabLayout.Tab tab4 = tabLayout.getTabAt(4);
+        if(tab4 != null) tab4.setCustomView(textView4);
 
-        AnimationButton btnMenu = (AnimationButton)findViewById(R.id.btnMenu);
+        AnimationButton btnMenu = findViewById(R.id.btnMenu);
         btnMenu.setOnClickListener(this);
 
-        AnimationButton btnRewind = (AnimationButton)findViewById(R.id.btnRewind);
+        AnimationButton btnRewind = findViewById(R.id.btnRewind);
         btnRewind.setOnLongClickListener(this);
         btnRewind.setOnTouchListener(this);
 
-        AnimationButton btnForward = (AnimationButton)findViewById(R.id.btnForward);
+        AnimationButton btnForward = findViewById(R.id.btnForward);
         btnForward.setOnLongClickListener(this);
         btnForward.setOnTouchListener(this);
 
@@ -1933,8 +1905,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public boolean isAdsVisible() {
-        if (mAdView.getVisibility() == AdView.GONE) return false;
-        else return true;
+        return (mAdView.getVisibility() != AdView.GONE);
     }
 
     public void setSync()
@@ -1945,8 +1916,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             hSync = 0;
         }
 
-        LinearLayout ABButton = (LinearLayout)findViewById(R.id.ABButton);
-        LinearLayout MarkerButton = (LinearLayout)findViewById(R.id.MarkerButton);
+        LinearLayout ABButton = findViewById(R.id.ABButton);
+        LinearLayout MarkerButton = findViewById(R.id.MarkerButton);
         AnimationButton btnLoopmarker = findViewById(R.id.btnLoopmarker);
 
         EffectFragment effectFragment = (EffectFragment)mSectionsPagerAdapter.getItem(4);
@@ -2013,19 +1984,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             bWaitEnd = false;
 
                             AnimationButton btnShuffle = findViewById(R.id.btnShuffle);
-                            boolean bShuffle = false;
                             boolean bSingle = false;
-                            if (btnShuffle.getContentDescription().toString().equals("シャッフルあり"))
-                                bShuffle = true;
-                            else if (btnShuffle.getContentDescription().toString().equals("１曲のみ"))
+                            if (btnShuffle.getContentDescription().toString().equals("１曲のみ"))
                                 bSingle = true;
 
                             AnimationButton btnRepeat = findViewById(R.id.btnRepeat);
-                            boolean bRepeatAll = false;
                             boolean bRepeatSingle = false;
-                            if (btnRepeat.getContentDescription().toString().equals("全曲リピート"))
-                                bRepeatAll = true;
-                            else if (btnRepeat.getContentDescription().toString().equals("１曲リピート"))
+                            if (btnRepeat.getContentDescription().toString().equals("１曲リピート"))
                                 bRepeatSingle = true;
 
                             PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
@@ -2079,10 +2044,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private String readChangeLog() {
-        StringBuffer sb = new StringBuffer("");
+        StringBuilder sb = new StringBuilder();
         String tmp;
         BufferedReader br = null;
-        Boolean bFirst = true;
+        boolean bFirst = true;
         try {
             br = new BufferedReader(new InputStreamReader(getResources().openRawResource(R.raw.changelog)));
             while ((tmp = br.readLine()) != null) {
@@ -2097,10 +2062,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (br != null) {
                 try {
                     br.close();
-                } catch (IOException e) {}
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-            return sb.toString();
         }
+        return sb.toString();
     }
 
     @Override

@@ -26,6 +26,7 @@ import android.os.AsyncTask;
 
 import com.un4seen.bass.BASS;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /**
@@ -34,12 +35,24 @@ import java.util.ArrayList;
 
 public class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
 {
-    private WaveView mWaveView;
+    private WeakReference<WaveView> waveViewRef;
     private float fPeak = 0.0f;
+    private int hTempStream;
+    private int nWidth;
+    private int nHeight;
+    private float fZoom;
+    private ArrayList<Bitmap> arBitmaps;
+    private ArrayList<Canvas> arCanvases;
 
-    public WaveViewTask(WaveView view)
+    WaveViewTask(WaveView view, int hTempStream, int nWidth, int nHeight, float fZoom, ArrayList<Bitmap> arBitmaps, ArrayList<Canvas> arCanvases)
     {
-        mWaveView = view;
+        waveViewRef = new WeakReference<>(view);
+        this.hTempStream = hTempStream;
+        this.nWidth = nWidth;
+        this.nHeight = nHeight;
+        this.fZoom = fZoom;
+        this.arBitmaps = arBitmaps;
+        this.arCanvases = arCanvases;
     }
 
     @Override
@@ -47,24 +60,20 @@ public class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
     {
         Paint paint = new Paint();
         paint.setStrokeWidth(1.0f);
-        int hTempStream = mWaveView.getTempSteam();
         long lMaxLength = BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE);
-        int nMaxWidth = (int)(mWaveView.getWidth() * mWaveView.getZoom());
+        int nMaxWidth = (int)(nWidth * fZoom);
         int nTotalWidth = 0;
-        int nStart = 0;
         int nEnd = 0;
         BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
         BASS.BASS_ChannelGetInfo(hTempStream, info);
-        Boolean bStereo = true;
+        boolean bStereo = true;
         if(info.chans == 1) bStereo = false;
-        ArrayList<Canvas> arCanvases = mWaveView.getCanvases();
-        ArrayList<Bitmap> arBitmaps = mWaveView.getBitmaps();
         for(int i = 0; i < arCanvases.size(); i++) {
             Canvas canvas = arCanvases.get(i);
             Bitmap bitmap = arBitmaps.get(i);
             int nWidth = bitmap.getWidth();
             nTotalWidth += nWidth;
-            nStart = nEnd;
+            int nStart = nEnd;
             nEnd = (int)(lMaxLength * nTotalWidth / nMaxWidth);
             long lLength = nEnd - nStart;
             for(int j = 0; j < nWidth; j++)
@@ -75,20 +84,20 @@ public class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
                     BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_STEREO);
                 else
                     BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_MONO);
-                int nHeight = mWaveView.getHeight() / 2;
-                int nLeftHeight = (int)(nHeight * arLevels[0]);
+                int nHalfHeight = nHeight / 2;
+                int nLeftHeight = (int)(nHalfHeight * arLevels[0]);
                 int nRightHeight;
                 if(bStereo)
-                    nRightHeight= (int)(nHeight * arLevels[1]);
+                    nRightHeight= (int)(nHalfHeight * arLevels[1]);
                 else
-                    nRightHeight= (int)(nHeight * arLevels[0]);
+                    nRightHeight= (int)(nHalfHeight * arLevels[0]);
                 if(nLeftHeight < 2) nLeftHeight = 2;
                 if(nRightHeight < 2) nRightHeight = 2;
                 paint.setColor(Color.argb(255, 255, 255, 255));
-                canvas.drawLine(j, 0, j, nHeight * 2, paint);
+                canvas.drawLine(j, 0, j, nHalfHeight * 2, paint);
                 paint.setColor(Color.argb(255, 128, 166, 199));
-                canvas.drawLine(j, nHeight / 2 - nLeftHeight / 2, j, nHeight / 2 + nLeftHeight / 2, paint);
-                canvas.drawLine(j, nHeight + nHeight / 2 - nRightHeight / 2, j, nHeight + nHeight / 2 + nRightHeight / 2, paint);
+                canvas.drawLine(j, nHalfHeight / 2.0f - nLeftHeight / 2.0f, j, nHalfHeight / 2.0f + nLeftHeight / 2.0f, paint);
+                canvas.drawLine(j, nHalfHeight + nHalfHeight / 2.0f - nRightHeight / 2.0f, j, nHalfHeight + nHalfHeight / 2.0f + nRightHeight / 2.0f, paint);
                 if (this.isCancelled()) break;
             }
         }
@@ -114,9 +123,12 @@ public class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
     @Override
     protected void onPostExecute(Integer result)
     {
-        mWaveView.invalidate();
-        MainActivity activity = (MainActivity)mWaveView.getLoopFragment().getActivity();
-        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-        playlistFragment.setPeak(fPeak);
+        WaveView waveView = waveViewRef.get();
+        waveView.invalidate();
+        MainActivity activity = (MainActivity)waveView.getLoopFragment().getActivity();
+        if(activity != null) {
+            PlaylistFragment playlistFragment = (PlaylistFragment) activity.mSectionsPagerAdapter.getItem(0);
+            playlistFragment.setPeak(fPeak);
+        }
     }
 }

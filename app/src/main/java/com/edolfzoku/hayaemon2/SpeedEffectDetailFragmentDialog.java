@@ -1,35 +1,57 @@
 package com.edolfzoku.hayaemon2;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 public class SpeedEffectDetailFragmentDialog extends DialogFragment {
+    private MainActivity activity = null;
     NumberPicker intNumberPicker;
     NumberPicker decimalNumberPicker;
+
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        MainActivity activity = (MainActivity)getActivity();
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof MainActivity) {
+            activity = (MainActivity) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        activity = null;
+    }
+
+    @Override
+    public @NonNull Dialog onCreateDialog(Bundle savedInstanceState) {
         EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.speedeffectdetailpicker, null, false);
-        float fTime = 0.0f;
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View view = inflater.inflate(R.layout.speedeffectdetailpicker, (ViewGroup)activity.findViewById(R.id.layout_root), false);
+        float fTime;
         TextView textEffectName = activity.findViewById(R.id.textEffectName);
         if(textEffectName.getText().toString().equals("だんだん速く"))
             fTime = effectFragment.getIncreaseSpeed();
         else fTime = effectFragment.getDecreaseSpeed();
         int nInt = (int)fTime;
         int nDecimal = (int)((fTime - (float)nInt) * 10.0f + 0.05f);
-        String strInt = null;
-        if(nInt >= 10) strInt = String.format("%d", nInt);
-        else strInt = String.format("%d ", nInt);
-        String strDecimal = String.format("%d", nDecimal);
+        String strInt;
+        if(nInt >= 10) strInt = String.format(Locale.getDefault(), "%d", nInt);
+        else strInt = String.format(Locale.getDefault(), "%d ", nInt);
+        String strDecimal = String.format(Locale.getDefault(), "%d", nDecimal);
 
         intNumberPicker = view.findViewById(R.id.intSpeedEffectDetailPicker);
         final String[] arInts = {"10", "9 ", "8 ", "7 ", "6 ", "5 ", "4 ", "3 ", "2 ", "1 ", "0 "};
@@ -48,7 +70,6 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
                     decimalNumberPicker.setValue(8);
                 }
 
-                MainActivity activity = (MainActivity) getActivity();
                 EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
                 TextView textEffectName = activity.findViewById(R.id.textEffectName);
                 if(textEffectName.getText().toString().equals("だんだん速く"))
@@ -77,7 +98,6 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
                     numberPicker.setValue(8);
                 }
 
-                MainActivity activity = (MainActivity) getActivity();
                 EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
                 TextView textEffectName = activity.findViewById(R.id.textEffectName);
                 if(textEffectName.getText().toString().equals("だんだん速く"))
@@ -91,13 +111,12 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
                 decimalNumberPicker.setValue(i);
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("速度の調整");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                MainActivity activity = (MainActivity)getActivity();
                 EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
                 effectFragment.clearFocus();
             }
@@ -108,7 +127,6 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
 
     @Override
     public void onCancel(DialogInterface dialog) {
-        MainActivity activity = (MainActivity) getActivity();
         EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
         effectFragment.clearFocus();
     }

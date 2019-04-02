@@ -21,10 +21,7 @@ package com.edolfzoku.hayaemon2;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -40,10 +37,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.Rect;
 import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
@@ -58,27 +53,17 @@ import android.os.Handler;
 import android.os.StatFs;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.renderscript.Sampler;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -88,11 +73,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
@@ -107,7 +90,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
@@ -117,6 +99,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.text.DateFormat;
 
@@ -127,7 +110,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     private  ArrayList<ArrayList<SongItem>> arPlaylists;
     private ArrayList<ArrayList<EffectSaver>> arEffects;
     private ArrayList<ArrayList<String>> arLyrics;
-    private int hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20;
     private List<Boolean> arPlayed;
     private RecyclerView recyclerPlaylists;
     private RecyclerView recyclerTab;
@@ -137,7 +119,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     private SongsAdapter songsAdapter;
     private ItemTouchHelper playlistTouchHelper;
     private ItemTouchHelper songTouchHelper;
-    private MainActivity activity;
+    private MainActivity activity = null;
     private int nPlayingPlaylist = -1;
     private int nSelectedPlaylist = 0;
     private int nPlaying;
@@ -169,7 +151,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     public ItemTouchHelper getPlaylistTouchHelper() { return playlistTouchHelper; }
     public ItemTouchHelper getSongTouchHelper() { return songTouchHelper; }
     public boolean isSorting() { return bSorting; }
-    public void setPlayingPlaylist(int nPlaylist) { nPlayingPlaylist = nPlaylist; }
     public int getSongCount(int nPlaylist) { return arPlaylists.get(nPlaylist).size(); }
     public SongsAdapter getSongsAdapter() { return songsAdapter; }
     public boolean isFinish() { return bFinish; }
@@ -182,7 +163,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     public PlaylistFragment()
     {
-        activity = null;
         nPlaying = -1;
         arPlaylistNames = new ArrayList<>();
         arPlaylists = new ArrayList<>();
@@ -195,7 +175,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context != null && context instanceof MainActivity) {
+        if (context instanceof MainActivity) {
             activity = (MainActivity) context;
         }
     }
@@ -334,12 +314,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
         else if(v.getId() == R.id.btnRewind)
         {
-            if(activity.hStream == 0) return;
+            if(MainActivity.hStream == 0) return;
             EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-            if(!effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(activity.hStream, BASS.BASS_ChannelGetPosition(activity.hStream, BASS.BASS_POS_BYTE)) > activity.dLoopA + 1.0)
-                BASS.BASS_ChannelSetPosition(activity.hStream, BASS.BASS_ChannelSeconds2Bytes(activity.hStream, activity.dLoopA), BASS.BASS_POS_BYTE);
-            else if(effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(activity.hStream, BASS.BASS_ChannelGetPosition(activity.hStream, BASS.BASS_POS_BYTE)) < activity.dLoopA - 1.0)
-                BASS.BASS_ChannelSetPosition(activity.hStream, BASS.BASS_ChannelSeconds2Bytes(activity.hStream, activity.dLoopB), BASS.BASS_POS_BYTE);
+            if(!effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) > activity.dLoopA + 1.0)
+                BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA), BASS.BASS_POS_BYTE);
+            else if(effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) < activity.dLoopA - 1.0)
+                BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB), BASS.BASS_POS_BYTE);
             else
                 playPrev();
         }
@@ -347,7 +327,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             onPlayBtnClicked();
         else if(v.getId() == R.id.btnForward)
         {
-            if(activity.hStream == 0) return;
+            if(MainActivity.hStream == 0) return;
             playNext(true);
         }
         else if(v.getId() == R.id.btnRecord)
@@ -497,7 +477,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 textLyrics.setText(strLyrics);
                 btnFinishLyrics.setText("閉じる");
                 textLyrics.setText(strLyrics);
-                if(strLyrics == null || strLyrics.equals("")) {
+                if(strLyrics.equals("")) {
                     editLyrics.setVisibility(View.INVISIBLE);
                     textNoLyrics.setVisibility(View.VISIBLE);
                     textLyrics.setVisibility(View.INVISIBLE);
@@ -515,7 +495,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 }
                 editLyrics.clearFocus();
                 InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(editLyrics.getWindowToken(), 0);
+                if(imm != null) imm.hideSoftInputFromWindow(editLyrics.getWindowToken(), 0);
 
                 saveFiles(false, false, true, false, false);
             }
@@ -537,7 +517,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     editLyrics.setVisibility(View.VISIBLE);
                     editLyrics.requestFocus();
                     InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(editLyrics, InputMethodManager.SHOW_IMPLICIT);
+                    if(imm != null) imm.showSoftInput(editLyrics, InputMethodManager.SHOW_IMPLICIT);
                     int nPos = editLyrics.getText().length();
                     editLyrics.setSelection(nPos);
                 }
@@ -564,7 +544,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             editLyrics.setVisibility(View.VISIBLE);
             editLyrics.requestFocus();
             InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(editLyrics, InputMethodManager.SHOW_IMPLICIT);
+            if(imm != null) imm.showSoftInput(editLyrics, InputMethodManager.SHOW_IMPLICIT);
         }
     }
 
@@ -574,21 +554,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(v.getId() == R.id.btnPlay) {
             final BottomMenu menu = new BottomMenu(activity);
             menu.setTitle("再生／停止");
-            final PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
             final EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-            if(MainActivity.hStream == 0 || (MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING) || (MainActivity.hStream != 0 && effectFragment.isReverse())) {
+            if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING || effectFragment.isReverse()) {
                 menu.addMenu("再生", R.drawable.ic_actionsheet_play, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                     menu.dismiss();
                     if(effectFragment.isReverse()) effectFragment.onEffectItemClick(EffectFragment.kEffectTypeReverse);
-                    if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
-                        // 何もしない
-                    }
-                    else if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED) {
+                    if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED)
                         play();
-                    }
-                    else {
+                    else if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING) {
                         bForceNormal = true;
                         onPlayBtnClicked();
                     }
@@ -604,19 +579,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     }
                 });
             }
-            if(MainActivity.hStream == 0 || (MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING) || (MainActivity.hStream != 0 && !effectFragment.isReverse())) {
+            if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING || !effectFragment.isReverse()) {
                 menu.addMenu("逆回転再生", R.drawable.ic_actionsheet_reverse, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
                         if(!effectFragment.isReverse()) effectFragment.onEffectItemClick(EffectFragment.kEffectTypeReverse);
-                        if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
-                            // 何もしない
-                        }
-                        else if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED) {
+                        if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED)
                             play();
-                        }
-                        else {
+                        else if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING) {
                             bForceReverse = true;
                             onPlayBtnClicked();
                         }
@@ -640,11 +611,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     public void onPlayBtnClicked()
     {
-        if(BASS.BASS_ChannelIsActive(activity.hStream) == BASS.BASS_ACTIVE_PLAYING)
+        if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING)
             pause();
         else
         {
-            if(BASS.BASS_ChannelIsActive(activity.hStream) == BASS.BASS_ACTIVE_PAUSED)
+            if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED)
             {
                 double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                 double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
@@ -657,13 +628,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
             else
             {
-                if(activity.hStream == 0)
+                if(MainActivity.hStream == 0)
                 {
                     if(nSelectedPlaylist < 0) nSelectedPlaylist = 0;
                     else if(nSelectedPlaylist >= arPlaylists.size()) nSelectedPlaylist = arPlaylists.size() - 1;
                     nPlayingPlaylist = nSelectedPlaylist;
                     ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
-                    arPlayed = new ArrayList<Boolean>();
+                    arPlayed = new ArrayList<>();
                     for(int i = 0; i < arSongs.size(); i++)
                         arPlayed.add(false);
                     playNext(true);
@@ -677,7 +648,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     public void startAddURL(String strURL)
     {
         StatFs sf = new StatFs(activity.getFilesDir().toString());
-        long nFreeSpace = 0;
+        long nFreeSpace;
         if(Build.VERSION.SDK_INT >= 18)
             nFreeSpace = sf.getAvailableBlocksLong() * sf.getBlockSizeLong();
         else
@@ -708,7 +679,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         int i = 0;
         File fileForCheck;
         while (true) {
-            strPathTo = activity.getFilesDir() + "/recorded" + String.format("%d", i) + ".mp3";
+            strPathTo = activity.getFilesDir() + "/recorded" +  String.format(Locale.getDefault(), "%d", i) + ".mp3";
             fileForCheck = new File(strPathTo);
             if (!fileForCheck.exists()) break;
             i++;
@@ -742,7 +713,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         final File file = new File(strPathTo);
         if(nError == 1)
         {
-            file.delete();
+            if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("ダウンロードに失敗しました");
             builder.setMessage("こんにちは♪\n\nハヤえもん開発者のりょーたです！\n\nファイルをダウンロードしようとしたところ、ダウンロードすることができませんでした。\n\nお手数をおかけしますが、URLが正しいか再度ご確認ください。\n\nそれでは引き続き、Enjoy \"Your\" Music with Hayaemon!!");
@@ -754,8 +725,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         int hTempStream = BASS.BASS_StreamCreateFile(strPathTo, 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
         if(hTempStream == 0)
         {
-            file.delete();
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            if(!file.delete()) System.out.println("ファイルが削除できませんでした");
+            AlertDialog.Builder builder = new    AlertDialog.Builder(activity);
             builder.setTitle("ハヤえもんで再生可能な音声データではありませんでした");
             builder.setMessage("こんにちは♪\n\nハヤえもん開発者のりょーたです！\n\nダウンロードしたファイルが、ハヤえもんで再生可能な音声データではありませんでした。\n\nお手数をおかけしますが、MP3, MP2, MP1, OGG, AIFF, M4A, MP4（※）のいずれかのファイルをご指定ください。\n※MP4は音声ファイルをご指定ください。\n\nそれでは引き続き、Enjoy \"Your\" Music with Hayaemon!!");
             builder.setPositiveButton("OK", null);
@@ -770,9 +741,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         final EditText editTitle = new EditText (activity);
         editTitle.setHint("タイトル");
         editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
-        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         Date date = new Date(System.currentTimeMillis());
-        editTitle.setText("タイトル(" + df.format(date) + ")");
+        editTitle.setText(String.format(Locale.getDefault(), "タイトル(%s)", df.format(date)));
         final EditText editArtist = new EditText (activity);
         editArtist.setHint("アーティスト名");
         editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
@@ -783,7 +754,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
-                SongItem item = new SongItem(String.format("%d", arSongs.size()+1), editTitle.getText().toString(), editArtist.getText().toString(), file.getPath());
+                SongItem item = new SongItem(String.format(Locale.getDefault(), "%d", arSongs.size()+1), editTitle.getText().toString(), editArtist.getText().toString(), file.getPath());
                 arSongs.add(item);
                 ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
                 EffectSaver saver = new EffectSaver();
@@ -798,13 +769,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         });
         builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                file.delete();
+                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             }
         });
         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                file.delete();
+                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             }
         });
         final AlertDialog alertDialog = builder.create();
@@ -825,7 +796,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     public void startRecord()
     {
         StatFs sf = new StatFs(activity.getFilesDir().toString());
-        long nFreeSpace = 0;
+        long nFreeSpace;
         if(Build.VERSION.SDK_INT >= 18)
             nFreeSpace = sf.getAvailableBlocksLong() * sf.getBlockSizeLong();
         else
@@ -850,15 +821,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         });
 
         final RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams)activity.findViewById(R.id.container).getLayoutParams();
-        final RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams)activity.findViewById(R.id.relativeRecording).getLayoutParams();
+        final RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams)relativeRecording.getLayoutParams();
         paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativeRecording);
         paramContainer.bottomMargin = 0;
-        if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
+        if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
             paramRecording.addRule(RelativeLayout.ABOVE, R.id.adView);
         else paramRecording.addRule(RelativeLayout.ABOVE, R.id.relativePlaying);
         if(MainActivity.hStream == 0) paramRecording.bottomMargin = 0;
         else {
-            if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
+            if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
                 paramRecording.bottomMargin = (int) (60 * getResources().getDisplayMetrics().density + 0.5);
             else paramRecording.bottomMargin = (int) (-22 * getResources().getDisplayMetrics().density + 0.5);
         }
@@ -940,7 +911,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 int nMinute = (int)(dPos / 60 % 60);
                 int nSecond = (int)(dPos % 60);
                 int nMillisecond = (int)(dPos * 100 % 100);
-                text.setText(String.format("%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nMillisecond));
+                text.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nMillisecond));
                 handler.postDelayed(this, 50);
             }
         };
@@ -973,7 +944,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         String strPath;
         File fileForCheck;
         while(true) {
-            strPath = activity.getFilesDir() + "/recorded" + String.format("%d", i) + ".wav";
+            strPath = activity.getFilesDir() + "/recorded" + String.format(Locale.getDefault(), "%d", i) + ".wav";
             fileForCheck = new File(strPath);
             if(!fileForCheck.exists()) break;
             i++;
@@ -995,9 +966,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         final EditText editTitle = new EditText (activity);
         editTitle.setHint("タイトル");
         editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
-        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         Date date = new Date(System.currentTimeMillis());
-        editTitle.setText("新規録音(" + df.format(date) + ")");
+        editTitle.setText(String.format(Locale.getDefault(), "新規録音(%s)", df.format((date))));
         final EditText editArtist = new EditText (activity);
         editArtist.setHint("アーティスト名");
         editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
@@ -1008,7 +979,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
-                SongItem item = new SongItem(String.format("%d", arSongs.size()+1), editTitle.getText().toString(), editArtist.getText().toString(), file.getPath());
+                SongItem item = new SongItem(String.format(Locale.getDefault(), "%d", arSongs.size()+1), editTitle.getText().toString(), editArtist.getText().toString(), file.getPath());
                 arSongs.add(item);
                 ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
                 EffectSaver saver = new EffectSaver();
@@ -1023,13 +994,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         });
         builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                file.delete();
+                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             }
         });
         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                file.delete();
+                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             }
         });
         final AlertDialog alertDialog = builder.create();
@@ -1062,10 +1033,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_playlist, container, false);
-        return rootView;
+        return inflater.inflate(R.layout.fragment_playlist, container, false);
     }
 
     @Override
@@ -1156,7 +1126,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     if(data.getClipData() == null)
                     {
                         addSong(activity, data.getData());
-                        activity.getContentResolver().takePersistableUriPermission(data.getData(), takeFlags);
+                        Uri uri = data.getData();
+                        if(uri != null)
+                            activity.getContentResolver().takePersistableUriPermission(uri, takeFlags);
                     }
                     else
                     {
@@ -1185,7 +1157,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     if(data.getClipData() == null)
                     {
                         addVideo(activity, data.getData());
-                        activity.getContentResolver().takePersistableUriPermission(data.getData(), takeFlags);
+                        Uri uri = data.getData();
+                        if(uri != null)
+                            activity.getContentResolver().takePersistableUriPermission(uri, takeFlags);
                     }
                     else
                     {
@@ -1313,9 +1287,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                             SongItem itemFrom = arSongsFrom.get(nItem);
                             File file = new File(itemFrom.getPath());
                             String strPath = itemFrom.getPath();
-                            if(file.getParent().equals(activity.getFilesDir()))
+                            if(file.getParent().equals(activity.getFilesDir().toString()))
                                 strPath = activity.copyFile(Uri.parse(itemFrom.getPath())).toString();
-                            SongItem itemTo = new SongItem(String.format("%d", arSongsTo.size()+1), itemFrom.getTitle(), itemFrom.getArtist(), strPath);
+                            SongItem itemTo = new SongItem(String.format(Locale.getDefault(), "%d", arSongsTo.size()+1), itemFrom.getTitle(), itemFrom.getArtist(), strPath);
                             arSongsTo.add(itemTo);
 
                             ArrayList<EffectSaver> arEffectSaversFrom = arEffects.get(nSelectedPlaylist);
@@ -1340,7 +1314,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
                             for(int i = nItem; i < arSongsFrom.size(); i++) {
                                 SongItem songItem = arSongsFrom.get(i);
-                                songItem.setNumber(String.format("%d", i+1));
+                                songItem.setNumber(String.format(Locale.getDefault(), "%d", i+1));
                             }
 
                             songsAdapter.notifyDataSetChanged();
@@ -1372,7 +1346,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                             ArrayList<SongItem> arSongsTo = arPlaylists.get(nPlaylistTo);
                             SongItem item = arSongsFrom.get(nItem);
                             arSongsTo.add(item);
-                            item.setNumber(String.format("%d", arSongsTo.size()));
+                            item.setNumber(String.format(Locale.getDefault(), "%d", arSongsTo.size()));
                             arSongsFrom.remove(nItem);
 
                             ArrayList<EffectSaver> arEffectSaversFrom = arEffects.get(nSelectedPlaylist);
@@ -1394,7 +1368,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
                             for(int i = nItem; i < arSongsFrom.size(); i++) {
                                 SongItem songItem = arSongsFrom.get(i);
-                                songItem.setNumber(String.format("%d", i+1));
+                                songItem.setNumber(String.format(Locale.getDefault(), "%d", i+1));
                             }
 
                             if(nSelectedPlaylist == nPlayingPlaylist) {
@@ -1572,7 +1546,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                             int nStart = fromPos < toPos ? fromPos : toPos;
                             for (int i = nStart; i < arSongs.size(); i++) {
                                 SongItem songItem = arSongs.get(i);
-                                songItem.setNumber(String.format("%d", i + 1));
+                                songItem.setNumber(String.format(Locale.getDefault(), "%d", i + 1));
                             }
 
                             if (fromPos == nPlaying) nPlaying = toPos;
@@ -1648,11 +1622,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 final EditText editText = new EditText (activity);
                 editText.setHint("再生リスト");
                 editText.setHintTextColor(Color.argb(255, 192, 192, 192));
-                editText.setText(arPlaylistNames.get(nPosition)+" のコピー");
+                editText.setText(String.format(Locale.getDefault(), "%s のコピー", arPlaylistNames.get(nPosition)));
                 builder.setView(editText);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        int nFrom = nPosition;
                         int nTo = nPosition + 1;
                         arPlaylistNames.add(nTo, editText.getText().toString());
                         ArrayList<SongItem> arSongs = new ArrayList<>();
@@ -1662,17 +1635,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         ArrayList<String> arTempLyrics = new ArrayList<>();
                         arLyrics.add(nTo, arTempLyrics);
 
-                        ArrayList<SongItem> arSongsFrom = arPlaylists.get(nFrom);
+                        ArrayList<SongItem> arSongsFrom = arPlaylists.get(nPosition);
                         for(SongItem item : arSongsFrom) {
                             File file = new File(item.getPath());
                             String strPath = item.getPath();
-                            if(file.getParent().equals(activity.getFilesDir()))
+                            if(file.getParent().equals(activity.getFilesDir().toString()))
                                 strPath = activity.copyFile(Uri.parse(item.getPath())).toString();
-                            SongItem itemTo = new SongItem(String.format("%d", arSongs.size()+1), item.getTitle(), item.getArtist(), strPath);
+                            SongItem itemTo = new SongItem(String.format(Locale.getDefault(), "%d", arSongs.size()+1), item.getTitle(), item.getArtist(), strPath);
                             arSongs.add(itemTo);
                         }
 
-                        ArrayList<EffectSaver> arEffectSaversFrom = arEffects.get(nFrom);
+                        ArrayList<EffectSaver> arEffectSaversFrom = arEffects.get(nPosition);
                         for(EffectSaver saver : arEffectSaversFrom) {
                             if(saver.isSave()) {
                                 EffectSaver saverTo = new EffectSaver(saver);
@@ -1685,8 +1658,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         }
 
                         ArrayList<String> arLyricsFrom = arLyrics.get(nSelectedPlaylist);
-                        for(String strLyrics : arLyricsFrom)
-                            arTempLyrics.add(strLyrics);
+                        arTempLyrics.addAll(arLyricsFrom);
 
                         tabAdapter.notifyDataSetChanged();
                         playlistsAdapter.notifyDataSetChanged();
@@ -1730,8 +1702,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         for(int i = 0; i < arSongs.size(); i++) {
                             SongItem song = arSongs.get(i);
                             File file = new File(song.getPath());
-                            if(file.getParent() != null && file.getParent().equals(activity.getFilesDir())) {
-                                file.delete();
+                            if(file.getParent() != null && file.getParent().equals(activity.getFilesDir().toString())) {
+                                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
                             }
                         }
                         arSongs.clear();
@@ -1774,8 +1746,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         for(int i = 0; i < arSongs.size(); i++) {
                             SongItem song = arSongs.get(i);
                             File file = new File(song.getPath());
-                            if(file.getParent().equals(activity.getFilesDir())) {
-                                file.delete();
+                            if(file.getParent().equals(activity.getFilesDir().toString())) {
+                                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
                             }
                         }
                         arPlaylists.remove(nPosition);
@@ -1917,7 +1889,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             AnimationButton btnLoopmarker = activity.findViewById(R.id.btnLoopmarker);
             if(ABButton.getVisibility() == View.VISIBLE) saver.setIsABLoop(true);
             else saver.setIsABLoop(false);
-            saver.setIsLoop(true);
             saver.setIsLoopA(activity.bLoopA);
             saver.setLoopA(activity.dLoopA);
             saver.setIsLoopB(activity.bLoopB);
@@ -1994,7 +1965,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             AnimationButton btnLoopmarker = activity.findViewById(R.id.btnLoopmarker);
             if(ABButton.getVisibility() == View.VISIBLE) saver.setIsABLoop(true);
             else saver.setIsABLoop(false);
-            saver.setIsLoop(true);
             saver.setIsLoopA(activity.bLoopA);
             saver.setLoopA(activity.dLoopA);
             saver.setIsLoopB(activity.bLoopB);
@@ -2071,7 +2041,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         effectFragment.setTimeOfDecreaseSpeed(saver.getTimeOfDecreaseSpeed());
         effectFragment.setDecreaseSpeed(saver.getDecreaseSpeed());
         AnimationButton btnLoopmarker = activity.findViewById(R.id.btnLoopmarker);
-        final RadioGroup radioGroupLoopMode = getActivity().findViewById(R.id.radioGroupLoopMode);
+        final RadioGroup radioGroupLoopMode = activity.findViewById(R.id.radioGroupLoopMode);
         if(saver.isABLoop()) radioGroupLoopMode.check(R.id.radioButtonABLoop);
         else radioGroupLoopMode.check(R.id.radioButtonMarkerPlay);
         if(saver.isLoopA()) loopFragment.setLoopA(saver.getLoopA(), false);
@@ -2107,7 +2077,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         SongItem item = arSongs.get(nSelectedItem);
         String strPath = item.getPath();
-        int _hTempStream = 0;
+        int _hTempStream;
         BASS.BASS_FILEPROCS fileprocs=new BASS.BASS_FILEPROCS() {
             @Override
             public boolean FILESEEKPROC(long offset, Object user) {
@@ -2116,6 +2086,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     fc.position(offset);
                     return true;
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 return false;
             }
@@ -2126,6 +2097,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 try {
                     return fc.read(buffer);
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 return 0;
             }
@@ -2136,6 +2108,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 try {
                     return fc.size();
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 return 0;
             }
@@ -2146,6 +2119,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 try {
                     fc.close();
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         };
@@ -2168,12 +2142,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
                 if(afd == null) return;
                 FileChannel fc = afd.createInputStream().getChannel();
-                if(strMimeType == "audio/mp4")
-                    _hTempStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-                else if(strMimeType == "audio/flac")
-                    _hTempStream = BASSFLAC.BASS_FLAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-                else
-                    _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                if(strMimeType != null) {
+                    switch (strMimeType) {
+                        case "audio/mp4":
+                            _hTempStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                            break;
+                        case "audio/flac":
+                            _hTempStream = BASSFLAC.BASS_FLAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                            break;
+                        default:
+                            _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                    }
+                }
+                else _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
             } catch (Exception e) {
                 return;
             }
@@ -2229,8 +2210,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, controlFragment.fPitch);
         EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
         int[] arHFX = new int[] {hTempFx20K, hTempFx16K, hTempFx12_5K, hTempFx10K, hTempFx8K, hTempFx6_3K, hTempFx5K, hTempFx4K, hTempFx3_15K, hTempFx2_5K, hTempFx2K, hTempFx1_6K, hTempFx1_25K, hTempFx1K, hTempFx800, hTempFx630, hTempFx500, hTempFx400, hTempFx315, hTempFx250, hTempFx200, hTempFx160, hTempFx125, hTempFx100, hTempFx80, hTempFx63, hTempFx50, hTempFx40, hTempFx31_5, hTempFx25, hTempFx20};
-        int nVol = equalizerFragment.getArSeek().get(0).getProgress() - 30;
-        float fLevel = nVol;
+        float fLevel = equalizerFragment.getArSeek().get(0).getProgress() - 30;
         if(fLevel == 0) fLevel = 1.0f;
         else if(fLevel < 0) fLevel = (fLevel + 30.0f) / 30.0f;
         else fLevel += 1.0f;
@@ -2257,7 +2237,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             int i = 0;
             File fileForCheck;
             while (true) {
-                strPathTo = activity.getFilesDir() + "/recorded" + String.format("%d", i) + ".mp3";
+                strPathTo = activity.getFilesDir() + "/recorded" + String.format(Locale.getDefault(), "%d", i) + ".mp3";
                 fileForCheck = new File(strPathTo);
                 if (!fileForCheck.exists()) break;
                 i++;
@@ -2266,19 +2246,27 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         else if(nPurpose == 1) // export
         {
             File fileDir = new File(activity.getExternalCacheDir() + "/export");
-            if(!fileDir.exists()) fileDir.mkdir();
+            if(!fileDir.exists()) {
+                if(!fileDir.mkdir()) System.out.println("ディレクトリが作成できませんでした");
+            }
             strPathTo = activity.getExternalCacheDir() + "/export/";
             strPathTo += strFileName + ".mp3";
             File file = new File(strPathTo);
-            if(file.exists()) file.delete();
+            if(file.exists()) {
+                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
+            }
         }
         else // saveSongToGallery
         {
             File fileDir = new File(activity.getExternalCacheDir() + "/export");
-            if(!fileDir.exists()) fileDir.mkdir();
+            if(!fileDir.exists()) {
+                if(!fileDir.mkdir()) System.out.println("ディレクトリが作成できませんでした");
+            }
             strPathTo = activity.getExternalCacheDir() + "/export/export.wav";
             File file = new File(strPathTo);
-            if (file.exists()) file.delete();
+            if (file.exists()) {
+                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
+            }
         }
 
         double _dEnd = BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE));
@@ -2290,7 +2278,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 _dEnd = activity.dLoopB;
         }
         final double dEnd = _dEnd;
-        int hTempEncode = 0;
+        int hTempEncode;
         if(nPurpose == 2) // saveSongToGallery
             hTempEncode = BASSenc.BASS_Encode_Start(hTempStream, strPathTo, BASSenc.BASS_ENCODE_PCM | BASSenc.BASS_ENCODE_FP_16BIT, null, null);
         else
@@ -2337,7 +2325,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         if(bFinish) {
             File file = new File(strPathTo);
-            file.delete();
+            if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             bFinish = false;
             return;
         }
@@ -2353,14 +2341,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
         float fSpeed = controlFragment.fSpeed;
         float fPitch = controlFragment.fPitch;
-        String strSpeed = String.format("%.1f%%", fSpeed + 100);
-        String strPitch = "";
+        String strSpeed = String.format(Locale.getDefault(), "%.1f%%", fSpeed + 100);
+        String strPitch;
         if(fPitch >= 0.05f)
-            strPitch = String.format("♯%.1f", fPitch);
+            strPitch = String.format(Locale.getDefault(), "♯%.1f", fPitch);
         else if(fPitch <= -0.05f)
-            strPitch = String.format("♭%.1f", fPitch * -1);
+            strPitch = String.format(Locale.getDefault(), "♭%.1f", fPitch * -1);
         else {
-            strPitch = String.format("%.1f", fPitch < 0.0f ? fPitch * -1 : fPitch);
+            strPitch = String.format(Locale.getDefault(), "%.1f", fPitch < 0.0f ? fPitch * -1 : fPitch);
             if(strPitch.equals("-0.0")) strPitch = "0.0";
         }
 
@@ -2371,7 +2359,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         else if(fPitch != 0.0f)
             strTitle += "(音程" + strPitch + ")";
 
-        SongItem itemNew = new SongItem(String.format("%d", arSongs.size()+1), strTitle, item.getArtist(), strPathTo);
+        SongItem itemNew = new SongItem(String.format(Locale.getDefault(), "%d", arSongs.size()+1), strTitle, item.getArtist(), strPathTo);
         arSongs.add(itemNew);
         EffectSaver saverNew = new EffectSaver(saver);
         arEffectSavers.add(saverNew);
@@ -2397,14 +2385,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
         float fSpeed = controlFragment.fSpeed;
         float fPitch = controlFragment.fPitch;
-        String strSpeed = String.format("%.1f%%", fSpeed + 100);
-        String strPitch = "";
+        String strSpeed = String.format(Locale.getDefault(), "%.1f%%", fSpeed + 100);
+        String strPitch;
         if(fPitch >= 0.05f)
-            strPitch = String.format("♯%.1f", fPitch);
+            strPitch = String.format(Locale.getDefault(), "♯%.1f", fPitch);
         else if(fPitch <= -0.05f)
-            strPitch = String.format("♭%.1f", fPitch * -1);
+            strPitch = String.format(Locale.getDefault(), "♭%.1f", fPitch * -1);
         else {
-            strPitch = String.format("%.1f", fPitch < 0.0f ? fPitch * -1 : fPitch);
+            strPitch = String.format(Locale.getDefault(), "%.1f", fPitch < 0.0f ? fPitch * -1 : fPitch);
             if(strPitch.equals("-0.0")) strPitch = "0.0";
         }
         if(fSpeed != 0.0f && fPitch != 0.0f)
@@ -2413,9 +2401,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             strTitle += "(速度" + strSpeed + ")";
         else if(fPitch != 0.0f)
             strTitle += "(音程" + strPitch + ")";
-        DateFormat df = new SimpleDateFormat("_yyyyMMdd_HHmmss");
+        DateFormat df = new SimpleDateFormat("_yyyyMMdd_HHmmss", Locale.getDefault());
         Date date = new Date(System.currentTimeMillis());
-        editTitle.setText(strTitle + df.format(date));
+        editTitle.setText(String.format(Locale.getDefault(), "%s%s", strTitle, df.format(date)));
         linearLayout.addView(editTitle);
         builder.setView(linearLayout);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -2448,7 +2436,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         if(bFinish) {
             File file = new File(strPathTo);
-            file.delete();
+            if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             bFinish = false;
             return;
         }
@@ -2457,11 +2445,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         share.setAction(Intent.ACTION_SEND);
         share.setType("audio/mp3");
         File file = new File(strPathTo);
-        Uri uri = FileProvider.getUriForFile(getContext(), "com.edolfzoku.hayaemon2", file);
-        List<ResolveInfo> resInfoList = getContext().getPackageManager().queryIntentActivities(share, PackageManager.MATCH_ALL);
+        Uri uri = FileProvider.getUriForFile(activity, "com.edolfzoku.hayaemon2", file);
+        PackageManager pm = activity.getPackageManager();
+        int flag;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) flag = PackageManager.MATCH_ALL;
+        else flag = PackageManager.MATCH_DEFAULT_ONLY;
+        List<ResolveInfo> resInfoList = pm.queryIntentActivities(share, flag);
         for (ResolveInfo resolveInfo : resInfoList) {
             String packageName = resolveInfo.activityInfo.packageName;
-            getContext().grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            activity.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
         share.putExtra(Intent.EXTRA_STREAM, uri);
         startActivityForResult(Intent.createChooser(share, "他のアプリにエクスポート"), 0);
@@ -2472,15 +2464,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     public void finishSaveSongToGallery(int hTempStream, int hEncode, String strPathTo, AlertDialog alert)
     {
         BASSenc.BASS_Encode_Stop(hEncode);
-        hEncode = 0;
         int nLength = (int)BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE)) + 1;
         BASS.BASS_StreamFree(hTempStream);
-        hTempStream = 0;
 
         if (bFinish) {
             if (alert.isShowing()) alert.dismiss();
             File file = new File(strPathTo);
-            file.delete();
+            if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             bFinish = false;
             return;
         }
@@ -2497,7 +2487,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         if (bFinish) {
             File file = new File(strPathTo);
-            file.delete();
+            if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             bFinish = false;
             return;
         }
@@ -2506,7 +2496,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
         values.put(MediaStore.Video.Media.DURATION, nLength * 1000);
         values.put("_data", strMP4Path);
-        ContentResolver cr = getActivity().getContentResolver();
+        ContentResolver cr = activity.getContentResolver();
         cr.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -2520,11 +2510,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     {
         if(MainActivity.hStream == 0) return;
         BASS.BASS_ChannelPlay(MainActivity.hStream, false);
-        AnimationButton btnPlay = getActivity().findViewById(R.id.btnPlay);
+        AnimationButton btnPlay = activity.findViewById(R.id.btnPlay);
         btnPlay.setContentDescription("一時停止");
         btnPlay.setImageResource(R.drawable.bar_button_pause);
-        AnimationButton btnPlayInPlayingBar = getActivity().findViewById(R.id.btnPlayInPlayingBar);
-        if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
+        AnimationButton btnPlayInPlayingBar = activity.findViewById(R.id.btnPlayInPlayingBar);
+        if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
             btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_pause);
         else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_pause);
         songsAdapter.notifyDataSetChanged();
@@ -2536,11 +2526,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     {
         if(MainActivity.hStream == 0) return;
         BASS.BASS_ChannelPause(MainActivity.hStream);
-        AnimationButton btnPlay = getActivity().findViewById(R.id.btnPlay);
+        AnimationButton btnPlay = activity.findViewById(R.id.btnPlay);
         btnPlay.setContentDescription("再生");
         btnPlay.setImageResource(R.drawable.bar_button_play);
-        AnimationButton btnPlayInPlayingBar = getActivity().findViewById(R.id.btnPlayInPlayingBar);
-        if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
+        AnimationButton btnPlayInPlayingBar = activity.findViewById(R.id.btnPlayInPlayingBar);
+        if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
             btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_play);
         else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_play);
         songsAdapter.notifyDataSetChanged();
@@ -2558,7 +2548,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     public void playNext(boolean bPlay) {
         activity.setWaitEnd(false);
         int nTempPlaying = nPlaying;
-        MainActivity activity = (MainActivity) getActivity();
         ArrayList<SongItem> arSongs = arPlaylists.get(nPlayingPlaylist);
 
         AnimationButton btnShuffle = activity.findViewById(R.id.btnShuffle);
@@ -2592,11 +2581,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
         else if(bShuffle) // シャッフル
         {
-            ArrayList<Integer> arTemp = new ArrayList<Integer>();
+            ArrayList<Integer> arTemp = new ArrayList<>();
             for (int i = 0; i < arPlayed.size(); i++) {
                 if (i == nTempPlaying) continue;
-                Boolean bPlayed = arPlayed.get(i);
-                if (!bPlayed.booleanValue()) {
+                boolean bPlayed = arPlayed.get(i);
+                if (!bPlayed) {
                     arTemp.add(i);
                 }
             }
@@ -2671,13 +2660,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         if(nPlayingPlaylist == nSelectedPlaylist && nPlaying == nSong)
         {
-            if(BASS.BASS_ChannelIsActive(activity.hStream) == BASS.BASS_ACTIVE_PLAYING)
+            if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING)
                 pause();
             else play();
             return;
         }
         if(nPlayingPlaylist != nSelectedPlaylist) {
-            arPlayed = new ArrayList<Boolean>();
+            arPlayed = new ArrayList<>();
             for(int i = 0; i < arSongs.size(); i++)
                 arPlayed.add(false);
         }
@@ -2688,7 +2677,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     public void playSong(int nSong, boolean bPlay)
     {
         activity.setWaitEnd(false);
-        final MainActivity activity = (MainActivity)getActivity();
         activity.clearLoop(false);
 
         boolean bReloadLyrics = false;
@@ -2703,10 +2691,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         else if(nPlayingPlaylist >= arEffects.size()) nPlayingPlaylist = arEffects.size() - 1;
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nPlayingPlaylist);
         if(0 <= nPlaying && nPlaying < arEffectSavers.size() && 0 <= nSong && nSong < arEffectSavers.size()) {
-            if(nPlaying < 0) nPlaying = 0;
-            else if(nPlaying >= arEffectSavers.size()) nPlaying = arEffectSavers.size() - 1;
-            if(nSong < 0) nSong = 0;
-            else if(nSong >= arEffectSavers.size()) nSong = arEffectSavers.size() - 1;
             EffectSaver saverBefore = arEffectSavers.get(nPlaying);
             EffectSaver saverAfter = arEffectSavers.get(nSong);
             if(saverBefore.isSave() && !saverAfter.isSave()) {
@@ -2751,6 +2735,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     fc.position(offset);
                     return true;
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 return false;
             }
@@ -2761,6 +2746,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 try {
                     return fc.read(buffer);
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 return 0;
             }
@@ -2771,6 +2757,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 try {
                     return fc.size();
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 return 0;
             }
@@ -2781,6 +2768,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 try {
                     fc.close();
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         };
@@ -2804,12 +2792,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
                 if(afd == null) return;
                 FileChannel fc = afd.createInputStream().getChannel();
-                if(strMimeType == "audio/mp4")
-                    MainActivity.hStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-                else if(strMimeType == "audio/flac")
-                    MainActivity.hStream = BASSFLAC.BASS_FLAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-                else
-                    MainActivity.hStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                if(strMimeType != null) {
+                    switch (strMimeType) {
+                        case "audio/mp4":
+                            MainActivity.hStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                            break;
+                        case "audio/flac":
+                            MainActivity.hStream = BASSFLAC.BASS_FLAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                            break;
+                        default:
+                            MainActivity.hStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                    }
+                }
+                else MainActivity.hStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
             } catch (Exception e) {
                 removeSong(nPlayingPlaylist, nPlaying);
                 if(nPlaying >= arPlaylists.get(nPlayingPlaylist).size())
@@ -2898,37 +2893,37 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         else
             BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
         MainActivity.hFxVol = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_VOLUME, 0);
-        hFx20K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx16K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx12_5K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx10K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx8K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx6_3K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx5K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx4K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx3_15K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx2_5K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx2K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx1_6K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx1_25K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx1K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx800 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx630 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx500 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx400 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx315 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx250 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx200 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx160 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx125 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx100 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx80 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx63 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx50 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx40 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx31_5 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx25 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        hFx20 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx20K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx16K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx12_5K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx10K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx8K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx6_3K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx5K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx4K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx3_15K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx2_5K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx2K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx1_6K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx1_25K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx1K = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx800 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx630 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx500 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx400 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx315 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx250 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx200 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx160 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx125 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx100 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx80 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx63 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx50 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx40 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx31_5 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx25 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+        int hFx20 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
         EqualizerFragment equalizerFragment = (EqualizerFragment) activity.mSectionsPagerAdapter.getItem(3);
         equalizerFragment.setArHFX(new int[]{hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20});
         if(nPlaying < 0) nPlaying = 0;
@@ -2943,11 +2938,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         activity.setSync();
         if(bPlay)
             BASS.BASS_ChannelPlay(MainActivity.hStream, false);
-        AnimationButton btnPlay = getActivity().findViewById(R.id.btnPlay);
+        AnimationButton btnPlay = activity.findViewById(R.id.btnPlay);
         btnPlay.setContentDescription("一時停止");
         btnPlay.setImageResource(R.drawable.bar_button_pause);
-        AnimationButton btnPlayInPlayingBar = getActivity().findViewById(R.id.btnPlayInPlayingBar);
-        if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
+        AnimationButton btnPlayInPlayingBar = activity.findViewById(R.id.btnPlayInPlayingBar);
+        if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
             btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_pause);
         else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_pause);
         songsAdapter.notifyDataSetChanged();
@@ -2964,12 +2959,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         final SongItem songItem = arSongs.get(nSong);
 
         try {
-            File file = new File(getFilePath(getContext(), Uri.parse(songItem.getPath())));
-            Mp3File mp3file = new Mp3File(file);
-            ID3v2 id3v2Tag;
-            if (mp3file.hasId3v2Tag()) {
-                id3v2Tag = mp3file.getId3v2Tag();
-                return id3v2Tag.getLyrics();
+            String strPath = getFilePath(activity, Uri.parse(songItem.getPath()));
+            if(strPath != null) {
+                File file = new File(strPath);
+                Mp3File mp3file = new Mp3File(file);
+                ID3v2 id3v2Tag;
+                if (mp3file.hasId3v2Tag()) {
+                    id3v2Tag = mp3file.getId3v2Tag();
+                    return id3v2Tag.getLyrics();
+                }
             }
         }
         catch(Exception e) {
@@ -2979,7 +2977,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     @SuppressLint("NewApi")
-    public static String getFilePath(Context context, Uri uri) throws URISyntaxException {
+    public static String getFilePath(Context context, Uri uri) {
         String selection = null;
         String[] selectionArgs = null;
         // Uri is different in versions after KITKAT (Android 4.4), we need to
@@ -3013,15 +3011,21 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             String[] projection = {
                     MediaStore.Images.Media.DATA
             };
-            Cursor cursor = null;
+            Cursor cursor;
             try {
                 cursor = context.getContentResolver()
                         .query(uri, projection, selection, selectionArgs, null);
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                if (cursor.moveToFirst()) {
-                    return cursor.getString(column_index);
+                if(cursor != null) {
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    if (cursor.moveToFirst()) {
+                        String strPath = cursor.getString(column_index);
+                        cursor.close();
+                        return strPath;
+                    }
+                    cursor.close();
                 }
             } catch (Exception e) {
+                e.printStackTrace();
             }
         } else if ("file".equalsIgnoreCase(uri.getScheme())) {
             return uri.getPath();
@@ -3078,14 +3082,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         nPlaying = -1;
         BASS.BASS_ChannelStop(MainActivity.hStream);
         MainActivity.hStream = 0;
-        AnimationButton btnPlay = getActivity().findViewById(R.id.btnPlay);
+        AnimationButton btnPlay = activity.findViewById(R.id.btnPlay);
         btnPlay.setContentDescription("再生");
         btnPlay.setImageResource(R.drawable.bar_button_play);
-        AnimationButton btnPlayInPlayingBar = getActivity().findViewById(R.id.btnPlayInPlayingBar);
-        if(getActivity().findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
+        AnimationButton btnPlayInPlayingBar = activity.findViewById(R.id.btnPlayInPlayingBar);
+        if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
             btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_play);
         else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_play);
-        MainActivity activity = (MainActivity)getActivity();
         activity.clearLoop();
         songsAdapter.notifyDataSetChanged();
         playlistsAdapter.notifyDataSetChanged();
@@ -3114,7 +3117,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             strArtist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
         }
         if(strTitle != null) {
-            SongItem item = new SongItem(String.format("%d", arSongs.size()+1), strTitle, strArtist, uri.toString());
+            SongItem item = new SongItem(String.format(Locale.getDefault(), "%d", arSongs.size()+1), strTitle, strArtist, uri.toString());
             arSongs.add(item);
         }
         else
@@ -3124,7 +3127,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 int startIndex = uri.toString().lastIndexOf('/');
                 strTitle = uri.toString().substring(startIndex + 1);
             }
-            SongItem item = new SongItem(String.format("%d", arSongs.size()+1), strTitle, "", uri.toString());
+            SongItem item = new SongItem(String.format(Locale.getDefault(), "%d", arSongs.size()+1), strTitle, "", uri.toString());
             arSongs.add(item);
         }
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
@@ -3137,21 +3140,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(nSelectedPlaylist == nPlayingPlaylist) arPlayed.add(false);
     }
 
-    public void addVideo(MainActivity activity, Uri uri)
+    @SuppressWarnings("deprecation")
+    public void addVideo(final MainActivity activity, Uri uri)
     {
         if(Build.VERSION.SDK_INT < 18) return;
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        boolean bError = false;
         try {
             mmr.setDataSource(activity.getApplicationContext(), uri);
         }
         catch(Exception e) {
-            bError = true;
+            e.printStackTrace();
             return;
         }
-        String strMimeType = null;
-        if(!bError)
-            strMimeType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
 
         ContentResolver cr = activity.getApplicationContext().getContentResolver();
 
@@ -3159,7 +3159,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         try {
             afd = cr.openAssetFileDescriptor(uri, "r");
         }
-        catch(Exception e) { }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
         if(afd == null) return;
         MediaExtractor extractor = new MediaExtractor();
         try {
@@ -3173,13 +3175,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         int n = 0;
         File fileForCheck;
         while (true) {
-            strPathTo = activity.getFilesDir() + "/recorded" + String.format("%d", n) + ".mp3";
+            strPathTo = activity.getFilesDir() + "/recorded" + String.format(Locale.getDefault(), "%d", n) + ".mp3";
             fileForCheck = new File(strPathTo);
             if (!fileForCheck.exists()) break;
             n++;
         }
         final File file = new File(strPathTo);
-        MediaMuxer muxer = null;
+        MediaMuxer muxer;
         try {
             muxer = new MediaMuxer(strPathTo, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
         }
@@ -3219,7 +3221,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     bufferInfo.flags = MediaCodec.BUFFER_FLAG_SYNC_FRAME;
                 dstBuf.position(bufferInfo.offset);
                 dstBuf.limit(bufferInfo.offset + bufferInfo.size);
-                int trackIndex = extractor.getSampleTrackIndex();
                 muxer.writeSampleData(audioTrackIndex, dstBuf, bufferInfo);
                 extractor.advance();
             }
@@ -3229,7 +3230,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         try {
             afd.close();
         }
-        catch(Exception e) { }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("ギャラリーから追加");
@@ -3238,9 +3242,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         final EditText editTitle = new EditText (activity);
         editTitle.setHint("タイトル");
         editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
-        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         Date date = new Date(System.currentTimeMillis());
-        editTitle.setText("ムービー(" + df.format(date) + ")");
+        editTitle.setText(String.format(Locale.getDefault(), "ムービー(%s)", df.format(date)));
         final EditText editArtist = new EditText (activity);
         editArtist.setHint("アーティスト名");
         editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
@@ -3251,7 +3255,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
-                SongItem item = new SongItem(String.format("%d", arSongs.size()+1), editTitle.getText().toString(), editArtist.getText().toString(), file.getPath());
+                SongItem item = new SongItem(String.format(Locale.getDefault(), "%d", arSongs.size()+1), editTitle.getText().toString(), editArtist.getText().toString(), file.getPath());
                 arSongs.add(item);
                 ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
                 EffectSaver saver = new EffectSaver();
@@ -3266,13 +3270,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         });
         builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                file.delete();
+                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             }
         });
         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                file.delete();
+                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             }
         });
         final AlertDialog alertDialog = builder.create();
@@ -3283,7 +3287,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             {
                 editTitle.requestFocus();
                 editTitle.setSelection(editTitle.getText().toString().length());
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (null != imm) imm.showSoftInput(editTitle, 0);
             }
         });
@@ -3299,7 +3303,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         Uri uri = Uri.parse(song.getPath());
         if(!(uri.getScheme() != null && uri.getScheme().equals("content"))) {
             File file = new File(song.getPath());
-            file.delete();
+            if(!file.delete()) System.out.println("ファイルが削除できませんでした");
         }
 
         arSongs.remove(nSong);
@@ -3307,7 +3311,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         for(int i = nSong; i < arSongs.size(); i++) {
             SongItem songItem = arSongs.get(i);
-            songItem.setNumber(String.format("%d", i+1));
+            songItem.setNumber(String.format(Locale.getDefault(), "%d", i+1));
         }
 
         songsAdapter.notifyDataSetChanged();
@@ -3332,7 +3336,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         switch (scheme) {
             case "content":
                 String[] projection = {MediaStore.MediaColumns.DISPLAY_NAME};
-                Cursor cursor = null;
+                Cursor cursor;
                 try {
                     cursor = context.getContentResolver()
                             .query(uri, projection, null, null, null);
@@ -3350,7 +3354,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 break;
 
             case "file":
-                fileName = new File(uri.getPath()).getName();
+                String strPath = uri.getPath();
+                if(strPath != null) fileName = new File(strPath).getName();
                 break;
 
             default:
@@ -3383,33 +3388,43 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
         if(bPlaylists)
-            preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).commit();
+            preferences.edit().putString("arPlaylists", gson.toJson(arPlaylists)).apply();
         if(bEffects)
-            preferences.edit().putString("arEffects", gson.toJson(arEffects)).commit();
+            preferences.edit().putString("arEffects", gson.toJson(arEffects)).apply();
         if(bLyrics)
-            preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).commit();
+            preferences.edit().putString("arLyrics", gson.toJson(arLyrics)).apply();
         if(bPlaylistNames)
-            preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).commit();
+            preferences.edit().putString("arPlaylistNames", gson.toJson(arPlaylistNames)).apply();
         if(bPlayMode)
         {
             AnimationButton btnShuffle = activity.findViewById(R.id.btnShuffle);
             int nShuffle = 0;
-            if(btnShuffle.getContentDescription().toString().equals("シャッフルなし"))
-                nShuffle = 0;
-            else if(btnShuffle.getContentDescription().toString().equals("シャッフルあり"))
-                nShuffle = 1;
-            else if(btnShuffle.getContentDescription().toString().equals("１曲のみ"))
-                nShuffle = 2;
-            preferences.edit().putInt("shufflemode", nShuffle).commit();
+            switch(btnShuffle.getContentDescription().toString()) {
+                case "シャッフルなし":
+                    nShuffle = 0;
+                    break;
+                case "シャッフルあり":
+                    nShuffle = 1;
+                    break;
+                case "１曲のみ":
+                    nShuffle = 2;
+                    break;
+            }
+            preferences.edit().putInt("shufflemode", nShuffle).apply();
             AnimationButton btnRepeat = activity.findViewById(R.id.btnRepeat);
             int nRepeat = 0;
-            if(btnRepeat.getContentDescription().toString().equals("リピートなし"))
-                nRepeat = 0;
-            else if(btnRepeat.getContentDescription().toString().equals("全曲リピート"))
-                nRepeat = 1;
-            else if(btnRepeat.getContentDescription().toString().equals("１曲リピート"))
-                nRepeat = 2;
-            preferences.edit().putInt("repeatmode", nRepeat).commit();
+            switch(btnRepeat.getContentDescription().toString()) {
+                case "リピートなし":
+                    nRepeat = 0;
+                    break;
+                case "全曲リピート":
+                    nRepeat = 1;
+                    break;
+                case "１曲リピート":
+                    nRepeat = 2;
+                    break;
+            }
+            preferences.edit().putInt("repeatmode", nRepeat).apply();
         }
     }
 
