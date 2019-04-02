@@ -1,5 +1,13 @@
 <resources>
     <string name="app_name">ハヤえもん</string>
-    <string name="action_settings">Settings</string>
+    <string name="controlScreen">コントロール画面</string>
+    <string name="playSetting">再生設定</string>
+    <string name="optionSetting">オプション設定</string>
+    <string name="repeatAB">AB地点を設置したら1曲リピート</string>
+    <string name="snap">ポインターを整数にスナップ</string>
+    <string name="close">閉じる</string>
+    <string name="purchasedItem">課金済みのアイテム</string>
+    <string name="pointerPurple">コントロールポインター - ムラサキウニ</string>
+    <string name="pointerElegant">コントロールポインター - バフンウニ</string>
 
 </resources>

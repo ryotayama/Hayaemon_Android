@@ -665,6 +665,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         preferences.edit().putString("versionname", strCurrentVersionName).apply();
 
         bPlayNextByBPos = preferences.getBoolean("bPlayNextByBPos", false);
+        boolean bSnap = preferences.getBoolean("bSnap", false);
+        ControlFragment controlFragment = (ControlFragment)mSectionsPagerAdapter.getItem(2);
+        controlFragment.setSnap(bSnap);
 
         boolean bHideAds = preferences.getBoolean("hideads", false);
         if(bHideAds) hideAds();

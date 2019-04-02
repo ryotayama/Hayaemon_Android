@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EFEFF4"
     android:clickable="true"
+    android:focusable="true"
     android:paddingBottom="0dp"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
@@ -19,9 +19,9 @@
             android:id="@+id/textSettingTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="オプション設定"
+            android:text="@string/optionSetting"
             android:textColor="#000000"
-            android:textSize="16dp"
+            android:textSize="19sp"
             android:textStyle="bold"
             android:layout_margin="12dp"
             android:layout_centerVertical="true"
@@ -32,12 +32,18 @@
             android:id="@+id/btnCloseSetting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="閉じる"
+            android:text="@string/close"
             android:textColor="#007AFF"
-            android:textSize="15dp"
+            android:textSize="19sp"
             style="@style/Widget.AppCompat.Button.Borderless"
+            android:gravity="center_vertical|end"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/textSettingTitle"
+            android:layout_toEndOf="@+id/textSettingTitle"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             />
 
     </RelativeLayout>
@@ -65,16 +71,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:paddingBottom="16dp"
                 >
 
                 <TextView
-                    android:contentDescription="再生設定"
+                    android:contentDescription="@string/playSetting"
                     android:id="@+id/textPlayHeader"
                     android:background="#EFEFF4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="再生設定"
+                    android:text="@string/playSetting"
                     android:textSize="13sp"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
@@ -105,13 +110,16 @@
                         android:id="@+id/textRepeat"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="AB地点を設置したら1曲リピート"
+                        android:text="@string/repeatAB"
                         android:textSize="18sp"
                         android:textColor="#000"
                         android:layout_marginRight="16dp"
+                        android:layout_marginEnd="16dp"
                         android:layout_toLeftOf="@+id/switchRepeat"
+                        android:layout_toStartOf="@+id/switchRepeat"
                         android:layout_centerVertical="true"
                         android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         />
 
                     <Switch
@@ -120,6 +128,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         />
 
                 </RelativeLayout>
@@ -134,13 +143,90 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/relativeControlSetting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_below="@+id/relativePlaySetting"
+                >
+
+                <TextView
+                    android:id="@+id/textControlHeader"
+                    android:contentDescription="@string/controlScreen"
+                    android:background="#EFEFF4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/controlScreen"
+                    android:textSize="13sp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"/>
+
+                <View
+                    android:id="@+id/viewSepControlHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#BFBFBF"
+                    android:layout_below="@+id/textControlHeader"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSnap"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFF"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:layout_below="@id/viewSepControlHeader"
+                    >
+
+                    <TextView
+                        android:id="@+id/textSnap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/snap"
+                        android:textSize="18sp"
+                        android:textColor="#000"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_toLeftOf="@+id/switchSnap"
+                        android:layout_toStartOf="@+id/switchSnap"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        />
+
+                    <Switch
+                        android:id="@+id/switchSnap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#BFBFBF"
+                    android:layout_below="@+id/relativeSnap"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/relativePurchaseSetting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:stretchColumns="0"
                 android:visibility="gone"
                 android:layout_marginTop="16dp"
-                android:layout_below="@+id/relativePlaySetting"
+                android:layout_below="@+id/relativeControlSetting"
                 >
 
                 <TextView
@@ -148,7 +234,7 @@
                     android:background="#EFEFF4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="課金済みのアイテム"
+                    android:text="@string/purchasedItem"
                     android:textSize="13sp"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
@@ -178,24 +264,30 @@
 
                     <ImageView
                         android:id="@+id/imgPurpleSetting"
+                        android:contentDescription="@string/pointerPurple"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/control_pointer_uni_murasaki"
                         android:layout_marginRight="16dp"
+                        android:layout_marginEnd="16dp"
                         android:layout_centerVertical="true"
                         android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         />
 
                     <TextView
                         android:id="@+id/textPurple"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="コントロールポインター - ムラサキウニ"
+                        android:text="@string/pointerPurple"
                         android:textSize="18sp"
                         android:textColor="#000"
                         android:layout_marginRight="16dp"
+                        android:layout_marginEnd="16dp"
                         android:layout_toRightOf="@+id/imgPurpleSetting"
+                        android:layout_toEndOf="@+id/imgPurpleSetting"
                         android:layout_toLeftOf="@+id/switchPurple"
+                        android:layout_toStartOf="@+id/switchPurple"
                         android:layout_centerVertical="true"
                         />
 
@@ -205,6 +297,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         />
 
                 </RelativeLayout>
@@ -232,24 +325,30 @@
 
                     <ImageView
                         android:id="@+id/imgElegantSetting"
+                        android:contentDescription="@string/pointerElegant"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/control_pointer_uni_bafun"
                         android:layout_marginRight="16dp"
+                        android:layout_marginEnd="16dp"
                         android:layout_centerVertical="true"
                         android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         />
 
                     <TextView
                         android:id="@+id/textElegant"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="コントロールポインター - バフンウニ"
+                        android:text="@string/pointerElegant"
                         android:textSize="18sp"
                         android:textColor="#000"
                         android:layout_marginRight="16dp"
+                        android:layout_marginEnd="16dp"
                         android:layout_toRightOf="@+id/imgElegantSetting"
+                        android:layout_toEndOf="@+id/imgElegantSetting"
                         android:layout_toLeftOf="@+id/switchElegant"
+                        android:layout_toStartOf="@+id/switchElegant"
                         android:layout_centerVertical="true"
                         />
 
@@ -259,6 +358,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         />
 
                 </RelativeLayout>

@@ -59,6 +59,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
         switchRepeat.setChecked(!activity.isPlayNextByBPos());
         switchRepeat.setOnCheckedChangeListener(this);
 
+        Switch switchSnap = activity.findViewById(R.id.switchSnap);
+        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
+        switchSnap.setChecked(controlFragment.isSnap());
+        switchSnap.setOnCheckedChangeListener(this);
+
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Boolean bPurplePurchased = preferences.getBoolean("unipointer_p", false);
         Boolean bElegantPurchased = preferences.getBoolean("unipointer_e", false);
@@ -106,6 +111,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
         if(compoundButton.getId() == R.id.switchRepeat) {
             activity.setPlayNextByBPos(!b);
             preferences.edit().putBoolean("bPlayNextByBPos", activity.isPlayNextByBPos()).apply();
+        }
+        else if(compoundButton.getId() == R.id.switchSnap) {
+            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
+            controlFragment.setSnap(b);
+            preferences.edit().putBoolean("bSnap", b).apply();
         }
         else if(compoundButton.getId() == R.id.switchPurple) {
             Switch switchElegant = activity.findViewById(R.id.switchElegant);

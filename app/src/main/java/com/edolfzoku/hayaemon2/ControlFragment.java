@@ -50,8 +50,12 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     boolean bLink = false;
     boolean bLockSpeed = false;
     boolean bLockPitch = false;
+    boolean bSnap = false;
     private boolean isContinue = true;
     private Handler handler;
+
+    public boolean isSnap() { return bSnap; }
+    public void setSnap(boolean bSnap) { this.bSnap = bSnap; }
 
     public ControlFragment()
     {
@@ -562,6 +566,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
                 if(fX >= nBkLeft + nBkWidth / 2) fSpeed = (fDX / fBkHalfWidth) * fMaxSpeed;
                 else fSpeed = (fDX / fBkHalfWidth) * -fMinSpeed;
+                if(bSnap) fSpeed = Math.round(fSpeed);
                 setSpeed(fSpeed);
             }
 
@@ -576,6 +581,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 float fMaxPitch = 12.0f;
                 float fMinPitch = -12.0f;
                 fPitch = ((fDY / fBkHeight) * (fMaxPitch - fMinPitch) + fMinPitch) * -1;
+                if(bSnap) fPitch = Math.round(fPitch);
                 if(MainActivity.hStream != 0)
                     BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, fPitch);
 
