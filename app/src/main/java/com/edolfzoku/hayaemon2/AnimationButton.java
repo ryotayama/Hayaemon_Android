@@ -7,6 +7,10 @@ import android.view.animation.ScaleAnimation;
 
 public class AnimationButton extends android.support.v7.widget.AppCompatImageButton
 {
+    boolean bAnimation = true;
+
+    public void setAnimation(boolean bAnimation) { this.bAnimation = bAnimation; }
+
     public AnimationButton(Context context, AttributeSet attr)
     {
         super(context, attr);
@@ -15,6 +19,8 @@ public class AnimationButton extends android.support.v7.widget.AppCompatImageBut
     @Override
     public void setPressed(boolean pressed)
     {
+        if(!bAnimation) return;
+
         if (pressed) {
             /* 押してる時 */
             ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 0.9f / 1.0f, 1.0f, 0.9f / 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);

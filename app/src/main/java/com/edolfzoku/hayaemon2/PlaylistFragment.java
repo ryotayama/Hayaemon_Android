@@ -44,6 +44,7 @@ import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaMuxer;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -1174,8 +1175,114 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 songsAdapter.notifyDataSetChanged();
             }
         }
+        else if(requestCode == 3)
+        {
+            if(resultCode == RESULT_OK)
+            {
+                final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                if(Build.VERSION.SDK_INT < 19)
+                    setArtwork(data.getData());
+                else
+                {
+                    if(data.getClipData() == null)
+                    {
+                        setArtwork(data.getData());
+                        Uri uri = data.getData();
+                        if(uri != null)
+                            activity.getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                    }
+                    else
+                    {
+                        for(int i = 0; i < data.getClipData().getItemCount(); i++)
+                        {
+                            Uri uri = data.getClipData().getItemAt(i).getUri();
+                            setArtwork(uri);
+                            activity.getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                        }
+                    }
+                }
+                songsAdapter.notifyDataSetChanged();
+            }
+        }
 
         saveFiles(true, true, true, true, false);
+    }
+
+    public void setArtwork(Uri uri)
+    {
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        SongItem song = arSongs.get(nSelectedItem);
+        if(song.getPathArtwork() != null) {
+            File fileBefore = new File(song.getPathArtwork());
+            if (fileBefore.exists()) {
+                if (!fileBefore.delete()) System.out.println("ファイルの削除に失敗しました");
+                song.setPathArtwork(null);
+            }
+        }
+
+        Bitmap bitmap;
+        int nArtworkSize = getResources().getDisplayMetrics().widthPixels / 2;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+        }catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        bitmap = ThumbnailUtils.extractThumbnail(bitmap, nArtworkSize, nArtworkSize, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+        AnimationButton btnArtworkInPlayingBar = activity.findViewById(R.id.btnArtworkInPlayingBar);
+        btnArtworkInPlayingBar.setImageBitmap(bitmap);
+        String strPathTo;
+        int i = 0;
+        File file;
+        while (true) {
+            strPathTo = activity.getFilesDir() + "/artwork" +  String.format(Locale.getDefault(), "%d", i) + ".png";
+            file = new File(strPathTo);
+            if (!file.exists()) break;
+            i++;
+        }
+
+        try {
+            FileOutputStream outStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+            outStream.close();
+            song.setPathArtwork(strPathTo);
+            saveFiles(true, false, false, false, false);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void resetArtwork()
+    {
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        SongItem item = arSongs.get(nSelectedItem);
+        if(item.getPathArtwork() != null) {
+            File fileBefore = new File(item.getPathArtwork());
+            if (fileBefore.exists()) {
+                if (!fileBefore.delete()) System.out.println("ファイルの削除に失敗しました");
+            }
+        }
+        item.setPathArtwork(null);
+        AnimationButton btnArtworkInPlayingBar = activity.findViewById(R.id.btnArtworkInPlayingBar);
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        Bitmap bitmap = null;
+        boolean bError = false;
+        try {
+            mmr.setDataSource(activity, Uri.parse(item.getPath()));
+        }
+        catch(Exception e) {
+            bError = true;
+        }
+        if(!bError) {
+            byte[] data = mmr.getEmbeddedPicture();
+            if(data != null) {
+                bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            }
+        }
+        if(bitmap != null) btnArtworkInPlayingBar.setImageBitmap(bitmap);
+        else btnArtworkInPlayingBar.setImageResource(R.drawable.playing_large_artwork);
+        saveFiles(true, false, false, false, false);
     }
     
     public void showSongMenu(final int nItem)
@@ -2820,24 +2927,28 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(MainActivity.hStream == 0) return;
 
         final RelativeLayout relativePlaying = activity.findViewById(R.id.relativePlaying);
-        ImageView imgViewArtworkInPlayingBar = activity.findViewById(R.id.imgViewArtworkInPlayingBar);
-        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        AnimationButton btnArtworkInPlayingBar = activity.findViewById(R.id.btnArtworkInPlayingBar);
         Bitmap bitmap = null;
-        boolean bError = false;
-        try {
-            mmr.setDataSource(activity.getApplicationContext(), Uri.parse(item.getPath()));
+        if(item.getPathArtwork() != null && !item.getPathArtwork().equals("")) {
+            bitmap = BitmapFactory.decodeFile(item.getPathArtwork());
         }
-        catch(Exception e) {
-            bError = true;
-        }
-        if(!bError) {
-            byte[] data = mmr.getEmbeddedPicture();
-            if(data != null) {
-                bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+        else {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            boolean bError = false;
+            try {
+                mmr.setDataSource(activity.getApplicationContext(), Uri.parse(item.getPath()));
+            } catch (Exception e) {
+                bError = true;
+            }
+            if (!bError) {
+                byte[] data = mmr.getEmbeddedPicture();
+                if (data != null) {
+                    bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                }
             }
         }
-        if(bitmap != null) imgViewArtworkInPlayingBar.setImageBitmap(bitmap);
-        else imgViewArtworkInPlayingBar.setImageResource(R.drawable.playing_large_artwork);
+        if(bitmap != null) btnArtworkInPlayingBar.setImageBitmap(bitmap);
+        else btnArtworkInPlayingBar.setImageResource(R.drawable.playing_large_artwork);
         TextView textTitleInPlayingBar = activity.findViewById(R.id.textTitleInPlayingBar);
         textTitleInPlayingBar.setText(item.getTitle());
         TextView textArtistInPlayingBar = activity.findViewById(R.id.textArtistInPlayingBar);

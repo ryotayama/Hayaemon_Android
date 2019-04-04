@@ -24,6 +24,7 @@ public class SongItem {
     private String strArtist;
     private String strPath;
     private float fPeak;
+    private String strPathArtwork;
 
     void setNumber(String strNumber) { this.strNumber = strNumber; }
     String getNumber() { return strNumber; }
@@ -35,6 +36,8 @@ public class SongItem {
     public String getPath() { return strPath; }
     void setPeak(float fPeak) { this.fPeak = fPeak; }
     float getPeak() { return fPeak; }
+    void setPathArtwork(String strPathArtwork) { this.strPathArtwork = strPathArtwork; }
+    public String getPathArtwork() { return strPathArtwork; }
 
     SongItem(String strNumber, String strTitle, String strArtist, String strPath)
     {

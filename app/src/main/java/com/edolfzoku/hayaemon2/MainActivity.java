@@ -294,6 +294,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         relativePlaying.setOnClickListener(this);
         gestureDetector = new GestureDetector(this, new SingleTapConfirm());
         relativePlaying.setOnTouchListener(this);
+
+        final AnimationButton btnArtwork = findViewById(R.id.btnArtworkInPlayingBar);
+        btnArtwork.setAnimation(false);
+        btnArtwork.setClickable(false);
     }
 
     private class SingleTapConfirm extends GestureDetector.SimpleOnGestureListener
@@ -973,19 +977,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 SongItem item = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist()).get(playlistFragment.getPlaying());
                 ImageView imgViewArtworkInMenu = findViewById(R.id.imgViewArtworkInMenu);
-                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
                 Bitmap bitmap = null;
-                boolean bError = false;
-                try {
-                    mmr.setDataSource(getApplicationContext(), Uri.parse(item.getPath()));
+                if(item.getPathArtwork() != null && !item.getPathArtwork().equals("")) {
+                    bitmap = BitmapFactory.decodeFile(item.getPathArtwork());
                 }
-                catch(Exception e) {
-                    bError = true;
-                }
-                if(!bError) {
-                    byte[] data = mmr.getEmbeddedPicture();
-                    if(data != null) {
-                        bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                else {
+                    MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                    boolean bError = false;
+                    try {
+                        mmr.setDataSource(getApplicationContext(), Uri.parse(item.getPath()));
+                    } catch (Exception e) {
+                        bError = true;
+                    }
+                    if (!bError) {
+                        byte[] data = mmr.getEmbeddedPicture();
+                        if (data != null) {
+                            bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        }
                     }
                 }
                 if(bitmap != null) imgViewArtworkInMenu.setImageBitmap(bitmap);
@@ -1309,6 +1317,69 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final SeekBar seekCurPos = findViewById(R.id.seekCurPos);
         final RelativeLayout relativePlaying = findViewById(R.id.relativePlaying);
         relativePlaying.setOnClickListener(null);
+        final AnimationButton btnArtwork = findViewById(R.id.btnArtworkInPlayingBar);
+        final Activity activity = this;
+        btnArtwork.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final int nPlaying = playlistFragment.getPlaying();
+                playlistFragment.setSelectedItem(nPlaying);
+                final SongItem item = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist()).get(nPlaying);
+                final BottomMenu menu = new BottomMenu(activity);
+                menu.setTitle("アートワークを変更");
+                menu.addMenu("ギャラリーから設定", R.drawable.actionsheet_film, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        menu.dismiss();
+                        if (Build.VERSION.SDK_INT < 19)
+                        {
+                            final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                            intent.setType("image/*");
+                            playlistFragment.startActivityForResult(intent, 3);
+                        }
+                        else
+                        {
+                            final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                            intent.addCategory(Intent.CATEGORY_OPENABLE);
+                            intent.setType("image/*");
+                            playlistFragment.startActivityForResult(intent, 3);
+                        }
+                    }
+                });
+                if(item.getPathArtwork() != null && !item.getPathArtwork().equals("")) {
+                    menu.addDestructiveMenu("アートワークをリセット", R.drawable.actionsheet_initialize, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                        menu.dismiss();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                            builder.setTitle("アートワークをリセット");
+                            builder.setMessage("アートワークをリセットすると、現在の画像が消えてしまいますが、よろしいでしょうか？");
+                            builder.setPositiveButton("やめる", null);
+                            builder.setNegativeButton("リセットする", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    playlistFragment.resetArtwork();
+                                }
+                            });
+                            final AlertDialog alertDialog = builder.create();
+                            alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                            {
+                                @Override
+                                public void onShow(DialogInterface arg0)
+                                {
+                                    Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                                    negativeButton.setTextColor(Color.argb(255, 255, 0, 0));
+                                }
+                            });
+                            alertDialog.show();
+                            }
+                    });
+                }
+                menu.setCancelMenu();
+                menu.show();
+            }
+        });
+        btnArtwork.setAnimation(true);
+        btnArtwork.setClickable(true);
         final long lDuration = 400;
         int nScreenWidth = getResources().getDisplayMetrics().widthPixels;
         relativePlaying.setBackgroundResource(R.drawable.playingview);
@@ -1327,7 +1398,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final TabLayout tabLayout = findViewById(R.id.tabs);
         final View viewSep2 = findViewById(R.id.viewSep2);
         final AdView adView = findViewById(R.id.adView);
-        final ImageView imgViewArtwork = findViewById(R.id.imgViewArtworkInPlayingBar);
         final TextView textTitle = findViewById(R.id.textTitleInPlayingBar);
         final TextView textArtist = findViewById(R.id.textArtistInPlayingBar);
         final AnimationButton btnPlay = findViewById(R.id.btnPlayInPlayingBar);
@@ -1353,7 +1423,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final int nTranslationY = 0;
         final int nRelativePlayingHeightFrom = relativePlaying.getHeight();
         final int nRelativePlayingHeight = getResources().getDisplayMetrics().heightPixels - tabLayout.getHeight() - findViewById(R.id.linearControl).getHeight() - getStatusBarHeight() + (int) (16.0 * getResources().getDisplayMetrics().density + 0.5);
-        final int nArtworkWidthFrom = imgViewArtwork.getWidth();
+        final int nArtworkWidthFrom = btnArtwork.getWidth();
         final int nArtworkWidth = nScreenWidth / 2;
         final int nArtworkMarginFrom = (int) (8.0 * getResources().getDisplayMetrics().density + 0.5);
         final int nArtworkLeftMargin = nScreenWidth / 2 - nArtworkWidth / 2;
@@ -1393,10 +1463,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 advanceAnimation(viewSep2, "bottomMargin", 0, tabLayout.getHeight(), fProgress);
                 relativePlaying.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
                 advanceAnimation(relativePlaying, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
-                advanceAnimation(imgViewArtwork, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
-                advanceAnimation(imgViewArtwork, "height", nArtworkWidthFrom, nArtworkWidth, fProgress);
-                advanceAnimation(imgViewArtwork, "leftMargin", nArtworkMarginFrom, nArtworkLeftMargin, fProgress);
-                advanceAnimation(imgViewArtwork, "topMargin", nArtworkMarginFrom, nArtworkTopMargin, fProgress);
+                advanceAnimation(btnArtwork, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
+                advanceAnimation(btnArtwork, "height", nArtworkWidthFrom, nArtworkWidth, fProgress);
+                advanceAnimation(btnArtwork, "leftMargin", nArtworkMarginFrom, nArtworkLeftMargin, fProgress);
+                advanceAnimation(btnArtwork, "topMargin", nArtworkMarginFrom, nArtworkTopMargin, fProgress);
                 advanceAnimation(textTitle, "width", nTitleWidthFrom, nTitleWidth, fProgress);
                 advanceAnimation(textTitle, "topMargin", nTitleTopMarginFrom, nTitleTopMargin, fProgress);
                 advanceAnimation(textTitle, "leftMargin", nTitleLeftMarginFrom, nTitleMargin, fProgress);
@@ -1461,7 +1531,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final TabLayout tabLayout = findViewById(R.id.tabs);
         final View viewSep2 = findViewById(R.id.viewSep2);
         final AdView adView = findViewById(R.id.adView);
-        final ImageView imgViewArtwork = findViewById(R.id.imgViewArtworkInPlayingBar);
+        final AnimationButton btnArtwork = findViewById(R.id.btnArtworkInPlayingBar);
         final TextView textTitle = findViewById(R.id.textTitleInPlayingBar);
         final TextView textArtist = findViewById(R.id.textArtistInPlayingBar);
         final AnimationButton btnPlay = findViewById(R.id.btnPlayInPlayingBar);
@@ -1473,7 +1543,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final AnimationButton btnShuffle = findViewById(R.id.btnShuffleInPlayingBar);
         final AnimationButton btnRepeat = findViewById(R.id.btnRepeatInPlayingBar);
 
-        final RelativeLayout.LayoutParams paramArtwork = (RelativeLayout.LayoutParams) imgViewArtwork.getLayoutParams();
+        final RelativeLayout.LayoutParams paramArtwork = (RelativeLayout.LayoutParams) btnArtwork.getLayoutParams();
         final RelativeLayout.LayoutParams paramTitle = (RelativeLayout.LayoutParams) textTitle.getLayoutParams();
         final RelativeLayout.LayoutParams paramArtist = (RelativeLayout.LayoutParams) textArtist.getLayoutParams();
         final RelativeLayout.LayoutParams paramBtnPlay = (RelativeLayout.LayoutParams) btnPlay.getLayoutParams();
@@ -1485,7 +1555,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int nTempRelativePlayingHeight = (int) (82.0 * getResources().getDisplayMetrics().density + 0.5);
         if(bBottom) nTempRelativePlayingHeight = 0;
         final int nRelativePlayingHeight = nTempRelativePlayingHeight;
-        final int nArtworkWidthFrom = imgViewArtwork.getWidth();
+        final int nArtworkWidthFrom = btnArtwork.getWidth();
         final int nArtworkWidth = (int) (44.0 * getResources().getDisplayMetrics().density + 0.5);
         final int nArtworkLeftMarginFrom = paramArtwork.leftMargin;
         final int nArtworkLeftMargin = (int) (8.0 * getResources().getDisplayMetrics().density + 0.5);
@@ -1527,10 +1597,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 advanceAnimation(viewSep2, "bottomMargin", tabLayout.getHeight(), 0, fProgress);
                 relativePlaying.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
                 advanceAnimation(relativePlaying, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
-                advanceAnimation(imgViewArtwork, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
-                advanceAnimation(imgViewArtwork, "height", nArtworkWidthFrom, nArtworkWidth, fProgress);
-                advanceAnimation(imgViewArtwork, "leftMargin", nArtworkLeftMarginFrom, nArtworkLeftMargin, fProgress);
-                advanceAnimation(imgViewArtwork, "topMargin", nArtworkTopMarginFrom, nArtworkTopMargin, fProgress);
+                advanceAnimation(btnArtwork, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
+                advanceAnimation(btnArtwork, "height", nArtworkWidthFrom, nArtworkWidth, fProgress);
+                advanceAnimation(btnArtwork, "leftMargin", nArtworkLeftMarginFrom, nArtworkLeftMargin, fProgress);
+                advanceAnimation(btnArtwork, "topMargin", nArtworkTopMarginFrom, nArtworkTopMargin, fProgress);
                 advanceAnimation(textTitle, "width", nTitleWidthFrom, nTitleWidth, fProgress);
                 advanceAnimation(textTitle, "topMargin", nTitleTopMarginFrom, (int) (14.0 * getResources().getDisplayMetrics().density + 0.5), fProgress);
                 advanceAnimation(textTitle, "leftMargin", nTitleLeftMarginFrom, (int) (60.0 * getResources().getDisplayMetrics().density + 0.5), fProgress);
@@ -1575,6 +1645,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnRepeat.clearAnimation();
                 btnRepeat.setVisibility(View.GONE);
                 relativePlaying.setOnClickListener(activity);
+                btnArtwork.setOnClickListener(null);
+                btnArtwork.setAnimation(false);
+                btnArtwork.setClickable(false);
 
                 final PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
                 RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams) findViewById(R.id.container).getLayoutParams();
