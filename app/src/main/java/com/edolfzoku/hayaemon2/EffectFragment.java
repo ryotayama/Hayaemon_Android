@@ -1759,34 +1759,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             };
 
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            boolean bError = false;
             try {
                 mmr.setDataSource(getContext(), Uri.parse(song.getPath()));
             }
             catch(Exception e) {
-                bError = true;
+                e.printStackTrace();
             }
-            String strMimeType = null;
-            if(!bError)
-                strMimeType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
             ContentResolver cr = activity.getContentResolver();
             try {
                 AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(song.getPath()), "r");
                 if(afd != null) {
                     FileChannel fc = afd.createInputStream().getChannel();
-                    if(strMimeType != null) {
-                        switch (strMimeType) {
-                            case "audio/mp4":
-                                hTempStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, fileprocs, fc);
-                                break;
-                            case "audio/flac":
-                                hTempStream = BASSFLAC.BASS_FLAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, fileprocs, fc);
-                                break;
-                            default:
-                                hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, fileprocs, fc);
-                        }
-                    }
-                    else hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, fileprocs, fc);
+                    hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, fileprocs, fc);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

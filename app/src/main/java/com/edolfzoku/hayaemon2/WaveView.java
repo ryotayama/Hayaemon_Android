@@ -314,27 +314,18 @@ public class WaveView extends View {
             };
 
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            boolean bError = false;
             try {
                 mmr.setDataSource(getContext(), Uri.parse(strPath));
             }
             catch(Exception e) {
-                bError = true;
+                e.printStackTrace();
             }
-            String strMimeType = null;
-            if(!bError)
-                strMimeType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
             ContentResolver cr = getContext().getContentResolver();
             try {
                 AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
                 if(afd != null) {
                     FileChannel fc = afd.createInputStream().getChannel();
-                    if (strMimeType != null && strMimeType.equals("audio/mp4"))
-                        hTempStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-                    else if (strMimeType != null && strMimeType.equals("audio/flac"))
-                        hTempStream = BASSFLAC.BASS_FLAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-                    else
-                        hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                    hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

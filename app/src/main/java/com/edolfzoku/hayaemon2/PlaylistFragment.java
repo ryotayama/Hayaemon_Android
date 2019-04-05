@@ -2233,35 +2233,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         Uri uri = Uri.parse(strPath);
         if(uri.getScheme() != null && uri.getScheme().equals("content")) {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            boolean bError = false;
             try {
                 mmr.setDataSource(activity.getApplicationContext(), Uri.parse(strPath));
             }
             catch(Exception e) {
-                bError = true;
+                e.printStackTrace();
             }
-            String strMimeType = null;
-            if(!bError)
-                strMimeType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
             ContentResolver cr = activity.getApplicationContext().getContentResolver();
 
             try {
                 AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
                 if(afd == null) return;
                 FileChannel fc = afd.createInputStream().getChannel();
-                if(strMimeType != null) {
-                    switch (strMimeType) {
-                        case "audio/mp4":
-                            _hTempStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-                            break;
-                        case "audio/flac":
-                            _hTempStream = BASSFLAC.BASS_FLAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-                            break;
-                        default:
-                            _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-                    }
-                }
-                else _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
             } catch (Exception e) {
                 return;
             }
@@ -2883,35 +2867,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         Uri uri = Uri.parse(strPath);
         if(uri.getScheme() != null && uri.getScheme().equals("content")) {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            boolean bError = false;
             try {
                 mmr.setDataSource(activity.getApplicationContext(), Uri.parse(strPath));
             }
             catch(Exception e) {
-                bError = true;
+                e.printStackTrace();
             }
-            String strMimeType = null;
-            if(!bError)
-                strMimeType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
             ContentResolver cr = activity.getApplicationContext().getContentResolver();
 
             try {
                 AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
                 if(afd == null) return;
                 FileChannel fc = afd.createInputStream().getChannel();
-                if(strMimeType != null) {
-                    switch (strMimeType) {
-                        case "audio/mp4":
-                            MainActivity.hStream = BASS_AAC.BASS_AAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-                            break;
-                        case "audio/flac":
-                            MainActivity.hStream = BASSFLAC.BASS_FLAC_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-                            break;
-                        default:
-                            MainActivity.hStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
-                    }
-                }
-                else MainActivity.hStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                MainActivity.hStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
             } catch (Exception e) {
                 removeSong(nPlayingPlaylist, nPlaying);
                 if(nPlaying >= arPlaylists.get(nPlayingPlaylist).size())
