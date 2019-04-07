@@ -126,9 +126,6 @@ public class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
         WaveView waveView = waveViewRef.get();
         waveView.invalidate();
         MainActivity activity = (MainActivity)waveView.getLoopFragment().getActivity();
-        if(activity != null) {
-            PlaylistFragment playlistFragment = (PlaylistFragment) activity.mSectionsPagerAdapter.getItem(0);
-            playlistFragment.setPeak(fPeak);
-        }
+        if(activity != null) activity.playlistFragment.setPeak(fPeak);
     }
 }

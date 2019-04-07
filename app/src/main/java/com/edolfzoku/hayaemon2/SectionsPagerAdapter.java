@@ -18,25 +18,27 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
     private PlaylistFragment playlistFragment;
-    private ControlFragment controlFragment;
     private LoopFragment loopFragment;
+    private ControlFragment controlFragment;
     private EqualizerFragment equalizerFragment;
     private EffectFragment effectFragment;
 
-    SectionsPagerAdapter(FragmentManager fm)
+    SectionsPagerAdapter(Context context, FragmentManager fm)
     {
         super(fm);
-        playlistFragment = new PlaylistFragment();
-        controlFragment = new ControlFragment();
-        loopFragment = new LoopFragment();
-        equalizerFragment = new EqualizerFragment();
-        effectFragment = new EffectFragment();
+        MainActivity activity = (MainActivity)context;
+        playlistFragment = activity.playlistFragment == null ? new PlaylistFragment() : activity.playlistFragment;
+        loopFragment = activity.loopFragment == null ? new LoopFragment() : activity.loopFragment;
+        controlFragment = activity.controlFragment == null ? new ControlFragment() : activity.controlFragment;
+        equalizerFragment = activity.equalizerFragment == null ? new EqualizerFragment() : activity.equalizerFragment;
+        effectFragment = activity.effectFragment == null ? new EffectFragment() : activity.effectFragment;
     }
 
     @Override

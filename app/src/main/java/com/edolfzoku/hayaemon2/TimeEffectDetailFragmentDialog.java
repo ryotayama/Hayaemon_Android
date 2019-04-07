@@ -39,14 +39,13 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
 
     @Override
     public @NonNull Dialog onCreateDialog(Bundle savedInstanceState) {
-        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
         LayoutInflater inflater = activity.getLayoutInflater();
         View view = inflater.inflate(R.layout.timeeffectdetailpicker, (ViewGroup)activity.findViewById(R.id.layout_root), false);
         float fTime;
         TextView textEffectName = activity.findViewById(R.id.textEffectName);
         if(textEffectName.getText().toString().equals("だんだん速く"))
-            fTime = effectFragment.getTimeOfIncreaseSpeed();
-        else fTime = effectFragment.getTimeOfDecreaseSpeed();
+            fTime = activity.effectFragment.getTimeOfIncreaseSpeed();
+        else fTime = activity.effectFragment.getTimeOfDecreaseSpeed();
         int nInt = (int)fTime;
         int nDecimal = (int)((fTime - (float)nInt) * 10.0f + 0.05f);
         String strInt;
@@ -71,11 +70,10 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
                     decimalNumberPicker.setValue(8);
                 }
 
-                EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
                 TextView textEffectName = activity.findViewById(R.id.textEffectName);
                 if(textEffectName.getText().toString().equals("だんだん速く"))
-                    effectFragment.setTimeOfIncreaseSpeed(fTime);
-                else effectFragment.setTimeOfDecreaseSpeed(fTime);
+                    activity.effectFragment.setTimeOfIncreaseSpeed(fTime);
+                else activity.effectFragment.setTimeOfDecreaseSpeed(fTime);
             }
         });
         for(int i = 0; i < arInts.length; i++)
@@ -99,11 +97,10 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
                     numberPicker.setValue(8);
                 }
 
-                EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
                 TextView textEffectName = activity.findViewById(R.id.textEffectName);
                 if(textEffectName.getText().toString().equals("だんだん速く"))
-                    effectFragment.setTimeOfIncreaseSpeed(fTime);
-                else effectFragment.setTimeOfDecreaseSpeed(fTime);
+                    activity.effectFragment.setTimeOfIncreaseSpeed(fTime);
+                else activity.effectFragment.setTimeOfDecreaseSpeed(fTime);
             }
         });
         for(int i = 0; i < arDecimals.length; i++)
@@ -118,8 +115,7 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-                effectFragment.clearFocus();
+                activity.effectFragment.clearFocus();
             }
         });
         builder.setView(view);
@@ -128,7 +124,6 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
 
     @Override
     public void onCancel(DialogInterface dialog) {
-        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-        effectFragment.clearFocus();
+        activity.effectFragment.clearFocus();
     }
 }

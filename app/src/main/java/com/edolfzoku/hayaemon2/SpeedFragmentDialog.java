@@ -55,10 +55,9 @@ public class SpeedFragmentDialog extends DialogFragment {
 
     @Override
     public @NonNull Dialog onCreateDialog(Bundle savedInstanceState) {
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
         LayoutInflater inflater = activity.getLayoutInflater();
         View view = inflater.inflate(R.layout.speedpicker, (ViewGroup)activity.findViewById(R.id.layout_root), false);
-        float fSpeed = controlFragment.fSpeed + 100;
+        float fSpeed = activity.controlFragment.fSpeed + 100;
         int nIntSpeed = (int)fSpeed;
         int nDecimalSpeed = (int)((fSpeed - (float)nIntSpeed) * 10.0f + 0.05f);
         String strIntSpeed;
@@ -102,15 +101,13 @@ public class SpeedFragmentDialog extends DialogFragment {
                 float fSpeed = Float.parseFloat(strSpeed);
                 fSpeed -= 100;
 
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-                controlFragment.setSpeed(fSpeed);
+                activity.controlFragment.setSpeed(fSpeed);
             }
         });
         builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-                controlFragment.clearFocus();
+                activity.controlFragment.clearFocus();
             }
         });
         builder.setView(view);
@@ -119,7 +116,6 @@ public class SpeedFragmentDialog extends DialogFragment {
 
     @Override
     public void onCancel(DialogInterface dialog) {
-        ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(2);
-        controlFragment.clearFocus();
+        activity.controlFragment.clearFocus();
     }
 }

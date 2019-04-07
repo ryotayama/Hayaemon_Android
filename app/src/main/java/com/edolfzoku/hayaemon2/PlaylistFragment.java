@@ -81,8 +81,6 @@ import com.google.gson.Gson;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 import com.un4seen.bass.BASS;
-import com.un4seen.bass.BASS_AAC;
-import com.un4seen.bass.BASSFLAC;
 import com.un4seen.bass.BASS_FX;
 import com.un4seen.bass.BASSenc;
 import com.un4seen.bass.BASSenc_MP3;
@@ -191,15 +189,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        tabAdapter = new PlaylistTabAdapter(activity, R.layout.playlist_tab_item, arPlaylistNames);
-        playlistsAdapter = new PlaylistsAdapter(activity, R.layout.playlist_item, arPlaylistNames);
-        if(nSelectedPlaylist < arPlaylists.size()) {
-            songsAdapter = new SongsAdapter(activity, R.layout.song_item, arPlaylists.get(nSelectedPlaylist));
-        }
-        else {
-            songsAdapter = new SongsAdapter(activity, R.layout.song_item);
-        }
     }
 
     @Override
@@ -316,10 +305,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         else if(v.getId() == R.id.btnRewind)
         {
             if(MainActivity.hStream == 0) return;
-            EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-            if(!effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) > activity.dLoopA + 1.0)
+            if(!activity.effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) > activity.dLoopA + 1.0)
                 BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA), BASS.BASS_POS_BYTE);
-            else if(effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) < activity.dLoopA - 1.0)
+            else if(activity.effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) < activity.dLoopA - 1.0)
                 BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB), BASS.BASS_POS_BYTE);
             else
                 playPrev();
@@ -555,13 +543,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(v.getId() == R.id.btnPlay) {
             final BottomMenu menu = new BottomMenu(activity);
             menu.setTitle("再生／停止");
-            final EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-            if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING || effectFragment.isReverse()) {
+            if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING || activity.effectFragment.isReverse()) {
                 menu.addMenu("再生", R.drawable.ic_actionsheet_play, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                     menu.dismiss();
-                    if(effectFragment.isReverse()) effectFragment.onEffectItemClick(EffectFragment.kEffectTypeReverse);
+                    if(activity.effectFragment.isReverse()) activity.effectFragment.onEffectItemClick(EffectFragment.kEffectTypeReverse);
                     if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED)
                         play();
                     else if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING) {
@@ -580,19 +567,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     }
                 });
             }
-            if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING || !effectFragment.isReverse()) {
+            if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING || !activity.effectFragment.isReverse()) {
                 menu.addMenu("逆回転再生", R.drawable.ic_actionsheet_reverse, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
-                        if(!effectFragment.isReverse()) effectFragment.onEffectItemClick(EffectFragment.kEffectTypeReverse);
+                        if(!activity.effectFragment.isReverse()) activity.effectFragment.onEffectItemClick(EffectFragment.kEffectTypeReverse);
                         if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED)
                             play();
                         else if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING) {
                             bForceReverse = true;
                             onPlayBtnClicked();
                         }
-                        }
+                    }
                 });
             }
             if(MainActivity.hStream != 0) {
@@ -620,8 +607,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             {
                 double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                 double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
-                EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-                if(!effectFragment.isReverse() && dPos >= dLength - 0.75) {
+                if(!activity.effectFragment.isReverse() && dPos >= dLength - 0.75) {
                     play();
                     activity.onEnded(false);
                 }
@@ -1043,6 +1029,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
+
+        activity = (MainActivity)getActivity();
+        if(activity == null) return;
+
+        tabAdapter = new PlaylistTabAdapter(activity, R.layout.playlist_tab_item, arPlaylistNames);
+        playlistsAdapter = new PlaylistsAdapter(activity, R.layout.playlist_item, arPlaylistNames);
+        if (nSelectedPlaylist < arPlaylists.size())
+            songsAdapter = new SongsAdapter(activity, R.layout.song_item, arPlaylists.get(nSelectedPlaylist));
+        else songsAdapter = new SongsAdapter(activity, R.layout.song_item);
 
         recyclerPlaylists = activity.findViewById(R.id.recyclerPlaylists);
         recyclerPlaylists.setHasFixedSize(false);
@@ -1935,62 +1930,58 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     public void setSavingEffect()
     {
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-        LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(1);
-        EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
-        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
         EffectSaver saver = arEffectSavers.get(nSelectedItem);
         saver.setSave(true);
-        saver.setSpeed(controlFragment.fSpeed);
-        saver.setPitch(controlFragment.fPitch);
-        saver.setVol(equalizerFragment.getArSeek().get(0).getProgress() - 30);
-        saver.setEQ20K(equalizerFragment.getArSeek().get(1).getProgress() - 30);
-        saver.setEQ16K(equalizerFragment.getArSeek().get(2).getProgress() - 30);
-        saver.setEQ12_5K(equalizerFragment.getArSeek().get(3).getProgress() - 30);
-        saver.setEQ10K(equalizerFragment.getArSeek().get(4).getProgress() - 30);
-        saver.setEQ8K(equalizerFragment.getArSeek().get(5).getProgress() - 30);
-        saver.setEQ6_3K(equalizerFragment.getArSeek().get(6).getProgress() - 30);
-        saver.setEQ5K(equalizerFragment.getArSeek().get(7).getProgress() - 30);
-        saver.setEQ4K(equalizerFragment.getArSeek().get(8).getProgress() - 30);
-        saver.setEQ3_15K(equalizerFragment.getArSeek().get(9).getProgress() - 30);
-        saver.setEQ2_5K(equalizerFragment.getArSeek().get(10).getProgress() - 30);
-        saver.setEQ2K(equalizerFragment.getArSeek().get(11).getProgress() - 30);
-        saver.setEQ1_6K(equalizerFragment.getArSeek().get(12).getProgress() - 30);
-        saver.setEQ1_25K(equalizerFragment.getArSeek().get(13).getProgress() - 30);
-        saver.setEQ1K(equalizerFragment.getArSeek().get(14).getProgress() - 30);
-        saver.setEQ800(equalizerFragment.getArSeek().get(15).getProgress() - 30);
-        saver.setEQ630(equalizerFragment.getArSeek().get(16).getProgress() - 30);
-        saver.setEQ500(equalizerFragment.getArSeek().get(17).getProgress() - 30);
-        saver.setEQ400(equalizerFragment.getArSeek().get(18).getProgress() - 30);
-        saver.setEQ315(equalizerFragment.getArSeek().get(19).getProgress() - 30);
-        saver.setEQ250(equalizerFragment.getArSeek().get(20).getProgress() - 30);
-        saver.setEQ200(equalizerFragment.getArSeek().get(21).getProgress() - 30);
-        saver.setEQ160(equalizerFragment.getArSeek().get(22).getProgress() - 30);
-        saver.setEQ125(equalizerFragment.getArSeek().get(23).getProgress() - 30);
-        saver.setEQ100(equalizerFragment.getArSeek().get(24).getProgress() - 30);
-        saver.setEQ80(equalizerFragment.getArSeek().get(25).getProgress() - 30);
-        saver.setEQ63(equalizerFragment.getArSeek().get(26).getProgress() - 30);
-        saver.setEQ50(equalizerFragment.getArSeek().get(27).getProgress() - 30);
-        saver.setEQ40(equalizerFragment.getArSeek().get(28).getProgress() - 30);
-        saver.setEQ31_5(equalizerFragment.getArSeek().get(29).getProgress() - 30);
-        saver.setEQ25(equalizerFragment.getArSeek().get(30).getProgress() - 30);
-        saver.setEQ20(equalizerFragment.getArSeek().get(31).getProgress() - 30);
-        saver.setEffectItems(effectFragment.getEffectItems());
-        saver.setPan(effectFragment.getPan());
-        saver.setFreq(effectFragment.getFreq());
-        saver.setBPM(effectFragment.getBPM());
-        saver.setVol1(effectFragment.getVol1());
-        saver.setVol2(effectFragment.getVol2());
-        saver.setVol3(effectFragment.getVol3());
-        saver.setVol4(effectFragment.getVol4());
-        saver.setVol5(effectFragment.getVol5());
-        saver.setVol6(effectFragment.getVol6());
-        saver.setVol7(effectFragment.getVol7());
-        saver.setTimeOfIncreaseSpeed(effectFragment.getTimeOfIncreaseSpeed());
-        saver.setIncreaseSpeed(effectFragment.getIncreaseSpeed());
-        saver.setTimeOfDecreaseSpeed(effectFragment.getTimeOfDecreaseSpeed());
-        saver.setDecreaseSpeed(effectFragment.getDecreaseSpeed());
+        saver.setSpeed(activity.controlFragment.fSpeed);
+        saver.setPitch(activity.controlFragment.fPitch);
+        saver.setVol(activity.equalizerFragment.getArSeek().get(0).getProgress() - 30);
+        saver.setEQ20K(activity.equalizerFragment.getArSeek().get(1).getProgress() - 30);
+        saver.setEQ16K(activity.equalizerFragment.getArSeek().get(2).getProgress() - 30);
+        saver.setEQ12_5K(activity.equalizerFragment.getArSeek().get(3).getProgress() - 30);
+        saver.setEQ10K(activity.equalizerFragment.getArSeek().get(4).getProgress() - 30);
+        saver.setEQ8K(activity.equalizerFragment.getArSeek().get(5).getProgress() - 30);
+        saver.setEQ6_3K(activity.equalizerFragment.getArSeek().get(6).getProgress() - 30);
+        saver.setEQ5K(activity.equalizerFragment.getArSeek().get(7).getProgress() - 30);
+        saver.setEQ4K(activity.equalizerFragment.getArSeek().get(8).getProgress() - 30);
+        saver.setEQ3_15K(activity.equalizerFragment.getArSeek().get(9).getProgress() - 30);
+        saver.setEQ2_5K(activity.equalizerFragment.getArSeek().get(10).getProgress() - 30);
+        saver.setEQ2K(activity.equalizerFragment.getArSeek().get(11).getProgress() - 30);
+        saver.setEQ1_6K(activity.equalizerFragment.getArSeek().get(12).getProgress() - 30);
+        saver.setEQ1_25K(activity.equalizerFragment.getArSeek().get(13).getProgress() - 30);
+        saver.setEQ1K(activity.equalizerFragment.getArSeek().get(14).getProgress() - 30);
+        saver.setEQ800(activity.equalizerFragment.getArSeek().get(15).getProgress() - 30);
+        saver.setEQ630(activity.equalizerFragment.getArSeek().get(16).getProgress() - 30);
+        saver.setEQ500(activity.equalizerFragment.getArSeek().get(17).getProgress() - 30);
+        saver.setEQ400(activity.equalizerFragment.getArSeek().get(18).getProgress() - 30);
+        saver.setEQ315(activity.equalizerFragment.getArSeek().get(19).getProgress() - 30);
+        saver.setEQ250(activity.equalizerFragment.getArSeek().get(20).getProgress() - 30);
+        saver.setEQ200(activity.equalizerFragment.getArSeek().get(21).getProgress() - 30);
+        saver.setEQ160(activity.equalizerFragment.getArSeek().get(22).getProgress() - 30);
+        saver.setEQ125(activity.equalizerFragment.getArSeek().get(23).getProgress() - 30);
+        saver.setEQ100(activity.equalizerFragment.getArSeek().get(24).getProgress() - 30);
+        saver.setEQ80(activity.equalizerFragment.getArSeek().get(25).getProgress() - 30);
+        saver.setEQ63(activity.equalizerFragment.getArSeek().get(26).getProgress() - 30);
+        saver.setEQ50(activity.equalizerFragment.getArSeek().get(27).getProgress() - 30);
+        saver.setEQ40(activity.equalizerFragment.getArSeek().get(28).getProgress() - 30);
+        saver.setEQ31_5(activity.equalizerFragment.getArSeek().get(29).getProgress() - 30);
+        saver.setEQ25(activity.equalizerFragment.getArSeek().get(30).getProgress() - 30);
+        saver.setEQ20(activity.equalizerFragment.getArSeek().get(31).getProgress() - 30);
+        saver.setEffectItems(activity.effectFragment.getEffectItems());
+        saver.setPan(activity.effectFragment.getPan());
+        saver.setFreq(activity.effectFragment.getFreq());
+        saver.setBPM(activity.effectFragment.getBPM());
+        saver.setVol1(activity.effectFragment.getVol1());
+        saver.setVol2(activity.effectFragment.getVol2());
+        saver.setVol3(activity.effectFragment.getVol3());
+        saver.setVol4(activity.effectFragment.getVol4());
+        saver.setVol5(activity.effectFragment.getVol5());
+        saver.setVol6(activity.effectFragment.getVol6());
+        saver.setVol7(activity.effectFragment.getVol7());
+        saver.setTimeOfIncreaseSpeed(activity.effectFragment.getTimeOfIncreaseSpeed());
+        saver.setIncreaseSpeed(activity.effectFragment.getIncreaseSpeed());
+        saver.setTimeOfDecreaseSpeed(activity.effectFragment.getTimeOfDecreaseSpeed());
+        saver.setDecreaseSpeed(activity.effectFragment.getDecreaseSpeed());
         if(nSelectedPlaylist == nPlayingPlaylist && nSelectedItem == nPlaying) {
             LinearLayout ABButton = activity.findViewById(R.id.ABButton);
             AnimationButton btnLoopmarker = activity.findViewById(R.id.btnLoopmarker);
@@ -2000,9 +1991,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setLoopA(activity.dLoopA);
             saver.setIsLoopB(activity.bLoopB);
             saver.setLoopB(activity.dLoopB);
-            saver.setArMarkerTime(loopFragment.getArMarkerTime());
+            saver.setArMarkerTime(activity.loopFragment.getArMarkerTime());
             saver.setIsLoopMarker(btnLoopmarker.isSelected());
-            saver.setMarker(loopFragment.getMarker());
+            saver.setMarker(activity.loopFragment.getMarker());
         }
 
         saveFiles(false, true, false, false, false);
@@ -2015,59 +2006,55 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nPlayingPlaylist);
         EffectSaver saver = arEffectSavers.get(nPlaying);
         if(saver.isSave()) {
-            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-            LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(1);
-            EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
-            EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-            saver.setSpeed(controlFragment.fSpeed);
-            saver.setPitch(controlFragment.fPitch);
-            saver.setVol(equalizerFragment.getArSeek().get(0).getProgress() - 30);
-            saver.setEQ20K(equalizerFragment.getArSeek().get(1).getProgress() - 30);
-            saver.setEQ16K(equalizerFragment.getArSeek().get(2).getProgress() - 30);
-            saver.setEQ12_5K(equalizerFragment.getArSeek().get(3).getProgress() - 30);
-            saver.setEQ10K(equalizerFragment.getArSeek().get(4).getProgress() - 30);
-            saver.setEQ8K(equalizerFragment.getArSeek().get(5).getProgress() - 30);
-            saver.setEQ6_3K(equalizerFragment.getArSeek().get(6).getProgress() - 30);
-            saver.setEQ5K(equalizerFragment.getArSeek().get(7).getProgress() - 30);
-            saver.setEQ4K(equalizerFragment.getArSeek().get(8).getProgress() - 30);
-            saver.setEQ3_15K(equalizerFragment.getArSeek().get(9).getProgress() - 30);
-            saver.setEQ2_5K(equalizerFragment.getArSeek().get(10).getProgress() - 30);
-            saver.setEQ2K(equalizerFragment.getArSeek().get(11).getProgress() - 30);
-            saver.setEQ1_6K(equalizerFragment.getArSeek().get(12).getProgress() - 30);
-            saver.setEQ1_25K(equalizerFragment.getArSeek().get(13).getProgress() - 30);
-            saver.setEQ1K(equalizerFragment.getArSeek().get(14).getProgress() - 30);
-            saver.setEQ800(equalizerFragment.getArSeek().get(15).getProgress() - 30);
-            saver.setEQ630(equalizerFragment.getArSeek().get(16).getProgress() - 30);
-            saver.setEQ500(equalizerFragment.getArSeek().get(17).getProgress() - 30);
-            saver.setEQ400(equalizerFragment.getArSeek().get(18).getProgress() - 30);
-            saver.setEQ315(equalizerFragment.getArSeek().get(19).getProgress() - 30);
-            saver.setEQ250(equalizerFragment.getArSeek().get(20).getProgress() - 30);
-            saver.setEQ200(equalizerFragment.getArSeek().get(21).getProgress() - 30);
-            saver.setEQ160(equalizerFragment.getArSeek().get(22).getProgress() - 30);
-            saver.setEQ125(equalizerFragment.getArSeek().get(23).getProgress() - 30);
-            saver.setEQ100(equalizerFragment.getArSeek().get(24).getProgress() - 30);
-            saver.setEQ80(equalizerFragment.getArSeek().get(25).getProgress() - 30);
-            saver.setEQ63(equalizerFragment.getArSeek().get(26).getProgress() - 30);
-            saver.setEQ50(equalizerFragment.getArSeek().get(27).getProgress() - 30);
-            saver.setEQ40(equalizerFragment.getArSeek().get(28).getProgress() - 30);
-            saver.setEQ31_5(equalizerFragment.getArSeek().get(29).getProgress() - 30);
-            saver.setEQ25(equalizerFragment.getArSeek().get(30).getProgress() - 30);
-            saver.setEQ20(equalizerFragment.getArSeek().get(31).getProgress() - 30);
-            saver.setEffectItems(effectFragment.getEffectItems());
-            saver.setPan(effectFragment.getPan());
-            saver.setFreq(effectFragment.getFreq());
-            saver.setBPM(effectFragment.getBPM());
-            saver.setVol1(effectFragment.getVol1());
-            saver.setVol2(effectFragment.getVol2());
-            saver.setVol3(effectFragment.getVol3());
-            saver.setVol4(effectFragment.getVol4());
-            saver.setVol5(effectFragment.getVol5());
-            saver.setVol6(effectFragment.getVol6());
-            saver.setVol7(effectFragment.getVol7());
-            saver.setTimeOfIncreaseSpeed(effectFragment.getTimeOfIncreaseSpeed());
-            saver.setIncreaseSpeed(effectFragment.getIncreaseSpeed());
-            saver.setTimeOfDecreaseSpeed(effectFragment.getTimeOfDecreaseSpeed());
-            saver.setDecreaseSpeed(effectFragment.getDecreaseSpeed());
+            saver.setSpeed(activity.controlFragment.fSpeed);
+            saver.setPitch(activity.controlFragment.fPitch);
+            saver.setVol(activity.equalizerFragment.getArSeek().get(0).getProgress() - 30);
+            saver.setEQ20K(activity.equalizerFragment.getArSeek().get(1).getProgress() - 30);
+            saver.setEQ16K(activity.equalizerFragment.getArSeek().get(2).getProgress() - 30);
+            saver.setEQ12_5K(activity.equalizerFragment.getArSeek().get(3).getProgress() - 30);
+            saver.setEQ10K(activity.equalizerFragment.getArSeek().get(4).getProgress() - 30);
+            saver.setEQ8K(activity.equalizerFragment.getArSeek().get(5).getProgress() - 30);
+            saver.setEQ6_3K(activity.equalizerFragment.getArSeek().get(6).getProgress() - 30);
+            saver.setEQ5K(activity.equalizerFragment.getArSeek().get(7).getProgress() - 30);
+            saver.setEQ4K(activity.equalizerFragment.getArSeek().get(8).getProgress() - 30);
+            saver.setEQ3_15K(activity.equalizerFragment.getArSeek().get(9).getProgress() - 30);
+            saver.setEQ2_5K(activity.equalizerFragment.getArSeek().get(10).getProgress() - 30);
+            saver.setEQ2K(activity.equalizerFragment.getArSeek().get(11).getProgress() - 30);
+            saver.setEQ1_6K(activity.equalizerFragment.getArSeek().get(12).getProgress() - 30);
+            saver.setEQ1_25K(activity.equalizerFragment.getArSeek().get(13).getProgress() - 30);
+            saver.setEQ1K(activity.equalizerFragment.getArSeek().get(14).getProgress() - 30);
+            saver.setEQ800(activity.equalizerFragment.getArSeek().get(15).getProgress() - 30);
+            saver.setEQ630(activity.equalizerFragment.getArSeek().get(16).getProgress() - 30);
+            saver.setEQ500(activity.equalizerFragment.getArSeek().get(17).getProgress() - 30);
+            saver.setEQ400(activity.equalizerFragment.getArSeek().get(18).getProgress() - 30);
+            saver.setEQ315(activity.equalizerFragment.getArSeek().get(19).getProgress() - 30);
+            saver.setEQ250(activity.equalizerFragment.getArSeek().get(20).getProgress() - 30);
+            saver.setEQ200(activity.equalizerFragment.getArSeek().get(21).getProgress() - 30);
+            saver.setEQ160(activity.equalizerFragment.getArSeek().get(22).getProgress() - 30);
+            saver.setEQ125(activity.equalizerFragment.getArSeek().get(23).getProgress() - 30);
+            saver.setEQ100(activity.equalizerFragment.getArSeek().get(24).getProgress() - 30);
+            saver.setEQ80(activity.equalizerFragment.getArSeek().get(25).getProgress() - 30);
+            saver.setEQ63(activity.equalizerFragment.getArSeek().get(26).getProgress() - 30);
+            saver.setEQ50(activity.equalizerFragment.getArSeek().get(27).getProgress() - 30);
+            saver.setEQ40(activity.equalizerFragment.getArSeek().get(28).getProgress() - 30);
+            saver.setEQ31_5(activity.equalizerFragment.getArSeek().get(29).getProgress() - 30);
+            saver.setEQ25(activity.equalizerFragment.getArSeek().get(30).getProgress() - 30);
+            saver.setEQ20(activity.equalizerFragment.getArSeek().get(31).getProgress() - 30);
+            saver.setEffectItems(activity.effectFragment.getEffectItems());
+            saver.setPan(activity.effectFragment.getPan());
+            saver.setFreq(activity.effectFragment.getFreq());
+            saver.setBPM(activity.effectFragment.getBPM());
+            saver.setVol1(activity.effectFragment.getVol1());
+            saver.setVol2(activity.effectFragment.getVol2());
+            saver.setVol3(activity.effectFragment.getVol3());
+            saver.setVol4(activity.effectFragment.getVol4());
+            saver.setVol5(activity.effectFragment.getVol5());
+            saver.setVol6(activity.effectFragment.getVol6());
+            saver.setVol7(activity.effectFragment.getVol7());
+            saver.setTimeOfIncreaseSpeed(activity.effectFragment.getTimeOfIncreaseSpeed());
+            saver.setIncreaseSpeed(activity.effectFragment.getIncreaseSpeed());
+            saver.setTimeOfDecreaseSpeed(activity.effectFragment.getTimeOfDecreaseSpeed());
+            saver.setDecreaseSpeed(activity.effectFragment.getDecreaseSpeed());
             LinearLayout ABButton = activity.findViewById(R.id.ABButton);
             AnimationButton btnLoopmarker = activity.findViewById(R.id.btnLoopmarker);
             if(ABButton.getVisibility() == View.VISIBLE) saver.setIsABLoop(true);
@@ -2076,9 +2063,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setLoopA(activity.dLoopA);
             saver.setIsLoopB(activity.bLoopB);
             saver.setLoopB(activity.dLoopB);
-            saver.setArMarkerTime(loopFragment.getArMarkerTime());
+            saver.setArMarkerTime(activity.loopFragment.getArMarkerTime());
             saver.setIsLoopMarker(btnLoopmarker.isSelected());
-            saver.setMarker(loopFragment.getMarker());
+            saver.setMarker(activity.loopFragment.getMarker());
 
             saveFiles(false, true, false, false, false);
         }
@@ -2086,74 +2073,70 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     public void restoreEffect()
     {
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-        LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(1);
-        EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
-        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nPlayingPlaylist);
         EffectSaver saver = arEffectSavers.get(nPlaying);
-        controlFragment.setSpeed(saver.getSpeed(), false);
-        controlFragment.setPitch(saver.getPitch(), false);
-        equalizerFragment.setVol(saver.getVol(), false);
-        equalizerFragment.setEQ(1, saver.getEQ20K(), false);
-        equalizerFragment.setEQ(2, saver.getEQ16K(), false);
-        equalizerFragment.setEQ(3, saver.getEQ12_5K(), false);
-        equalizerFragment.setEQ(4, saver.getEQ10K(), false);
-        equalizerFragment.setEQ(5, saver.getEQ8K(), false);
-        equalizerFragment.setEQ(6, saver.getEQ6_3K(), false);
-        equalizerFragment.setEQ(7, saver.getEQ5K(), false);
-        equalizerFragment.setEQ(8, saver.getEQ4K(), false);
-        equalizerFragment.setEQ(9, saver.getEQ3_15K(), false);
-        equalizerFragment.setEQ(10, saver.getEQ2_5K(), false);
-        equalizerFragment.setEQ(11, saver.getEQ2K(), false);
-        equalizerFragment.setEQ(12, saver.getEQ1_6K(), false);
-        equalizerFragment.setEQ(13, saver.getEQ1_25K(), false);
-        equalizerFragment.setEQ(14, saver.getEQ1K(), false);
-        equalizerFragment.setEQ(15, saver.getEQ800(), false);
-        equalizerFragment.setEQ(16, saver.getEQ630(), false);
-        equalizerFragment.setEQ(17, saver.getEQ500(), false);
-        equalizerFragment.setEQ(18, saver.getEQ400(), false);
-        equalizerFragment.setEQ(19, saver.getEQ315(), false);
-        equalizerFragment.setEQ(20, saver.getEQ250(), false);
-        equalizerFragment.setEQ(21, saver.getEQ200(), false);
-        equalizerFragment.setEQ(22, saver.getEQ160(), false);
-        equalizerFragment.setEQ(23, saver.getEQ125(), false);
-        equalizerFragment.setEQ(24, saver.getEQ100(), false);
-        equalizerFragment.setEQ(25, saver.getEQ80(), false);
-        equalizerFragment.setEQ(26, saver.getEQ63(), false);
-        equalizerFragment.setEQ(27, saver.getEQ50(), false);
-        equalizerFragment.setEQ(28, saver.getEQ40(), false);
-        equalizerFragment.setEQ(29, saver.getEQ31_5(), false);
-        equalizerFragment.setEQ(30, saver.getEQ25(), false);
-        equalizerFragment.setEQ(31, saver.getEQ20(), false);
-        ArrayList<EqualizerItem> arEqualizerItems = equalizerFragment.getArEqualizerItems();
+        activity.controlFragment.setSpeed(saver.getSpeed(), false);
+        activity.controlFragment.setPitch(saver.getPitch(), false);
+        activity.equalizerFragment.setVol(saver.getVol(), false);
+        activity.equalizerFragment.setEQ(1, saver.getEQ20K(), false);
+        activity.equalizerFragment.setEQ(2, saver.getEQ16K(), false);
+        activity.equalizerFragment.setEQ(3, saver.getEQ12_5K(), false);
+        activity.equalizerFragment.setEQ(4, saver.getEQ10K(), false);
+        activity.equalizerFragment.setEQ(5, saver.getEQ8K(), false);
+        activity.equalizerFragment.setEQ(6, saver.getEQ6_3K(), false);
+        activity.equalizerFragment.setEQ(7, saver.getEQ5K(), false);
+        activity.equalizerFragment.setEQ(8, saver.getEQ4K(), false);
+        activity.equalizerFragment.setEQ(9, saver.getEQ3_15K(), false);
+        activity.equalizerFragment.setEQ(10, saver.getEQ2_5K(), false);
+        activity.equalizerFragment.setEQ(11, saver.getEQ2K(), false);
+        activity.equalizerFragment.setEQ(12, saver.getEQ1_6K(), false);
+        activity.equalizerFragment.setEQ(13, saver.getEQ1_25K(), false);
+        activity.equalizerFragment.setEQ(14, saver.getEQ1K(), false);
+        activity.equalizerFragment.setEQ(15, saver.getEQ800(), false);
+        activity.equalizerFragment.setEQ(16, saver.getEQ630(), false);
+        activity.equalizerFragment.setEQ(17, saver.getEQ500(), false);
+        activity.equalizerFragment.setEQ(18, saver.getEQ400(), false);
+        activity.equalizerFragment.setEQ(19, saver.getEQ315(), false);
+        activity.equalizerFragment.setEQ(20, saver.getEQ250(), false);
+        activity.equalizerFragment.setEQ(21, saver.getEQ200(), false);
+        activity.equalizerFragment.setEQ(22, saver.getEQ160(), false);
+        activity.equalizerFragment.setEQ(23, saver.getEQ125(), false);
+        activity.equalizerFragment.setEQ(24, saver.getEQ100(), false);
+        activity.equalizerFragment.setEQ(25, saver.getEQ80(), false);
+        activity.equalizerFragment.setEQ(26, saver.getEQ63(), false);
+        activity.equalizerFragment.setEQ(27, saver.getEQ50(), false);
+        activity.equalizerFragment.setEQ(28, saver.getEQ40(), false);
+        activity.equalizerFragment.setEQ(29, saver.getEQ31_5(), false);
+        activity.equalizerFragment.setEQ(30, saver.getEQ25(), false);
+        activity.equalizerFragment.setEQ(31, saver.getEQ20(), false);
+        ArrayList<EqualizerItem> arEqualizerItems = activity.equalizerFragment.getArEqualizerItems();
         for(int i = 0; i < arEqualizerItems.size(); i++) {
             EqualizerItem item = arEqualizerItems.get(i);
             item.setSelected(false);
         }
-        equalizerFragment.getEqualizersAdapter().notifyDataSetChanged();
-        effectFragment.setEffectItems(saver.getEffectItems());
-        effectFragment.setPan(saver.getPan(), false);
-        effectFragment.setFreq(saver.getFreq(), false);
-        effectFragment.setBPM(saver.getBPM());
-        effectFragment.setVol1(saver.getVol1());
-        effectFragment.setVol2(saver.getVol2());
-        effectFragment.setVol3(saver.getVol3());
-        effectFragment.setVol4(saver.getVol4());
-        effectFragment.setVol5(saver.getVol5());
-        effectFragment.setVol6(saver.getVol6());
-        effectFragment.setVol7(saver.getVol7());
-        effectFragment.setTimeOfIncreaseSpeed(saver.getTimeOfIncreaseSpeed());
-        effectFragment.setIncreaseSpeed(saver.getIncreaseSpeed());
-        effectFragment.setTimeOfDecreaseSpeed(saver.getTimeOfDecreaseSpeed());
-        effectFragment.setDecreaseSpeed(saver.getDecreaseSpeed());
+        activity.equalizerFragment.getEqualizersAdapter().notifyDataSetChanged();
+        activity.effectFragment.setEffectItems(saver.getEffectItems());
+        activity.effectFragment.setPan(saver.getPan(), false);
+        activity.effectFragment.setFreq(saver.getFreq(), false);
+        activity.effectFragment.setBPM(saver.getBPM());
+        activity.effectFragment.setVol1(saver.getVol1());
+        activity.effectFragment.setVol2(saver.getVol2());
+        activity.effectFragment.setVol3(saver.getVol3());
+        activity.effectFragment.setVol4(saver.getVol4());
+        activity.effectFragment.setVol5(saver.getVol5());
+        activity.effectFragment.setVol6(saver.getVol6());
+        activity.effectFragment.setVol7(saver.getVol7());
+        activity.effectFragment.setTimeOfIncreaseSpeed(saver.getTimeOfIncreaseSpeed());
+        activity.effectFragment.setIncreaseSpeed(saver.getIncreaseSpeed());
+        activity.effectFragment.setTimeOfDecreaseSpeed(saver.getTimeOfDecreaseSpeed());
+        activity.effectFragment.setDecreaseSpeed(saver.getDecreaseSpeed());
         AnimationButton btnLoopmarker = activity.findViewById(R.id.btnLoopmarker);
         final RadioGroup radioGroupLoopMode = activity.findViewById(R.id.radioGroupLoopMode);
         if(saver.isABLoop()) radioGroupLoopMode.check(R.id.radioButtonABLoop);
         else radioGroupLoopMode.check(R.id.radioButtonMarkerPlay);
-        if(saver.isLoopA()) loopFragment.setLoopA(saver.getLoopA(), false);
-        if(saver.isLoopB()) loopFragment.setLoopB(saver.getLoopB(), false);
-        loopFragment.setArMarkerTime(saver.getArMarkerTime());
+        if(saver.isLoopA()) activity.loopFragment.setLoopA(saver.getLoopA(), false);
+        if(saver.isLoopB()) activity.loopFragment.setLoopB(saver.getLoopB(), false);
+        activity.loopFragment.setArMarkerTime(saver.getArMarkerTime());
         if(saver.isLoopMarker()) {
             btnLoopmarker.setSelected(true);
             btnLoopmarker.setAlpha(0.3f);
@@ -2162,7 +2145,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             btnLoopmarker.setSelected(false);
             btnLoopmarker.setAlpha(1.0f);
         }
-        loopFragment.setMarker(saver.getMarker());
+        activity.loopFragment.setMarker(saver.getMarker());
     }
 
     public void saveSong(int nPurpose, String strFileName)
@@ -2259,8 +2242,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         _hTempStream = BASS_FX.BASS_FX_TempoCreate(_hTempStream, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
         final int hTempStream = _hTempStream;
         int chan = BASS_FX.BASS_FX_TempoGetSource(hTempStream);
-        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-        if(effectFragment.isReverse())
+        if(activity.effectFragment.isReverse())
             BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
         else
             BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
@@ -2296,12 +2278,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         int hTempFx31_5 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
         int hTempFx25 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
         int hTempFx20 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-        BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed);
-        BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, controlFragment.fPitch);
-        EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
+        BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO, activity.controlFragment.fSpeed);
+        BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, activity.controlFragment.fPitch);
         int[] arHFX = new int[] {hTempFx20K, hTempFx16K, hTempFx12_5K, hTempFx10K, hTempFx8K, hTempFx6_3K, hTempFx5K, hTempFx4K, hTempFx3_15K, hTempFx2_5K, hTempFx2K, hTempFx1_6K, hTempFx1_25K, hTempFx1K, hTempFx800, hTempFx630, hTempFx500, hTempFx400, hTempFx315, hTempFx250, hTempFx200, hTempFx160, hTempFx125, hTempFx100, hTempFx80, hTempFx63, hTempFx50, hTempFx40, hTempFx31_5, hTempFx25, hTempFx20};
-        float fLevel = equalizerFragment.getArSeek().get(0).getProgress() - 30;
+        float fLevel = activity.equalizerFragment.getArSeek().get(0).getProgress() - 30;
         if(fLevel == 0) fLevel = 1.0f;
         else if(fLevel < 0) fLevel = (fLevel + 30.0f) / 30.0f;
         else fLevel += 1.0f;
@@ -2312,16 +2292,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         for(int i = 0; i < 31; i++)
         {
-            int nLevel = equalizerFragment.getArSeek().get(i+1).getProgress() - 30;
+            int nLevel = activity.equalizerFragment.getArSeek().get(i+1).getProgress() - 30;
             BASS_FX.BASS_BFX_PEAKEQ eq = new BASS_FX.BASS_BFX_PEAKEQ();
             eq.fBandwidth = 0.7f;
             eq.fQ = 0.0f;
             eq.lChannel = BASS_FX.BASS_BFX_CHANALL;
             eq.fGain = nLevel;
-            eq.fCenter = equalizerFragment.getArCenters()[i];
+            eq.fCenter = activity.equalizerFragment.getArCenters()[i];
             BASS.BASS_FXSetParameters(arHFX[i], eq);
         }
-        effectFragment.applyEffect(hTempStream, item);
+        activity.effectFragment.applyEffect(hTempStream, item);
         String strPathTo;
         if(nPurpose == 0) // saveSongToLocal
         {
@@ -2429,9 +2409,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         String strLyrics = arTempLyrics.get(nSelectedItem);
 
         String strTitle = item.getTitle();
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-        float fSpeed = controlFragment.fSpeed;
-        float fPitch = controlFragment.fPitch;
+        float fSpeed = activity.controlFragment.fSpeed;
+        float fPitch = activity.controlFragment.fPitch;
         String strSpeed = String.format(Locale.getDefault(), "%.1f%%", fSpeed + 100);
         String strPitch;
         if(fPitch >= 0.05f)
@@ -2473,9 +2452,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         SongItem item = arSongs.get(nSelectedItem);
         String strTitle = item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_");
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-        float fSpeed = controlFragment.fSpeed;
-        float fPitch = controlFragment.fPitch;
+        float fSpeed = activity.controlFragment.fSpeed;
+        float fPitch = activity.controlFragment.fPitch;
         String strSpeed = String.format(Locale.getDefault(), "%.1f%%", fSpeed + 100);
         String strPitch;
         if(fPitch >= 0.05f)
@@ -2722,10 +2700,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         EffectSaver saver = arEffectSavers.get(nTempPlaying);
         if(saver.isSave()) {
             ArrayList<EffectItem> arSavedEffectItems = saver.getEffectItems();
-            EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
             for(int i = 0; i < arSavedEffectItems.size(); i++) {
                 EffectItem item = arSavedEffectItems.get(i);
-                if(item.getEffectName().equals(effectFragment.getEffectItems().get(EffectFragment.kEffectTypeReverse).getEffectName())) {
+                if(item.getEffectName().equals(activity.effectFragment.getEffectItems().get(EffectFragment.kEffectTypeReverse).getEffectName())) {
                     if(bForceNormal) item.setSelected(false);
                     else if(bForceReverse) item.setSelected(true);
                 }
@@ -2785,23 +2762,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             EffectSaver saverBefore = arEffectSavers.get(nPlaying);
             EffectSaver saverAfter = arEffectSavers.get(nSong);
             if(saverBefore.isSave() && !saverAfter.isSave()) {
-                ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(2);
-                controlFragment.setSpeed(0.0f, false);
-                controlFragment.setPitch(0.0f, false);
-                EqualizerFragment equalizerFragment = (EqualizerFragment) activity.mSectionsPagerAdapter.getItem(3);
-                equalizerFragment.setVol(0, false);
+                activity.controlFragment.setSpeed(0.0f, false);
+                activity.controlFragment.setPitch(0.0f, false);
+                activity.equalizerFragment.setVol(0, false);
                 for (int i = 1; i <= 31; i++) {
-                    equalizerFragment.setEQ(i, 0, false);
+                    activity.equalizerFragment.setEQ(i, 0, false);
                 }
-                ArrayList<EqualizerItem> arEqualizerItems = equalizerFragment.getArEqualizerItems();
+                ArrayList<EqualizerItem> arEqualizerItems = activity.equalizerFragment.getArEqualizerItems();
                 for(int i = 0; i < arEqualizerItems.size(); i++) {
                     EqualizerItem item = arEqualizerItems.get(i);
                     item.setSelected(false);
                 }
-                equalizerFragment.getEqualizersAdapter().notifyDataSetChanged();
+                activity.equalizerFragment.getEqualizersAdapter().notifyDataSetChanged();
                 nPlaying = nSong;
-                EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-                effectFragment.resetEffect();
+                activity.effectFragment.resetEffect();
             }
         }
         nPlaying = nSong;
@@ -2952,22 +2926,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                                      @Override
                                      public void onAnimationEnd(Animator animation) {
                                          super.onAnimationEnd(animation);
-                                         LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(1);
-                                         loopFragment.drawWaveForm(strPath);
+                                         activity.loopFragment.drawWaveForm(strPath);
                                      }
                                  });
         }
-        else
-        {
-            LoopFragment loopFragment = (LoopFragment)activity.mSectionsPagerAdapter.getItem(1);
-            loopFragment.drawWaveForm(strPath);
-        }
+        else activity.loopFragment.drawWaveForm(strPath);
 
         MainActivity.hStream = BASS_FX.BASS_FX_ReverseCreate(MainActivity.hStream, 2, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
         MainActivity.hStream = BASS_FX.BASS_FX_TempoCreate(MainActivity.hStream, BASS_FX.BASS_FX_FREESOURCE);
         int chan = BASS_FX.BASS_FX_TempoGetSource(MainActivity.hStream);
-        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-        if(effectFragment.isReverse())
+        if(activity.effectFragment.isReverse())
             BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
         else
             BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
@@ -3003,17 +2971,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         int hFx31_5 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
         int hFx25 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
         int hFx20 = BASS.BASS_ChannelSetFX(MainActivity.hStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        EqualizerFragment equalizerFragment = (EqualizerFragment) activity.mSectionsPagerAdapter.getItem(3);
-        equalizerFragment.setArHFX(new int[]{hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20});
+        activity.equalizerFragment.setArHFX(new int[]{hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20});
         if(nPlaying < 0) nPlaying = 0;
         else if(nPlaying >= arEffectSavers.size()) nPlaying = arEffectSavers.size() - 1;
         EffectSaver saver = arEffectSavers.get(nPlaying);
         if(saver.isSave()) restoreEffect();
-        ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(2);
-        BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed);
-        BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, controlFragment.fPitch);
-        equalizerFragment.setEQ();
-        effectFragment.applyEffect();
+        BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, activity.controlFragment.fSpeed);
+        BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, activity.controlFragment.fPitch);
+        activity.equalizerFragment.setEQ();
+        activity.effectFragment.applyEffect();
         activity.setSync();
         if(bPlay)
             BASS.BASS_ChannelPlay(MainActivity.hStream, false);
@@ -3516,8 +3482,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(song.getPeak() != fPeak) {
             song.setPeak(fPeak);
             saveFiles(true, false, false, false, false);
-            EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-            effectFragment.setPeak(fPeak);
+            activity.effectFragment.setPeak(fPeak);
         }
     }
 }

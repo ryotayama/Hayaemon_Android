@@ -80,27 +80,26 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
     {
         EqualizerItem item = items.get(position);
         String name = item.getEqualizerName();
-        final EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
         holder.textEqualizer.setText(name);
 
-        if(equalizerFragment.isSelectedItem(position))
+        if(activity.equalizerFragment.isSelectedItem(position))
             holder.itemView.setBackgroundColor(Color.argb(255, 221, 221, 221));
         else
             holder.itemView.setBackgroundColor(Color.argb(255, 255, 255, 255));
         holder.equalizerItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            equalizerFragment.onEqualizerItemClick(holder.getAdapterPosition());
+                activity.equalizerFragment.onEqualizerItemClick(holder.getAdapterPosition());
             }
         });
 
-        if(equalizerFragment.isSorting()) {
+        if(activity.equalizerFragment.isSorting()) {
             holder.relativeEqualizerMenu.setOnClickListener(null);
             holder.relativeEqualizerMenu.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
                 {
-                    equalizerFragment.getEqualizerTouchHelper().startDrag(holder);
+                    activity.equalizerFragment.getEqualizerTouchHelper().startDrag(holder);
                     return true;
                 }
             });
@@ -111,7 +110,7 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
             holder.relativeEqualizerMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    equalizerFragment.showMenu(holder.getAdapterPosition());
+                    activity.equalizerFragment.showMenu(holder.getAdapterPosition());
                 }
             });
             holder.imgEqualizerMenu.setImageResource(R.drawable.ic_listmenu);

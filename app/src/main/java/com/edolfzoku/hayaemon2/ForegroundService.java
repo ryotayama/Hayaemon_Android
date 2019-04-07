@@ -17,9 +17,9 @@ import android.support.v4.app.NotificationCompat;
 import com.un4seen.bass.BASS;
 
 public class ForegroundService extends IntentService {
-    private MainActivity mainActivity;
+    private MainActivity activity;
 
-    public void setMainActivity(MainActivity mainActivity) { this.mainActivity = mainActivity; }
+    public void setMainActivity(MainActivity activity) { this.activity = activity; }
 
     class ForegroundServiceBinder extends Binder {
         ForegroundService getService() {
@@ -112,40 +112,38 @@ public class ForegroundService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if(intent.getAction() == null) return;
 
-        final PlaylistFragment playlistFragment = (PlaylistFragment) mainActivity.mSectionsPagerAdapter.getItem(0);
         switch(intent.getAction()) {
             case "action_rewind":
                 if (MainActivity.hStream == 0) return;
-                EffectFragment effectFragment = (EffectFragment) mainActivity.mSectionsPagerAdapter.getItem(4);
-                if (!effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) > mainActivity.dLoopA + 1.0)
-                    BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, mainActivity.dLoopA), BASS.BASS_POS_BYTE);
-                else if (effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) < mainActivity.dLoopA - 1.0)
-                    BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, mainActivity.dLoopB), BASS.BASS_POS_BYTE);
+                if (!activity.effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) > activity.dLoopA + 1.0)
+                    BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA), BASS.BASS_POS_BYTE);
+                else if (activity.effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) < activity.dLoopA - 1.0)
+                    BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB), BASS.BASS_POS_BYTE);
                 else {
-                    mainActivity.runOnUiThread(new Runnable() {
+                    activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                        playlistFragment.playPrev();
+                            activity.playlistFragment.playPrev();
                         }
                     });
                 }
                 break;
             case "action_pause":
-                mainActivity.runOnUiThread(new Runnable() {
+                activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                     if (BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING)
-                        playlistFragment.pause();
+                        activity.playlistFragment.pause();
                     else if (BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PAUSED)
-                        playlistFragment.play();
+                        activity.playlistFragment.play();
                     }
                 });
                 break;
             case "action_forward":
-                mainActivity.runOnUiThread(new Runnable() {
+                activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                    playlistFragment.playNext(true);
+                    activity.playlistFragment.playNext(true);
                     }
                 });
                 break;

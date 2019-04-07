@@ -460,8 +460,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             textEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
             applyEffect();
         }
-        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-        playlistFragment.updateSavingEffect();
+        activity.playlistFragment.updateSavingEffect();
     }
 
     public void plusValue()
@@ -533,8 +532,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             textEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
             applyEffect();
         }
-        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-        playlistFragment.updateSavingEffect();
+        activity.playlistFragment.updateSavingEffect();
     }
 
     @Override
@@ -680,22 +678,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             activity.setSync();
         }
         if(!item.isSelected() && (nEffect == kEffectTypeRandom || nEffect == kEffectTypeOldRecord || nEffect == kEffectTypeLowBattery || nEffect == kEffectTypeEarTraining))
-        {
-            EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
-            equalizerFragment.setEQ(0);
-        }
+            activity.equalizerFragment.setEQ(0);
         if(!item.isSelected() && (nEffect == kEffectTypeRandom || nEffect == kEffectTypeNoSense_Strong || nEffect == kEffectTypeNoSense_Middle || nEffect == kEffectTypeNoSense_Weak))
         {
-            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-            controlFragment.setSpeed(0.0f);
-            controlFragment.setPitch(0.0f);
+            activity.controlFragment.setSpeed(0.0f);
+            activity.controlFragment.setPitch(0.0f);
         }
         if(!item.isSelected() && nEffect == kEffectTypeTranscribeBass)
         {
-            EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
-            equalizerFragment.setEQ(0);
-            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-            controlFragment.setPitch(0.0f);
+            activity.equalizerFragment.setEQ(0);
+            activity.controlFragment.setPitch(0.0f);
         }
         checkDuplicate(nEffect);
         if(hSEStream != 0)
@@ -715,8 +707,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
         applyEffect();
         effectsAdapter.notifyDataSetChanged();
-        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-        playlistFragment.updateSavingEffect();
+        activity.playlistFragment.updateSavingEffect();
     }
 
     public void resetEffect()
@@ -726,22 +717,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         for(int i = 1; i < arEffectItems.size(); i++)
         {
             if(arEffectItems.get(i).isSelected() && (i == kEffectTypeRandom || i == kEffectTypeOldRecord || i == kEffectTypeLowBattery || i == kEffectTypeEarTraining))
-            {
-                EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
-                equalizerFragment.setEQ(0);
-            }
+                activity.equalizerFragment.setEQ(0);
             if(arEffectItems.get(i).isSelected() && (i == kEffectTypeRandom || i == kEffectTypeNoSense_Strong || i == kEffectTypeNoSense_Middle || i == kEffectTypeNoSense_Weak))
             {
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-                controlFragment.setSpeed(0.0f);
-                controlFragment.setPitch(0.0f);
+                activity.controlFragment.setSpeed(0.0f);
+                activity.controlFragment.setPitch(0.0f);
             }
             if(arEffectItems.get(i).isSelected() && (i == kEffectTypeTranscribeBass))
             {
-                EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
-                equalizerFragment.setEQ(0);
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-                controlFragment.setPitch(0.0f);
+                activity.equalizerFragment.setEQ(0);
+                activity.controlFragment.setPitch(0.0f);
             }
             arEffectItems.get(i).setSelected(false);
         }
@@ -994,8 +979,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol7);
             }
         }
-        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-        playlistFragment.updateSavingEffect();
+        activity.playlistFragment.updateSavingEffect();
     }
 
     public void setPan(float fPan)
@@ -1017,11 +1001,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             hDspPan = BASS.BASS_ChannelSetDSP(MainActivity.hStream, panDSP, this, 0);
         }
-        if(bSave)
-        {
-            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-            playlistFragment.updateSavingEffect();
-        }
+        if(bSave) activity.playlistFragment.updateSavingEffect();
     }
 
     public void setFreq(float fFreq)
@@ -1040,11 +1020,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             BASS.BASS_ChannelGetInfo(MainActivity.hStream, info);
             BASS.BASS_ChannelSetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * fFreq);
         }
-        if(bSave)
-        {
-            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-            playlistFragment.updateSavingEffect();
-        }
+        if(bSave) activity.playlistFragment.updateSavingEffect();
     }
 
     @Override
@@ -1112,8 +1088,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     if(i != nSelect) deselectEffect(i);
             }
         }
-        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-        playlistFragment.updateSavingEffect();
+        activity.playlistFragment.updateSavingEffect();
     }
 
     public void deselectEffect(int nEffect)
@@ -1122,29 +1097,26 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         arEffectItems.get(nEffect).setSelected(false);
 
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-        EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
         if(nEffect == kEffectTypeRandom || nEffect == kEffectTypeTranscribeSideGuitar || nEffect == kEffectTypeOldRecord || nEffect == kEffectTypeLowBattery || nEffect == kEffectTypeEarTraining)
-            equalizerFragment.setEQ(0);
+            activity.equalizerFragment.setEQ(0);
         if(nEffect == kEffectTypeRandom || nEffect == kEffectTypeNoSense_Strong || nEffect == kEffectTypeNoSense_Middle || nEffect == kEffectTypeNoSense_Weak)
         {
-            controlFragment.setSpeed(0.0f);
-            controlFragment.setPitch(0.0f);
+            activity.controlFragment.setSpeed(0.0f);
+            activity.controlFragment.setPitch(0.0f);
         }
         if(nEffect == kEffectTypeTranscribeBass)
         {
-            equalizerFragment.setEQ(0);
-            controlFragment.setPitch(0.0f);
+            activity.equalizerFragment.setEQ(0);
+            activity.controlFragment.setPitch(0.0f);
         }
     }
 
     public void applyEffect()
     {
-        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-        int nPlayingPlaylist = playlistFragment.getPlayingPlaylist();
-        if(nPlayingPlaylist < 0 || nPlayingPlaylist >= playlistFragment.getArPlaylists().size()) return;
-        ArrayList<SongItem> arSongs = playlistFragment.getArPlaylists().get(nPlayingPlaylist);
-        int nPlaying = playlistFragment.getPlaying();
+        int nPlayingPlaylist = activity.playlistFragment.getPlayingPlaylist();
+        if(nPlayingPlaylist < 0 || nPlayingPlaylist >= activity.playlistFragment.getArPlaylists().size()) return;
+        ArrayList<SongItem> arSongs = activity.playlistFragment.getArPlaylists().get(nPlayingPlaylist);
+        int nPlaying = activity.playlistFragment.getPlaying();
         if(nPlaying < 0 || nPlaying >= arSongs.size()) return;
         SongItem song = arSongs.get(nPlaying);
         applyEffect(MainActivity.hStream, song);
@@ -1235,8 +1207,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             if(!arEffectItems.get(i).isSelected())
                 continue;
             String strEffect = arEffectItems.get(i).getEffectName();
-            ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-            EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
             BASS.BASS_DX8_ECHO echo;
             BASS_FX.BASS_BFX_FREEVERB reverb;
             BASS_FX.BASS_BFX_CHORUS chorus;
@@ -1251,13 +1221,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     Random random = new Random();
                     float fRand = random.nextFloat();
                     float fSpeed = (fRand * (fMaxSpeed - fMinSpeed) * 10.0f) / 10.0f + fMinSpeed;
-                    controlFragment.setSpeed(fSpeed);
+                    activity.controlFragment.setSpeed(fSpeed);
                     float fMaxPitch = 3.0f;
                     float fMinPitch = -3.0f;
                     fRand = random.nextFloat();
                     float fPitch = (fRand * (fMaxPitch - fMinPitch) * 10.0f) / 10.0f + fMinPitch;
-                    controlFragment.setPitch(fPitch);
-                    equalizerFragment.setEQRandom();
+                    activity.controlFragment.setPitch(fPitch);
+                    activity.equalizerFragment.setEQRandom();
                     break;
                 case "ボーカルキャンセル":
                     if (info.chans != 1)
@@ -1296,21 +1266,21 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     for (int j = 0; j < 32; j++) {
                         int nLevel = array[j];
                         if (j == 0)
-                            equalizerFragment.setVol(nLevel);
+                            activity.equalizerFragment.setVol(nLevel);
                         else
-                            equalizerFragment.setEQ(j, nLevel);
+                            activity.equalizerFragment.setEQ(j, nLevel);
                     }
                     break;
                 case "ベースの耳コピ（オクターブ上げ）":
-                    controlFragment.setLink(false);
-                    controlFragment.setPitch(12.0f);
+                    activity.controlFragment.setLink(false);
+                    activity.controlFragment.setPitch(12.0f);
                     array = new int[]{0, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -20, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                     for (int j = 0; j < 32; j++) {
                         int nLevel = array[j];
                         if (j == 0)
-                            equalizerFragment.setVol(nLevel);
+                            activity.equalizerFragment.setVol(nLevel);
                         else
-                            equalizerFragment.setEQ(j, nLevel);
+                            activity.equalizerFragment.setEQ(j, nLevel);
                     }
                     break;
                 case "パン":
@@ -1568,9 +1538,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     for (int j = 0; j < 32; j++) {
                         int nLevel = array[j];
                         if (j == 0)
-                            equalizerFragment.setVol(nLevel);
+                            activity.equalizerFragment.setVol(nLevel);
                         else
-                            equalizerFragment.setEQ(j, nLevel);
+                            activity.equalizerFragment.setEQ(j, nLevel);
                     }
                     if (hSEStream == 0) {
                         bSE1Playing = true;
@@ -1599,9 +1569,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     for (int j = 0; j < 32; j++) {
                         int nLevel = array[j];
                         if (j == 0)
-                            equalizerFragment.setVol(nLevel);
+                            activity.equalizerFragment.setVol(nLevel);
                         else
-                            equalizerFragment.setEQ(j, nLevel);
+                            activity.equalizerFragment.setEQ(j, nLevel);
                     }
 
                     handler = new Handler();
@@ -1611,8 +1581,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 case "歌へた（中）":
                 case "歌へた（弱）":
                     fVelo1 = fVol2 = 0.0f;
-                    controlFragment.setSpeed(0.0f);
-                    controlFragment.setPitch(0.0f);
+                    activity.controlFragment.setSpeed(0.0f);
+                    activity.controlFragment.setPitch(0.0f);
 
                     handler = new Handler();
                     handler.post(onTimer);
@@ -1807,10 +1777,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 Float fSpeed = 0.0f;
                 BASS.BASS_ChannelGetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, fSpeed);
                 fSpeed += fIncreaseSpeed;
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 if(fSpeed + 100.0f > 400.0f) fSpeed = 300.0f;
                 if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PAUSED)
-                    controlFragment.setSpeed(fSpeed, false);
+                    activity.controlFragment.setSpeed(fSpeed, false);
                 handler.postDelayed(this, (long)(fTimeOfIncreaseSpeed * 1000.0f));
             }
             else if(arEffectItems.get(kEffectTypeDecreaseSpeed).isSelected())
@@ -1818,10 +1787,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 Float fSpeed = 0.0f;
                 BASS.BASS_ChannelGetAttribute(MainActivity.hStream, BASS_FX.BASS_ATTRIB_TEMPO, fSpeed);
                 fSpeed -= fDecreaseSpeed;
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 if(fSpeed + 100.0f < 10.0f) fSpeed = -90.0f;
                 if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PAUSED)
-                    controlFragment.setSpeed(fSpeed, false);
+                    activity.controlFragment.setSpeed(fSpeed, false);
                 handler.postDelayed(this, (long)(fTimeOfIncreaseSpeed * 1000.0f));
             }
             else if(arEffectItems.get(kEffectTypeOldRecord).isSelected())
@@ -1899,9 +1867,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 }
                 fVelo1 += fAccel; // 速度の差分に加速度を加える
                 fSpeed += fVelo1; // 速度に差分を加える
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
                 if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PAUSED)
-                    controlFragment.setSpeed(fSpeed);
+                    activity.controlFragment.setSpeed(fSpeed);
 
                 Float fPitch = 0.0f;
                 fRand = random.nextFloat();
@@ -1927,13 +1894,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 fVelo2 += fAccel; // 音程の差分に加速度を加える
                 fPitch += fVelo2; // 音程に差分を加える
                 if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PAUSED)
-                    controlFragment.setPitch(fPitch);
+                    activity.controlFragment.setPitch(fPitch);
                 handler.postDelayed(this, 80);
             }
             else if(arEffectItems.get(kEffectTypeEarTraining).isSelected())
             {
-                EqualizerFragment equalizerFragment = (EqualizerFragment)activity.mSectionsPagerAdapter.getItem(3);
-                equalizerFragment.setEQRandom();
+                activity.equalizerFragment.setEQRandom();
                 handler.postDelayed(this, 3000);
             }
             else if(arEffectItems.get(kEffectTypeConcertHall).isSelected())

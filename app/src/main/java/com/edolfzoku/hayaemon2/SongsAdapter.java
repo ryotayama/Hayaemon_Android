@@ -97,8 +97,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
     {
         SongItem item = items.get(position);
         final int nItem = Integer.parseInt(item.getNumber()) - 1;
-        final PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-        boolean bLock = playlistFragment.isLock(nItem);
+        boolean bLock = activity.playlistFragment.isLock(nItem);
 
         holder.itemView.setLongClickable(true);
 
@@ -114,7 +113,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             holder.textArtist.setTextColor(Color.argb(255, 102, 102, 102));
             holder.textArtist.setText(item.getArtist());
         }
-        if(playlistFragment.getPlayingPlaylist() == playlistFragment.getSelectedPlaylist() && nItem == playlistFragment.getPlaying()) {
+        if(activity.playlistFragment.getPlayingPlaylist() == activity.playlistFragment.getSelectedPlaylist() && nItem == activity.playlistFragment.getPlaying()) {
             if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING)
                 holder.imgStatus.setImageResource(R.drawable.circle_music);
             else
@@ -132,17 +131,17 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         holder.songItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playlistFragment.onSongItemClick(nItem);
+                activity.playlistFragment.onSongItemClick(nItem);
             }
         });
-        if(playlistFragment.isSorting()) {
+        if(activity.playlistFragment.isSorting()) {
             holder.frameSongMenu.setOnClickListener(null);
             holder.songItem.setOnLongClickListener(null);
             holder.frameSongMenu.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
                 {
-                    playlistFragment.getSongTouchHelper().startDrag(holder);
+                    activity.playlistFragment.getSongTouchHelper().startDrag(holder);
                     return true;
                 }
             });
@@ -153,20 +152,20 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             holder.frameSongMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    playlistFragment.showSongMenu(holder.getAdapterPosition());
+                    activity.playlistFragment.showSongMenu(holder.getAdapterPosition());
                 }
             });
             holder.songItem.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    playlistFragment.showSongMenu(holder.getAdapterPosition());
+                    activity.playlistFragment.showSongMenu(holder.getAdapterPosition());
                     return true;
                 }
             });
             holder.imgSongMenu.setImageResource(R.drawable.ic_listmenu);
         }
 
-        if(playlistFragment.getPlayingPlaylist() == playlistFragment.getSelectedPlaylist() && nItem == playlistFragment.getPlaying())
+        if(activity.playlistFragment.getPlayingPlaylist() == activity.playlistFragment.getSelectedPlaylist() && nItem == activity.playlistFragment.getPlaying())
             holder.songItem.setBackgroundColor(Color.argb(255, 224, 239, 255));
         else
             holder.songItem.setBackgroundColor(Color.argb(255, 255, 255, 255));

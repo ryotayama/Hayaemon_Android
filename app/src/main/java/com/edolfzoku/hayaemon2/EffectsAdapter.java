@@ -77,17 +77,16 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
     {
         EffectItem item = items.get(position);
         String name = item.getEffectName();
-        final EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
         holder.textEffect.setText(name);
 
-        if(effectFragment.isSelectedItem(position))
+        if(activity.effectFragment.isSelectedItem(position))
             holder.itemView.setBackgroundColor(Color.argb(255, 221, 221, 221));
         else
             holder.itemView.setBackgroundColor(Color.argb(255, 255, 255, 255));
         holder.effectItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                effectFragment.onEffectItemClick(holder.getAdapterPosition());
+                activity.effectFragment.onEffectItemClick(holder.getAdapterPosition());
             }
         });
 
@@ -101,7 +100,7 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
             holder.buttonEffectDetail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    effectFragment.onEffectDetailClick(holder.getAdapterPosition());
+                    activity.effectFragment.onEffectDetailClick(holder.getAdapterPosition());
                 }
             });
         }

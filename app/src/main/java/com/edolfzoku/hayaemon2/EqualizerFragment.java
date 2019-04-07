@@ -640,9 +640,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
     public void setEQ(int row)
     {
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
         if(arEqualizerItems.get(nLastChecked).getEqualizerName().equals("ベースの耳コピ（オクターブ上げ）"))
-            controlFragment.setPitch(0.0f);
+            activity.controlFragment.setPitch(0.0f);
         nLastChecked = row;
 
         if(arEqualizerItems.get(row).getEqualizerName().equals("ランダム")) {
@@ -650,7 +649,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             return;
         }
         else if(arEqualizerItems.get(row).getEqualizerName().equals("ベースの耳コピ（オクターブ上げ）"))
-            controlFragment.setPitch(12.0f);
+            activity.controlFragment.setPitch(12.0f);
 
         for(int i = 0; i < 32; i++)
         {
@@ -693,8 +692,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 textView.setText(String.valueOf(nLevel));
             }
         }
-        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-        playlistFragment.updateSavingEffect();
+        activity.playlistFragment.updateSavingEffect();
     }
 
     public void setEQRandom()
@@ -734,8 +732,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             textView = arTextValue.get(i + 1);
             textView.setText(String.valueOf(nLevel));
         }
-        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-        playlistFragment.updateSavingEffect();
+        activity.playlistFragment.updateSavingEffect();
     }
 
     public void setVol(int nLevel)
@@ -762,10 +759,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         TextView textView = arTextValue.get(0);
         textView.setText(String.valueOf(nLevel));
 
-        if(bSave) {
-            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-            playlistFragment.updateSavingEffect();
-        }
+        if(bSave) activity.playlistFragment.updateSavingEffect();
     }
 
     public void setEQ(int i, int nLevel)
@@ -791,10 +785,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         TextView textView = arTextValue.get(i);
         textView.setText(String.valueOf(nLevel));
 
-        if (bSave) {
-            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-            playlistFragment.updateSavingEffect();
-        }
+        if (bSave) activity.playlistFragment.updateSavingEffect();
     }
 
     void setArHFX(int[] arHFX) {

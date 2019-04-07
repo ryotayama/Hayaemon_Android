@@ -108,9 +108,13 @@ import static com.un4seen.bass.BASS_AAC.BASS_CONFIG_AAC_MP4;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         View.OnLongClickListener, View.OnTouchListener, DrawerLayout.DrawerListener
 {
+    PlaylistFragment playlistFragment;
+    LoopFragment loopFragment;
+    ControlFragment controlFragment;
+    EqualizerFragment equalizerFragment;
+    EffectFragment effectFragment;
     static int hFxVol;
     static int hStream;
-    SectionsPagerAdapter mSectionsPagerAdapter;
     private DrawerLayout mDrawerLayout;
     boolean bLoopA, bLoopB;
     double dLoopA, dLoopB;
@@ -143,13 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean isPlayNextByBPos() { return bPlayNextByBPos; }
     public void setWaitEnd(boolean bWaitEnd) { this.bWaitEnd = bWaitEnd; }
 
-    public MainActivity() {
-        bLoopA = false;
-        bLoopB = false;
-        dLoopA = 0.0;
-        dLoopB = 0.0;
-        bShowUpdateLog = false;
-    }
+    public MainActivity() { }
 
     private GestureDetector gestureDetector;
     private int nLastY = 0;
@@ -159,19 +157,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         super.onCreate(savedInstanceState);
 
+        hStream = 0;
+
         startService(new Intent(this, ForegroundService.class));
         Intent in = new Intent(getApplicationContext(), ForegroundService.class);
         bindService(in, connection, Context.BIND_AUTO_CREATE);
 
         setContentView(R.layout.activity_main);
 
-        initialize();
+        initialize(savedInstanceState);
         loadData();
 
         Intent intent = getIntent();
         if(intent != null && intent.getType() != null) {
             if(intent.getType().contains("audio/")) {
-                PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
                 if(Build.VERSION.SDK_INT < 16)
                 {
                     Uri uri = copyFile(intent.getData());
@@ -284,7 +283,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                LoopFragment loopFragment = (LoopFragment)mSectionsPagerAdapter.getItem(1);
                 loopFragment.setCurPos((double)seekBar.getProgress());
             }
         });
@@ -298,6 +296,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final AnimationButton btnArtwork = findViewById(R.id.btnArtworkInPlayingBar);
         btnArtwork.setAnimation(false);
         btnArtwork.setClickable(false);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        getSupportFragmentManager().putFragment(savedInstanceState, "playlistFragment", playlistFragment);
+        getSupportFragmentManager().putFragment(savedInstanceState, "loopFragment", loopFragment);
+        getSupportFragmentManager().putFragment(savedInstanceState, "controlFragment", controlFragment);
+        getSupportFragmentManager().putFragment(savedInstanceState, "equalizerFragment", equalizerFragment);
+        getSupportFragmentManager().putFragment(savedInstanceState, "effectFragment", effectFragment);
+
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     private class SingleTapConfirm extends GestureDetector.SimpleOnGestureListener
@@ -413,10 +422,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onReceive(Context context, Intent intent) {
                 if(intent.getAction() == null) return;
                 if(intent.getAction().equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
-                    if(BASS.BASS_ChannelIsActive(hStream) == BASS.BASS_ACTIVE_PLAYING) {
-                        PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
+                    if(BASS.BASS_ChannelIsActive(hStream) == BASS.BASS_ACTIVE_PLAYING)
                         playlistFragment.pause();
-                    }
                     return;
                 }
                 try {
@@ -597,7 +604,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
-        PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
         ArrayList<ArrayList<SongItem>> arPlaylists = gson.fromJson(preferences.getString("arPlaylists",""), new TypeToken<ArrayList<ArrayList<SongItem>>>(){}.getType());
         ArrayList<ArrayList<EffectSaver>> arEffects = gson.fromJson(preferences.getString("arEffects",""), new TypeToken<ArrayList<ArrayList<EffectSaver>>>(){}.getType());
         ArrayList<ArrayList<String>> arLyrics = gson.fromJson(preferences.getString("arLyrics",""), new TypeToken<ArrayList<ArrayList<String>>>(){}.getType());
@@ -670,7 +676,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         bPlayNextByBPos = preferences.getBoolean("bPlayNextByBPos", false);
         boolean bSnap = preferences.getBoolean("bSnap", false);
-        ControlFragment controlFragment = (ControlFragment)mSectionsPagerAdapter.getItem(2);
         controlFragment.setSnap(bSnap);
 
         boolean bHideAds = preferences.getBoolean("hideads", false);
@@ -758,10 +763,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (requestCode == 1)
         {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
-                PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
                 playlistFragment.startRecord();
-            }
             else
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -780,12 +782,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             if(hStream == 0) return false;
             int chan = BASS_FX.BASS_FX_TempoGetSource(hStream);
-            EffectFragment effectFragment = (EffectFragment)mSectionsPagerAdapter.getItem(4);
             if(effectFragment.isReverse())
                 BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
             else
                 BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
-            ControlFragment controlFragment = (ControlFragment)mSectionsPagerAdapter.getItem(2);
             BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed + 100);
             AnimationButton btnRewind = findViewById(R.id.btnRewind);
             btnRewind.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#FF007AFF"), PorterDuff.Mode.SRC_IN));
@@ -796,7 +796,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(v.getId() == R.id.btnForward || v.getId() == R.id.btnForwardInPlayingBar)
         {
             if(hStream == 0) return false;
-            ControlFragment controlFragment = (ControlFragment)mSectionsPagerAdapter.getItem(2);
             BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed + 100);
             AnimationButton btnForward = findViewById(R.id.btnForward);
             btnForward.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#FF007AFF"), PorterDuff.Mode.SRC_IN));
@@ -818,7 +817,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int nY = (int) event.getRawY();
             if (gestureDetector.onTouchEvent(event)) return false;
             if(seekCurPos.getVisibility() != View.VISIBLE) {
-                PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
                 if (event.getAction() == MotionEvent.ACTION_MOVE) {
                     RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams) findViewById(R.id.container).getLayoutParams();
                     RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams) findViewById(R.id.relativeRecording).getLayoutParams();
@@ -914,12 +912,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             {
                 if(hStream == 0) return false;
                 int chan = BASS_FX.BASS_FX_TempoGetSource(hStream);
-                EffectFragment effectFragment = (EffectFragment)mSectionsPagerAdapter.getItem(4);
                 if(effectFragment.isReverse())
                     BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
                 else
                     BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
-                ControlFragment controlFragment = (ControlFragment)mSectionsPagerAdapter.getItem(2);
                 BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed);
                 AnimationButton btnRewind = findViewById(R.id.btnRewind);
                 btnRewind.clearColorFilter();
@@ -929,7 +925,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             else if(v.getId() == R.id.btnForward || v.getId() == R.id.btnForwardInPlayingBar)
             {
                 if(hStream == 0) return false;
-                ControlFragment controlFragment = (ControlFragment)mSectionsPagerAdapter.getItem(2);
                 BASS.BASS_ChannelSetAttribute(hStream, BASS_FX.BASS_ATTRIB_TEMPO, controlFragment.fSpeed);
                 AnimationButton btnForward = findViewById(R.id.btnForward);
                 btnForward.clearColorFilter();
@@ -962,7 +957,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v)
     {
-        final PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
         if(v.getId() == R.id.btnMenu)
         {
             findViewById(R.id.textPlaying).setVisibility(hStream == 0 ? View.GONE : View.VISIBLE);
@@ -1233,7 +1227,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             playlistFragment.playNext(true);
         else if(v.getId() == R.id.btnRewindInPlayingBar) {
             if(hStream == 0) return;
-            EffectFragment effectFragment = (EffectFragment)mSectionsPagerAdapter.getItem(4);
             if(!effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(hStream, BASS.BASS_ChannelGetPosition(hStream, BASS.BASS_POS_BYTE)) > dLoopA + 1.0)
                 BASS.BASS_ChannelSetPosition(hStream, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopA), BASS.BASS_POS_BYTE);
             else if(effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(hStream, BASS.BASS_ChannelGetPosition(hStream, BASS.BASS_POS_BYTE)) < dLoopA - 1.0)
@@ -1311,7 +1304,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void upViewPlaying()
     {
-        final PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
         playlistFragment.selectPlaylist(playlistFragment.getPlayingPlaylist());
         final ImageView imgViewDown = findViewById(R.id.imgViewDown);
         final SeekBar seekCurPos = findViewById(R.id.seekCurPos);
@@ -1649,7 +1641,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnArtwork.setAnimation(false);
                 btnArtwork.setClickable(false);
 
-                final PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
                 RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams) findViewById(R.id.container).getLayoutParams();
                 RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams) findViewById(R.id.relativeRecording).getLayoutParams();
                 if (playlistFragment.hRecord != 0) {
@@ -1694,7 +1685,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void showSaveExportMenu()
     {
-        final PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
         final BottomMenu menu = new BottomMenu(this);
         menu.setTitle("保存／エクスポート");
         menu.addMenu("アプリ内に保存", R.drawable.actionsheet_save, new View.OnClickListener() {
@@ -1744,7 +1734,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void open()
     {
-        PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
         if (Build.VERSION.SDK_INT < 19)
         {
             final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -1763,7 +1752,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void openGallery()
     {
-        PlaylistFragment playlistFragment = (PlaylistFragment)mSectionsPagerAdapter.getItem(0);
         if (Build.VERSION.SDK_INT < 19)
         {
             final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -1844,7 +1832,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void initialize()
+    private void initialize(Bundle savedInstanceState)
     {
         MobileAds.initialize(this, "ca-app-pub-9499594730627438~9516019647");
 
@@ -1859,11 +1847,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         BASS.BASS_PluginLoad("libbass_aac.so", 0);
         BASS.BASS_PluginLoad("libbassflac.so", 0);
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        SectionsPagerAdapter sectionsPagerAdapter;
+        if(savedInstanceState == null) {
+            sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+            playlistFragment = (PlaylistFragment)sectionsPagerAdapter.getItem(0);
+            loopFragment = (LoopFragment)sectionsPagerAdapter.getItem(1);
+            controlFragment = (ControlFragment)sectionsPagerAdapter.getItem(2);
+            equalizerFragment = (EqualizerFragment)sectionsPagerAdapter.getItem(3);
+            effectFragment = (EffectFragment)sectionsPagerAdapter.getItem(4);
+        }
+        else {
+            playlistFragment = (PlaylistFragment)getSupportFragmentManager().getFragment(savedInstanceState, "playlistFragment");
+            loopFragment = (LoopFragment)getSupportFragmentManager().getFragment(savedInstanceState, "loopFragment");
+            controlFragment = (ControlFragment)getSupportFragmentManager().getFragment(savedInstanceState, "controlFragment");
+            equalizerFragment = (EqualizerFragment)getSupportFragmentManager().getFragment(savedInstanceState, "equalizerFragment");
+            effectFragment = (EffectFragment)getSupportFragmentManager().getFragment(savedInstanceState, "effectFragment");
+            sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        }
 
         mViewPager = findViewById(R.id.container);
         mViewPager.setSwipeHold(true);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setAdapter(sectionsPagerAdapter);
         mViewPager.setOffscreenPageLimit(4);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -1996,15 +2000,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         LinearLayout MarkerButton = findViewById(R.id.MarkerButton);
         AnimationButton btnLoopmarker = findViewById(R.id.btnLoopmarker);
 
-        EffectFragment effectFragment = (EffectFragment)mSectionsPagerAdapter.getItem(4);
         if(effectFragment.isReverse()) {
             if(ABButton.getVisibility() == View.VISIBLE && bLoopA) // ABループ中でA位置が設定されている
                 hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopA), EndSync, this);
             else if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) // マーカー再生中
-            {
-                LoopFragment loopFragment = (LoopFragment)mSectionsPagerAdapter.getItem(1);
                 hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, loopFragment.getMarkerDstPos()), EndSync, this);
-            }
             else
                 hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_END, 0, EndSync, this);
         }
@@ -2013,10 +2013,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if(ABButton.getVisibility() == View.VISIBLE && bLoopB) // ABループ中でB位置が設定されている
                 hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopB), EndSync, this);
             else if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) // マーカー再生中
-            {
-                LoopFragment loopFragment = (LoopFragment)mSectionsPagerAdapter.getItem(1);
                 hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, loopFragment.getMarkerDstPos()), EndSync, this);
-            }
             else
                 hSync = BASS.BASS_ChannelSetSync(hStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(hStream, dLength - 0.75), EndSync, this);
         }
@@ -2027,8 +2024,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                LoopFragment loopFragment = (LoopFragment) mSectionsPagerAdapter.getItem(1);
-                EffectFragment effectFragment = (EffectFragment) mSectionsPagerAdapter.getItem(4);
                 LinearLayout ABButton = findViewById(R.id.ABButton);
                 LinearLayout MarkerButton = findViewById(R.id.MarkerButton);
                 AnimationButton btnLoopmarker = findViewById(R.id.btnLoopmarker);
@@ -2069,7 +2064,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             if (btnRepeat.getContentDescription().toString().equals("１曲リピート"))
                                 bRepeatSingle = true;
 
-                            PlaylistFragment playlistFragment = (PlaylistFragment) mSectionsPagerAdapter.getItem(0);
                             if (bSingle)
                                 playlistFragment.playNext(false);
                             else if (bRepeatSingle)
@@ -2104,7 +2098,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bLoopA = false;
         dLoopB = 0.0;
         bLoopB = false;
-        LoopFragment loopFragment = (LoopFragment)mSectionsPagerAdapter.getItem(1);
         loopFragment.clearLoop(bSave);
     }
 

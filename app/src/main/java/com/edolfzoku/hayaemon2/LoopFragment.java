@@ -124,7 +124,6 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             public void run() {
                 if (activity != null) {
                     LinearLayout ABButton = activity.findViewById(R.id.ABButton);
-                    EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
                     long nLength = 0;
                     long nPos = 0;
                     int nScreenWidth = waveView.getWidth();
@@ -134,7 +133,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     if(MainActivity.hStream != 0) {
                         double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                         if (ABButton.getVisibility() == View.VISIBLE && ((activity.bLoopA && dPos < activity.dLoopA) || (activity.bLoopB && activity.dLoopB < dPos)) && !activity.isPlayNextByBPos()) {
-                            if (effectFragment.isReverse())
+                            if (activity.effectFragment.isReverse())
                                 dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB));
                             else
                                 dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA));
@@ -306,8 +305,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     if(activity.bLoopA) viewMaskA.setVisibility(View.VISIBLE);
                     if(activity.bLoopB) viewMaskB.setVisibility(View.VISIBLE);
                     activity.setSync();
-                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-                    playlistFragment.updateSavingEffect();
+                    activity.playlistFragment.updateSavingEffect();
 
                     MarkerButton.setVisibility(View.INVISIBLE);
                     for(int i = 0 ; i < arMarkerText.size(); i++)
@@ -324,8 +322,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         textView.setVisibility(View.VISIBLE);
                     }
                     activity.setSync();
-                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-                    playlistFragment.updateSavingEffect();
+                    activity.playlistFragment.updateSavingEffect();
 
                     ABLabel.setVisibility(View.INVISIBLE);
                     ABButton.setVisibility(View.INVISIBLE);
@@ -791,10 +788,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         EditText textAValue = activity.findViewById(R.id.textAValue);
         textAValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
 
-        if(bSave) {
-            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-            playlistFragment.updateSavingEffect();
-        }
+        if(bSave) activity.playlistFragment.updateSavingEffect();
     }
 
     public void setLoopB(double dLoopB)
@@ -842,10 +836,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
         activity.setSync();
 
-        if(bSave) {
-            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-            playlistFragment.updateSavingEffect();
-        }
+        if(bSave) activity.playlistFragment.updateSavingEffect();
     }
 
     public void setCurPos(double dPos)
@@ -853,8 +844,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         if(MainActivity.hStream == 0) return;
 
         double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
-        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-        boolean bReverse = effectFragment.isReverse();
+        boolean bReverse = activity.effectFragment.isReverse();
         if(bReverse) {
             if(dPos <= 0.0f) {
                 if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
@@ -887,8 +877,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
         activity.setSync();
 
-        PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-        playlistFragment.updateSavingEffect();
+        activity.playlistFragment.updateSavingEffect();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -927,8 +916,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     else if((Integer)btnRewind5Sec.getTag() == 3) dPos -= 3.0;
                     else if((Integer)btnRewind5Sec.getTag() == 5) dPos -= 5.0;
                     else if((Integer)btnRewind5Sec.getTag() == 10) dPos -= 10.0;
-                    EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-                    boolean bReverse = effectFragment.isReverse();
+                    boolean bReverse = activity.effectFragment.isReverse();
                     if(bReverse) {
                         if(dPos <= 0.0f) {
                             if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
@@ -969,8 +957,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     else if((Integer)btnForward5Sec.getTag() == 3) dPos += 3.0;
                     else if((Integer)btnForward5Sec.getTag() == 5) dPos += 5.0;
                     else if((Integer)btnForward5Sec.getTag() == 10) dPos += 10.0;
-                    EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-                    boolean bReverse = effectFragment.isReverse();
+                    boolean bReverse = activity.effectFragment.isReverse();
                     if(bReverse) {
                         if(dPos <= 0.0f) {
                             if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
@@ -1027,8 +1014,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         viewMaskA.getLayoutParams().width = nLeft;
                         viewMaskA.setVisibility(View.VISIBLE);
                         viewMaskA.requestLayout();
-                        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-                        if(effectFragment.isReverse())
+                        if(activity.effectFragment.isReverse())
                             BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB), BASS.BASS_POS_BYTE);
 
                         int nMinute = (int)(activity.dLoopA / 60);
@@ -1039,8 +1025,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         EditText textAValue = activity.findViewById(R.id.textAValue);
                         textAValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
                     }
-                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-                    playlistFragment.updateSavingEffect();
+                    activity.playlistFragment.updateSavingEffect();
                 }
             }
         }
@@ -1076,8 +1061,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         viewMaskB.getLayoutParams().width = nBkWidth - nLeft;
                         viewMaskB.setVisibility(View.VISIBLE);
                         viewMaskB.requestLayout();
-                        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-                        if(!effectFragment.isReverse())
+                        if(!activity.effectFragment.isReverse())
                             BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA), BASS.BASS_POS_BYTE);
 
                         int nMinute = (int)(activity.dLoopB / 60);
@@ -1090,8 +1074,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     }
                     activity.setSync();
 
-                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-                    playlistFragment.updateSavingEffect();
+                    activity.playlistFragment.updateSavingEffect();
                 }
             }
         }
@@ -1101,8 +1084,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             {
                 if(MainActivity.hStream != 0)
                 {
-                    EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-                    boolean bReverse = effectFragment.isReverse();
+                    boolean bReverse = activity.effectFragment.isReverse();
                     double dCurPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     int i = arMarkerTime.size() - 1;
                     for( ; i >= 0; i--)
@@ -1117,8 +1099,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     nMarker = i;
                     activity.setSync();
 
-                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-                    playlistFragment.updateSavingEffect();
+                    activity.playlistFragment.updateSavingEffect();
                 }
             }
         }
@@ -1128,8 +1109,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             {
                 if(MainActivity.hStream != 0)
                 {
-                    EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-                    boolean bReverse = effectFragment.isReverse();
+                    boolean bReverse = activity.effectFragment.isReverse();
                     double dCurPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     int i = 0;
                     for( ; i < arMarkerTime.size(); i++)
@@ -1144,8 +1124,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     nMarker = i;
                     activity.setSync();
 
-                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-                    playlistFragment.updateSavingEffect();
+                    activity.playlistFragment.updateSavingEffect();
                 }
             }
         }
@@ -1190,8 +1169,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     }
                     nMarker = i;
 
-                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-                    playlistFragment.updateSavingEffect();
+                    activity.playlistFragment.updateSavingEffect();
                 }
             }
         }
@@ -1215,8 +1193,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                             break;
                         }
                     }
-                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-                    playlistFragment.updateSavingEffect();
+                    activity.playlistFragment.updateSavingEffect();
                 }
             }
         }
@@ -1251,8 +1228,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
                     activity.setSync();
 
-                    PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-                    playlistFragment.updateSavingEffect();
+                    activity.playlistFragment.updateSavingEffect();
                 }
             }
         }
@@ -1321,10 +1297,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
         waveView.clearWaveForm(true);
 
-        if(bSave) {
-            PlaylistFragment playlistFragment = (PlaylistFragment) activity.mSectionsPagerAdapter.getItem(0);
-            playlistFragment.updateSavingEffect();
-        }
+        if(bSave) activity.playlistFragment.updateSavingEffect();
     }
 
     public void drawWaveForm(String strPath)
@@ -1338,8 +1311,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         LinearLayout MarkerButton = activity.findViewById(R.id.MarkerButton);
         AnimationButton btnLoopmarker = activity.findViewById(R.id.btnLoopmarker);
 
-        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-        if(effectFragment.isReverse()) {
+        if(activity.effectFragment.isReverse()) {
             if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) // マーカー再生中
             {
                 dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
@@ -1365,8 +1337,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         LinearLayout MarkerButton = activity.findViewById(R.id.MarkerButton);
         AnimationButton btnLoopmarker = activity.findViewById(R.id.btnLoopmarker);
 
-        EffectFragment effectFragment = (EffectFragment)activity.mSectionsPagerAdapter.getItem(4);
-        if(effectFragment.isReverse()) {
+        if(activity.effectFragment.isReverse()) {
             if(MarkerButton.getVisibility() == View.VISIBLE && btnLoopmarker.isSelected()) // マーカー再生中
             {
                 if(nMarker - 1 >= 0 && nMarker - 1 < arMarkerTime.size()) {

@@ -80,25 +80,24 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
     public void onBindViewHolder(@NonNull final PlaylistsAdapter.ViewHolder holder, int position)
     {
         String item = items.get(position);
-        final PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
 
         holder.textName.setText(item);
-        holder.textSongCount.setText(String.format(Locale.getDefault(), "%d曲", playlistFragment.getSongCount(position)));
+        holder.textSongCount.setText(String.format(Locale.getDefault(), "%d曲", activity.playlistFragment.getSongCount(position)));
 
         holder.playlistItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playlistFragment.onPlaylistItemClick(holder.getAdapterPosition());
+                activity.playlistFragment.onPlaylistItemClick(holder.getAdapterPosition());
             }
         });
-        if(playlistFragment.isSorting()) {
+        if(activity.playlistFragment.isSorting()) {
             holder.framePlaylistMenu.setOnClickListener(null);
             holder.playlistItem.setOnLongClickListener(null);
             holder.framePlaylistMenu.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
                 {
-                    playlistFragment.getPlaylistTouchHelper().startDrag(holder);
+                    activity.playlistFragment.getPlaylistTouchHelper().startDrag(holder);
                     return true;
                 }
             });
@@ -110,13 +109,13 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             holder.framePlaylistMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
+                    activity.playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
                 }
             });
             holder.playlistItem.setOnLongClickListener(new View.OnLongClickListener()
             {
                 public boolean onLongClick(View v) {
-                    playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
+                    activity.playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
                     return true;
                 }
             });
@@ -124,7 +123,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             holder.imgRight.setVisibility(View.VISIBLE);
         }
 
-        if(playlistFragment.getPlayingPlaylist() == position && playlistFragment.getPlaying() != -1)
+        if(activity.playlistFragment.getPlayingPlaylist() == position && activity.playlistFragment.getPlaying() != -1)
             holder.playlistItem.setBackgroundColor(Color.argb(255, 224, 239, 255));
         else
             holder.playlistItem.setBackgroundColor(Color.argb(255, 255, 255, 255));

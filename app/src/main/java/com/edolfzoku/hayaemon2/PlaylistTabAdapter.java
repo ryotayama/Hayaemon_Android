@@ -68,12 +68,11 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
     public void onBindViewHolder(@NonNull final PlaylistTabAdapter.ViewHolder holder, int position)
     {
         String item = items.get(position);
-        final PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
 
         holder.textPlaylistTab.setLongClickable(true);
 
         holder.textPlaylistTab.setText(item);
-        if(position == playlistFragment.getSelectedPlaylist()) {
+        if(position == activity.playlistFragment.getSelectedPlaylist()) {
             holder.textPlaylistTab.setContentDescription(item + "、選択ずみ");
             holder.textPlaylistTab.setTypeface(Typeface.DEFAULT_BOLD);
             holder.relativePlaylistTab.setBackgroundResource(R.drawable.playlisttab_select);
@@ -82,11 +81,11 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
             holder.btnPlaylistMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
+                    activity.playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
                 }
             });
         }
-        else if(playlistFragment.getPlayingPlaylist() == position && playlistFragment.getPlaying() != -1) {
+        else if(activity.playlistFragment.getPlayingPlaylist() == position && activity.playlistFragment.getPlaying() != -1) {
             holder.textPlaylistTab.setContentDescription(item);
             holder.textPlaylistTab.setTypeface(Typeface.DEFAULT);
             holder.relativePlaylistTab.setBackgroundResource(R.drawable.playlisttab_play);
@@ -104,14 +103,14 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
         holder.textPlaylistTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playlistFragment.selectPlaylist(holder.getAdapterPosition());
+                activity.playlistFragment.selectPlaylist(holder.getAdapterPosition());
             }
         });
 
         holder.textPlaylistTab.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
+                activity.playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
                 return true;
             }
         });

@@ -234,10 +234,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             .setDuration(0)
             .start();
 
-        if(bSave) {
-            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-            playlistFragment.updateSavingEffect();
-        }
+        if(bSave) activity.playlistFragment.updateSavingEffect();
 
         if(bLink) {
             bLink = false;
@@ -329,11 +326,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             .setDuration(0)
             .start();
 
-        if(bSave)
-        {
-            PlaylistFragment playlistFragment = (PlaylistFragment)activity.mSectionsPagerAdapter.getItem(0);
-            playlistFragment.updateSavingEffect();
-        }
+        if(bSave) activity.playlistFragment.updateSavingEffect();
 
         if(bLink) {
             bLink = false;
@@ -605,8 +598,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                         .setDuration(0)
                         .start();
 
-                PlaylistFragment playlistFragment = (PlaylistFragment) activity.mSectionsPagerAdapter.getItem(0);
-                playlistFragment.updateSavingEffect();
+                activity.playlistFragment.updateSavingEffect();
             }
 
             return true;

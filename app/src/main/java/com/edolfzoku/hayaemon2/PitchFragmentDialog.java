@@ -58,8 +58,7 @@ public class PitchFragmentDialog extends DialogFragment {
         LayoutInflater inflater = activity.getLayoutInflater();
         View view = inflater.inflate(R.layout.pitchpicker, (ViewGroup)activity.findViewById(R.id.layout_root), false);
 
-        ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-        float fPitch = controlFragment.fPitch;
+        float fPitch = activity.controlFragment.fPitch;
         int nIntPitch = (int)fPitch;
         int nDecimalPitch;
         if(fPitch >= 0.05) {
@@ -120,16 +119,14 @@ public class PitchFragmentDialog extends DialogFragment {
                 String strPitch = strInt.trim() + "." + strDecimal;
                 float fPitch = Float.parseFloat(strPitch);
 
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-                controlFragment.setPitch(fPitch);
+                activity.controlFragment.setPitch(fPitch);
             }
         });
         builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ControlFragment controlFragment = (ControlFragment)activity.mSectionsPagerAdapter.getItem(2);
-                controlFragment.clearFocus();
+                activity.controlFragment.clearFocus();
             }
         });
         builder.setView(view);
@@ -137,7 +134,6 @@ public class PitchFragmentDialog extends DialogFragment {
     }
     @Override
     public void onCancel(DialogInterface dialog) {
-        ControlFragment controlFragment = (ControlFragment) activity.mSectionsPagerAdapter.getItem(2);
-        controlFragment.clearFocus();
+        activity.controlFragment.clearFocus();
     }
 }
