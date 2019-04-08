@@ -4,8 +4,15 @@
     <string name="playSetting">再生設定</string>
     <string name="optionSetting">オプション設定</string>
     <string name="repeatAB">AB地点を設置したら1曲リピート</string>
+    <string name="speedRange">速度の表示範囲</string>
+    <string name="pitchRange">音程の表示範囲</string>
     <string name="snap">ポインターを整数にスナップ</string>
     <string name="close">閉じる</string>
+    <string name="done">完了</string>
+    <string name="back">&lt; 戻る</string>
+    <string name="reset">リセット</string>
+    <string name="percent">%</string>
+    <string name="range">～</string>
     <string name="purchasedItem">課金済みのアイテム</string>
     <string name="pointerPurple">コントロールポインター - ムラサキウニ</string>
     <string name="pointerElegant">コントロールポインター - バフンウニ</string>

@@ -677,6 +677,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bPlayNextByBPos = preferences.getBoolean("bPlayNextByBPos", false);
         boolean bSnap = preferences.getBoolean("bSnap", false);
         controlFragment.setSnap(bSnap);
+        controlFragment.setMinSpeed(preferences.getInt("nMinSpeed", 10));
+        controlFragment.setMaxSpeed(preferences.getInt("nMaxSpeed", 400));
 
         boolean bHideAds = preferences.getBoolean("hideads", false);
         if(bHideAds) hideAds();

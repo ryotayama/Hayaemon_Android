@@ -1,0 +1,171 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:clickable="true"
+    android:focusable="true"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp">
+
+    <RelativeLayout
+        android:id="@+id/relativeSpeedRangeSettingTitle"
+        android:background="#F9F9F9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btnReturnSpeedRangeSetting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:textColor="#007AFF"
+            android:textSize="19sp"
+            android:singleLine="true"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:gravity="center_vertical|start"
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/textSpeedRangeSettingTitle"
+            android:layout_toStartOf="@+id/textSpeedRangeSettingTitle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            />
+
+        <TextView
+            android:id="@+id/textSpeedRangeSettingTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/speedRange"
+            android:textColor="#000000"
+            android:textSize="19sp"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            />
+
+        <Button
+            android:id="@+id/btnCloseSpeedRangeSetting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/done"
+            android:textColor="#007AFF"
+            android:textSize="19sp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:gravity="center_vertical|end"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/textSpeedRangeSettingTitle"
+            android:layout_toEndOf="@+id/textSpeedRangeSettingTitle"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/viewSepSpeedRangeSetting"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#BFBFBF"
+        android:layout_below="@+id/relativeSpeedRangeSettingTitle"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/viewSepSpeedRangeSetting"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/linearSpeedRangeSetting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#F0F0F0"
+                android:orientation="horizontal"
+                >
+
+                <NumberPicker
+                    android:id="@+id/intSpeedRangeFromPicker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/percent"
+                    android:textColor="#000"
+                    android:textSize="19sp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_gravity="center_vertical"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/range"
+                    android:textColor="#000"
+                    android:textSize="19sp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_gravity="center_vertical"
+                    />
+
+                <NumberPicker
+                    android:id="@+id/intSpeedRangeToPicker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/percent"
+                    android:textColor="#000"
+                    android:textSize="19sp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_gravity="center_vertical"
+                    />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnResetSpeedRange"
+                android:text="@string/reset"
+                android:textSize="12sp"
+                android:textColor="#007AFF"
+                android:background="@drawable/resetbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="30dp"
+                android:gravity="center"
+                android:layout_marginTop="8dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/linearSpeedRangeSetting"
+                />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

@@ -51,11 +51,17 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     boolean bLockSpeed = false;
     boolean bLockPitch = false;
     boolean bSnap = false;
+    private int nMinSpeed = 10;
+    private int nMaxSpeed = 400;
     private boolean isContinue = true;
     private Handler handler;
 
     public boolean isSnap() { return bSnap; }
     public void setSnap(boolean bSnap) { this.bSnap = bSnap; }
+    public int getMinSpeed() { return nMinSpeed; }
+    public void setMinSpeed(int nMinSpeed) { this.nMinSpeed = nMinSpeed; }
+    public int getMaxSpeed() { return nMaxSpeed; }
+    public void setMaxSpeed(int nMaxSpeed) { this.nMaxSpeed = nMaxSpeed; }
 
     public ControlFragment()
     {
@@ -218,8 +224,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         int nBkLeft = viewBk.getLeft();
         int nBkWidth = viewBk.getWidth();
         float fCenter = nBkWidth / 2.0f;
-        float fMaxSpeed = 4.0f;
-        float fMinSpeed = 0.1f;
+        float fMaxSpeed = nMaxSpeed / 100.0f;
+        float fMinSpeed = nMinSpeed / 100.0f;
         fMaxSpeed = (fMaxSpeed - 1.0f) * 100.0f;
         fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
         float fX;
@@ -553,8 +559,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 float fBkHalfWidth = nBkWidth / 2.0f - nPtWidth / 2.0f;
                 float fDX = fX - (nBkLeft + nBkWidth / 2.0f);
                 fX -= nPtWidth / 2.0f;
-                float fMaxSpeed = 4.0f;
-                float fMinSpeed = 0.1f;
+                float fMaxSpeed = nMaxSpeed / 100.0f;
+                float fMinSpeed = nMinSpeed / 100.0f;
                 fMaxSpeed = (fMaxSpeed - 1.0f) * 100.0f;
                 fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
                 if(fX >= nBkLeft + nBkWidth / 2) fSpeed = (fDX / fBkHalfWidth) * fMaxSpeed;

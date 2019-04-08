@@ -17,6 +17,9 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TextView;
+
+import java.util.Locale;
 
 public class SettingFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener
 {
@@ -54,6 +57,10 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
 
         Button btnCloseSetting = activity.findViewById(R.id.btnCloseSetting);
         btnCloseSetting.setOnClickListener(this);
+
+        activity.findViewById(R.id.relativeSpeedRangeValue).setOnClickListener(this);
+        TextView textSpeedRangeValue = activity.findViewById(R.id.textSpeedRangeValue);
+        textSpeedRangeValue.setText(String.format(Locale.getDefault(), "%d%% ～ %d%%", activity.controlFragment.getMinSpeed(), activity.controlFragment.getMaxSpeed()));
 
         Switch switchRepeat = activity.findViewById(R.id.switchRepeat);
         switchRepeat.setChecked(!activity.isPlayNextByBPos());
@@ -96,11 +103,20 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
     @Override
     public void onClick(View view)
     {
-        FragmentManager fragmentManager = activity.getSupportFragmentManager();
-        final FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
-        transaction.remove(this);
-        transaction.commit();
+        if(view.getId() == R.id.btnCloseSetting) {
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            final FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
+            transaction.remove(this);
+            transaction.commit();
+        }
+        else if(view.getId() == R.id.relativeSpeedRangeValue) {
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            final FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+            transaction.replace(R.id.relativeMain, new SpeedRangeSettingFragment());
+            transaction.commit();
+        }
     }
 
     @Override
