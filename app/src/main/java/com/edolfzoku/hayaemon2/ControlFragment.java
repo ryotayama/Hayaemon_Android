@@ -53,6 +53,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     boolean bSnap = false;
     private int nMinSpeed = 10;
     private int nMaxSpeed = 400;
+    private int nMinPitch = -12;
+    private int nMaxPitch = 12;
     private boolean isContinue = true;
     private Handler handler;
 
@@ -62,6 +64,10 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     public void setMinSpeed(int nMinSpeed) { this.nMinSpeed = nMinSpeed; }
     public int getMaxSpeed() { return nMaxSpeed; }
     public void setMaxSpeed(int nMaxSpeed) { this.nMaxSpeed = nMaxSpeed; }
+    public int getMinPitch() { return nMinPitch; }
+    public void setMinPitch(int nMinPitch) { this.nMinPitch = nMinPitch; }
+    public int getMaxPitch() { return nMaxPitch; }
+    public void setMaxPitch(int nMaxPitch) { this.nMaxPitch = nMaxPitch; }
 
     public ControlFragment()
     {
@@ -319,8 +325,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         int nBkTop = viewBk.getTop();
         int nBkHeight = viewBk.getHeight();
         float fBkHeight = nBkHeight - nPtHeight;
-        float fMaxPitch = 12.0f;
-        float fMinPitch = -12.0f;
+        float fMaxPitch = nMaxPitch;
+        float fMinPitch = nMinPitch;
         float fDummyPitch = fPitch;
         if(fDummyPitch > fMaxPitch) fDummyPitch = fMaxPitch;
         else if(fDummyPitch < fMinPitch) fDummyPitch = fMinPitch;
@@ -577,8 +583,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 float fBkHeight = nBkHeight - nPtHeight;
                 float fDY = fY - (nBkTop + nPtHeight / 2.0f);
                 fY -= nPtHeight / 2.0f;
-                float fMaxPitch = 12.0f;
-                float fMinPitch = -12.0f;
+                float fMaxPitch = nMaxPitch;
+                float fMinPitch = nMinPitch;
                 fPitch = ((fDY / fBkHeight) * (fMaxPitch - fMinPitch) + fMinPitch) * -1;
                 if(bSnap) fPitch = Math.round(fPitch);
                 if(MainActivity.hStream != 0)

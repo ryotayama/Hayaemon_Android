@@ -62,6 +62,10 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
         TextView textSpeedRangeValue = activity.findViewById(R.id.textSpeedRangeValue);
         textSpeedRangeValue.setText(String.format(Locale.getDefault(), "%d%% ～ %d%%", activity.controlFragment.getMinSpeed(), activity.controlFragment.getMaxSpeed()));
 
+        activity.findViewById(R.id.relativePitchRangeValue).setOnClickListener(this);
+        TextView textPitchRangeValue = activity.findViewById(R.id.textPitchRangeValue);
+        textPitchRangeValue.setText(String.format(Locale.getDefault(), "♯%d ～ ♭%d", activity.controlFragment.getMaxPitch(), activity.controlFragment.getMinPitch() * -1));
+
         Switch switchRepeat = activity.findViewById(R.id.switchRepeat);
         switchRepeat.setChecked(!activity.isPlayNextByBPos());
         switchRepeat.setOnCheckedChangeListener(this);
@@ -115,6 +119,13 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
             final FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
             transaction.replace(R.id.relativeMain, new SpeedRangeSettingFragment());
+            transaction.commit();
+        }
+        else if(view.getId() == R.id.relativePitchRangeValue) {
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            final FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+            transaction.replace(R.id.relativeMain, new PitchRangeSettingFragment());
             transaction.commit();
         }
     }
