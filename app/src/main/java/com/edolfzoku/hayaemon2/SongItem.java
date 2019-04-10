@@ -18,11 +18,11 @@
  */
 package com.edolfzoku.hayaemon2;
 
-public class SongItem {
+class SongItem {
     private String strNumber;
     private String strTitle;
     private String strArtist;
-    private String strPath;
+    private final String strPath;
     private float fPeak;
     private String strPathArtwork;
 
@@ -32,12 +32,11 @@ public class SongItem {
     String getTitle() { return strTitle; }
     void setArtist(String strArtist) { this.strArtist = strArtist; }
     String getArtist() { return strArtist; }
-    public void setPath(String strPath) { this.strPath = strPath; }
     public String getPath() { return strPath; }
     void setPeak(float fPeak) { this.fPeak = fPeak; }
     float getPeak() { return fPeak; }
     void setPathArtwork(String strPathArtwork) { this.strPathArtwork = strPathArtwork; }
-    public String getPathArtwork() { return strPathArtwork; }
+    String getPathArtwork() { return strPathArtwork; }
 
     SongItem(String strNumber, String strTitle, String strArtist, String strPath)
     {

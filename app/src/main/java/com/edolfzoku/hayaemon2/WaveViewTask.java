@@ -33,16 +33,16 @@ import java.util.ArrayList;
  * Created by yamauchiryouta on 2018/01/16.
  */
 
-public class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
+class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
 {
-    private WeakReference<WaveView> waveViewRef;
+    private final WeakReference<WaveView> waveViewRef;
     private float fPeak = 0.0f;
-    private int hTempStream;
-    private int nWidth;
-    private int nHeight;
-    private float fZoom;
-    private ArrayList<Bitmap> arBitmaps;
-    private ArrayList<Canvas> arCanvases;
+    private final int hTempStream;
+    private final int nWidth;
+    private final int nHeight;
+    private final float fZoom;
+    private final ArrayList<Bitmap> arBitmaps;
+    private final ArrayList<Canvas> arCanvases;
 
     WaveViewTask(WaveView view, int hTempStream, int nWidth, int nHeight, float fZoom, ArrayList<Bitmap> arBitmaps, ArrayList<Canvas> arCanvases)
     {

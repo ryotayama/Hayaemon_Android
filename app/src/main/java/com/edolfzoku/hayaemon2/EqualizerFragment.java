@@ -68,7 +68,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     private int nLastChecked = 0;
     private boolean bSorting = false;
     private boolean isContinue = true;
-    private Handler handler;
+    private final Handler handler;
     private int nLongClick = 0;
 
     public ArrayList<SeekBar> getArSeek() { return arSeek; }
@@ -76,7 +76,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     ArrayList<EqualizerItem> getArEqualizerItems() {
         return arEqualizerItems;
     }
-    public void setArEqualizerItems(ArrayList<EqualizerItem> arLists) {
+    private void setArEqualizerItems(ArrayList<EqualizerItem> arLists) {
         arEqualizerItems = arLists;
         equalizersAdapter.changeItems(arEqualizerItems);
     }
@@ -123,7 +123,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        equalizersAdapter = new EqualizersAdapter(activity, R.layout.equalizer_item, arEqualizerItems);
+        equalizersAdapter = new EqualizersAdapter(activity, arEqualizerItems);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -191,6 +191,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         arTextValue.add((TextView)activity.findViewById(R.id.text31_5Value));
         arTextValue.add((TextView)activity.findViewById(R.id.text25Value));
         arTextValue.add((TextView)activity.findViewById(R.id.text20Value));
+        for(int i = 0; i < arTextValue.size(); i++)
+            arTextValue.get(i).setText("0");
 
         arSeek = new ArrayList<>();
         arSeek.add((SeekBar)activity.findViewById(R.id.seekVol));
@@ -421,7 +423,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    Runnable repeatMinusValue = new Runnable()
+    private final Runnable repeatMinusValue = new Runnable()
     {
         @Override
         public void run()
@@ -435,7 +437,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         }
     };
 
-    Runnable repeatPlusValue = new Runnable()
+    private final Runnable repeatPlusValue = new Runnable()
     {
         @Override
         public void run()
@@ -454,13 +456,13 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         switch(v.getId()) {
             case R.id.btnAddEqualizer:
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("プリセットの保存");
+                builder.setTitle(R.string.savePreset);
                 LinearLayout linearLayout = new LinearLayout(activity);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
                 final EditText editPreset = new EditText(activity);
-                editPreset.setHint("プリセット名");
+                editPreset.setHint(R.string.presetName);
                 editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
-                editPreset.setText("新規プリセット");
+                editPreset.setText(R.string.newPreset);
                 linearLayout.addView(editPreset);
                 builder.setView(linearLayout);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -474,7 +476,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                         equalizersAdapter.notifyDataSetChanged();
                     }
                 });
-                builder.setNegativeButton("キャンセル", null);
+                builder.setNegativeButton(R.string.cancel, null);
                 final AlertDialog alertDialog = builder.create();
                 alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
                 {
@@ -504,7 +506,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    public int minusValue(SeekBar seek)
+    private int minusValue(SeekBar seek)
     {
         int nProgress = seek.getProgress();
         nProgress -= 1;
@@ -512,7 +514,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         return (nProgress - 30);
     }
 
-    public int plusValue(SeekBar seek)
+    private int plusValue(SeekBar seek)
     {
         int nProgress = seek.getProgress();
         nProgress += 1;
@@ -531,7 +533,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         setEQ(nEqualizer);
     }
 
-    public void loadData()
+    private void loadData()
     {
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -543,62 +545,62 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    public void saveData()
+    private void saveData()
     {
         SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
         preferences.edit().putString("arEqualizerItems", gson.toJson(arEqualizerItems)).apply();
     }
 
-    public void resetPresets()
+    private void resetPresets()
     {
         if(arEqualizerItems.size() > 0) arEqualizerItems.clear();
-        arEqualizerItems.add(new EqualizerItem("オフ",                              new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("ランダム",                          new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("ベースの耳コピ",                    new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("ボーカル強調",                      new ArrayList<>(Arrays.asList(  0,-30,-20,-12, -7, -4, -3, -2, -1,  0,  0,  0,  0,  0, -1, -2, -3, -4, -7,-12,-20,-24,-27,-28,-29,-30,-30,-30,-30,-30,-30,-30))));
-        arEqualizerItems.add(new EqualizerItem("ボーカル抑制",                      new ArrayList<>(Arrays.asList(  0,  0, -5, -8,-10,-12,-13,-14,-14,-15,-15,-15,-15,-15,-14,-14,-13,-12,-11, -8, -5, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("高音強調（超最強）",                new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
-        arEqualizerItems.add(new EqualizerItem("高音強調（最強）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -7,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
-        arEqualizerItems.add(new EqualizerItem("高音強調（強）",                    new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
-        arEqualizerItems.add(new EqualizerItem("高音強調（中）",                    new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -4, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
-        arEqualizerItems.add(new EqualizerItem("高音強調（弱）",                    new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
-        arEqualizerItems.add(new EqualizerItem("高音強調（最弱）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
-        arEqualizerItems.add(new EqualizerItem("中音強調（超最強）",                new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
-        arEqualizerItems.add(new EqualizerItem("中音強調（最強）",                  new ArrayList<>(Arrays.asList(  0,-15,-15,-15,-15,-15,-15,-15,-15,-15, -7,  0,  0,  0,  0,  0,  0,  0,  0,  0, -7,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
-        arEqualizerItems.add(new EqualizerItem("中音強調（強）",                    new ArrayList<>(Arrays.asList(  0,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
-        arEqualizerItems.add(new EqualizerItem("中音強調（中）",                    new ArrayList<>(Arrays.asList(  0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -4,  0,  0,  0,  0,  0,  0,  0,  0,  0, -4, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
-        arEqualizerItems.add(new EqualizerItem("中音強調（弱）",                    new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
-        arEqualizerItems.add(new EqualizerItem("中音強調（最弱）",                  new ArrayList<>(Arrays.asList(  0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
-        arEqualizerItems.add(new EqualizerItem("低音強調（超最強）",                new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("低音強調（最強）",                  new ArrayList<>(Arrays.asList(  0,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15, -7,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("低音強調（強）",                    new ArrayList<>(Arrays.asList(  0,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("低音強調（中）",                    new ArrayList<>(Arrays.asList(  0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("低音強調（弱）",                    new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("低音強調（最弱）",                  new ArrayList<>(Arrays.asList(  0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("高音カット（超最強）",              new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("高音カット（最強）",                new ArrayList<>(Arrays.asList(  0,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15, -8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("高音カット（強）",                  new ArrayList<>(Arrays.asList(  0,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("高音カット（中）",                  new ArrayList<>(Arrays.asList(  0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -5,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("高音カット（弱）",                  new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("高音カット（最弱）",                new ArrayList<>(Arrays.asList(  0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("中音カット（超最強）",              new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("中音カット（最強）",                new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -8,-15,-15,-15,-15,-15,-15,-15,-15,-15, -8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("中音カット（強）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("中音カット（中）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -5, -9, -9, -9, -9, -9, -9, -9, -9, -9, -5,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("中音カット（弱）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("中音カット（最弱）",                new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("低音カット（超最強）",              new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
-        arEqualizerItems.add(new EqualizerItem("低音カット（最強）",                new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -8,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
-        arEqualizerItems.add(new EqualizerItem("低音カット（強）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
-        arEqualizerItems.add(new EqualizerItem("低音カット（中）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -5, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
-        arEqualizerItems.add(new EqualizerItem("低音カット（弱）",                  new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
-        arEqualizerItems.add(new EqualizerItem("低音カット（最弱）",                new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
-        arEqualizerItems.add(new EqualizerItem("Pop",                                new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -5, -5, -5, -5, -4, -3, -3, -2, -1, -1,  0,  0,  0,  0, -1, -1, -2, -3, -3, -4, -5, -5, -5, -5, -6, -6, -6, -6))));
-        arEqualizerItems.add(new EqualizerItem("Rock",                               new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -5, -6, -5, -4, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("Jazz",                               new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -5, -6, -6, -6, -6, -3, -2, -1, -2, -2, -2, -2, -2, -1, -1, -1,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("Electronic",                        new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -3, -2, -1, -3, -5, -7, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        arEqualizerItems.add(new EqualizerItem("Acoustic",                          new ArrayList<>(Arrays.asList(  0, -2, -2, -2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -2, -3, -3, -3, -3, -3, -4, -4, -3, -2, -1, -1, -1,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.off), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.random), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.transcribeBass), new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.VocalBoost), new ArrayList<>(Arrays.asList(  0,-30,-20,-12, -7, -4, -3, -2, -1,  0,  0,  0,  0,  0, -1, -2, -3, -4, -7,-12,-20,-24,-27,-28,-29,-30,-30,-30,-30,-30,-30,-30))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.VocalReducer), new ArrayList<>(Arrays.asList(  0,  0, -5, -8,-10,-12,-13,-14,-14,-15,-15,-15,-15,-15,-14,-14,-13,-12,-11, -8, -5, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostUltraStrong), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostStrongest), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -7,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostStrong), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostMiddle), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -4, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostWeak), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostWeakest), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostUltraStrong), new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostStrongest), new ArrayList<>(Arrays.asList(  0,-15,-15,-15,-15,-15,-15,-15,-15,-15, -7,  0,  0,  0,  0,  0,  0,  0,  0,  0, -7,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostStrong), new ArrayList<>(Arrays.asList(  0,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostMiddle), new ArrayList<>(Arrays.asList(  0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -4,  0,  0,  0,  0,  0,  0,  0,  0,  0, -4, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostWeak), new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostWeakest), new ArrayList<>(Arrays.asList(  0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostUltraStrong), new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostStrongest), new ArrayList<>(Arrays.asList(  0,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15, -7,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostStrong), new ArrayList<>(Arrays.asList(  0,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostMiddle), new ArrayList<>(Arrays.asList(  0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostWeak), new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostWeakest), new ArrayList<>(Arrays.asList(  0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutUltraStrong), new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutStrongest), new ArrayList<>(Arrays.asList(  0,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15, -8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutStrong), new ArrayList<>(Arrays.asList(  0,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutMiddle), new ArrayList<>(Arrays.asList(  0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -5,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutWeak), new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutWeakest), new ArrayList<>(Arrays.asList(  0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutUltraStrong), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutStrongest), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -8,-15,-15,-15,-15,-15,-15,-15,-15,-15, -8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutStrong), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutMiddle), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -5, -9, -9, -9, -9, -9, -9, -9, -9, -9, -5,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutWeak), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutWeakest), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutUltraStrong), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutStrongest), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -8,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutStrong), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutMiddle), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -5, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutWeak), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutWeakest), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.Pop), new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -5, -5, -5, -5, -4, -3, -3, -2, -1, -1,  0,  0,  0,  0, -1, -1, -2, -3, -3, -4, -5, -5, -5, -5, -6, -6, -6, -6))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.Rock), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -5, -6, -5, -4, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.Jazz), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -5, -6, -6, -6, -6, -3, -2, -1, -2, -2, -2, -2, -2, -1, -1, -1,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.Electronic), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -3, -2, -1, -3, -5, -7, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        arEqualizerItems.add(new EqualizerItem(getString(R.string.Acoustic), new ArrayList<>(Arrays.asList(  0, -2, -2, -2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -2, -3, -3, -3, -3, -3, -4, -4, -3, -2, -1, -1, -1,  0,  0,  0,  0,  0,  0))));
         saveData();
         equalizersAdapter.notifyDataSetChanged();
     }
@@ -640,15 +642,15 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
     public void setEQ(int row)
     {
-        if(arEqualizerItems.get(nLastChecked).getEqualizerName().equals("ベースの耳コピ（オクターブ上げ）"))
+        if(arEqualizerItems.get(nLastChecked).getEqualizerName().equals(getString(R.string.transcribeBassOctave)))
             activity.controlFragment.setPitch(0.0f);
         nLastChecked = row;
 
-        if(arEqualizerItems.get(row).getEqualizerName().equals("ランダム")) {
+        if(arEqualizerItems.get(row).getEqualizerName().equals(getString(R.string.random))) {
             setEQRandom();
             return;
         }
-        else if(arEqualizerItems.get(row).getEqualizerName().equals("ベースの耳コピ（オクターブ上げ）"))
+        else if(arEqualizerItems.get(row).getEqualizerName().equals(getString(R.string.transcribeBassOctave)))
             activity.controlFragment.setPitch(12.0f);
 
         for(int i = 0; i < 32; i++)
@@ -795,16 +797,16 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     public void showMenu(final int nItem) {
         final BottomMenu menu = new BottomMenu(activity);
         menu.setTitle(arEqualizerItems.get(nItem).getEqualizerName());
-        menu.addMenu("プリセット名を変更", R.drawable.actionsheet_edit, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.changePresetName), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("プリセット名を変更");
+                builder.setTitle(R.string.changePresetName);
                 LinearLayout linearLayout = new LinearLayout(activity);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
                 final EditText editPreset = new EditText (activity);
-                editPreset.setHint("プリセット名");
+                editPreset.setHint(R.string.presetName);
                 editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
                 editPreset.setText(arEqualizerItems.get(nItem).getEqualizerName());
                 linearLayout.addView(editPreset);
@@ -816,7 +818,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                         saveData();
                     }
                 });
-                builder.setNegativeButton("キャンセル", null);
+                builder.setNegativeButton(R.string.cancel, null);
                 final AlertDialog alertDialog = builder.create();
                 alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
                 {
@@ -832,7 +834,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 alertDialog.show();
             }
         });
-        menu.addMenu("プリセットの並べ替え", R.drawable.actionsheet_sort, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.sortPreset), R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
@@ -872,15 +874,15 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 equalizerTouchHelper.attachToRecyclerView(recyclerEqualizers);
             }
         });
-        menu.addDestructiveMenu("削除", R.drawable.actionsheet_delete, new View.OnClickListener() {
+        menu.addDestructiveMenu(getString(R.string.delete), R.drawable.ic_actionsheet_delete, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setTitle(arEqualizerItems.get(nItem).getEqualizerName());
-                builder.setMessage("プリセットを削除しますが、よろしいでしょうか？");
-                builder.setPositiveButton("やめる", null);
-                builder.setNegativeButton("削除する", new DialogInterface.OnClickListener() {
+                builder.setMessage(R.string.askDeletePreset);
+                builder.setPositiveButton(R.string.decideNot, null);
+                builder.setNegativeButton(R.string.doDelete, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         removeItem(nItem);
                     }
@@ -898,15 +900,15 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 alertDialog.show();
             }
         });
-        menu.addDestructiveMenu("すべてのプリセットを初期化", R.drawable.actionsheet_initialize, new View.OnClickListener() {
+        menu.addDestructiveMenu(getString(R.string.initializePreset), R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("すべてのプリセットを初期化");
-                builder.setMessage("デフォルトを復元すると、現在の設定内容が消えてしまいますが、よろしいでしょうか？");
-                builder.setPositiveButton("やめる", null);
-                builder.setNegativeButton("初期化する", new DialogInterface.OnClickListener() {
+                builder.setTitle(R.string.initializePreset);
+                builder.setMessage(R.string.askInitializePreset);
+                builder.setPositiveButton(R.string.decideNot, null);
+                builder.setNegativeButton(R.string.doInitialize, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         resetPresets();
                     }
@@ -928,7 +930,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         menu.show();
     }
 
-    public void removeItem(int nItem)
+    private void removeItem(int nItem)
     {
         arEqualizerItems.remove(nItem);
         equalizersAdapter.notifyDataSetChanged();

@@ -17,8 +17,8 @@ import java.util.Locale;
 
 public class SpeedEffectDetailFragmentDialog extends DialogFragment {
     private MainActivity activity = null;
-    NumberPicker intNumberPicker;
-    NumberPicker decimalNumberPicker;
+    private NumberPicker intNumberPicker;
+    private NumberPicker decimalNumberPicker;
 
     @Override
     public void onAttach(Context context) {
@@ -42,7 +42,7 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.speedeffectdetailpicker, (ViewGroup)activity.findViewById(R.id.layout_root), false);
         float fTime;
         TextView textEffectName = activity.findViewById(R.id.textEffectName);
-        if(textEffectName.getText().toString().equals("だんだん速く"))
+        if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
             fTime = activity.effectFragment.getIncreaseSpeed();
         else fTime = activity.effectFragment.getDecreaseSpeed();
         int nInt = (int)fTime;
@@ -70,7 +70,7 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
                 }
 
                 TextView textEffectName = activity.findViewById(R.id.textEffectName);
-                if(textEffectName.getText().toString().equals("だんだん速く"))
+                if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
                     activity.effectFragment.setIncreaseSpeed(fTime);
                 else activity.effectFragment.setDecreaseSpeed(fTime);
             }
@@ -97,7 +97,7 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
                 }
 
                 TextView textEffectName = activity.findViewById(R.id.textEffectName);
-                if(textEffectName.getText().toString().equals("だんだん速く"))
+                if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
                     activity.effectFragment.setIncreaseSpeed(fTime);
                 else activity.effectFragment.setDecreaseSpeed(fTime);
             }
@@ -109,7 +109,7 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("速度の調整");
+        builder.setTitle(R.string.adjustSpeed);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override

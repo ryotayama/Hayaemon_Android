@@ -33,8 +33,6 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.un4seen.bass.BASS;
-import com.un4seen.bass.BASS_AAC;
-import com.un4seen.bass.BASSFLAC;
 
 import java.io.File;
 import java.io.IOException;
@@ -210,7 +208,7 @@ public class WaveView extends View {
         task.execute(0);
     }
 
-    public int getMaxTextureSize()
+    private int getMaxTextureSize()
     {
         EGL10 egl = (EGL10) EGLContext.getEGL();
 
@@ -252,7 +250,7 @@ public class WaveView extends View {
         return maxSize[0];
     }
 
-    public void streamCreate()
+    private void streamCreate()
     {
         if(hTempStream != 0)
         {

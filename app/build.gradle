@@ -22,15 +22,22 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        disable 'GoogleAppIndexingWarning'
+        baseline file("lint-baseline.xml")
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:animated-vector-drawable:27.1.1'
+    implementation 'com.android.support:customtabs:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
-    implementation "com.android.support:support-media-compat:27.0.2"
-    implementation 'com.google.android.gms:play-services-ads:9.4.0'
+    implementation "com.android.support:support-media-compat:27.1.1"
+    implementation 'com.google.android.gms:play-services-ads:17.2.0'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.android.billingclient:billing:1.0'
     testImplementation 'junit:junit:4.12'

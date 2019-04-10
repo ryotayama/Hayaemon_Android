@@ -37,17 +37,16 @@ import java.util.Locale;
 
 public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.ViewHolder>
 {
-    MainActivity activity;
-    private int resource;
-    private List<String> items;
+    private final MainActivity activity;
+    private final List<String> items;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout playlistItem;
-        TextView textName;
-        TextView textSongCount;
-        ImageView imgRight;
-        FrameLayout framePlaylistMenu;
-        ImageView imgPlaylistMenu;
+        final RelativeLayout playlistItem;
+        final TextView textName;
+        final TextView textSongCount;
+        final ImageView imgRight;
+        final FrameLayout framePlaylistMenu;
+        final ImageView imgPlaylistMenu;
 
         ViewHolder(View view) {
             super(view);
@@ -60,17 +59,16 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
         }
     }
 
-    PlaylistsAdapter(Context context, int resource, List<String> items)
+    PlaylistsAdapter(Context context, List<String> items)
     {
         this.activity = (MainActivity)context;
-        this.resource = resource;
         this.items = items;
     }
 
     @Override
     public @NonNull PlaylistsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(resource, parent, false);
+                .inflate(R.layout.playlist_item, parent, false);
 
         return new PlaylistsAdapter.ViewHolder(view);
     }

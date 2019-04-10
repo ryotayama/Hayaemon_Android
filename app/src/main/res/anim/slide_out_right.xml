@@ -4,7 +4,7 @@
     android:interpolator="@android:anim/decelerate_interpolator"
     android:fillAfter="true">
     <translate xmlns:android="http://schemas.android.com/apk/res/android"
-        android:duration="400"
+        android:duration="200"
         android:fromXDelta="0%p"
         android:toXDelta="100%p" />
 </set>

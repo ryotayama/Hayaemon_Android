@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AdView mAdView;
     private boolean mBound = false;
     private ForegroundService foregroundService = null;
-    private ServiceConnection connection = new ServiceConnection() {
+    private final ServiceConnection connection = new ServiceConnection() {
 
         public void onServiceConnected(ComponentName name, IBinder service) {
             foregroundService = ((ForegroundService.ForegroundServiceBinder)service).getService();
@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void advanceAnimation(View view, String strTarget, int nFrom, int nTo, float fProgress)
+    private void advanceAnimation(View view, String strTarget, int nFrom, int nTo, float fProgress)
     {
         RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)view.getLayoutParams();
         switch (strTarget) {
@@ -344,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         view.setLayoutParams(param);
     }
 
-    public int getStatusBarHeight(){
+    private int getStatusBarHeight(){
         final Rect rect = new Rect();
         getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
         return rect.top;
@@ -570,7 +570,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public File getScreenshot(View view) {
+    private File getScreenshot(View view) {
         view.setDrawingCacheEnabled(true);
 
         // Viewのキャッシュを取得
@@ -643,18 +643,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         else if(arSongsPath != null) {
-            playlistFragment.addPlaylist("再生リスト 1");
-            playlistFragment.addPlaylist("再生リスト 2");
-            playlistFragment.addPlaylist("再生リスト 3");
+            playlistFragment.addPlaylist(String.format(Locale.getDefault(), "%s 1", getString(R.string.playlist)));
+            playlistFragment.addPlaylist(String.format(Locale.getDefault(), "%s 2", getString(R.string.playlist)));
+            playlistFragment.addPlaylist(String.format(Locale.getDefault(), "%s 3", getString(R.string.playlist)));
             playlistFragment.selectPlaylist(0);
             for(int i = 0; i < arSongsPath.size(); i++) {
                 playlistFragment.addSong(this, Uri.parse(arSongsPath.get(i)));
             }
         }
         else {
-            playlistFragment.addPlaylist("再生リスト 1");
-            playlistFragment.addPlaylist("再生リスト 2");
-            playlistFragment.addPlaylist("再生リスト 3");
+            playlistFragment.addPlaylist(String.format(Locale.getDefault(), "%s 1", getString(R.string.playlist)));
+            playlistFragment.addPlaylist(String.format(Locale.getDefault(), "%s 2", getString(R.string.playlist)));
+            playlistFragment.addPlaylist(String.format(Locale.getDefault(), "%s 3", getString(R.string.playlist)));
             playlistFragment.selectPlaylist(0);
         }
 
@@ -715,24 +715,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AnimationButton btnShuffleInPlayingBar = findViewById(R.id.btnShuffleInPlayingBar);
         if(nShuffle == 1)
         {
-            btnShuffle.setContentDescription("シャッフルあり");
-            btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle_on);
-            btnShuffleInPlayingBar.setContentDescription("シャッフルあり");
-            btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_shuffle_on);
+            btnShuffle.setContentDescription(getString(R.string.shuffleOn));
+            btnShuffle.setImageResource(R.drawable.ic_bar_button_mode_shuffle_on);
+            btnShuffleInPlayingBar.setContentDescription(getString(R.string.shuffleOn));
+            btnShuffleInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_shuffle_on);
         }
         else if(nShuffle == 2)
         {
-            btnShuffle.setContentDescription("１曲のみ");
-            btnShuffle.setImageResource(R.drawable.bar_button_mode_single_on);
-            btnShuffleInPlayingBar.setContentDescription("１曲のみ");
-            btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_single_on);
+            btnShuffle.setContentDescription(getString(R.string.singleOn));
+            btnShuffle.setImageResource(R.drawable.ic_bar_button_mode_single_on);
+            btnShuffleInPlayingBar.setContentDescription(getString(R.string.singleOn));
+            btnShuffleInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_single_on);
         }
         else
         {
-            btnShuffle.setContentDescription("シャッフルなし");
-            btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle);
-            btnShuffleInPlayingBar.setContentDescription("シャッフルなし");
-            btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_shuffle);
+            btnShuffle.setContentDescription(getString(R.string.shuffleOff));
+            btnShuffle.setImageResource(R.drawable.ic_bar_button_mode_shuffle);
+            btnShuffleInPlayingBar.setContentDescription(getString(R.string.shuffleOff));
+            btnShuffleInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_shuffle);
         }
 
         int nRepeat = preferences.getInt("repeatmode", 0);
@@ -740,24 +740,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AnimationButton btnRepeatInPlayingBar = findViewById(R.id.btnRepeatInPlayingBar);
         if(nRepeat == 1)
         {
-            btnRepeat.setContentDescription("全曲リピート");
-            btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_all_on);
-            btnRepeatInPlayingBar.setContentDescription("全曲リピート");
-            btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_all_on);
+            btnRepeat.setContentDescription(getString(R.string.repeatAllOn));
+            btnRepeat.setImageResource(R.drawable.ic_bar_button_mode_repeat_all_on);
+            btnRepeatInPlayingBar.setContentDescription(getString(R.string.repeatAllOn));
+            btnRepeatInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_repeat_all_on);
         }
         else if(nRepeat == 2)
         {
-            btnRepeat.setContentDescription("１曲リピート");
-            btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_single_on);
-            btnRepeatInPlayingBar.setContentDescription("１曲リピート");
-            btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_one_on);
+            btnRepeat.setContentDescription(getString(R.string.repeatSingleOn));
+            btnRepeat.setImageResource(R.drawable.ic_bar_button_mode_repeat_single_on);
+            btnRepeatInPlayingBar.setContentDescription(getString(R.string.repeatSingleOn));
+            btnRepeatInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_repeat_one_on);
         }
         else
         {
-            btnRepeat.setContentDescription("リピートなし");
-            btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat);
-            btnRepeatInPlayingBar.setContentDescription("リピートなし");
-            btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_all);
+            btnRepeat.setContentDescription(getString(R.string.repeatOff));
+            btnRepeat.setImageResource(R.drawable.ic_bar_button_mode_repeat);
+            btnRepeatInPlayingBar.setContentDescription(getString(R.string.repeatOff));
+            btnRepeatInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_repeat_all);
         }
     }
 
@@ -771,8 +771,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             else
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("マイクへのアクセスが許可されていません");
-                builder.setMessage("こんにちは♪\n\nハヤえもん開発者のりょーたです！\n\nマイクへのアクセスが許可されていません。\n\nお手数をおかけしますが、設定→アプリと通知→アプリの権限→マイク（環境によって、メニューの場所は異なります）などからハヤえもんのアクセスを許可してください。\n\nそれでは引き続き、Enjoy \"Your\" Music with Hayaemon!!");
+                builder.setTitle(R.string.permitMicError);
+                builder.setMessage(R.string.permitMicErrorDetail);
                 builder.setPositiveButton("OK", null);
                 builder.show();
             }
@@ -995,14 +995,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
                 if(bitmap != null) imgViewArtworkInMenu.setImageBitmap(bitmap);
-                else imgViewArtworkInMenu.setImageResource(R.drawable.playing_large_artwork);
+                else imgViewArtworkInMenu.setImageResource(R.drawable.ic_playing_large_artwork);
                 TextView textTitleInMenu = findViewById(R.id.textTitleInMenu);
                 textTitleInMenu.setText(item.getTitle());
                 TextView textArtistInMenu = findViewById(R.id.textArtistInMenu);
                 if(item.getArtist() == null || item.getArtist().equals(""))
                 {
                     textArtistInMenu.setTextColor(Color.argb(255, 147, 156, 160));
-                    textArtistInMenu.setText("〈不明なアーティスト〉");
+                    textArtistInMenu.setText(R.string.unknownArtist);
                 }
                 else
                 {
@@ -1015,12 +1015,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ImageView imgLock = findViewById(R.id.imgLockInMenu);
                 TextView textLock = findViewById(R.id.textLock);
                 if(saver.isSave()) {
-                    imgLock.setImageResource(R.drawable.leftmenu_playing_unlock);
-                    textLock.setText("各画面の設定保持を解除");
+                    imgLock.setImageResource(R.drawable.ic_leftmenu_playing_unlock);
+                    textLock.setText(R.string.cancelRestoreEffect);
                 }
                 else {
-                    imgLock.setImageResource(R.drawable.leftmenu_playing_lock);
-                    textLock.setText("各画面の設定を保持");
+                    imgLock.setImageResource(R.drawable.ic_leftmenu_playing_lock);
+                    textLock.setText(R.string.restoreEffect);
                 }
             }
             mDrawerLayout.openDrawer(Gravity.START);
@@ -1029,24 +1029,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             AnimationButton btnShuffle = findViewById(R.id.btnShuffle);
             AnimationButton btnShuffleInPlayingBar = findViewById(R.id.btnShuffleInPlayingBar);
-            switch(btnShuffle.getContentDescription().toString()) {
-                case "シャッフルなし":
-                    btnShuffle.setContentDescription("シャッフルあり");
-                    btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle_on);
-                    btnShuffleInPlayingBar.setContentDescription("シャッフルあり");
-                    btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_shuffle_on);
-                    break;
-                case "シャッフルあり":
-                    btnShuffle.setContentDescription("１曲のみ");
-                    btnShuffle.setImageResource(R.drawable.bar_button_mode_single_on);
-                    btnShuffleInPlayingBar.setContentDescription("１曲のみ");
-                    btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_single_on);
-                    break;
-                default:
-                    btnShuffle.setContentDescription("シャッフルなし");
-                    btnShuffle.setImageResource(R.drawable.bar_button_mode_shuffle);
-                    btnShuffleInPlayingBar.setContentDescription("シャッフルなし");
-                    btnShuffleInPlayingBar.setImageResource(R.drawable.playing_large_mode_shuffle);
+            if(btnShuffle.getContentDescription().toString().equals(getString(R.string.shuffleOff))) {
+                btnShuffle.setContentDescription(getString(R.string.shuffleOn));
+                btnShuffle.setImageResource(R.drawable.ic_bar_button_mode_shuffle_on);
+                btnShuffleInPlayingBar.setContentDescription(getString(R.string.shuffleOn));
+                btnShuffleInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_shuffle_on);
+            }
+            else if(btnShuffle.getContentDescription().toString().equals(getString(R.string.shuffleOn))) {
+                btnShuffle.setContentDescription(getString(R.string.singleOn));
+                btnShuffle.setImageResource(R.drawable.ic_bar_button_mode_single_on);
+                btnShuffleInPlayingBar.setContentDescription(getString(R.string.singleOn));
+                btnShuffleInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_single_on);
+            }
+            else {
+                btnShuffle.setContentDescription(getString(R.string.shuffleOff));
+                btnShuffle.setImageResource(R.drawable.ic_bar_button_mode_shuffle);
+                btnShuffleInPlayingBar.setContentDescription(getString(R.string.shuffleOff));
+                btnShuffleInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_shuffle);
             }
             playlistFragment.saveFiles(false, false, false, false, true);
         }
@@ -1054,24 +1053,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             AnimationButton btnRepeat = findViewById(R.id.btnRepeat);
             AnimationButton btnRepeatInPlayingBar = findViewById(R.id.btnRepeatInPlayingBar);
-            switch (btnRepeat.getContentDescription().toString()) {
-                case "リピートなし":
-                    btnRepeat.setContentDescription("全曲リピート");
-                    btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_all_on);
-                    btnRepeatInPlayingBar.setContentDescription("全曲リピート");
-                    btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_all_on);
-                    break;
-                case "全曲リピート":
-                    btnRepeat.setContentDescription("１曲リピート");
-                    btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat_single_on);
-                    btnRepeatInPlayingBar.setContentDescription("１曲リピート");
-                    btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_one_on);
-                    break;
-                default:
-                    btnRepeat.setContentDescription("リピートなし");
-                    btnRepeat.setImageResource(R.drawable.bar_button_mode_repeat);
-                    btnRepeatInPlayingBar.setContentDescription("リピートなし");
-                    btnRepeatInPlayingBar.setImageResource(R.drawable.playing_large_mode_repeat_all);
+            if(btnRepeat.getContentDescription().toString().equals(getString(R.string.repeatOff))) {
+                btnRepeat.setContentDescription(getString(R.string.repeatAllOn));
+                btnRepeat.setImageResource(R.drawable.ic_bar_button_mode_repeat_all_on);
+                btnRepeatInPlayingBar.setContentDescription(getString(R.string.repeatAllOn));
+                btnRepeatInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_repeat_all_on);
+            }
+            else if(btnRepeat.getContentDescription().toString().equals(getString(R.string.repeatAllOn))) {
+                btnRepeat.setContentDescription(getString(R.string.repeatSingleOn));
+                btnRepeat.setImageResource(R.drawable.ic_bar_button_mode_repeat_single_on);
+                btnRepeatInPlayingBar.setContentDescription(getString(R.string.repeatSingleOn));
+                btnRepeatInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_repeat_one_on);
+            }
+            else {
+                btnRepeat.setContentDescription(getString(R.string.repeatOff));
+                btnRepeat.setImageResource(R.drawable.ic_bar_button_mode_repeat);
+                btnRepeatInPlayingBar.setContentDescription(getString(R.string.repeatOff));
+                btnRepeatInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_repeat_all);
             }
             playlistFragment.saveFiles(false, false, false, false, true);
         }
@@ -1102,8 +1100,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mDrawerLayout.closeDrawer(Gravity.START);
 
             final BottomMenu menu = new BottomMenu(this);
-            menu.setTitle("曲を追加");
-            menu.addMenu("端末内から追加", R.drawable.actionsheet_music, new View.OnClickListener() {
+            menu.setTitle(getString(R.string.addSong));
+            menu.addMenu(getString(R.string.addFromLocal), R.drawable.ic_actionsheet_music, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
@@ -1111,7 +1109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
             if(Build.VERSION.SDK_INT >= 18) {
-                menu.addMenu("ギャラリーから追加", R.drawable.actionsheet_film, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.addFromGallery), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
@@ -1120,17 +1118,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
             }
             final Activity activity = this;
-            menu.addMenu("URLから追加", R.drawable.actionsheet_globe, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.addURL), R.drawable.ic_actionsheet_globe, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                    builder.setTitle("URLから追加");
+                    builder.setTitle(R.string.addURL);
                     LinearLayout linearLayout = new LinearLayout(activity);
                     linearLayout.setOrientation(LinearLayout.VERTICAL);
                     final EditText editURL = new EditText (activity);
-                    editURL.setHint("URL");
+                    editURL.setHint(R.string.URL);
                     editURL.setHintTextColor(Color.argb(255, 192, 192, 192));
                     editURL.setText("");
                     linearLayout.addView(editURL);
@@ -1142,7 +1140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             playlistFragment.startAddURL(editURL.getText().toString());
                         }
                     });
-                    builder.setNegativeButton("キャンセル", null);
+                    builder.setNegativeButton(R.string.cancel, null);
                     final AlertDialog alertDialog = builder.create();
                     alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
                     {
@@ -1206,13 +1204,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             try {
                 String strVersionName = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
-                builder.setMessage("バージョン: Android ver." + strVersionName);
+                builder.setMessage(String.format(Locale.getDefault(), "%s: Android ver.%s", getString(R.string.version), strVersionName));
             }
             catch(PackageManager.NameNotFoundException e) {
-                builder.setMessage("バージョン: 〈バージョン情報を取得できませんでした〉");
+                e.printStackTrace();
+                return;
             }
 
-            builder.setTitle("ハヤえもんについて");
+            builder.setTitle(R.string.about);
             builder.setIcon(R.mipmap.ic_launcher);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -1250,21 +1249,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             playlistFragment.setSelectedItem(nPlaying);
             SongItem item = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist()).get(nPlaying);
             menu.setTitle(item.getTitle());
-            menu.addMenu("保存／エクスポート", R.drawable.actionsheet_save, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.saveExport), R.drawable.ic_actionsheet_save, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
                     showSaveExportMenu();
                 }
             });
-            menu.addMenu("タイトルとアーティスト名を変更", R.drawable.actionsheet_edit, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.changeTitleAndArtist), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
                     playlistFragment.changeTitleAndArtist(nPlaying);
                 }
             });
-            menu.addMenu("歌詞を表示", R.drawable.actionsheet_file_text, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.showLyrics), R.drawable.ic_actionsheet_file_text, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
@@ -1277,7 +1276,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             final EffectSaver saver = arEffectSavers.get(nPlaying);
             if(saver.isSave())
             {
-                menu.addMenu("各画面の設定保持を解除", R.drawable.actionsheet_unlock, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.cancelRestoreEffect), R.drawable.ic_actionsheet_unlock, new View.OnClickListener() {
                     @Override
                     public void onClick(View view)
                     {
@@ -1291,7 +1290,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             else
             {
-                menu.addMenu("各画面の設定を保持", R.drawable.actionsheet_lock, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.restoreEffect), R.drawable.ic_actionsheet_lock, new View.OnClickListener() {
                     @Override
                     public void onClick(View view)
                     {
@@ -1306,7 +1305,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void upViewPlaying()
+    private void upViewPlaying()
     {
         playlistFragment.selectPlaylist(playlistFragment.getPlayingPlaylist());
         final ImageView imgViewDown = findViewById(R.id.imgViewDown);
@@ -1322,8 +1321,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 playlistFragment.setSelectedItem(nPlaying);
                 final SongItem item = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist()).get(nPlaying);
                 final BottomMenu menu = new BottomMenu(activity);
-                menu.setTitle("アートワークを変更");
-                menu.addMenu("ギャラリーから設定", R.drawable.actionsheet_film, new View.OnClickListener() {
+                menu.setTitle(getString(R.string.changeArtwork));
+                menu.addMenu(getString(R.string.setFromGallery), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
@@ -1343,15 +1342,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
                 if(item.getPathArtwork() != null && !item.getPathArtwork().equals("")) {
-                    menu.addDestructiveMenu("アートワークをリセット", R.drawable.actionsheet_initialize, new View.OnClickListener() {
+                    menu.addDestructiveMenu(getString(R.string.resetArtwork), R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                         menu.dismiss();
                             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                            builder.setTitle("アートワークをリセット");
-                            builder.setMessage("アートワークをリセットすると、現在の画像が消えてしまいますが、よろしいでしょうか？");
-                            builder.setPositiveButton("やめる", null);
-                            builder.setNegativeButton("リセットする", new DialogInterface.OnClickListener() {
+                            builder.setTitle(R.string.resetArtwork);
+                            builder.setMessage(R.string.askResetArtwork);
+                            builder.setPositiveButton(getString(R.string.decideNot), null);
+                            builder.setNegativeButton(getString(R.string.doReset), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     playlistFragment.resetArtwork();
                                 }
@@ -1497,9 +1496,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnRepeat.setVisibility(View.VISIBLE);
 
         if (BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING)
-            btnPlay.setImageResource(R.drawable.playing_large_play);
-        else btnPlay.setImageResource(R.drawable.playing_large_pause);
-        btnForward.setImageResource(R.drawable.playing_large_forward);
+            btnPlay.setImageResource(R.drawable.ic_playing_large_play);
+        else btnPlay.setImageResource(R.drawable.ic_playing_large_pause);
+        btnForward.setImageResource(R.drawable.ic_playing_large_forward);
 
         imgViewDown.animate().alpha(1.0f).setDuration(lDuration);
         seekCurPos.animate().alpha(1.0f).setDuration(lDuration);
@@ -1669,9 +1668,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         anim.setDuration(lDuration).start();
 
         if (BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING)
-            btnPlay.setImageResource(R.drawable.bar_button_play);
-        else btnPlay.setImageResource(R.drawable.bar_button_pause);
-        btnForward.setImageResource(R.drawable.bar_button_forward);
+            btnPlay.setImageResource(R.drawable.ic_bar_button_play);
+        else btnPlay.setImageResource(R.drawable.ic_bar_button_pause);
+        btnForward.setImageResource(R.drawable.ic_bar_button_forward);
 
         imgViewDown.animate().alpha(0.0f).setDuration(lDuration);
         seekCurPos.animate().alpha(0.0f).setDuration(lDuration);
@@ -1687,11 +1686,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.viewSep2).animate().translationY(0).setDuration(lDuration);
     }
 
-    public void showSaveExportMenu()
+    private void showSaveExportMenu()
     {
         final BottomMenu menu = new BottomMenu(this);
-        menu.setTitle("保存／エクスポート");
-        menu.addMenu("アプリ内に保存", R.drawable.actionsheet_save, new View.OnClickListener() {
+        menu.setTitle(getString(R.string.saveExport));
+        menu.addMenu(getString(R.string.saveToApp), R.drawable.ic_actionsheet_save, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
@@ -1699,7 +1698,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         if(Build.VERSION.SDK_INT >= 18) {
-            menu.addMenu("ギャラリーに保存", R.drawable.actionsheet_film, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.saveToGallery), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
@@ -1707,7 +1706,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
-        menu.addMenu("他のアプリにエクスポート", R.drawable.actionsheet_share, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.export), R.drawable.ic_actionsheet_share, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
@@ -1718,7 +1717,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         menu.show();
     }
 
-    public void openItem()
+    private void openItem()
     {
         FragmentManager fragmentManager = getSupportFragmentManager();
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -1825,7 +1824,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void hideAds()
+    private void hideAds()
     {
         if(mAdView.getVisibility() != AdView.GONE) {
             mAdView.setVisibility(AdView.GONE);
@@ -1918,7 +1917,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ViewGroup vg = findViewById(R.id.layout_root);
         TextView textView0 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, vg);
-        textView0.setText("再生リスト");
+        textView0.setText(R.string.playlist);
         textView0.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_playlist, 0, 0);
         int color = Color.parseColor("#FF007AFF");
         textView0.setTextColor(color);
@@ -1930,7 +1929,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(tab0 != null) tab0.setCustomView(textView0);
 
         TextView textView1 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, vg);
-        textView1.setText("ループ");
+        textView1.setText(R.string.loop);
         textView1.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_abloop, 0, 0);
         color = Color.parseColor("#FF808080");
         textView1.setTextColor(color);
@@ -1938,21 +1937,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(tab1 != null) tab1.setCustomView(textView1);
 
         TextView textView2 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, vg);
-        textView2.setText("コントロール");
+        textView2.setText(R.string.control);
         textView2.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_control, 0, 0);
         textView2.setTextColor(color);
         TabLayout.Tab tab2 = tabLayout.getTabAt(2);
         if(tab2 != null) tab2.setCustomView(textView2);
 
         TextView textView3 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, vg);
-        textView3.setText("イコライザ");
+        textView3.setText(R.string.equalizer);
         textView3.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_equalizer, 0, 0);
         textView3.setTextColor(color);
         TabLayout.Tab tab3 = tabLayout.getTabAt(3);
         if(tab3 != null) tab3.setCustomView(textView3);
 
         TextView textView4 = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, vg);
-        textView4.setText("エフェクト");
+        textView4.setText(R.string.effect);
         textView4.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_effect, 0, 0);
         textView4.setTextColor(color);
         TabLayout.Tab tab4 = tabLayout.getTabAt(4);
@@ -1988,7 +1987,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    public boolean isAdsVisible() {
+    private boolean isAdsVisible() {
         return (mAdView.getVisibility() != AdView.GONE);
     }
 
@@ -2060,12 +2059,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             AnimationButton btnShuffle = findViewById(R.id.btnShuffle);
                             boolean bSingle = false;
-                            if (btnShuffle.getContentDescription().toString().equals("１曲のみ"))
+                            if (btnShuffle.getContentDescription().toString().equals(getString(R.string.singleOn)))
                                 bSingle = true;
 
                             AnimationButton btnRepeat = findViewById(R.id.btnRepeat);
                             boolean bRepeatSingle = false;
-                            if (btnRepeat.getContentDescription().toString().equals("１曲リピート"))
+                            if (btnRepeat.getContentDescription().toString().equals(getString(R.string.repeatSingleOn)))
                                 bRepeatSingle = true;
 
                             if (bSingle)

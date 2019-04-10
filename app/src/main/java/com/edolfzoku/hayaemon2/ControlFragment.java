@@ -46,17 +46,17 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     private MainActivity activity = null;
     float fSpeed = 0.0f;
     float fPitch = 0.0f;
-    boolean bTouching = false;
-    boolean bLink = false;
-    boolean bLockSpeed = false;
-    boolean bLockPitch = false;
-    boolean bSnap = false;
+    private boolean bTouching = false;
+    private boolean bLink = false;
+    private boolean bLockSpeed = false;
+    private boolean bLockPitch = false;
+    private boolean bSnap = false;
     private int nMinSpeed = 10;
     private int nMaxSpeed = 400;
     private int nMinPitch = -12;
     private int nMaxPitch = 12;
     private boolean isContinue = true;
-    private Handler handler;
+    private final Handler handler;
 
     public boolean isSnap() { return bSnap; }
     public void setSnap(boolean bSnap) { this.bSnap = bSnap; }
@@ -88,12 +88,6 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         super.onDetach();
 
         activity = null;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -176,21 +170,21 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         }
     }
 
-    public void showSpeedDialog()
+    private void showSpeedDialog()
     {
         SpeedFragmentDialog dialog = new SpeedFragmentDialog();
         FragmentManager fm = getFragmentManager();
         if(fm != null) dialog.show(fm, "span_setting_dialog");
     }
 
-    public void showPitchDialog()
+    private void showPitchDialog()
     {
         PitchFragmentDialog dialog = new PitchFragmentDialog();
         FragmentManager fm = getFragmentManager();
         if(fm != null) dialog.show(fm, "span_setting_dialog");
     }
 
-    public void setSpeedUp()
+    private void setSpeedUp()
     {
         float fMaxSpeed = 4.0f;
         fMaxSpeed = (fMaxSpeed - 1.0f) * 100.0f;
@@ -199,7 +193,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             setSpeed(fSpeed);
     }
 
-    public void setSpeedDown()
+    private void setSpeedDown()
     {
         float fMinSpeed = 0.1f;
         fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
@@ -279,7 +273,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         }
     }
 
-    public void setPitchUp()
+    private void setPitchUp()
     {
         float fMaxPitch = 24.0f;
         fPitch += 1.0;
@@ -287,7 +281,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             setPitch(fPitch);
     }
 
-    public void setPitchDown()
+    private void setPitchDown()
     {
         float fMinPitch = -24.0f;
         fPitch -= 1.0;
@@ -357,7 +351,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         textPitchValue.clearFocus();
     }
 
-    Runnable repeatSpeedUp = new Runnable()
+    private final Runnable repeatSpeedUp = new Runnable()
     {
         @Override
         public void run()
@@ -369,7 +363,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         }
     };
 
-    Runnable repeatSpeedDown = new Runnable()
+    private final Runnable repeatSpeedDown = new Runnable()
     {
         @Override
         public void run()
@@ -381,7 +375,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         }
     };
 
-    Runnable repeatPitchUp = new Runnable()
+    private final Runnable repeatPitchUp = new Runnable()
     {
         @Override
         public void run()
@@ -393,7 +387,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         }
     };
 
-    Runnable repeatPitchDown = new Runnable()
+    private final Runnable repeatPitchDown = new Runnable()
     {
         @Override
         public void run()
@@ -440,14 +434,14 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         AnimationButton btnLink = activity.findViewById(R.id.btnLink);
         this.bLink = bLink;
         if(this.bLink) {
-            btnLink.setImageResource(R.drawable.control_link_on);
+            btnLink.setImageResource(R.drawable.ic_control_link_on);
             bLockSpeed = bLockPitch = false;
             AnimationButton btnLockSpeed = activity.findViewById(R.id.btnLockSpeed);
             btnLockSpeed.setImageResource(R.drawable.ic_control_unlock);
             AnimationButton btnLockPitch = activity.findViewById(R.id.btnLockPitch);
             btnLockPitch.setImageResource(R.drawable.ic_control_unlock);
         }
-        else btnLink.setImageResource(R.drawable.control_link_off);
+        else btnLink.setImageResource(R.drawable.ic_control_link_off);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -470,7 +464,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                     btnLockSpeed.setImageResource(R.drawable.ic_control_lock);
                     bLink = false;
                     AnimationButton btnLink = activity.findViewById(R.id.btnLink);
-                    btnLink.setImageResource(R.drawable.control_link_off);
+                    btnLink.setImageResource(R.drawable.ic_control_link_off);
                 }
                 else btnLockSpeed.setImageResource(R.drawable.ic_control_unlock);
             }
@@ -486,7 +480,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                     btnLockPitch.setImageResource(R.drawable.ic_control_lock);
                     bLink = false;
                     AnimationButton btnLink = activity.findViewById(R.id.btnLink);
-                    btnLink.setImageResource(R.drawable.control_link_off);
+                    btnLink.setImageResource(R.drawable.ic_control_link_off);
                 }
                 else btnLockPitch.setImageResource(R.drawable.ic_control_unlock);
             }

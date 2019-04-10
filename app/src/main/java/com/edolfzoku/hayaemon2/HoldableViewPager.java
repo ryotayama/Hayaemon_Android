@@ -31,7 +31,7 @@ import android.view.MotionEvent;
 public class HoldableViewPager extends ViewPager {
 
     // スワイプの禁止フラグ(true: スワイプ禁止, false: スワイプOK)
-    boolean isSwipeHold = false;
+    private boolean isSwipeHold = false;
 
     public void setSwipeHold(boolean enabled) {
         isSwipeHold = enabled;

@@ -31,71 +31,71 @@
             android:orientation="horizontal">
             <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnMenu"
-                android:contentDescription="メニュー"
+                android:contentDescription="@string/menu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/bar_button_menu"
+                android:src="@drawable/ic_bar_button_menu"
                 android:background="@null"
                 android:layout_marginTop="2.5dp"
                 />
             <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnRewind"
-                android:contentDescription="前へ"
+                android:contentDescription="@string/rewind"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/bar_button_rewind"
+                android:src="@drawable/ic_bar_button_rewind"
                 android:background="@null"
                 android:layout_marginTop="2.5dp"
                 />
             <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnPlay"
-                android:contentDescription="再生"
+                android:contentDescription="@string/play"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/bar_button_play"
+                android:src="@drawable/ic_bar_button_play"
                 android:background="@null"
                 android:layout_marginTop="2.5dp"
                 />
             <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnForward"
-                android:contentDescription="次へ"
+                android:contentDescription="@string/forward"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/bar_button_forward"
+                android:src="@drawable/ic_bar_button_forward"
                 android:background="@null"
                 android:layout_marginTop="2.5dp"
                 />
             <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnShuffle"
-                android:contentDescription="シャッフルなし"
+                android:contentDescription="@string/shuffleOff"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/bar_button_mode_shuffle"
+                android:src="@drawable/ic_bar_button_mode_shuffle"
                 android:background="@null"
                 android:layout_marginTop="2.5dp"
                 />
             <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnRepeat"
-                android:contentDescription="リピートなし"
+                android:contentDescription="@string/repeatOff"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/bar_button_mode_repeat"
+                android:src="@drawable/ic_bar_button_mode_repeat"
                 android:background="@null"
                 android:layout_marginTop="2.5dp"
                 />
             <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnRecord"
-                android:contentDescription="録音"
+                android:contentDescription="@string/record"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/bar_button_rec"
+                android:src="@drawable/ic_bar_button_rec"
                 android:background="@null"
                 android:layout_marginTop="2.5dp"
                 />
@@ -126,20 +126,23 @@
             android:layout_above="@+id/relativePlaying">
 
             <ImageView
+                android:contentDescription="@null"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_rec_now"
                 android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_centerVertical="true"
                 />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="録音中"
+                android:text="@string/recording"
                 android:textSize="20dp"
                 android:textColor="#FFF"
                 android:layout_marginLeft="46dp"
+                android:layout_marginStart="46dp"
                 android:gravity="center_vertical"
                 />
 
@@ -147,11 +150,12 @@
                 android:id="@+id/textRecordingTime"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="00:00:00.00"
                 android:textSize="16dp"
                 android:textColor="#FFF"
                 android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_toLeftOf="@+id/btnStopRecording"
+                android:layout_toStartOf="@+id/btnStopRecording"
                 android:gravity="center_vertical"
                 />
 
@@ -162,7 +166,9 @@
                 android:src="@drawable/ic_rec_stop"
                 android:background="@null"
                 android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 />
 
@@ -182,7 +188,7 @@
                 android:id="@+id/btnArtworkInPlayingBar"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:src="@drawable/playing_large_artwork"
+                android:src="@drawable/ic_playing_large_artwork"
                 android:scaleType="centerCrop"
                 android:background="@drawable/frameborder"
                 android:layout_marginTop="8dp"
@@ -190,6 +196,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 />
 
             <TextView
@@ -202,10 +209,14 @@
                 android:animateLayoutChanges="true"
                 android:layout_marginTop="14dp"
                 android:layout_marginLeft="60dp"
+                android:layout_marginStart="60dp"
                 android:layout_marginRight="132dp"
+                android:layout_marginEnd="132dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 />
 
             <TextView
@@ -218,22 +229,28 @@
                 android:animateLayoutChanges="true"
                 android:layout_marginTop="33dp"
                 android:layout_marginLeft="60dp"
+                android:layout_marginStart="60dp"
                 android:layout_marginRight="132dp"
+                android:layout_marginEnd="132dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 />
 
             <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnRewindInPlayingBar"
                 android:layout_width="44dp"
                 android:layout_height="60dp"
-                android:src="@drawable/playing_large_rewind"
+                android:src="@drawable/ic_playing_large_rewind"
                 android:background="@null"
                 android:alpha="0.0"
                 android:layout_alignTop="@+id/btnPlayInPlayingBar"
                 android:layout_toLeftOf="@+id/btnPlayInPlayingBar"
+                android:layout_toStartOf="@+id/btnPlayInPlayingBar"
                 android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
                 android:visibility="gone"
                 />
 
@@ -241,41 +258,47 @@
                 android:id="@+id/btnPlayInPlayingBar"
                 android:layout_width="44dp"
                 android:layout_height="60dp"
-                android:src="@drawable/bar_button_play"
+                android:src="@drawable/ic_bar_button_play"
                 android:background="@null"
                 android:layout_marginRight="88dp"
+                android:layout_marginEnd="88dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 />
 
             <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnForwardInPlayingBar"
                 android:layout_width="44dp"
                 android:layout_height="60dp"
-                android:src="@drawable/bar_button_forward"
+                android:src="@drawable/ic_bar_button_forward"
                 android:background="@null"
                 android:layout_marginRight="44dp"
+                android:layout_marginEnd="44dp"
                 android:animateLayoutChanges="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 />
 
             <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnCloseInPlayingBar"
                 android:layout_width="44dp"
                 android:layout_height="60dp"
-                android:src="@drawable/bar_button_close"
+                android:src="@drawable/ic_bar_button_close"
                 android:background="@null"
                 android:animateLayoutChanges="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 />
 
             <ImageView
                 android:id="@+id/imgViewDown"
+                android:contentDescription="@string/downPlayingScreen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/playing_large_down"
+                android:src="@drawable/ic_playing_large_down"
                 android:paddingTop="8dp"
                 android:paddingBottom="16dp"
                 android:alpha="0.0"
@@ -298,7 +321,9 @@
                 android:progress="30"
                 android:thumb="@drawable/thumbplaying"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_below="@+id/btnArtworkInPlayingBar"
                 android:visibility="gone"
                 />
@@ -310,7 +335,9 @@
                 android:layout_height="wrap_content"
                 android:alpha="0.0"
                 android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_alignLeft="@+id/seekCurPos"
+                android:layout_alignStart="@+id/seekCurPos"
                 android:layout_below="@id/seekCurPos"
                 android:visibility="gone"
                 />
@@ -322,7 +349,9 @@
                 android:layout_height="wrap_content"
                 android:alpha="0.0"
                 android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_alignRight="@+id/seekCurPos"
+                android:layout_alignEnd="@+id/seekCurPos"
                 android:layout_below="@id/seekCurPos"
                 android:visibility="gone"
                 />
@@ -331,11 +360,13 @@
                 android:id="@+id/btnMoreInPlayingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/playing_large_more"
+                android:src="@drawable/ic_playing_large_more"
                 android:background="@null"
                 android:alpha="0.0"
                 android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/btnPlayInPlayingBar"
                 android:visibility="gone"
                 />
@@ -344,11 +375,12 @@
                 android:id="@+id/btnShuffleInPlayingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/playing_large_mode_shuffle"
+                android:src="@drawable/ic_playing_large_mode_shuffle"
                 android:background="@null"
                 android:alpha="0.0"
                 android:layout_marginTop="20dp"
                 android:layout_alignLeft="@+id/btnRewindInPlayingBar"
+                android:layout_alignStart="@+id/btnRewindInPlayingBar"
                 android:layout_below="@+id/btnRewindInPlayingBar"
                 android:visibility="gone"
                 />
@@ -357,11 +389,12 @@
                 android:id="@+id/btnRepeatInPlayingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/playing_large_mode_repeat_all"
+                android:src="@drawable/ic_playing_large_mode_repeat_all"
                 android:background="@null"
                 android:alpha="0.0"
                 android:layout_marginTop="20dp"
                 android:layout_alignRight="@+id/btnForwardInPlayingBar"
+                android:layout_alignEnd="@+id/btnForwardInPlayingBar"
                 android:layout_below="@+id/btnForwardInPlayingBar"
                 android:visibility="gone"
                 />
@@ -409,6 +442,7 @@
         android:layout_width="272dp"
         android:layout_height="match_parent"
         android:clickable="true"
+        android:focusable="true"
         android:background="#FFF"
         android:layout_gravity="start"
         >
@@ -437,12 +471,13 @@
                     android:id="@+id/textPlaying"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="再生中の曲："
+                    android:text="@string/playingSong"
                     android:textSize="15dp"
                     android:textColor="#808080"
                     android:visibility="visible"
                     android:layout_marginTop="-13dp"
                     android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
                     android:layout_below="@+id/viewInvisible"
                     />
 
@@ -460,48 +495,56 @@
 
                     <ImageView
                         android:id="@+id/imgViewArtworkInMenu"
+                        android:contentDescription="@string/artworkImage"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:src="@drawable/playing_large_artwork"
+                        android:src="@drawable/ic_playing_large_artwork"
                         android:scaleType="centerCrop"
                         android:animateLayoutChanges="true"
                         android:background="@drawable/frameborder"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
                         android:layout_centerVertical="true"
                         android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         />
 
                     <TextView
                         android:id="@+id/textTitleInMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="タイトル"
                         android:textSize="12dp"
                         android:textColor="#000"
                         android:singleLine="true"
                         android:animateLayoutChanges="true"
                         android:layout_marginTop="1dp"
                         android:layout_marginRight="16dp"
+                        android:layout_marginEnd="16dp"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_toRightOf="@id/imgViewArtworkInMenu"
+                        android:layout_toEndOf="@id/imgViewArtworkInMenu"
                         />
 
                     <TextView
                         android:id="@+id/textArtistInMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="アーティスト名"
                         android:textSize="9dp"
                         android:textColor="#666"
                         android:singleLine="true"
                         android:animateLayoutChanges="true"
                         android:layout_marginBottom="1dp"
                         android:layout_marginRight="16dp"
+                        android:layout_marginEnd="16dp"
                         android:layout_alignBottom="@+id/imgViewArtworkInMenu"
                         android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_toRightOf="@id/imgViewArtworkInMenu"
+                        android:layout_toEndOf="@id/imgViewArtworkInMenu"
                         />
 
                 </RelativeLayout>
@@ -511,28 +554,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:focusable="true"
                     android:layout_below="@+id/relativePlayingInMenu"
                     >
 
                     <ImageView
                         android:id="@+id/imgSave"
+                        android:contentDescription="@null"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginRight="8dp"
-                        android:src="@drawable/leftmenu_playing_save"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_leftmenu_playing_save"
                         android:layout_centerVertical="true"
                         />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="保存／エクスポート"
+                        android:text="@string/saveExport"
                         android:textColor="#000"
                         android:textSize="14dp"
                         android:layout_marginTop="21dp"
                         android:layout_marginBottom="21dp"
                         android:layout_toRightOf="@id/imgSave"
+                        android:layout_toEndOf="@id/imgSave"
                         android:layout_centerVertical="true"
                         />
 
@@ -543,6 +591,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:focusable="true"
                     android:layout_below="@+id/relativeSave"
                     >
 
@@ -551,8 +600,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginRight="8dp"
-                        android:src="@drawable/leftmenu_playing_lock"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_leftmenu_playing_lock"
                         android:layout_centerVertical="true"
                         />
 
@@ -560,12 +611,12 @@
                         android:id="@+id/textLock"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="各画面の設定を保持"
                         android:textColor="#000"
                         android:textSize="14dp"
                         android:layout_marginTop="21dp"
                         android:layout_marginBottom="21dp"
                         android:layout_toRightOf="@id/imgLockInMenu"
+                        android:layout_toEndOf="@id/imgLockInMenu"
                         android:layout_centerVertical="true"
                         />
 
@@ -588,28 +639,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:focusable="true"
                     android:layout_below="@+id/dividerMenu"
                     >
 
                     <ImageView
                         android:id="@+id/imgAddSong"
+                        android:contentDescription="@null"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginRight="8dp"
-                        android:src="@drawable/leftmenu_add_music"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_leftmenu_add_music"
                         android:layout_centerVertical="true"
                         />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="曲を追加"
+                        android:text="@string/addSong"
                         android:textColor="#000"
                         android:textSize="14dp"
                         android:layout_marginTop="21dp"
                         android:layout_marginBottom="21dp"
                         android:layout_toRightOf="@id/imgAddSong"
+                        android:layout_toEndOf="@id/imgAddSong"
                         android:layout_centerVertical="true"
                         />
 
@@ -620,28 +676,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:focusable="true"
                     android:layout_below="@id/relativeAddSong"
                     >
 
                     <ImageView
                         android:id="@+id/imgHideAds"
+                        android:contentDescription="@null"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginRight="8dp"
-                        android:src="@drawable/leftmenu_hide_ad"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_leftmenu_hide_ad"
                         android:layout_centerVertical="true"
                         />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="広告を非表示にする"
+                        android:text="@string/hideAds"
                         android:textColor="#000"
                         android:textSize="14dp"
                         android:layout_marginTop="21dp"
                         android:layout_marginBottom="21dp"
                         android:layout_toRightOf="@id/imgHideAds"
+                        android:layout_toEndOf="@id/imgHideAds"
                         android:layout_centerVertical="true"
                         />
 
@@ -652,28 +713,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:focusable="true"
                     android:layout_below="@id/relativeHideAds"
                     >
 
                     <ImageView
                         android:id="@+id/imgItem"
+                        android:contentDescription="@null"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginRight="8dp"
-                        android:src="@drawable/leftmenu_item"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_leftmenu_item"
                         android:layout_centerVertical="true"
                         />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="課金アイテム"
+                        android:text="@string/billingItem"
                         android:textColor="#000"
                         android:textSize="14dp"
                         android:layout_marginTop="21dp"
                         android:layout_marginBottom="21dp"
                         android:layout_toRightOf="@id/imgItem"
+                        android:layout_toEndOf="@id/imgItem"
                         android:layout_centerVertical="true"
                         />
 
@@ -684,28 +750,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:focusable="true"
                     android:layout_below="@id/relativeItem"
                     >
 
                     <ImageView
                         android:id="@+id/imgReport"
+                        android:contentDescription="@null"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginRight="8dp"
-                        android:src="@drawable/leftmenu_twitter"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_leftmenu_twitter"
                         android:layout_centerVertical="true"
                         />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="不具合報告・機能要望"
+                        android:text="@string/report"
                         android:textColor="#000"
                         android:textSize="14dp"
                         android:layout_marginTop="21dp"
                         android:layout_marginBottom="21dp"
                         android:layout_toRightOf="@id/imgReport"
+                        android:layout_toEndOf="@id/imgReport"
                         android:layout_centerVertical="true"
                         />
 
@@ -716,28 +787,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:focusable="true"
                     android:layout_below="@id/relativeReport"
                     >
 
                     <ImageView
                         android:id="@+id/imgReview"
+                        android:contentDescription="@null"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginRight="8dp"
-                        android:src="@drawable/leftmenu_write_review"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_leftmenu_write_review"
                         android:layout_centerVertical="true"
                         />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="レビュー投稿"
+                        android:text="@string/review"
                         android:textColor="#000"
                         android:textSize="14dp"
                         android:layout_marginTop="21dp"
                         android:layout_marginBottom="21dp"
                         android:layout_toRightOf="@id/imgReview"
+                        android:layout_toEndOf="@id/imgReview"
                         android:layout_centerVertical="true"
                         />
 
@@ -748,28 +824,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:focusable="true"
                     android:layout_below="@id/relativeReview"
                     >
 
                     <ImageView
                         android:id="@+id/imgInfo"
+                        android:contentDescription="@null"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginRight="8dp"
-                        android:src="@drawable/leftmenu_info"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_leftmenu_info"
                         android:layout_centerVertical="true"
                         />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="ハヤえもんについて"
+                        android:text="@string/about"
                         android:textColor="#000"
                         android:textSize="14dp"
                         android:layout_marginTop="21dp"
                         android:layout_marginBottom="21dp"
                         android:layout_toRightOf="@id/imgInfo"
+                        android:layout_toEndOf="@id/imgInfo"
                         android:layout_centerVertical="true"
                         />
 
@@ -796,16 +877,19 @@
 
             <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnSetting"
-                android:contentDescription="設定"
+                android:contentDescription="@string/setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:src="@drawable/leftmenu_settings"
+                android:src="@drawable/ic_leftmenu_settings"
                 android:scaleType="centerInside"
                 android:clickable="true"
+                android:focusable="true"
                 android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 />
 
         </RelativeLayout>

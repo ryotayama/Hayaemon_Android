@@ -7,7 +7,7 @@ import android.view.animation.ScaleAnimation;
 
 public class AnimationButton extends android.support.v7.widget.AppCompatImageButton
 {
-    boolean bAnimation = true;
+    private boolean bAnimation = true;
 
     public void setAnimation(boolean bAnimation) { this.bAnimation = bAnimation; }
 

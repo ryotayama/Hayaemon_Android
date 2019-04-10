@@ -32,14 +32,13 @@ import java.util.List;
 
 public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.ViewHolder>
 {
-    MainActivity activity;
-    private int resource;
-    private List<String> items;
+    private final MainActivity activity;
+    private final List<String> items;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout relativePlaylistTab;
-        TextView textPlaylistTab;
-        AnimationButton btnPlaylistMenu;
+        final RelativeLayout relativePlaylistTab;
+        final TextView textPlaylistTab;
+        final AnimationButton btnPlaylistMenu;
 
         ViewHolder(View view) {
             super(view);
@@ -49,17 +48,16 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
         }
     }
 
-    PlaylistTabAdapter(Context context, int resource, List<String> items)
+    PlaylistTabAdapter(Context context, List<String> items)
     {
         this.activity = (MainActivity)context;
-        this.resource = resource;
         this.items = items;
     }
 
     @Override
     public @NonNull PlaylistTabAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(resource, parent, false);
+                .inflate(R.layout.playlist_tab_item, parent, false);
 
         return new PlaylistTabAdapter.ViewHolder(view);
     }

@@ -26,14 +26,14 @@ import com.un4seen.bass.BASSenc;
 
 import java.nio.ByteBuffer;
 
-public class SongSavingTask extends AsyncTask<Integer, Integer, Integer> {
-    private int nPurpose; // 0: saveSongToLocal, 1: export, 2: saveSongToGallery
-    private PlaylistFragment playlistFragment;
-    private int hTempStream ;
-    private int hEncode;
-    private String strPathTo;
-    private AlertDialog alert;
-    private double dEnd;
+class SongSavingTask extends AsyncTask<Integer, Integer, Integer> {
+    private final int nPurpose; // 0: saveSongToLocal, 1: export, 2: saveSongToGallery
+    private final PlaylistFragment playlistFragment;
+    private final int hTempStream ;
+    private final int hEncode;
+    private final String strPathTo;
+    private final AlertDialog alert;
+    private final double dEnd;
 
     SongSavingTask(int nPurpose, PlaylistFragment playlistFragment, int hTempStream, int hEncode, String strPathTo, AlertDialog alert, double dEnd)
     {

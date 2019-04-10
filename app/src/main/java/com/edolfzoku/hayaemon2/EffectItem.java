@@ -18,7 +18,7 @@
  */
 package com.edolfzoku.hayaemon2;
 
-public class EffectItem {
+class EffectItem {
     private String strEffectName = null;
     private boolean bSelected = false;
     private boolean bEditEnabled = false;

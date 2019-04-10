@@ -20,9 +20,9 @@ package com.edolfzoku.hayaemon2;
 
 import java.util.ArrayList;
 
-public class EqualizerItem {
+class EqualizerItem {
     private String strEqualizerName;
-    private ArrayList<Integer> arPresets;
+    private final ArrayList<Integer> arPresets;
     private boolean bSelected = false;
 
     void setEqualizerName(String strEqualizerName) { this.strEqualizerName = strEqualizerName; }

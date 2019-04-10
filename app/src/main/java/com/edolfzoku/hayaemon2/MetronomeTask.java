@@ -2,8 +2,8 @@ package com.edolfzoku.hayaemon2;
 
 import java.util.TimerTask;
 
-public class MetronomeTask extends TimerTask {
-    EffectFragment effectFragment;
+class MetronomeTask extends TimerTask {
+    private final EffectFragment effectFragment;
 
     MetronomeTask(EffectFragment effectFragment)
     {

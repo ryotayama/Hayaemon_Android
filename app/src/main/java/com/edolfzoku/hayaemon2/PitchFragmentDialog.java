@@ -107,7 +107,7 @@ public class PitchFragmentDialog extends DialogFragment {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("音程の調整");
+        builder.setTitle(R.string.adjustPitch);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override
@@ -122,7 +122,7 @@ public class PitchFragmentDialog extends DialogFragment {
                 activity.controlFragment.setPitch(fPitch);
             }
         });
-        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {

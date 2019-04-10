@@ -11,12 +11,12 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class DownloadTask extends AsyncTask<Integer, Integer, Integer>
+class DownloadTask extends AsyncTask<Integer, Integer, Integer>
 {
-    private PlaylistFragment playlistFragment;
-    private URL url;
-    private String strPathTo;
-    private AlertDialog alert;
+    private final PlaylistFragment playlistFragment;
+    private final URL url;
+    private final String strPathTo;
+    private final AlertDialog alert;
 
     DownloadTask(PlaylistFragment playlistFragment, URL url, String strPathTo, AlertDialog alert)
     {

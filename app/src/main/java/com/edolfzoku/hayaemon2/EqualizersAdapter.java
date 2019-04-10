@@ -35,15 +35,14 @@ import java.util.List;
 
 public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.ViewHolder>
 {
-    MainActivity activity;
-    private int resource;
+    private final MainActivity activity;
     private List<EqualizerItem> items;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout equalizerItem;
-        TextView textEqualizer;
-        RelativeLayout relativeEqualizerMenu;
-        ImageView imgEqualizerMenu;
+        final RelativeLayout equalizerItem;
+        final TextView textEqualizer;
+        final RelativeLayout relativeEqualizerMenu;
+        final ImageView imgEqualizerMenu;
 
         ViewHolder(View view) {
             super(view);
@@ -54,10 +53,9 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
         }
     }
 
-    EqualizersAdapter(Context context, int resource, List<EqualizerItem> items)
+    EqualizersAdapter(Context context, List<EqualizerItem> items)
     {
         this.activity = (MainActivity)context;
-        this.resource = resource;
         this.items = items;
     }
 
@@ -69,7 +67,7 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
     @Override
     public @NonNull EqualizersAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(resource, parent, false);
+                .inflate(R.layout.equalizer_item, parent, false);
 
         return new EqualizersAdapter.ViewHolder(view);
     }

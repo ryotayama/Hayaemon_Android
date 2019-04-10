@@ -39,11 +39,6 @@ public class ForegroundService extends IntentService {
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-    }
-
-    @Override
     public void onDestroy() {
         stopForeground();
 
@@ -55,9 +50,9 @@ public class ForegroundService extends IntentService {
             NotificationManager notificationManager =
                     (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationChannel channel = new NotificationChannel("default",
-                    "ハヤえもんによる音声の再生",
+                    getString(R.string.notificationDescription),
                     NotificationManager.IMPORTANCE_LOW);
-            channel.setDescription("ハヤえもんによる音声の再生");
+            channel.setDescription(getString(R.string.notificationDescription));
             if(notificationManager != null)
                 notificationManager.createNotificationChannel(channel);
         }
@@ -92,7 +87,7 @@ public class ForegroundService extends IntentService {
                     .build();
         }
         else {
-            notification = new NotificationCompat.Builder(this)
+            notification = new NotificationCompat.Builder(this, "default")
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setLargeIcon(bitmap)
                     .setContentTitle(strTitle)

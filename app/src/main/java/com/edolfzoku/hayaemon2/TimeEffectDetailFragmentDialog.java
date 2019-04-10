@@ -18,8 +18,8 @@ import java.util.Locale;
 public class TimeEffectDetailFragmentDialog extends DialogFragment
 {
     private MainActivity activity = null;
-    NumberPicker intNumberPicker;
-    NumberPicker decimalNumberPicker;
+    private NumberPicker intNumberPicker;
+    private NumberPicker decimalNumberPicker;
 
     @Override
     public void onAttach(Context context) {
@@ -43,7 +43,7 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
         View view = inflater.inflate(R.layout.timeeffectdetailpicker, (ViewGroup)activity.findViewById(R.id.layout_root), false);
         float fTime;
         TextView textEffectName = activity.findViewById(R.id.textEffectName);
-        if(textEffectName.getText().toString().equals("だんだん速く"))
+        if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
             fTime = activity.effectFragment.getTimeOfIncreaseSpeed();
         else fTime = activity.effectFragment.getTimeOfDecreaseSpeed();
         int nInt = (int)fTime;
@@ -71,7 +71,7 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
                 }
 
                 TextView textEffectName = activity.findViewById(R.id.textEffectName);
-                if(textEffectName.getText().toString().equals("だんだん速く"))
+                if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
                     activity.effectFragment.setTimeOfIncreaseSpeed(fTime);
                 else activity.effectFragment.setTimeOfDecreaseSpeed(fTime);
             }
@@ -98,7 +98,7 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
                 }
 
                 TextView textEffectName = activity.findViewById(R.id.textEffectName);
-                if(textEffectName.getText().toString().equals("だんだん速く"))
+                if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
                     activity.effectFragment.setTimeOfIncreaseSpeed(fTime);
                 else activity.effectFragment.setTimeOfDecreaseSpeed(fTime);
             }
@@ -110,7 +110,7 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("時間の調整");
+        builder.setTitle(R.string.adjustTime);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override

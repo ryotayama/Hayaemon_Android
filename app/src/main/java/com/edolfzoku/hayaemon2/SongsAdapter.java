@@ -38,19 +38,18 @@ import java.util.List;
 
 public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
 {
-    MainActivity activity;
-    private int resource;
+    private final MainActivity activity;
     private List<SongItem> items = null;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout songItem;
-        TextView textNumber;
-        TextView textTitle;
-        TextView textArtist;
-        ImageView imgStatus;
-        ImageView imgLock;
-        FrameLayout frameSongMenu;
-        ImageView imgSongMenu;
+        final RelativeLayout songItem;
+        final TextView textNumber;
+        final TextView textTitle;
+        final TextView textArtist;
+        final ImageView imgStatus;
+        final ImageView imgLock;
+        final FrameLayout frameSongMenu;
+        final ImageView imgSongMenu;
 
         ViewHolder(View view) {
             super(view);
@@ -65,17 +64,15 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         }
     }
 
-    SongsAdapter(Context context, int resource, List<SongItem> items)
+    SongsAdapter(Context context, List<SongItem> items)
     {
         this.activity = (MainActivity)context;
-        this.resource = resource;
         this.items = items;
     }
 
-    SongsAdapter(Context context, int resource)
+    SongsAdapter(Context context)
     {
         this.activity = (MainActivity)context;
-        this.resource = resource;
     }
 
     void changeItems(List<SongItem> items)
@@ -86,7 +83,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
     @Override
     public @NonNull ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(resource, parent, false);
+                .inflate(R.layout.song_item, parent, false);
 
         return new ViewHolder(view);
     }
@@ -106,7 +103,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         if(item.getArtist() == null || item.getArtist().equals(""))
         {
             holder.textArtist.setTextColor(Color.argb(255, 147, 156, 160));
-            holder.textArtist.setText("〈不明なアーティスト〉");
+            holder.textArtist.setText(R.string.unknownArtist);
         }
         else
         {

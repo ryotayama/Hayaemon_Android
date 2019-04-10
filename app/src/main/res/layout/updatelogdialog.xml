@@ -53,6 +53,7 @@
         android:textColorLink="#0000FF"
         android:text="該当記事へ"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_above="@+id/switchNextHidden"
         android:id="@+id/textViewArticle"
         />
@@ -83,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             style="?android:attr/borderlessButtonStyle"
-            android:text="閉じる"
+            android:text="@string/close"
             android:id="@+id/buttonClose"
             />
 
@@ -93,7 +94,6 @@
             android:layout_weight="1"
             style="?android:attr/borderlessButtonStyle"
             android:text="シェア"
-            android:layout_toRightOf="@+id/buttonClose"
             android:id="@+id/buttonShare"
             />
 

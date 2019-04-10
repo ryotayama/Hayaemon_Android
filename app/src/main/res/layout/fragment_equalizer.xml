@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="0dp"
@@ -18,7 +17,9 @@
         android:layout_marginBottom="8dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:orientation="horizontal" >
 
         <RadioButton
@@ -29,7 +30,7 @@
             android:button="@null"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="プリセット"
+            android:text="@string/preset"
             android:textColor="@drawable/radio_text_color" />
 
         <RadioButton
@@ -40,7 +41,7 @@
             android:button="@null"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="カスタマイズ"
+            android:text="@string/customize"
             android:textColor="@drawable/radio_text_color" />
 
     </RadioGroup>
@@ -80,9 +81,10 @@
                     android:id="@+id/textVolName"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
-                    android:text="音量"
-                    android:gravity="right"
+                    android:text="@string/volume"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -93,7 +95,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/textVolName"
+                    android:layout_toEndOf="@+id/textVolName"
                     android:layout_toLeftOf="@+id/textVolValue"
+                    android:layout_toStartOf="@+id/textVolValue"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -104,36 +108,36 @@
                     android:id="@+id/textVolValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/buttonVolMinus"
+                    android:layout_toStartOf="@+id/buttonVolMinus"
                     />
 
                 <ImageButton
                     android:id="@+id/buttonVolMinus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/buttonVolPlus"
+                    android:layout_toStartOf="@+id/buttonVolPlus"
                     />
 
                 <ImageButton
                     android:id="@+id/buttonVolPlus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -149,8 +153,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="20K"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -161,7 +166,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text20KName"
+                    android:layout_toEndOf="@+id/text20KName"
                     android:layout_toLeftOf="@+id/text20KValue"
+                    android:layout_toStartOf="@+id/text20KValue"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -172,36 +179,36 @@
                     android:id="@+id/text20KValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button20KMinus"
+                    android:layout_toStartOf="@+id/button20KMinus"
                     />
 
                 <ImageButton
                     android:id="@+id/button20KMinus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button20KPlus"
+                    android:layout_toStartOf="@+id/button20KPlus"
                     />
 
                 <ImageButton
                     android:id="@+id/button20KPlus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -217,8 +224,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="16K"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -229,7 +237,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text16KName"
+                    android:layout_toEndOf="@+id/text16KName"
                     android:layout_toLeftOf="@+id/text16KValue"
+                    android:layout_toStartOf="@+id/text16KValue"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -240,36 +250,36 @@
                     android:id="@+id/text16KValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button16KMinus"
+                    android:layout_toStartOf="@+id/button16KMinus"
                     />
 
                 <ImageButton
                     android:id="@+id/button16KMinus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button16KPlus"
+                    android:layout_toStartOf="@+id/button16KPlus"
                     />
 
                 <ImageButton
                     android:id="@+id/button16KPlus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -285,8 +295,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="12.5K"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -297,7 +308,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text12_5KName"
+                    android:layout_toEndOf="@+id/text12_5KName"
                     android:layout_toLeftOf="@+id/text12_5KValue"
+                    android:layout_toStartOf="@+id/text12_5KValue"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -308,36 +321,36 @@
                     android:id="@+id/text12_5KValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button12_5KMinus"
+                    android:layout_toStartOf="@+id/button12_5KMinus"
                     />
 
                 <ImageButton
                     android:id="@+id/button12_5KMinus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button12_5KPlus"
+                    android:layout_toStartOf="@+id/button12_5KPlus"
                     />
 
                 <ImageButton
                     android:id="@+id/button12_5KPlus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
 
@@ -354,8 +367,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="10K"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -366,7 +380,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text10KName"
+                    android:layout_toEndOf="@+id/text10KName"
                     android:layout_toLeftOf="@+id/text10KValue"
+                    android:layout_toStartOf="@+id/text10KValue"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -377,36 +393,36 @@
                     android:id="@+id/text10KValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button10KMinus"
+                    android:layout_toStartOf="@+id/button10KMinus"
                     />
 
                 <ImageButton
                     android:id="@+id/button10KMinus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button10KPlus"
+                    android:layout_toStartOf="@+id/button10KPlus"
                     />
 
                 <ImageButton
                     android:id="@+id/button10KPlus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -422,8 +438,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="8K"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -434,7 +451,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text8KName"
+                    android:layout_toEndOf="@+id/text8KName"
                     android:layout_toLeftOf="@+id/text8KValue"
+                    android:layout_toStartOf="@+id/text8KValue"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -445,36 +464,36 @@
                     android:id="@+id/text8KValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button8KMinus"
+                    android:layout_toStartOf="@+id/button8KMinus"
                     />
 
                 <ImageButton
                     android:id="@+id/button8KMinus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button8KPlus"
+                    android:layout_toStartOf="@+id/button8KPlus"
                     />
 
                 <ImageButton
                     android:id="@+id/button8KPlus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -490,8 +509,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="6.3K"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -502,7 +522,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text6_3KName"
+                    android:layout_toEndOf="@+id/text6_3KName"
                     android:layout_toLeftOf="@+id/text6_3KValue"
+                    android:layout_toStartOf="@+id/text6_3KValue"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -513,36 +535,36 @@
                     android:id="@+id/text6_3KValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button6_3KMinus"
+                    android:layout_toStartOf="@+id/button6_3KMinus"
                     />
 
                 <ImageButton
                     android:id="@+id/button6_3KMinus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button6_3KPlus"
+                    android:layout_toStartOf="@+id/button6_3KPlus"
                     />
 
                 <ImageButton
                     android:id="@+id/button6_3KPlus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -558,8 +580,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="5K"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -570,7 +593,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text5KName"
+                    android:layout_toEndOf="@+id/text5KName"
                     android:layout_toLeftOf="@+id/text5KValue"
+                    android:layout_toStartOf="@+id/text5KValue"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -581,36 +606,36 @@
                     android:id="@+id/text5KValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button5KMinus"
+                    android:layout_toStartOf="@+id/button5KMinus"
                     />
 
                 <ImageButton
                     android:id="@+id/button5KMinus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button5KPlus"
+                    android:layout_toStartOf="@+id/button5KPlus"
                     />
 
                 <ImageButton
                     android:id="@+id/button5KPlus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -626,8 +651,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="4K"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -638,7 +664,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text4KName"
+                    android:layout_toEndOf="@+id/text4KName"
                     android:layout_toLeftOf="@+id/text4KValue"
+                    android:layout_toStartOf="@+id/text4KValue"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -649,36 +677,36 @@
                     android:id="@+id/text4KValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button4KMinus"
+                    android:layout_toStartOf="@+id/button4KMinus"
                     />
 
                 <ImageButton
                     android:id="@+id/button4KMinus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button4KPlus"
+                    android:layout_toStartOf="@+id/button4KPlus"
                     />
 
                 <ImageButton
                     android:id="@+id/button4KPlus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -694,8 +722,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="3.15K"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -706,7 +735,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text3_15KName"
+                    android:layout_toEndOf="@+id/text3_15KName"
                     android:layout_toLeftOf="@+id/text3_15KValue"
+                    android:layout_toStartOf="@+id/text3_15KValue"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -716,36 +747,36 @@
                     android:id="@+id/text3_15KValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button3_15KMinus"
+                    android:layout_toStartOf="@+id/button3_15KMinus"
                     />
 
                 <ImageButton
                     android:id="@+id/button3_15KMinus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button3_15KPlus"
+                    android:layout_toStartOf="@+id/button3_15KPlus"
                     />
 
                 <ImageButton
                     android:id="@+id/button3_15KPlus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -761,8 +792,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="2.5K"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -773,7 +805,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text2_5KName"
+                    android:layout_toEndOf="@+id/text2_5KName"
                     android:layout_toLeftOf="@+id/text2_5KValue"
+                    android:layout_toStartOf="@+id/text2_5KValue"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -784,36 +818,36 @@
                     android:id="@+id/text2_5KValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button2_5KMinus"
+                    android:layout_toStartOf="@+id/button2_5KMinus"
                     />
 
                 <ImageButton
                     android:id="@+id/button2_5KMinus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button2_5KPlus"
+                    android:layout_toStartOf="@+id/button2_5KPlus"
                     />
 
                 <ImageButton
                     android:id="@+id/button2_5KPlus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -829,8 +863,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="2K"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -841,7 +876,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text2KName"
+                    android:layout_toEndOf="@+id/text2KName"
                     android:layout_toLeftOf="@+id/text2KValue"
+                    android:layout_toStartOf="@+id/text2KValue"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -852,36 +889,36 @@
                     android:id="@+id/text2KValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button2KMinus"
+                    android:layout_toStartOf="@+id/button2KMinus"
                     />
 
                 <ImageButton
                     android:id="@+id/button2KMinus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button2KPlus"
+                    android:layout_toStartOf="@+id/button2KPlus"
                     />
 
                 <ImageButton
                     android:id="@+id/button2KPlus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -897,8 +934,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="1.6K"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -909,7 +947,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text1_6KName"
+                    android:layout_toEndOf="@+id/text1_6KName"
                     android:layout_toLeftOf="@+id/text1_6KValue"
+                    android:layout_toStartOf="@+id/text1_6KValue"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -920,36 +960,36 @@
                     android:id="@+id/text1_6KValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button1_6KMinus"
+                    android:layout_toStartOf="@+id/button1_6KMinus"
                     />
 
                 <ImageButton
                     android:id="@+id/button1_6KMinus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button1_6KPlus"
+                    android:layout_toStartOf="@+id/button1_6KPlus"
                     />
 
                 <ImageButton
                     android:id="@+id/button1_6KPlus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -965,8 +1005,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="1.25K"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -977,7 +1018,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text1_25KName"
+                    android:layout_toEndOf="@+id/text1_25KName"
                     android:layout_toLeftOf="@+id/text1_25KValue"
+                    android:layout_toStartOf="@+id/text1_25KValue"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -988,36 +1031,36 @@
                     android:id="@+id/text1_25KValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button1_25KMinus"
+                    android:layout_toStartOf="@+id/button1_25KMinus"
                     />
 
                 <ImageButton
                     android:id="@+id/button1_25KMinus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button1_25KPlus"
+                    android:layout_toStartOf="@+id/button1_25KPlus"
                     />
 
                 <ImageButton
                     android:id="@+id/button1_25KPlus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -1033,8 +1076,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="1K"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -1045,7 +1089,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text1KName"
+                    android:layout_toEndOf="@+id/text1KName"
                     android:layout_toLeftOf="@+id/text1KValue"
+                    android:layout_toStartOf="@+id/text1KValue"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -1056,36 +1102,36 @@
                     android:id="@+id/text1KValue"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button1KMinus"
+                    android:layout_toStartOf="@+id/button1KMinus"
                     />
 
                 <ImageButton
                     android:id="@+id/button1KMinus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button1KPlus"
+                    android:layout_toStartOf="@+id/button1KPlus"
                     />
 
                 <ImageButton
                     android:id="@+id/button1KPlus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -1101,8 +1147,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="800"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -1113,7 +1160,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text800Name"
+                    android:layout_toEndOf="@+id/text800Name"
                     android:layout_toLeftOf="@+id/text800Value"
+                    android:layout_toStartOf="@+id/text800Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -1124,36 +1173,36 @@
                     android:id="@+id/text800Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button800Minus"
+                    android:layout_toStartOf="@+id/button800Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button800Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button800Plus"
+                    android:layout_toStartOf="@+id/button800Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button800Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -1169,8 +1218,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="630"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -1181,7 +1231,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text630Name"
+                    android:layout_toEndOf="@+id/text630Name"
                     android:layout_toLeftOf="@+id/text630Value"
+                    android:layout_toStartOf="@+id/text630Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -1192,36 +1244,36 @@
                     android:id="@+id/text630Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button630Minus"
+                    android:layout_toStartOf="@+id/button630Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button630Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button630Plus"
+                    android:layout_toStartOf="@+id/button630Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button630Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -1237,8 +1289,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="500"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -1249,7 +1302,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text500Name"
+                    android:layout_toEndOf="@+id/text500Name"
                     android:layout_toLeftOf="@+id/text500Value"
+                    android:layout_toStartOf="@+id/text500Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -1260,36 +1315,36 @@
                     android:id="@+id/text500Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button500Minus"
+                    android:layout_toStartOf="@+id/button500Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button500Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button500Plus"
+                    android:layout_toStartOf="@+id/button500Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button500Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -1305,8 +1360,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="400"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -1317,7 +1373,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text400Name"
+                    android:layout_toEndOf="@+id/text400Name"
                     android:layout_toLeftOf="@+id/text400Value"
+                    android:layout_toStartOf="@+id/text400Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -1328,36 +1386,36 @@
                     android:id="@+id/text400Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button400Minus"
+                    android:layout_toStartOf="@+id/button400Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button400Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button400Plus"
+                    android:layout_toStartOf="@+id/button400Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button400Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -1373,8 +1431,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="315"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -1385,7 +1444,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text315Name"
+                    android:layout_toEndOf="@+id/text315Name"
                     android:layout_toLeftOf="@+id/text315Value"
+                    android:layout_toStartOf="@+id/text315Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -1396,36 +1457,36 @@
                     android:id="@+id/text315Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button315Minus"
+                    android:layout_toStartOf="@+id/button315Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button315Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button315Plus"
+                    android:layout_toStartOf="@+id/button315Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button315Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -1441,8 +1502,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="250"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -1453,7 +1515,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text250Name"
+                    android:layout_toEndOf="@+id/text250Name"
                     android:layout_toLeftOf="@+id/text250Value"
+                    android:layout_toStartOf="@+id/text250Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -1464,36 +1528,36 @@
                     android:id="@+id/text250Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button250Minus"
+                    android:layout_toStartOf="@+id/button250Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button250Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button250Plus"
+                    android:layout_toStartOf="@+id/button250Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button250Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -1509,8 +1573,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="200"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -1521,7 +1586,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text200Name"
+                    android:layout_toEndOf="@+id/text200Name"
                     android:layout_toLeftOf="@+id/text200Value"
+                    android:layout_toStartOf="@+id/text200Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -1532,36 +1599,36 @@
                     android:id="@+id/text200Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button200Minus"
+                    android:layout_toStartOf="@+id/button200Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button200Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button200Plus"
+                    android:layout_toStartOf="@+id/button200Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button200Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -1577,8 +1644,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="160"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -1589,7 +1657,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text160Name"
+                    android:layout_toEndOf="@+id/text160Name"
                     android:layout_toLeftOf="@+id/text160Value"
+                    android:layout_toStartOf="@+id/text160Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -1600,36 +1670,36 @@
                     android:id="@+id/text160Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button160Minus"
+                    android:layout_toStartOf="@+id/button160Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button160Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button160Plus"
+                    android:layout_toStartOf="@+id/button160Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button160Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -1645,8 +1715,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="125"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -1657,7 +1728,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text125Name"
+                    android:layout_toEndOf="@+id/text125Name"
                     android:layout_toLeftOf="@+id/text125Value"
+                    android:layout_toStartOf="@+id/text125Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -1668,36 +1741,36 @@
                     android:id="@+id/text125Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button125Minus"
+                    android:layout_toStartOf="@+id/button125Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button125Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button125Plus"
+                    android:layout_toStartOf="@+id/button125Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button125Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -1713,8 +1786,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="100"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -1725,7 +1799,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text100Name"
+                    android:layout_toEndOf="@+id/text100Name"
                     android:layout_toLeftOf="@+id/text100Value"
+                    android:layout_toStartOf="@+id/text100Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -1736,36 +1812,36 @@
                     android:id="@+id/text100Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button100Minus"
+                    android:layout_toStartOf="@+id/button100Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button100Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button100Plus"
+                    android:layout_toStartOf="@+id/button100Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button100Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -1781,8 +1857,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="80"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -1793,7 +1870,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text80Name"
+                    android:layout_toEndOf="@+id/text80Name"
                     android:layout_toLeftOf="@+id/text80Value"
+                    android:layout_toStartOf="@+id/text80Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -1804,36 +1883,36 @@
                     android:id="@+id/text80Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button80Minus"
+                    android:layout_toStartOf="@+id/button80Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button80Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button80Plus"
+                    android:layout_toStartOf="@+id/button80Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button80Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -1849,8 +1928,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="63"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -1861,7 +1941,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text63Name"
+                    android:layout_toEndOf="@+id/text63Name"
                     android:layout_toLeftOf="@+id/text63Value"
+                    android:layout_toStartOf="@+id/text63Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -1872,36 +1954,36 @@
                     android:id="@+id/text63Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button63Minus"
+                    android:layout_toStartOf="@+id/button63Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button63Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button63Plus"
+                    android:layout_toStartOf="@+id/button63Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button63Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -1917,8 +1999,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="50"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -1929,7 +2012,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text50Name"
+                    android:layout_toEndOf="@+id/text50Name"
                     android:layout_toLeftOf="@+id/text50Value"
+                    android:layout_toStartOf="@+id/text50Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -1940,36 +2025,36 @@
                     android:id="@+id/text50Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button50Minus"
+                    android:layout_toStartOf="@+id/button50Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button50Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button50Plus"
+                    android:layout_toStartOf="@+id/button50Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button50Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -1985,8 +2070,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="40"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -1997,7 +2083,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text40Name"
+                    android:layout_toEndOf="@+id/text40Name"
                     android:layout_toLeftOf="@+id/text40Value"
+                    android:layout_toStartOf="@+id/text40Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -2008,36 +2096,36 @@
                     android:id="@+id/text40Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button40Minus"
+                    android:layout_toStartOf="@+id/button40Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button40Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button40Plus"
+                    android:layout_toStartOf="@+id/button40Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button40Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -2053,8 +2141,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="31.5"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -2065,7 +2154,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text31_5Name"
+                    android:layout_toEndOf="@+id/text31_5Name"
                     android:layout_toLeftOf="@+id/text31_5Value"
+                    android:layout_toStartOf="@+id/text31_5Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -2076,36 +2167,36 @@
                     android:id="@+id/text31_5Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button31_5Minus"
+                    android:layout_toStartOf="@+id/button31_5Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button31_5Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button31_5Plus"
+                    android:layout_toStartOf="@+id/button31_5Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button31_5Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -2121,8 +2212,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="25"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -2133,7 +2225,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text25Name"
+                    android:layout_toEndOf="@+id/text25Name"
                     android:layout_toLeftOf="@+id/text25Value"
+                    android:layout_toStartOf="@+id/text25Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -2144,36 +2238,36 @@
                     android:id="@+id/text25Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button25Minus"
+                    android:layout_toStartOf="@+id/button25Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button25Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button25Plus"
+                    android:layout_toStartOf="@+id/button25Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button25Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -2189,8 +2283,9 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="20"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     />
 
@@ -2201,7 +2296,9 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toRightOf="@+id/text20Name"
+                    android:layout_toEndOf="@+id/text20Name"
                     android:layout_toLeftOf="@+id/text20Value"
+                    android:layout_toStartOf="@+id/text20Value"
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
@@ -2212,36 +2309,36 @@
                     android:id="@+id/text20Value"
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/button20Minus"
+                    android:layout_toStartOf="@+id/button20Minus"
                     />
 
                 <ImageButton
                     android:id="@+id/button20Minus"
-                    android:contentDescription="マイナス"
+                    android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/minusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/button20Plus"
+                    android:layout_toStartOf="@+id/button20Plus"
                     />
 
                 <ImageButton
                     android:id="@+id/button20Plus"
-                    android:contentDescription="プラス"
+                    android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/plusbutton"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:clickable="true"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
@@ -2256,7 +2353,7 @@
                     android:id="@+id/btnAddEqualizer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="プリセットとして追加"
+                    android:text="@string/addPreset"
                     android:layout_margin="2dp"
                     android:paddingLeft="48dp"
                     android:paddingRight="48dp"
@@ -2280,7 +2377,7 @@
             android:id="@+id/textFinishSortEqualizer"
             android:layout_width="match_parent"
             android:layout_height="64dp"
-            android:text="並べ替えを終了する"
+            android:text="@string/finishSort"
             android:textColor="#FFFFFF"
             android:textSize="22dp"
             android:background="#007AFF"

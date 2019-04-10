@@ -34,19 +34,14 @@ import java.util.List;
 
 public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHolder>
 {
-    MainActivity activity;
-    private int resource;
-    private List<EffectItem> items;
-    private int nPosition;
-
-    public void setPosition(int nPosition) { this.nPosition = nPosition; }
-    public int getPosition() { return nPosition; }
+    private final MainActivity activity;
+    private final List<EffectItem> items;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout effectItem;
-        TextView textEffect;
-        ImageButton buttonEffectDetail;
-        ImageView imgRight;
+        final RelativeLayout effectItem;
+        final TextView textEffect;
+        final ImageButton buttonEffectDetail;
+        final ImageView imgRight;
 
         ViewHolder(View view) {
             super(view);
@@ -57,17 +52,16 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
         }
     }
 
-    EffectsAdapter(Context context, int resource, List<EffectItem> items)
+    EffectsAdapter(Context context, List<EffectItem> items)
     {
         this.activity = (MainActivity)context;
-        this.resource = resource;
         this.items = items;
     }
 
     @Override
     public @NonNull EffectsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(resource, parent, false);
+                .inflate(R.layout.effect_item, parent, false);
 
         return new EffectsAdapter.ViewHolder(view);
     }

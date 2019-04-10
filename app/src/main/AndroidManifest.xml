@@ -8,6 +8,7 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -53,6 +54,9 @@
                 android:resource="@xml/file_paths" />
         </provider>
         <service android:name=".ForegroundService"/>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-9499594730627438~9516019647"/>
     </application>
 
 </manifest>

@@ -22,10 +22,10 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class BottomMenu extends BottomSheetDialog {
-    private LinearLayout linearLayoutParent;
-    private LinearLayout linearLayout;
-    private ScrollView scroll;
+class BottomMenu extends BottomSheetDialog {
+    private final LinearLayout linearLayoutParent;
+    private final LinearLayout linearLayout;
+    private final ScrollView scroll;
     private int nTag = 0;
     private int nHeight = 0;
 
@@ -227,7 +227,7 @@ public class BottomMenu extends BottomSheetDialog {
         final TextView textCancel = new TextView(getContext());
         textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         textCancel.setGravity(Gravity.CENTER);
-        textCancel.setText("キャンセル");
+        textCancel.setText(R.string.cancel);
         textCancel.setHeight((int) (48 * getContext().getResources().getDisplayMetrics().density + 0.5));
         textCancel.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -3,11 +3,11 @@
     <item
         android:state_focused="true"
         android:state_pressed="true"
-        android:drawable="@drawable/button_left_highlight" />
+        android:drawable="@drawable/ic_button_left_highlight" />
     <item
         android:state_focused="false"
         android:state_pressed="true"
-        android:drawable="@drawable/button_left_highlight" />
+        android:drawable="@drawable/ic_button_left_highlight" />
     <item
-        android:drawable="@drawable/button_left" />
+        android:drawable="@drawable/ic_button_left" />
 </selector>

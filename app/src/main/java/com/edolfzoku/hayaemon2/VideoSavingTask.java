@@ -41,11 +41,11 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
-    private PlaylistFragment playlistFragment;
-    private String strPathTo;
-    private AlertDialog alert;
-    private int nLength;
+class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
+    private final PlaylistFragment playlistFragment;
+    private final String strPathTo;
+    private final AlertDialog alert;
+    private final int nLength;
     private String strMP4Path;
 
     VideoSavingTask(PlaylistFragment playlistFragment, String strPathTo, AlertDialog alert, int nLength)
@@ -160,7 +160,7 @@ public class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
                             totalBytesRead += bytesRead;
                             dstBuf.put(tempBuffer, 0, bytesRead);
                             codec.queueInputBuffer(inputBufIndex, 0, bytesRead, (long) presentationTimeUs, 0);
-                            presentationTimeUs = 1000000l * (totalBytesRead / 4) / 44100;
+                            presentationTimeUs = 1000000L * (totalBytesRead / 4) / 44100;
                         }
                     }
                 }

@@ -187,11 +187,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onClick(View v) {
         if(v.getId() == R.id.btnSortPlaylist)
         {
@@ -203,7 +198,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 bSorting = false;
                 playlistsAdapter.notifyDataSetChanged();
                 Button btnSortPlaylist = activity.findViewById(R.id.btnSortPlaylist);
-                btnSortPlaylist.setText("並べ替え");
+                btnSortPlaylist.setText(R.string.sort);
 
                 playlistTouchHelper.attachToRecyclerView(null);
             }
@@ -215,7 +210,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 bSorting = true;
                 playlistsAdapter.notifyDataSetChanged();
                 Button btnSortPlaylist = activity.findViewById(R.id.btnSortPlaylist);
-                btnSortPlaylist.setText("並べ替えを終了");
+                btnSortPlaylist.setText(R.string.finishSort);
 
                 playlistTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
                     @Override
@@ -273,18 +268,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 public void run()
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                    builder.setTitle("新しいリストを追加する");
+                    builder.setTitle(R.string.addNewList);
                     final EditText editText = new EditText (activity);
-                    editText.setHint("再生リスト");
+                    editText.setHint(R.string.playlist);
                     editText.setHintTextColor(Color.argb(255, 192, 192, 192));
-                    editText.setText("再生リスト");
+                    editText.setText(R.string.playlist);
                     builder.setView(editText);
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             addPlaylist(editText.getText().toString());
                         }
                     });
-                    builder.setNegativeButton("キャンセル", null);
+                    builder.setNegativeButton(R.string.cancel, null);
                     final AlertDialog alertDialog = builder.create();
                     alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
                     {
@@ -335,18 +330,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         else if(v.getId() == R.id.buttonAddPlaylist_small)
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("新しいリストを追加する");
+            builder.setTitle(R.string.addNewList);
             final EditText editText = new EditText (activity);
-            editText.setHint("再生リスト");
+            editText.setHint(R.string.playlist);
             editText.setHintTextColor(Color.argb(255, 192, 192, 192));
-            editText.setText("再生リスト");
+            editText.setText(R.string.playlist);
             builder.setView(editText);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     addPlaylist(editText.getText().toString());
                 }
             });
-            builder.setNegativeButton("キャンセル", null);
+            builder.setNegativeButton(R.string.cancel, null);
             final AlertDialog alertDialog = builder.create();
             alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
             {
@@ -368,8 +363,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 public void run()
                 {
                     final BottomMenu menu = new BottomMenu(activity);
-                    menu.setTitle("曲を追加");
-                    menu.addMenu("端末内から追加", R.drawable.actionsheet_music, new View.OnClickListener() {
+                    menu.setTitle(getString(R.string.addSong));
+                    menu.addMenu(getString(R.string.addFromLocal), R.drawable.ic_actionsheet_music, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             menu.dismiss();
@@ -377,7 +372,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         }
                     });
                     if(Build.VERSION.SDK_INT >= 18) {
-                        menu.addMenu("ギャラリーから追加", R.drawable.actionsheet_film, new View.OnClickListener() {
+                        menu.addMenu(getString(R.string.addFromGallery), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 menu.dismiss();
@@ -385,17 +380,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                             }
                         });
                     }
-                    menu.addMenu("URLから追加", R.drawable.actionsheet_globe, new View.OnClickListener() {
+                    menu.addMenu(getString(R.string.addURL), R.drawable.ic_actionsheet_globe, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             menu.dismiss();
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                            builder.setTitle("URLから追加");
+                            builder.setTitle(R.string.addURL);
                             LinearLayout linearLayout = new LinearLayout(activity);
                             linearLayout.setOrientation(LinearLayout.VERTICAL);
                             final EditText editURL = new EditText (activity);
-                            editURL.setHint("URL");
+                            editURL.setHint(R.string.URL);
                             editURL.setHintTextColor(Color.argb(255, 192, 192, 192));
                             editURL.setText("");
                             linearLayout.addView(editURL);
@@ -407,7 +402,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                                     startAddURL(editURL.getText().toString());
                                 }
                             });
-                            builder.setNegativeButton("キャンセル", null);
+                            builder.setNegativeButton(R.string.cancel, null);
                             final AlertDialog alertDialog = builder.create();
                             alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
                             {
@@ -464,7 +459,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 ArrayList<String> arTempLyrics = arLyrics.get(nSelectedPlaylist);
                 arTempLyrics.set(nSelectedItem, strLyrics);
                 textLyrics.setText(strLyrics);
-                btnFinishLyrics.setText("閉じる");
+                btnFinishLyrics.setText(R.string.close);
                 textLyrics.setText(strLyrics);
                 if(strLyrics.equals("")) {
                     editLyrics.setVisibility(View.INVISIBLE);
@@ -498,7 +493,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     TextView textLyrics = activity.findViewById(R.id.textLyrics);
                     textLyrics.setVisibility(View.INVISIBLE);
                     Button btnFinishLyrics = activity.findViewById(R.id.btnFinishLyrics);
-                    btnFinishLyrics.setText("完了");
+                    btnFinishLyrics.setText(R.string.done);
                     AnimationButton btnEdit = activity.findViewById(R.id.btnEdit);
                     btnEdit.setVisibility(View.INVISIBLE);
                     EditText editLyrics = activity.findViewById(R.id.editLyrics);
@@ -525,7 +520,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             TextView textLyrics = activity.findViewById(R.id.textLyrics);
             textLyrics.setVisibility(View.INVISIBLE);
             Button btnFinishLyrics = activity.findViewById(R.id.btnFinishLyrics);
-            btnFinishLyrics.setText("完了");
+            btnFinishLyrics.setText(R.string.done);
             AnimationButton btnEdit = activity.findViewById(R.id.btnEdit);
             btnEdit.setVisibility(View.INVISIBLE);
             EditText editLyrics = activity.findViewById(R.id.editLyrics);
@@ -542,9 +537,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     {
         if(v.getId() == R.id.btnPlay) {
             final BottomMenu menu = new BottomMenu(activity);
-            menu.setTitle("再生／停止");
+            menu.setTitle(getString(R.string.playStop));
             if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING || activity.effectFragment.isReverse()) {
-                menu.addMenu("再生", R.drawable.ic_actionsheet_play, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.play), R.drawable.ic_actionsheet_play, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                     menu.dismiss();
@@ -559,7 +554,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 });
             }
             if(MainActivity.hStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING) {
-                menu.addMenu("一時停止", R.drawable.ic_actionsheet_pause, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.pause), R.drawable.ic_actionsheet_pause, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
@@ -568,7 +563,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 });
             }
             if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING || !activity.effectFragment.isReverse()) {
-                menu.addMenu("逆回転再生", R.drawable.ic_actionsheet_reverse, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.reverse), R.drawable.ic_actionsheet_reverse, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
@@ -583,7 +578,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 });
             }
             if(MainActivity.hStream != 0) {
-                menu.addDestructiveMenu("停止", R.drawable.ic_actionsheet_stop, new View.OnClickListener() {
+                menu.addDestructiveMenu(getString(R.string.stop), R.drawable.ic_actionsheet_stop, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
@@ -642,14 +637,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             nFreeSpace = (long)sf.getAvailableBlocks() * (long)sf.getBlockSize();
         if(nFreeSpace < 100) {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("端末内の空き容量が少なくなっています");
-            builder.setMessage("こんにちは♪\n\nハヤえもん開発者のりょーたです！\n\n端末内の空き容量が少なくなっています。\n\n不要なファイルを削除した上で、再度試してみてください。\n\nそれでは引き続き、Enjoy \"Your\" Music with Hayaemon!!");
+            builder.setTitle(R.string.diskFullError);
+            builder.setMessage(R.string.diskFullErrorDetail);
             builder.setPositiveButton("OK", null);
             builder.show();
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("ダウンロード中");
+        builder.setTitle(R.string.downloading);
         LinearLayout linearLayout = new LinearLayout(activity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         progress = new ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal);
@@ -672,7 +667,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             i++;
         }
         bFinish = false;
-        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 bFinish = true;
@@ -702,8 +697,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         {
             if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("ダウンロードに失敗しました");
-            builder.setMessage("こんにちは♪\n\nハヤえもん開発者のりょーたです！\n\nファイルをダウンロードしようとしたところ、ダウンロードすることができませんでした。\n\nお手数をおかけしますが、URLが正しいか再度ご確認ください。\n\nそれでは引き続き、Enjoy \"Your\" Music with Hayaemon!!");
+            builder.setTitle(R.string.downloadError);
+            builder.setMessage(R.string.downloadErrorDetail);
             builder.setPositiveButton("OK", null);
             builder.show();
             return;
@@ -714,25 +709,25 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         {
             if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             AlertDialog.Builder builder = new    AlertDialog.Builder(activity);
-            builder.setTitle("ハヤえもんで再生可能な音声データではありませんでした");
-            builder.setMessage("こんにちは♪\n\nハヤえもん開発者のりょーたです！\n\nダウンロードしたファイルが、ハヤえもんで再生可能な音声データではありませんでした。\n\nお手数をおかけしますが、MP3, MP2, MP1, OGG, AIFF, M4A, MP4（※）のいずれかのファイルをご指定ください。\n※MP4は音声ファイルをご指定ください。\n\nそれでは引き続き、Enjoy \"Your\" Music with Hayaemon!!");
+            builder.setTitle(R.string.playableError);
+            builder.setMessage(R.string.playableErrorDetail);
             builder.setPositiveButton("OK", null);
             builder.show();
             return;
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("URLから追加");
+        builder.setTitle(R.string.addURL);
         LinearLayout linearLayout = new LinearLayout(activity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         final EditText editTitle = new EditText (activity);
-        editTitle.setHint("タイトル");
+        editTitle.setHint(R.string.title);
         editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         Date date = new Date(System.currentTimeMillis());
         editTitle.setText(String.format(Locale.getDefault(), "タイトル(%s)", df.format(date)));
         final EditText editArtist = new EditText (activity);
-        editArtist.setHint("アーティスト名");
+        editArtist.setHint(R.string.artist);
         editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
         editArtist.setText("");
         linearLayout.addView(editTitle);
@@ -754,7 +749,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 saveFiles(true, true, true, true, false);
             }
         });
-        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             }
@@ -790,8 +785,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             nFreeSpace = (long)sf.getAvailableBlocks() * (long)sf.getBlockSize();
         if(nFreeSpace < 100) {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("端末内の空き容量が少なくなっています");
-            builder.setMessage("こんにちは♪\n\nハヤえもん開発者のりょーたです！\n\n端末内の空き容量が少なくなっています。\n\n不要なファイルを削除した上で、再度試してみてください。\n\nそれでは引き続き、Enjoy \"Your\" Music with Hayaemon!!");
+            builder.setTitle(R.string.diskFullError);
+            builder.setMessage(R.string.diskFullErrorDetail);
             builder.setPositiveButton("OK", null);
             builder.show();
             return;
@@ -828,13 +823,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         relativeRecording.setVisibility(View.VISIBLE);
         relativeRecording.animate()
                 .translationY(0)
-                .setDuration(200)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                    }
-                });
+                .setDuration(200);
 
         BASS.BASS_RecordInit(-1);
         recbuf = ByteBuffer.allocateDirect(200000);
@@ -905,7 +894,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         handler.postDelayed(timer, 50);
     }
 
-    public void stopRecord()
+    private void stopRecord()
     {
         final RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams)activity.findViewById(R.id.container).getLayoutParams();
         final RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams)activity.findViewById(R.id.relativeRecording).getLayoutParams();
@@ -947,17 +936,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("新規録音");
+        builder.setTitle(R.string.newRecord);
         LinearLayout linearLayout = new LinearLayout(activity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         final EditText editTitle = new EditText (activity);
-        editTitle.setHint("タイトル");
+        editTitle.setHint(R.string.title);
         editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         Date date = new Date(System.currentTimeMillis());
-        editTitle.setText(String.format(Locale.getDefault(), "新規録音(%s)", df.format((date))));
+        editTitle.setText(String.format(Locale.getDefault(), "%s(%s)", getString(R.string.newRecord), df.format((date))));
         final EditText editArtist = new EditText (activity);
-        editArtist.setHint("アーティスト名");
+        editArtist.setHint(R.string.artist);
         editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
         editArtist.setText("");
         linearLayout.addView(editTitle);
@@ -979,7 +968,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 saveFiles(true, true, true, true, false);
             }
         });
-        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             }
@@ -1033,11 +1022,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         activity = (MainActivity)getActivity();
         if(activity == null) return;
 
-        tabAdapter = new PlaylistTabAdapter(activity, R.layout.playlist_tab_item, arPlaylistNames);
-        playlistsAdapter = new PlaylistsAdapter(activity, R.layout.playlist_item, arPlaylistNames);
+        tabAdapter = new PlaylistTabAdapter(activity, arPlaylistNames);
+        playlistsAdapter = new PlaylistsAdapter(activity, arPlaylistNames);
         if (nSelectedPlaylist < arPlaylists.size())
-            songsAdapter = new SongsAdapter(activity, R.layout.song_item, arPlaylists.get(nSelectedPlaylist));
-        else songsAdapter = new SongsAdapter(activity, R.layout.song_item);
+            songsAdapter = new SongsAdapter(activity, arPlaylists.get(nSelectedPlaylist));
+        else songsAdapter = new SongsAdapter(activity);
 
         recyclerPlaylists = activity.findViewById(R.id.recyclerPlaylists);
         recyclerPlaylists.setHasFixedSize(false);
@@ -1203,7 +1192,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saveFiles(true, true, true, true, false);
     }
 
-    public void setArtwork(Uri uri)
+    private void setArtwork(Uri uri)
     {
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         SongItem song = arSongs.get(nSelectedItem);
@@ -1276,7 +1265,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
         }
         if(bitmap != null) btnArtworkInPlayingBar.setImageBitmap(bitmap);
-        else btnArtworkInPlayingBar.setImageResource(R.drawable.playing_large_artwork);
+        else btnArtworkInPlayingBar.setImageResource(R.drawable.ic_playing_large_artwork);
         saveFiles(true, false, false, false, false);
     }
     
@@ -1289,15 +1278,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         final BottomMenu menu = new BottomMenu(activity);
         menu.setTitle(strTitle);
-        menu.addMenu("保存／エクスポート", R.drawable.actionsheet_save, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.saveExport), R.drawable.ic_actionsheet_save, new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
                 menu.dismiss();
 
                 final BottomMenu menu = new BottomMenu(activity);
-                menu.setTitle("保存／エクスポート");
-                menu.addMenu("アプリ内に保存", R.drawable.actionsheet_save, new View.OnClickListener() {
+                menu.setTitle(getString(R.string.saveExport));
+                menu.addMenu(getString(R.string.saveToApp), R.drawable.ic_actionsheet_save, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
@@ -1305,7 +1294,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     }
                 });
                 if(Build.VERSION.SDK_INT >= 18) {
-                    menu.addMenu("ギャラリーに保存", R.drawable.actionsheet_film, new View.OnClickListener() {
+                    menu.addMenu(getString(R.string.saveToGallery), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             menu.dismiss();
@@ -1313,7 +1302,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         }
                     });
                 }
-                menu.addMenu("他のアプリにエクスポート", R.drawable.actionsheet_share, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.export), R.drawable.ic_actionsheet_share, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
@@ -1324,7 +1313,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 menu.show();
             }
         });
-        menu.addMenu("タイトルとアーティスト名を変更", R.drawable.actionsheet_edit, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.changeTitleAndArtist), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
@@ -1332,7 +1321,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 changeTitleAndArtist(nItem);
             }
         });
-        menu.addMenu("歌詞を表示", R.drawable.actionsheet_file_text, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.showLyrics), R.drawable.ic_actionsheet_file_text, new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
@@ -1344,7 +1333,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         EffectSaver saver = arEffectSavers.get(nItem);
         if(saver.isSave())
         {
-            menu.addMenu("各画面の設定保持を解除", R.drawable.actionsheet_unlock, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.cancelRestoreEffect), R.drawable.ic_actionsheet_unlock, new View.OnClickListener() {
                 @Override
                 public void onClick(View view)
                 {
@@ -1360,7 +1349,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
         else
         {
-            menu.addMenu("各画面の設定を保持", R.drawable.actionsheet_lock, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.restoreEffect), R.drawable.ic_actionsheet_lock, new View.OnClickListener() {
                 @Override
                 public void onClick(View view)
                 {
@@ -1371,17 +1360,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             });
         }
         menu.addSeparator();
-        menu.addMenu("コピー", R.drawable.actionsheet_copy, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.copy), R.drawable.ic_actionsheet_copy, new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
                 menu.dismiss();
                 final BottomMenu menu = new BottomMenu(activity);
-                menu.setTitle("コピー");
+                menu.setTitle(getString(R.string.copy));
                 for(int i = 0; i < arPlaylistNames.size(); i++)
                 {
                     final int nPlaylistTo = i;
-                    menu.addMenu(arPlaylistNames.get(i), R.drawable.actionsheet_folder, new View.OnClickListener() {
+                    menu.addMenu(arPlaylistNames.get(i), R.drawable.ic_actionsheet_folder, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             ArrayList<SongItem> arSongsFrom = arPlaylists.get(nSelectedPlaylist);
@@ -1429,19 +1418,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 menu.show();
             }
         });
-        menu.addMenu("別の再生リストに移動", R.drawable.actionsheet_folder_move, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.moveToAnotherPlaylist), R.drawable.ic_actionsheet_folder_move, new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
                 menu.dismiss();
 
                 final BottomMenu menu = new BottomMenu(activity);
-                menu.setTitle("別の再生リストに移動");
+                menu.setTitle(getString(R.string.moveToAnotherPlaylist));
                 for(int i = 0; i < arPlaylistNames.size(); i++)
                 {
                     if(nSelectedPlaylist == i) continue;
                     final int nPlaylistTo = i;
-                    menu.addMenu(arPlaylistNames.get(i), R.drawable.actionsheet_folder, new View.OnClickListener() {
+                    menu.addMenu(arPlaylistNames.get(i), R.drawable.ic_actionsheet_folder, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             ArrayList<SongItem> arSongsFrom = arPlaylists.get(nSelectedPlaylist);
@@ -1490,7 +1479,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 menu.show();
             }
         });
-        menu.addDestructiveMenu("削除", R.drawable.actionsheet_delete, new View.OnClickListener() {
+        menu.addDestructiveMenu(getString(R.string.delete), R.drawable.ic_actionsheet_delete, new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
@@ -1498,9 +1487,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 String strTitle = songItem.getTitle();
                 builder.setTitle(strTitle);
-                builder.setMessage("曲を削除しますが、よろしいでしょうか？");
-                builder.setPositiveButton("やめる", null);
-                builder.setNegativeButton("削除する", new DialogInterface.OnClickListener() {
+                builder.setMessage(R.string.askDeleteSong);
+                builder.setPositiveButton(getString(R.string.decideNot), null);
+                builder.setNegativeButton(getString(R.string.doDelete), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         boolean bDeletePlaying = false; // 再生中の曲を削除したか
                         if(nSelectedPlaylist == nPlayingPlaylist && nItem == nPlaying)
@@ -1540,15 +1529,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         final SongItem songItem = arSongs.get(nItem);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("タイトルとアーティスト名を変更");
+        builder.setTitle(R.string.changeTitleAndArtist);
         LinearLayout linearLayout = new LinearLayout(activity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         final EditText editTitle = new EditText (activity);
-        editTitle.setHint("タイトル");
+        editTitle.setHint(R.string.title);
         editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
         editTitle.setText(songItem.getTitle());
         final EditText editArtist = new EditText (activity);
-        editArtist.setHint("アーティスト名");
+        editArtist.setHint(R.string.artist);
         editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
         editArtist.setText(songItem.getArtist());
         linearLayout.addView(editTitle);
@@ -1567,7 +1556,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     if(songItem.getArtist() == null || songItem.getArtist().equals(""))
                     {
                         textArtistInPlayingBar.setTextColor(Color.argb(255, 147, 156, 160));
-                        textArtistInPlayingBar.setText("〈不明なアーティスト〉");
+                        textArtistInPlayingBar.setText(R.string.unknownArtist);
                     }
                     else
                     {
@@ -1581,7 +1570,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 saveFiles(true, true, true, true, false);
             }
         });
-        builder.setNegativeButton("キャンセル", null);
+        builder.setNegativeButton(R.string.cancel, null);
         final AlertDialog alertDialog = builder.create();
         alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
         {
@@ -1605,7 +1594,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         menu.setTitle(strPlaylist);
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         if(arSongs.size() >= 2) {
-            menu.addMenu("曲順の並べ替え", R.drawable.actionsheet_sort, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.sortSongs), R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
@@ -1678,14 +1667,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             });
             menu.addSeparator();
         }
-        menu.addMenu("再生リスト名を変更", R.drawable.actionsheet_edit, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.changePlaylistName), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("再生リスト名を変更");
+                builder.setTitle(R.string.changePlaylistName);
                 final EditText editText = new EditText (activity);
-                editText.setHint("再生リスト");
+                editText.setHint(R.string.playlist);
                 editText.setHintTextColor(Color.argb(255, 192, 192, 192));
                 editText.setText(arPlaylistNames.get(nPosition));
                 builder.setView(editText);
@@ -1699,7 +1688,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         saveFiles(true, true, true, true, false);
                     }
                 });
-                builder.setNegativeButton("キャンセル", null);
+                builder.setNegativeButton(R.string.cancel, null);
                 final AlertDialog alertDialog = builder.create();
                 alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
                 {
@@ -1715,14 +1704,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 alertDialog.show();
             }
         });
-        menu.addMenu("再生リストをコピー", R.drawable.actionsheet_copy, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.copyPlaylist), R.drawable.ic_actionsheet_copy, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("再生リストをコピー");
+                builder.setTitle(R.string.copyPlaylist);
                 final EditText editText = new EditText (activity);
-                editText.setHint("再生リスト");
+                editText.setHint(R.string.playlist);
                 editText.setHintTextColor(Color.argb(255, 192, 192, 192));
                 editText.setText(String.format(Locale.getDefault(), "%s のコピー", arPlaylistNames.get(nPosition)));
                 builder.setView(editText);
@@ -1769,7 +1758,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                             saveFiles(true, true, true, true, false);
                     }
                 });
-                builder.setNegativeButton("キャンセル", null);
+                builder.setNegativeButton(R.string.cancel, null);
                 final AlertDialog alertDialog = builder.create();
                 alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
                 {
@@ -1785,15 +1774,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 alertDialog.show();
             }
         });
-        menu.addDestructiveMenu("再生リストを空にする", R.drawable.actionsheet_folder_erase, new View.OnClickListener() {
+        menu.addDestructiveMenu(getString(R.string.emptyPlaylist), R.drawable.ic_actionsheet_folder_erase, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("再生リストを空にする");
-                builder.setMessage("再生リストを空にしますが、よろしいでしょうか？");
-                builder.setPositiveButton("やめる", null);
-                builder.setNegativeButton("空にする", new DialogInterface.OnClickListener() {
+                builder.setTitle(R.string.emptyPlaylist);
+                builder.setMessage(R.string.askEmptyPlaylist);
+                builder.setPositiveButton(getString(R.string.decideNot), null);
+                builder.setNegativeButton(getString(R.string.doEmpty), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         ArrayList<SongItem> arSongs;
                         ArrayList<EffectSaver> arEffectSavers;
@@ -1832,15 +1821,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 alertDialog.show();
             }
         });
-        menu.addDestructiveMenu("再生リストを削除", R.drawable.actionsheet_delete, new View.OnClickListener() {
+        menu.addDestructiveMenu(getString(R.string.deletePlaylist), R.drawable.ic_actionsheet_delete, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("再生リストを削除");
-                builder.setMessage("再生リストを削除しますが、よろしいでしょうか？");
-                builder.setPositiveButton("やめる", null);
-                builder.setNegativeButton("削除する", new DialogInterface.OnClickListener() {
+                builder.setTitle(R.string.deletePlaylist);
+                builder.setMessage(R.string.askDeletePlaylist);
+                builder.setPositiveButton(getString(R.string.decideNot), null);
+                builder.setNegativeButton(getString(R.string.doDelete), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if(nPosition == nPlayingPlaylist) stop();
                         else if(nPosition < nPlayingPlaylist) nPlayingPlaylist--;
@@ -1857,7 +1846,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         arPlaylistNames.remove(nPosition);
                         arLyrics.remove(nPosition);
                         if(arPlaylists.size() == 0)
-                            addPlaylist("再生リスト 1");
+                            addPlaylist(String.format(Locale.getDefault(), "%s 1", getString(R.string.playlist)));
 
                         int nSelect = nPosition;
                         if(nSelect >= arPlaylists.size()) nSelect = arPlaylists.size() - 1;
@@ -2071,7 +2060,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-    public void restoreEffect()
+    private void restoreEffect()
     {
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nPlayingPlaylist);
         EffectSaver saver = arEffectSavers.get(nPlaying);
@@ -2148,10 +2137,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         activity.loopFragment.setMarker(saver.getMarker());
     }
 
-    public void saveSong(int nPurpose, String strFileName)
+    private void saveSong(int nPurpose, String strFileName)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("セーブ中…");
+        builder.setTitle(R.string.saving);
         LinearLayout linearLayout = new LinearLayout(activity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         progress = new ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal);
@@ -2356,7 +2345,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             hTempEncode = BASSenc_MP3.BASS_Encode_MP3_StartFile(hTempStream, "", 0, strPathTo);
         final int hEncode = hTempEncode;
         bFinish = false;
-        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 bFinish = true;
@@ -2423,11 +2412,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
 
         if(fSpeed != 0.0f && fPitch != 0.0f)
-            strTitle += "(速度" + strSpeed + ",音程" + strPitch + ")";
+            strTitle += "(" + getString(R.string.speed) + strSpeed + "," + getString(R.string.pitch) + strPitch + ")";
         else if(fSpeed != 0.0f)
-            strTitle += "(速度" + strSpeed + ")";
+            strTitle += "(" + getString(R.string.speed) + strSpeed + ")";
         else if(fPitch != 0.0f)
-            strTitle += "(音程" + strPitch + ")";
+            strTitle += "(" + getString(R.string.pitch) + strPitch + ")";
 
         SongItem itemNew = new SongItem(String.format(Locale.getDefault(), "%d", arSongs.size()+1), strTitle, item.getArtist(), strPathTo);
         arSongs.add(itemNew);
@@ -2443,11 +2432,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     public void export()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("他のアプリにエクスポート");
+        builder.setTitle(R.string.export);
         LinearLayout linearLayout = new LinearLayout(activity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         final EditText editTitle = new EditText (activity);
-        editTitle.setHint("ファイル名");
+        editTitle.setHint(R.string.fileName);
         editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         SongItem item = arSongs.get(nSelectedItem);
@@ -2465,11 +2454,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             if(strPitch.equals("-0.0")) strPitch = "0.0";
         }
         if(fSpeed != 0.0f && fPitch != 0.0f)
-            strTitle += "(速度" + strSpeed + ",音程" + strPitch + ")";
+            strTitle += "(" + getString(R.string.speed) + strSpeed + "," + getString(R.string.pitch) + strPitch + ")";
         else if(fSpeed != 0.0f)
-            strTitle += "(速度" + strSpeed + ")";
+            strTitle += "(" + getString(R.string.speed) + strSpeed + ")";
         else if(fPitch != 0.0f)
-            strTitle += "(音程" + strPitch + ")";
+            strTitle += "(" + getString(R.string.pitch) + strPitch + ")";
         DateFormat df = new SimpleDateFormat("_yyyyMMdd_HHmmss", Locale.getDefault());
         Date date = new Date(System.currentTimeMillis());
         editTitle.setText(String.format(Locale.getDefault(), "%s%s", strTitle, df.format(date)));
@@ -2480,7 +2469,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 saveSong(1, editTitle.getText().toString().replaceAll("[\\\\/:*?\"<>|]", "_"));
             }
         });
-        builder.setNegativeButton("キャンセル", null);
+        builder.setNegativeButton(R.string.cancel, null);
         final AlertDialog alertDialog = builder.create();
         alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
         {
@@ -2525,7 +2514,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             activity.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
         share.putExtra(Intent.EXTRA_STREAM, uri);
-        startActivityForResult(Intent.createChooser(share, "他のアプリにエクスポート"), 0);
+        startActivityForResult(Intent.createChooser(share, getString(R.string.export)), 0);
 
         file.deleteOnExit();
     }
@@ -2569,8 +2558,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         cr.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("ギャラリーに保存");
-        builder.setMessage("保存しました。");
+        builder.setTitle(R.string.saveToGallery);
+        builder.setMessage(R.string.saved);
         builder.setPositiveButton("OK", null);
         builder.show();
     }
@@ -2580,12 +2569,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(MainActivity.hStream == 0) return;
         BASS.BASS_ChannelPlay(MainActivity.hStream, false);
         AnimationButton btnPlay = activity.findViewById(R.id.btnPlay);
-        btnPlay.setContentDescription("一時停止");
-        btnPlay.setImageResource(R.drawable.bar_button_pause);
+        btnPlay.setContentDescription(getString(R.string.pause));
+        btnPlay.setImageResource(R.drawable.ic_bar_button_pause);
         AnimationButton btnPlayInPlayingBar = activity.findViewById(R.id.btnPlayInPlayingBar);
         if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
-            btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_pause);
-        else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_pause);
+            btnPlayInPlayingBar.setImageResource(R.drawable.ic_playing_large_pause);
+        else btnPlayInPlayingBar.setImageResource(R.drawable.ic_bar_button_pause);
         songsAdapter.notifyDataSetChanged();
         playlistsAdapter.notifyDataSetChanged();
         tabAdapter.notifyDataSetChanged();
@@ -2596,12 +2585,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(MainActivity.hStream == 0) return;
         BASS.BASS_ChannelPause(MainActivity.hStream);
         AnimationButton btnPlay = activity.findViewById(R.id.btnPlay);
-        btnPlay.setContentDescription("再生");
-        btnPlay.setImageResource(R.drawable.bar_button_play);
+        btnPlay.setContentDescription(getString(R.string.play));
+        btnPlay.setImageResource(R.drawable.ic_bar_button_play);
         AnimationButton btnPlayInPlayingBar = activity.findViewById(R.id.btnPlayInPlayingBar);
         if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
-            btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_play);
-        else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_play);
+            btnPlayInPlayingBar.setImageResource(R.drawable.ic_playing_large_play);
+        else btnPlayInPlayingBar.setImageResource(R.drawable.ic_bar_button_play);
         songsAdapter.notifyDataSetChanged();
     }
 
@@ -2622,17 +2611,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         AnimationButton btnShuffle = activity.findViewById(R.id.btnShuffle);
         boolean bShuffle = false;
         boolean bSingle = false;
-        if(btnShuffle.getContentDescription().toString().equals("シャッフルあり"))
+        if(btnShuffle.getContentDescription().toString().equals(getString(R.string.shuffleOn)))
             bShuffle = true;
-        else if(btnShuffle.getContentDescription().toString().equals("１曲のみ"))
+        else if(btnShuffle.getContentDescription().toString().equals(getString(R.string.singleOn)))
             bSingle = true;
 
         AnimationButton btnRepeat = activity.findViewById(R.id.btnRepeat);
         boolean bRepeatAll = false;
         boolean bRepeatSingle = false;
-        if(btnRepeat.getContentDescription().toString().equals("全曲リピート"))
+        if(btnRepeat.getContentDescription().toString().equals(getString(R.string.repeatAllOn)))
             bRepeatAll = true;
-        else if(btnRepeat.getContentDescription().toString().equals("１曲リピート"))
+        else if(btnRepeat.getContentDescription().toString().equals(getString(R.string.repeatSingleOn)))
             bRepeatSingle = true;
 
         if(bSingle) // １曲のみ
@@ -2742,7 +2731,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         playSong(nSong, true);
     }
 
-    public void playSong(int nSong, boolean bPlay)
+    private void playSong(int nSong, boolean bPlay)
     {
         activity.setWaitEnd(false);
         activity.clearLoop(false);
@@ -2890,14 +2879,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
         }
         if(bitmap != null) btnArtworkInPlayingBar.setImageBitmap(bitmap);
-        else btnArtworkInPlayingBar.setImageResource(R.drawable.playing_large_artwork);
+        else btnArtworkInPlayingBar.setImageResource(R.drawable.ic_playing_large_artwork);
         TextView textTitleInPlayingBar = activity.findViewById(R.id.textTitleInPlayingBar);
         textTitleInPlayingBar.setText(item.getTitle());
         TextView textArtistInPlayingBar = activity.findViewById(R.id.textArtistInPlayingBar);
         if(item.getArtist() == null || item.getArtist().equals(""))
         {
             textArtistInPlayingBar.setTextColor(Color.argb(255, 147, 156, 160));
-            textArtistInPlayingBar.setText("〈不明なアーティスト〉");
+            textArtistInPlayingBar.setText(R.string.unknownArtist);
         }
         else
         {
@@ -2984,12 +2973,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(bPlay)
             BASS.BASS_ChannelPlay(MainActivity.hStream, false);
         AnimationButton btnPlay = activity.findViewById(R.id.btnPlay);
-        btnPlay.setContentDescription("一時停止");
-        btnPlay.setImageResource(R.drawable.bar_button_pause);
+        btnPlay.setContentDescription(getString(R.string.pause));
+        btnPlay.setImageResource(R.drawable.ic_bar_button_pause);
         AnimationButton btnPlayInPlayingBar = activity.findViewById(R.id.btnPlayInPlayingBar);
         if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
-            btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_pause);
-        else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_pause);
+            btnPlayInPlayingBar.setImageResource(R.drawable.ic_playing_large_pause);
+        else btnPlayInPlayingBar.setImageResource(R.drawable.ic_bar_button_pause);
         songsAdapter.notifyDataSetChanged();
         playlistsAdapter.notifyDataSetChanged();
         tabAdapter.notifyDataSetChanged();
@@ -2999,7 +2988,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         activity.getForegroundService().startForeground(item.getTitle(), item.getArtist(), bitmap);
     }
 
-    public String getLyrics(int nPlaylist, int nSong) {
+    private String getLyrics(int nPlaylist, int nSong) {
         ArrayList<SongItem> arSongs = arPlaylists.get(nPlaylist);
         final SongItem songItem = arSongs.get(nSong);
 
@@ -3022,7 +3011,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     @SuppressLint("NewApi")
-    public static String getFilePath(Context context, Uri uri) {
+    private static String getFilePath(Context context, Uri uri) {
         String selection = null;
         String[] selectionArgs = null;
         // Uri is different in versions after KITKAT (Android 4.4), we need to
@@ -3078,15 +3067,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         return null;
     }
 
-    public static boolean isExternalStorageDocument(Uri uri) {
+    private static boolean isExternalStorageDocument(Uri uri) {
         return "com.android.externalstorage.documents".equals(uri.getAuthority());
     }
 
-    public static boolean isDownloadsDocument(Uri uri) {
+    private static boolean isDownloadsDocument(Uri uri) {
         return "com.android.providers.downloads.documents".equals(uri.getAuthority());
     }
 
-    public static boolean isMediaDocument(Uri uri) {
+    private static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
@@ -3128,12 +3117,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         BASS.BASS_ChannelStop(MainActivity.hStream);
         MainActivity.hStream = 0;
         AnimationButton btnPlay = activity.findViewById(R.id.btnPlay);
-        btnPlay.setContentDescription("再生");
-        btnPlay.setImageResource(R.drawable.bar_button_play);
+        btnPlay.setContentDescription(getString(R.string.play));
+        btnPlay.setImageResource(R.drawable.ic_bar_button_play);
         AnimationButton btnPlayInPlayingBar = activity.findViewById(R.id.btnPlayInPlayingBar);
         if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
-            btnPlayInPlayingBar.setImageResource(R.drawable.playing_large_play);
-        else btnPlayInPlayingBar.setImageResource(R.drawable.bar_button_play);
+            btnPlayInPlayingBar.setImageResource(R.drawable.ic_playing_large_play);
+        else btnPlayInPlayingBar.setImageResource(R.drawable.ic_bar_button_play);
         activity.clearLoop();
         songsAdapter.notifyDataSetChanged();
         playlistsAdapter.notifyDataSetChanged();
@@ -3186,7 +3175,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     @SuppressWarnings("deprecation")
-    public void addVideo(final MainActivity activity, Uri uri)
+    private void addVideo(final MainActivity activity, Uri uri)
     {
         if(Build.VERSION.SDK_INT < 18) return;
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
@@ -3281,17 +3270,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("ギャラリーから追加");
+        builder.setTitle(R.string.addFromGallery);
         LinearLayout linearLayout = new LinearLayout(activity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         final EditText editTitle = new EditText (activity);
-        editTitle.setHint("タイトル");
+        editTitle.setHint(R.string.title);
         editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         Date date = new Date(System.currentTimeMillis());
         editTitle.setText(String.format(Locale.getDefault(), "ムービー(%s)", df.format(date)));
         final EditText editArtist = new EditText (activity);
-        editArtist.setHint("アーティスト名");
+        editArtist.setHint(R.string.artist);
         editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
         editArtist.setText("");
         linearLayout.addView(editTitle);
@@ -3313,7 +3302,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 saveFiles(true, true, true, true, false);
             }
         });
-        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             }
@@ -3339,7 +3328,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         alertDialog.show();
     }
 
-    public void removeSong(int nPlaylist, int nSong)
+    private void removeSong(int nPlaylist, int nSong)
     {
         if(nSong < nPlaying) nPlaying--;
 
@@ -3371,7 +3360,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     }
 
-    public String getFileNameFromUri(Context context, Uri uri) {
+    private String getFileNameFromUri(Context context, Uri uri) {
         if (null == uri) return null;
 
         String scheme = uri.getScheme();
@@ -3444,31 +3433,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         {
             AnimationButton btnShuffle = activity.findViewById(R.id.btnShuffle);
             int nShuffle = 0;
-            switch(btnShuffle.getContentDescription().toString()) {
-                case "シャッフルなし":
-                    nShuffle = 0;
-                    break;
-                case "シャッフルあり":
-                    nShuffle = 1;
-                    break;
-                case "１曲のみ":
-                    nShuffle = 2;
-                    break;
-            }
+            if(btnShuffle.getContentDescription().toString().equals(getString(R.string.shuffleOn)))
+                nShuffle = 1;
+            else if(btnShuffle.getContentDescription().toString().equals(getString(R.string.singleOn)))
+                nShuffle = 2;
             preferences.edit().putInt("shufflemode", nShuffle).apply();
             AnimationButton btnRepeat = activity.findViewById(R.id.btnRepeat);
             int nRepeat = 0;
-            switch(btnRepeat.getContentDescription().toString()) {
-                case "リピートなし":
-                    nRepeat = 0;
-                    break;
-                case "全曲リピート":
-                    nRepeat = 1;
-                    break;
-                case "１曲リピート":
-                    nRepeat = 2;
-                    break;
-            }
+            if(btnRepeat.getContentDescription().toString().equals(getString(R.string.repeatAllOn)))
+                nRepeat = 1;
+            else if(btnRepeat.getContentDescription().toString().equals(getString(R.string.repeatSingleOn)))
+                nRepeat = 2;
             preferences.edit().putInt("repeatmode", nRepeat).apply();
         }
     }

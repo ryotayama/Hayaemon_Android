@@ -23,12 +23,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-public class SectionsPagerAdapter extends FragmentPagerAdapter {
-    private PlaylistFragment playlistFragment;
-    private LoopFragment loopFragment;
-    private ControlFragment controlFragment;
-    private EqualizerFragment equalizerFragment;
-    private EffectFragment effectFragment;
+class SectionsPagerAdapter extends FragmentPagerAdapter {
+    private final PlaylistFragment playlistFragment;
+    private final LoopFragment loopFragment;
+    private final ControlFragment controlFragment;
+    private final EqualizerFragment equalizerFragment;
+    private final EffectFragment effectFragment;
 
     SectionsPagerAdapter(Context context, FragmentManager fm)
     {

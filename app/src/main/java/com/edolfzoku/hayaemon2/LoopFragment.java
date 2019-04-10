@@ -46,14 +46,14 @@ import java.util.Locale;
 
 public class LoopFragment extends Fragment implements View.OnTouchListener, View.OnFocusChangeListener, View.OnLongClickListener {
     private int nMarker; // マーカー再生時のループ位置
-    private Handler handler;
+    private final Handler handler;
     private MainActivity activity;
 
     private View viewCurPos;
     private WaveView waveView;
 
     private ArrayList<Double> arMarkerTime;
-    private ArrayList<TextView> arMarkerText;
+    private final ArrayList<TextView> arMarkerText;
     private boolean bContinue = false;
 
     public ArrayList<Double>  getArMarkerTime() { return arMarkerTime; }
@@ -337,17 +337,17 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         activity.findViewById(R.id.textCurValue).setOnFocusChangeListener(this);
     }
 
-    public void setZoomOut() {
+    private void setZoomOut() {
         waveView = activity.findViewById(R.id.waveView);
         waveView.setZoom(waveView.getZoom() * 0.99f);
     }
 
-    public void setZoomIn() {
+    private void setZoomIn() {
         waveView = activity.findViewById(R.id.waveView);
         waveView.setZoom(waveView.getZoom() * 1.01f);
     }
 
-    Runnable repeatZoomOut = new Runnable()
+    private final Runnable repeatZoomOut = new Runnable()
     {
         @Override
         public void run()
@@ -371,7 +371,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         }
     };
 
-    Runnable repeatZoomIn = new Runnable()
+    private final Runnable repeatZoomIn = new Runnable()
     {
         @Override
         public void run()
@@ -411,10 +411,10 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         }
         else if(v.getId() == R.id.btnRewind5Sec || v.getId() == R.id.btnRewind5Sec2) {
             final BottomMenu menu = new BottomMenu(activity);
-            menu.setTitle("戻すボタン選択");
+            menu.setTitle(getString(R.string.chooseRewindButton));
             final AnimationButton btnRewind5Sec = activity.findViewById(R.id.btnRewind5Sec);
             final AnimationButton btnRewind5Sec2 = activity.findViewById(R.id.btnRewind5Sec2);
-            menu.addMenu("1秒戻す", R.drawable.ic_actionsheet_01sec_prev, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.rewind1Sec), R.drawable.ic_actionsheet_01sec_prev, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     btnRewind5Sec.setImageResource(R.drawable.ic_abloop_01sec_prev);
@@ -424,7 +424,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu("2秒戻す", R.drawable.ic_actionsheet_02sec_prev, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.rewind2Sec), R.drawable.ic_actionsheet_02sec_prev, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     btnRewind5Sec.setImageResource(R.drawable.ic_abloop_02sec_prev);
@@ -434,7 +434,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu("3秒戻す", R.drawable.ic_actionsheet_03sec_prev, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.rewind3Sec), R.drawable.ic_actionsheet_03sec_prev, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     btnRewind5Sec.setImageResource(R.drawable.ic_abloop_03sec_prev);
@@ -444,7 +444,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu("5秒戻す", R.drawable.ic_actionsheet_05sec_prev, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.rewind5Sec), R.drawable.ic_actionsheet_05sec_prev, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     btnRewind5Sec.setImageResource(R.drawable.ic_abloop_05sec_prev);
@@ -454,7 +454,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu("10秒戻す", R.drawable.ic_actionsheet_10sec_prev, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.rewind10Sec), R.drawable.ic_actionsheet_10sec_prev, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     btnRewind5Sec.setImageResource(R.drawable.ic_abloop_10sec_prev);
@@ -469,10 +469,10 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         }
         else if(v.getId() == R.id.btnForward5Sec || v.getId() == R.id.btnForward5Sec2) {
             final BottomMenu menu = new BottomMenu(activity);
-            menu.setTitle("進めるボタン選択");
+            menu.setTitle(getString(R.string.chooseForwardButton));
             final AnimationButton btnForward5Sec = activity.findViewById(R.id.btnForward5Sec);
             final AnimationButton btnForward5Sec2 = activity.findViewById(R.id.btnForward5Sec2);
-            menu.addMenu("1秒進める", R.drawable.ic_actionsheet_01sec_next, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.forward1Sec), R.drawable.ic_actionsheet_01sec_next, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     btnForward5Sec.setImageResource(R.drawable.ic_abloop_01sec_next);
@@ -482,7 +482,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu("2秒進める", R.drawable.ic_actionsheet_02sec_next, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.forward2Sec), R.drawable.ic_actionsheet_02sec_next, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     btnForward5Sec.setImageResource(R.drawable.ic_abloop_02sec_next);
@@ -492,7 +492,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu("3秒進める", R.drawable.ic_actionsheet_03sec_next, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.forward3Sec), R.drawable.ic_actionsheet_03sec_next, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     btnForward5Sec.setImageResource(R.drawable.ic_abloop_03sec_next);
@@ -502,7 +502,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu("5秒進める", R.drawable.ic_actionsheet_05sec_next, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.forward5Sec), R.drawable.ic_actionsheet_05sec_next, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     btnForward5Sec.setImageResource(R.drawable.ic_abloop_05sec_next);
@@ -512,7 +512,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu("10秒進める", R.drawable.ic_actionsheet_10sec_next, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.forward10Sec), R.drawable.ic_actionsheet_10sec_next, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     btnForward5Sec.setImageResource(R.drawable.ic_abloop_10sec_next);
@@ -542,7 +542,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         }
     }
 
-    public void showABLoopPicker(boolean bAPos) {
+    private void showABLoopPicker(boolean bAPos) {
         LayoutInflater inflater = activity.getLayoutInflater();
         View view = inflater.inflate(R.layout.ablooppicker, (ViewGroup)activity.findViewById(R.id.layout_root), false);
         double dValue;
@@ -600,8 +600,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        if(bAPos) builder.setTitle("A位置の調整");
-        else builder.setTitle("B位置の調整");
+        if(bAPos) builder.setTitle(R.string.adjustAPos);
+        else builder.setTitle(R.string.adjustBPos);
         final boolean f_bAPos = bAPos;
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
@@ -620,7 +620,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 clearFocus();
             }
         });
-        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -631,7 +631,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         builder.show();
     }
 
-    public void showCurPicker() {
+    private void showCurPicker() {
         LayoutInflater inflater = activity.getLayoutInflater();
         View view = inflater.inflate(R.layout.ablooppicker, (ViewGroup)activity.findViewById(R.id.layout_root), false);
         EditText textCurValue = activity.findViewById(R.id.textCurValue);
@@ -728,7 +728,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("再生位置の調整");
+        builder.setTitle(R.string.adjustCurPos);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override
@@ -740,14 +740,14 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         builder.show();
     }
 
-    public void clearFocus()
+    private void clearFocus()
     {
         activity.findViewById(R.id.textAValue).clearFocus();
         activity.findViewById(R.id.textBValue).clearFocus();
         activity.findViewById(R.id.textCurValue).clearFocus();
     }
 
-    public void setLoopA(double dLoopA)
+    private void setLoopA(double dLoopA)
     {
         setLoopA(dLoopA, true);
     }
@@ -791,7 +791,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         if(bSave) activity.playlistFragment.updateSavingEffect();
     }
 
-    public void setLoopB(double dLoopB)
+    private void setLoopB(double dLoopB)
     {
         setLoopB(dLoopB, true);
     }

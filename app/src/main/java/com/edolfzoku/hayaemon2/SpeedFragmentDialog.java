@@ -34,8 +34,8 @@ import java.util.Locale;
 
 public class SpeedFragmentDialog extends DialogFragment {
     private MainActivity activity = null;
-    NumberPicker intNumberPicker;
-    NumberPicker decimalNumberPicker;
+    private NumberPicker intNumberPicker;
+    private NumberPicker decimalNumberPicker;
 
     @Override
     public void onAttach(Context context) {
@@ -90,7 +90,7 @@ public class SpeedFragmentDialog extends DialogFragment {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("速度の調整");
+        builder.setTitle(R.string.adjustSpeed);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override
@@ -104,7 +104,7 @@ public class SpeedFragmentDialog extends DialogFragment {
                 activity.controlFragment.setSpeed(fSpeed);
             }
         });
-        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 activity.controlFragment.clearFocus();

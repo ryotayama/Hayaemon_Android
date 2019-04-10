@@ -61,7 +61,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             Button btnPurplePurchase = activity.findViewById(R.id.btnPurplePurchase);
             btnPurplePurchase.setBackgroundResource(R.drawable.itempurchased);
             btnPurplePurchase.setTextColor(Color.argb(255, 148, 148, 148));
-            btnPurplePurchase.setText("購入済み");
+            btnPurplePurchase.setText(R.string.purchased);
             Button btnPurpleSet = activity.findViewById(R.id.btnPurpleSet);
             btnPurpleSet.setVisibility(View.VISIBLE);
         }
@@ -72,7 +72,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             Button btnElegantPurchase = activity.findViewById(R.id.btnElegantPurchase);
             btnElegantPurchase.setBackgroundResource(R.drawable.itempurchased);
             btnElegantPurchase.setTextColor(Color.argb(255, 148, 148, 148));
-            btnElegantPurchase.setText("購入済み");
+            btnElegantPurchase.setText(R.string.purchased);
             Button btnElegantSet = activity.findViewById(R.id.btnElegantSet);
             btnElegantSet.setVisibility(View.VISIBLE);
         }
@@ -84,7 +84,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
         activity.findViewById(R.id.btnElegantSet).setOnClickListener(this);
     }
 
-    public void close()
+    private void close()
     {
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -149,7 +149,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
         Button btnPurplePurchase = activity.findViewById(R.id.btnPurplePurchase);
         btnPurplePurchase.setBackgroundResource(R.drawable.itempurchased);
         btnPurplePurchase.setTextColor(Color.argb(255, 148, 148, 148));
-        btnPurplePurchase.setText("購入済み");
+        btnPurplePurchase.setText(R.string.purchased);
         btnPurplePurchase.setOnClickListener(null);
         Button btnPurpleSet = activity.findViewById(R.id.btnPurpleSet);
         btnPurpleSet.setVisibility(View.VISIBLE);
@@ -157,9 +157,9 @@ public class ItemFragment extends Fragment implements View.OnClickListener
         preferences.edit().putBoolean("unipointer_p", true).apply();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("【謹製】お布施ウニポインター【むらさき】");
-        builder.setMessage("購入したアイテムをさっそく適用しますか？\n（あとからも メニュー→オプション設定 から変更できます）");
-        builder.setPositiveButton("する！", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.purpleSeaUrchinPointer);
+        builder.setMessage(R.string.askApply);
+        builder.setPositiveButton(getString(R.string.Do), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 ImageView imgPoint = activity.findViewById(R.id.imgPoint);
@@ -170,7 +170,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
                 preferences.edit().putInt("imgPointTag", 1).apply();
             }
         });
-        builder.setNegativeButton("今はしない", null);
+        builder.setNegativeButton(getString(R.string.NotYet), null);
         final AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
@@ -180,7 +180,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
         Button btnElegantPurchase = activity.findViewById(R.id.btnElegantPurchase);
         btnElegantPurchase.setBackgroundResource(R.drawable.itempurchased);
         btnElegantPurchase.setTextColor(Color.argb(255, 148, 148, 148));
-        btnElegantPurchase.setText("購入済み");
+        btnElegantPurchase.setText(R.string.purchased);
         btnElegantPurchase.setOnClickListener(null);
         Button btnElegantSet = activity.findViewById(R.id.btnElegantSet);
         btnElegantSet.setVisibility(View.VISIBLE);
@@ -188,9 +188,9 @@ public class ItemFragment extends Fragment implements View.OnClickListener
         preferences.edit().putBoolean("unipointer_e", true).apply();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("【謹製】お布施ウニポインター【ばふん】");
-        builder.setMessage("購入したアイテムをさっそく適用しますか？\n（あとからも メニュー→オプション設定 から変更できます）");
-        builder.setPositiveButton("する！", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.elegantSeaUrchinPointer);
+        builder.setMessage(R.string.askApply);
+        builder.setPositiveButton(getString(R.string.Do), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 ImageView imgPoint = activity.findViewById(R.id.imgPoint);
@@ -201,7 +201,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
                 preferences.edit().putInt("imgPointTag", 2).apply();
             }
         });
-        builder.setNegativeButton("今はしない", null);
+        builder.setNegativeButton(getString(R.string.NotYet), null);
         final AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
