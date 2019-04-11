@@ -19,6 +19,7 @@
 package com.edolfzoku.hayaemon2;
 
 class SongItem {
+    private boolean bSelected = false;
     private String strNumber;
     private String strTitle;
     private String strArtist;
@@ -26,6 +27,8 @@ class SongItem {
     private float fPeak;
     private String strPathArtwork;
 
+    void setSelected(boolean bSelected) { this.bSelected = bSelected; }
+    boolean isSelected() { return bSelected; }
     void setNumber(String strNumber) { this.strNumber = strNumber; }
     String getNumber() { return strNumber; }
     public void setTitle(String strTitle) { this.strTitle = strTitle; }

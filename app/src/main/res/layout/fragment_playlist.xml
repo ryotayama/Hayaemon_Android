@@ -207,6 +207,91 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/viewMultipleSelection"
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:background="@drawable/bottomshadow"
+            android:visibility="gone"
+            >
+
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnCloseInMultipleSelection"
+                android:src="@drawable/ic_bar_button_close"
+                android:background="@null"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                />
+
+            <ImageView
+                android:id="@+id/imgSelectAllInMultipleSelection"
+                android:contentDescription="@string/selectAll"
+                android:src="@drawable/ic_button_check_off"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/btnCloseInMultipleSelection"
+                android:layout_toEndOf="@+id/btnCloseInMultipleSelection"
+                />
+
+            <TextView
+                android:id="@+id/textPlaylistInMultipleSelection"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:textColor="#000000"
+                android:textSize="13dp"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:gravity="center_vertical"
+                android:layout_toRightOf="@id/imgSelectAllInMultipleSelection"
+                android:layout_toEndOf="@+id/imgSelectAllInMultipleSelection"
+                android:layout_toLeftOf="@+id/btnCopyInMultipleSelection"
+                android:layout_toStartOf="@+id/btnCopyInMultipleSelection"
+                />
+
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnCopyInMultipleSelection"
+                android:src="@drawable/ic_bar_button_copy"
+                android:background="@null"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/btnMoveInMultipleSelection"
+                android:layout_toStartOf="@+id/btnMoveInMultipleSelection"
+                />
+
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnMoveInMultipleSelection"
+                android:src="@drawable/ic_bar_button_folder_move"
+                android:background="@null"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/btnDeleteInMultipleSelection"
+                android:layout_toStartOf="@+id/btnDeleteInMultipleSelection"
+                />
+
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnDeleteInMultipleSelection"
+                android:src="@drawable/ic_bar_button_delete"
+                android:background="@null"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/btnMoreInMultipleSelection"
+                android:layout_toStartOf="@+id/btnMoreInMultipleSelection"
+                />
+
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnMoreInMultipleSelection"
+                android:src="@drawable/ic_bar_button_more"
+                android:background="@null"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                />
+
+        </RelativeLayout>
+
     </RelativeLayout>
 
     <RelativeLayout

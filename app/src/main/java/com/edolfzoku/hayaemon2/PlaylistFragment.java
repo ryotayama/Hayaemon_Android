@@ -124,6 +124,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     private int nPlaying;
     private int nSelectedItem;
     private boolean bSorting = false;
+    private boolean bMultiSelecting = false;
     public int hRecord = 0;
     private ByteBuffer recbuf;
     private SongSavingTask task;
@@ -150,10 +151,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     public ItemTouchHelper getPlaylistTouchHelper() { return playlistTouchHelper; }
     public ItemTouchHelper getSongTouchHelper() { return songTouchHelper; }
     public boolean isSorting() { return bSorting; }
+    public boolean isMultiSelecting() { return bMultiSelecting; }
     public int getSongCount(int nPlaylist) { return arPlaylists.get(nPlaylist).size(); }
     public SongsAdapter getSongsAdapter() { return songsAdapter; }
     public boolean isFinish() { return bFinish; }
     public void setProgress(int nProgress) { progress.setProgress(nProgress); }
+    public boolean isSelected(int nSong) {
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        SongItem item = arSongs.get(nSong);
+        return item.isSelected();
+    }
     public boolean isLock(int nSong) {
         ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
         EffectSaver saver = arEffectSavers.get(nSong);
@@ -530,6 +537,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             if(imm != null) imm.showSoftInput(editLyrics, InputMethodManager.SHOW_IMPLICIT);
         }
+        else if(v.getId() == R.id.btnCloseInMultipleSelection)
+            finishMultipleSelection();
+        else if(v.getId() == R.id.imgSelectAllInMultipleSelection)
+            selectAllMultipleSelection();
+        else if(v.getId() == R.id.btnDeleteInMultipleSelection)
+            deleteMultipleSelection();
+        else if(v.getId() == R.id.btnCopyInMultipleSelection)
+            copyMultipleSelection();
+        else if(v.getId() == R.id.btnMoveInMultipleSelection)
+            moveMultipleSelection();
+        else if(v.getId() == R.id.btnMoreInMultipleSelection)
+            showMenuMultipleSelection();
     }
 
     @Override
@@ -590,6 +609,384 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             menu.show();
         }
         return false;
+    }
+
+    public void onTouchMultipleSelectionItem(final int nItem)
+    {
+        ArrayList<SongItem> arSongs = activity.playlistFragment.getArPlaylists().get(activity.playlistFragment.getSelectedPlaylist());
+        SongItem item = arSongs.get(nItem);
+        item.setSelected(!item.isSelected());
+        boolean bSelected = false;
+        int nSelected = 0;
+        for(int i = 0; i < arSongs.size(); i++) {
+            if(arSongs.get(i).isSelected()) nSelected++;
+        }
+        if(nSelected == 0) finishMultipleSelection();
+        else if(nSelected == arSongs.size()) {
+            ImageView imgSelectAllInMultipleSelection = activity.findViewById(R.id.imgSelectAllInMultipleSelection);
+            imgSelectAllInMultipleSelection.setImageResource(R.drawable.ic_button_check_on);
+        }
+        else {
+            ImageView imgSelectAllInMultipleSelection = activity.findViewById(R.id.imgSelectAllInMultipleSelection);
+            imgSelectAllInMultipleSelection.setImageResource(R.drawable.ic_button_check_off);
+        }
+    }
+
+    public void startMultipleSelection(final int nItem)
+    {
+        bMultiSelecting = true;
+        bSorting = false;
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        for(int i = 0; i < arSongs.size(); i++)
+            arSongs.get(i).setSelected(i == nItem);
+        songsAdapter.notifyDataSetChanged();
+
+        RecyclerView recyclerTab = activity.findViewById(R.id.recyclerTab);
+        ImageButton buttonLeft = activity.findViewById(R.id.buttonLeft);
+        ImageButton buttonAddPlaylist_small = activity.findViewById(R.id.buttonAddPlaylist_small);
+        View devider2 = activity.findViewById(R.id.devider2);
+        View viewMultipleSelection = activity.findViewById(R.id.viewMultipleSelection);
+        final View viewSep1 = activity.findViewById(R.id.viewSep1);
+        TextView textPlaylistInMultipleSelection = activity.findViewById(R.id.textPlaylistInMultipleSelection);
+        textPlaylistInMultipleSelection.setText(arPlaylistNames.get(nSelectedPlaylist));
+
+        int nTabHeight = recyclerTab.getHeight();
+        int nDuration = 200;
+        recyclerTab.animate().translationY(-nTabHeight).setDuration(nDuration).start();
+        buttonLeft.animate().translationY(-nTabHeight).setDuration(nDuration).start();
+        buttonAddPlaylist_small.animate().translationY(-nTabHeight).setDuration(nDuration).start();
+        devider2.animate().translationY(-nTabHeight).setDuration(nDuration).start();
+        int nHeight = (int)(66 *  getResources().getDisplayMetrics().density + 0.5);
+        viewMultipleSelection.setTranslationY(-nHeight);
+        viewMultipleSelection.setVisibility(View.VISIBLE);
+        viewMultipleSelection.animate().setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                viewSep1.setVisibility(View.VISIBLE);
+            }
+        }).translationY(0).setDuration(nDuration).start();
+
+        startSort();
+    }
+
+    private void finishMultipleSelection()
+    {
+        bMultiSelecting = false;
+        bSorting = false;
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        for(int i = 0; i < arSongs.size(); i++)
+            arSongs.get(i).setSelected(false);
+        songsAdapter.notifyDataSetChanged();
+
+        RecyclerView recyclerTab = activity.findViewById(R.id.recyclerTab);
+        ImageButton buttonLeft = activity.findViewById(R.id.buttonLeft);
+        ImageButton buttonAddPlaylist_small = activity.findViewById(R.id.buttonAddPlaylist_small);
+        View devider2 = activity.findViewById(R.id.devider2);
+        final View viewMultipleSelection = activity.findViewById(R.id.viewMultipleSelection);
+        View viewSep1 = activity.findViewById(R.id.viewSep1);
+        viewSep1.setVisibility(View.INVISIBLE);
+
+        int nDuration = 200;
+        recyclerTab.animate().translationY(0).setDuration(nDuration).start();
+        buttonLeft.animate().translationY(0).setDuration(nDuration).start();
+        buttonAddPlaylist_small.animate().translationY(0).setDuration(nDuration).start();
+        devider2.animate().translationY(0).setDuration(nDuration).start();
+        viewMultipleSelection.animate().setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                viewMultipleSelection.setVisibility(View.GONE);
+                ImageView imgSelectAllInMultipleSelection = activity.findViewById(R.id.imgSelectAllInMultipleSelection);
+                imgSelectAllInMultipleSelection.setImageResource(R.drawable.ic_button_check_off);
+            }
+        }).translationY(-viewMultipleSelection.getHeight()).setDuration(nDuration).start();
+    }
+
+    private void selectAllMultipleSelection()
+    {
+        boolean bUnselectSongFounded = false;
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        for(int i = 0; i < arSongs.size(); i++) {
+            SongItem song = arSongs.get(i);
+            if(!song.isSelected()) {
+                bUnselectSongFounded = true;
+                break;
+            }
+        }
+
+        if(bUnselectSongFounded) {
+            ImageView imgSelectAllInMultipleSelection = activity.findViewById(R.id.imgSelectAllInMultipleSelection);
+            imgSelectAllInMultipleSelection.setImageResource(R.drawable.ic_button_check_on);
+            for(int i = 0; i < arSongs.size(); i++) {
+                SongItem song = arSongs.get(i);
+                song.setSelected(true);
+            }
+        }
+        else finishMultipleSelection();
+        songsAdapter.notifyDataSetChanged();
+    }
+
+    private void deleteMultipleSelection()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(R.string.delete);
+        builder.setMessage(R.string.askDeleteSong);
+        builder.setPositiveButton(getString(R.string.decideNot), null);
+        builder.setNegativeButton(getString(R.string.doDelete), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                boolean bDeletePlaying = false; // 再生中の曲を削除したか
+                ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+                for(int i = 0; i < arSongs.size(); i++) {
+                    if (arSongs.get(i).isSelected()) {
+                        if(nSelectedPlaylist == nPlayingPlaylist && i == nPlaying)
+                            bDeletePlaying = true;
+                        removeSong(nSelectedPlaylist, i);
+                    }
+                }
+
+                if(bDeletePlaying) {
+                    arSongs = arPlaylists.get(nSelectedPlaylist);
+                    if(nPlaying < arSongs.size())
+                        playSong(nPlaying, true);
+                    else if(nPlaying > 0 && nPlaying == arSongs.size())
+                        playSong(nPlaying-1, true);
+                    else
+                        stop();
+                }
+                finishMultipleSelection();
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+        {
+            @Override
+            public void onShow(DialogInterface arg0)
+            {
+                Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void copyMultipleSelection()
+    {
+        final BottomMenu menu = new BottomMenu(activity);
+        menu.setTitle(getString(R.string.copy));
+        for(int i = 0; i < arPlaylistNames.size(); i++)
+        {
+            final int nPlaylistTo = i;
+            menu.addMenu(arPlaylistNames.get(i), R.drawable.ic_actionsheet_folder, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    copyMultipleSelection(nPlaylistTo);
+                    menu.dismiss();
+                }
+            });
+        }
+        menu.setCancelMenu();
+        menu.show();
+    }
+
+    private void copyMultipleSelection(int nPlaylistTo)
+    {
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        for(int i = 0; i < arSongs.size(); i++) {
+            if (arSongs.get(i).isSelected())
+                copySong(nSelectedPlaylist, i, nPlaylistTo);
+        }
+        finishMultipleSelection();
+    }
+
+    private void moveMultipleSelection()
+    {
+        final BottomMenu menu = new BottomMenu(activity);
+        menu.setTitle(getString(R.string.moveToAnotherPlaylist));
+        for(int i = 0; i < arPlaylistNames.size(); i++)
+        {
+            if(nSelectedPlaylist == i) continue;
+            final int nPlaylistTo = i;
+            menu.addMenu(arPlaylistNames.get(i), R.drawable.ic_actionsheet_folder, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    moveMultipleSelection(nPlaylistTo);
+                    menu.dismiss();
+                }
+            });
+        }
+        menu.setCancelMenu();
+        menu.show();
+    }
+
+    private void moveMultipleSelection(int nPlaylistTo)
+    {
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        for(int i = 0; i < arSongs.size(); i++) {
+            if (arSongs.get(i).isSelected()) {
+                moveSong(nSelectedPlaylist, i, nPlaylistTo);
+                i--;
+            }
+        }
+        finishMultipleSelection();
+    }
+
+    private void showMenuMultipleSelection()
+    {
+        boolean bLockFounded = false;
+        boolean bUnlockFounded = false;
+        boolean bChangeArtworkFounded = false;
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
+        for(int i = 0; i < arSongs.size(); i++) {
+            SongItem song = arSongs.get(i);
+            EffectSaver saver = arEffectSavers.get(i);
+            if (song.isSelected()) {
+                if(song.getPathArtwork() != null && !song.getPathArtwork().equals("")) bChangeArtworkFounded = true;
+                if(saver.isSave()) bLockFounded = true;
+                else bUnlockFounded = true;
+            }
+        }
+
+        final BottomMenu menu = new BottomMenu(activity);
+        menu.setTitle(getString(R.string.selectedSongs));
+        menu.addMenu(getString(R.string.changeArtwork), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeArtworkMultipleSelection();
+                menu.dismiss();
+            }
+        });
+        if(bChangeArtworkFounded)
+            menu.addDestructiveMenu(getString(R.string.resetArtwork), R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    resetArtworkMultipleSelection();
+                    menu.dismiss();
+                }
+            });
+        if(bUnlockFounded)
+            menu.addMenu(getString(R.string.restoreEffect), R.drawable.ic_actionsheet_lock, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    restoreEffectMultipleSelection();
+                    menu.dismiss();
+                }
+            });
+        if(bLockFounded)
+            menu.addMenu(getString(R.string.cancelRestoreEffect), R.drawable.ic_actionsheet_unlock, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cancelRestoreEffectMultipleSelection();
+                    menu.dismiss();
+                }
+            });
+        menu.setCancelMenu();
+        menu.show();
+    }
+
+    private void changeArtworkMultipleSelection()
+    {
+        if (Build.VERSION.SDK_INT < 19)
+        {
+            final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            startActivityForResult(intent, 4);
+        }
+        else
+        {
+            final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("image/*");
+            startActivityForResult(intent, 4);
+        }
+    }
+
+    private void resetArtworkMultipleSelection()
+    {
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        for(int i = 0; i < arSongs.size(); i++) {
+            SongItem song = arSongs.get(i);
+            if(song.isSelected()) {
+                boolean bFounded = false;
+                // 同じアートワークを使っている曲が無いかチェック
+                for(int j = 0; j < arPlaylists.size(); j++) {
+                    ArrayList<SongItem> arTempSongs = arPlaylists.get(j);
+                    for(int k = 0; k < arTempSongs.size(); k++) {
+                        if(j == nSelectedPlaylist && k == i) continue;
+                        SongItem songTemp = arTempSongs.get(k);
+                        if(song.getPathArtwork() != null && songTemp.getPathArtwork() != null && song.getPathArtwork().equals(songTemp.getPathArtwork())) {
+                            bFounded = true;
+                            break;
+                        }
+                    }
+                }
+
+                // 同じアートワークを使っている曲が無ければ削除
+                if(!bFounded) {
+                    if(song.getPathArtwork() != null) {
+                        File fileBefore = new File(song.getPathArtwork());
+                        if (fileBefore.exists()) {
+                            if (!fileBefore.delete()) System.out.println("ファイルの削除に失敗しました");
+                            song.setPathArtwork(null);
+                        }
+                    }
+                }
+
+                song.setPathArtwork(null);
+                if(nSelectedPlaylist == nPlayingPlaylist && i == nPlaying) {
+                    MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                    Bitmap bitmap = null;
+                    boolean bError = false;
+                    try {
+                        mmr.setDataSource(activity, Uri.parse(song.getPath()));
+                    }
+                    catch(Exception e) {
+                        bError = true;
+                    }
+                    if(!bError) {
+                        byte[] data = mmr.getEmbeddedPicture();
+                        if(data != null) {
+                            bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        }
+                    }
+                    AnimationButton btnArtworkInPlayingBar = activity.findViewById(R.id.btnArtworkInPlayingBar);
+                    if(bitmap != null) btnArtworkInPlayingBar.setImageBitmap(bitmap);
+                    else btnArtworkInPlayingBar.setImageResource(R.drawable.ic_playing_large_artwork);
+                    btnArtworkInPlayingBar.setImageBitmap(bitmap);
+                }
+            }
+        }
+        saveFiles(true, false, false, false, false);
+        finishMultipleSelection();
+    }
+
+    private void restoreEffectMultipleSelection()
+    {
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        for(int i = 0; i < arSongs.size(); i++) {
+            SongItem song = arSongs.get(i);
+            if (song.isSelected()) {
+                nSelectedItem = i;
+                setSavingEffect();
+            }
+        }
+        songsAdapter.notifyDataSetChanged();
+        finishMultipleSelection();
+    }
+
+    private void cancelRestoreEffectMultipleSelection()
+    {
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        for(int i = 0; i < arSongs.size(); i++) {
+            SongItem song = arSongs.get(i);
+            if (song.isSelected()) {
+                nSelectedItem = i;
+                cancelSavingEffect();
+            }
+        }
+        songsAdapter.notifyDataSetChanged();
+        finishMultipleSelection();
     }
 
     public void onPlayBtnClicked()
@@ -1088,6 +1485,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         TextView textNoLyrics = activity.findViewById(R.id.textNoLyrics);
         textNoLyrics.setOnClickListener(this);
+
+        activity.findViewById(R.id.btnCloseInMultipleSelection).setOnClickListener(this);
+        activity.findViewById(R.id.imgSelectAllInMultipleSelection).setOnClickListener(this);
+        activity.findViewById(R.id.btnDeleteInMultipleSelection).setOnClickListener(this);
+        activity.findViewById(R.id.btnCopyInMultipleSelection).setOnClickListener(this);
+        activity.findViewById(R.id.btnMoveInMultipleSelection).setOnClickListener(this);
+        activity.findViewById(R.id.btnMoreInMultipleSelection).setOnClickListener(this);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -1188,6 +1592,35 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 songsAdapter.notifyDataSetChanged();
             }
         }
+        else if(requestCode == 4)
+        {
+            if(resultCode == RESULT_OK)
+            {
+                final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                if(Build.VERSION.SDK_INT < 19)
+                    setArtworkMultipleSelection(data.getData());
+                else
+                {
+                    if(data.getClipData() == null)
+                    {
+                        setArtworkMultipleSelection(data.getData());
+                        Uri uri = data.getData();
+                        if(uri != null)
+                            activity.getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                    }
+                    else
+                    {
+                        for(int i = 0; i < data.getClipData().getItemCount(); i++)
+                        {
+                            Uri uri = data.getClipData().getItemAt(i).getUri();
+                            setArtworkMultipleSelection(uri);
+                            activity.getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                        }
+                    }
+                }
+                songsAdapter.notifyDataSetChanged();
+            }
+        }
 
         saveFiles(true, true, true, true, false);
     }
@@ -1197,10 +1630,27 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         SongItem song = arSongs.get(nSelectedItem);
         if(song.getPathArtwork() != null) {
-            File fileBefore = new File(song.getPathArtwork());
-            if (fileBefore.exists()) {
-                if (!fileBefore.delete()) System.out.println("ファイルの削除に失敗しました");
-                song.setPathArtwork(null);
+            boolean bFounded = false;
+            // 同じアートワークを使っている曲が無いかチェック
+            for(int j = 0; j < arPlaylists.size(); j++) {
+                ArrayList<SongItem> arTempSongs = arPlaylists.get(j);
+                for(int k = 0; k < arTempSongs.size(); k++) {
+                    if(j == nSelectedPlaylist && k == nSelectedItem) continue;
+                    SongItem songTemp = arTempSongs.get(k);
+                    if(song.getPathArtwork() != null && songTemp.getPathArtwork() != null && song.getPathArtwork().equals(songTemp.getPathArtwork())) {
+                        bFounded = true;
+                        break;
+                    }
+                }
+            }
+
+            // 同じアートワークを使っている曲が無ければ削除
+            if(!bFounded) {
+                File fileBefore = new File(song.getPathArtwork());
+                if (fileBefore.exists()) {
+                    if (!fileBefore.delete()) System.out.println("ファイルの削除に失敗しました");
+                    song.setPathArtwork(null);
+                }
             }
         }
 
@@ -1240,20 +1690,38 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     public void resetArtwork()
     {
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
-        SongItem item = arSongs.get(nSelectedItem);
-        if(item.getPathArtwork() != null) {
-            File fileBefore = new File(item.getPathArtwork());
-            if (fileBefore.exists()) {
-                if (!fileBefore.delete()) System.out.println("ファイルの削除に失敗しました");
+        SongItem song = arSongs.get(nSelectedItem);
+        if(song.getPathArtwork() != null) {
+            boolean bFounded = false;
+            // 同じアートワークを使っている曲が無いかチェック
+            for(int j = 0; j < arPlaylists.size(); j++) {
+                ArrayList<SongItem> arTempSongs = arPlaylists.get(j);
+                for(int k = 0; k < arTempSongs.size(); k++) {
+                    if(j == nSelectedPlaylist && k == nSelectedItem) continue;
+                    SongItem songTemp = arTempSongs.get(k);
+                    if(song.getPathArtwork() != null && songTemp.getPathArtwork() != null && song.getPathArtwork().equals(songTemp.getPathArtwork())) {
+                        bFounded = true;
+                        break;
+                    }
+                }
+            }
+
+            // 同じアートワークを使っている曲が無ければ削除
+            if(!bFounded) {
+                File fileBefore = new File(song.getPathArtwork());
+                if (fileBefore.exists()) {
+                    if (!fileBefore.delete()) System.out.println("ファイルの削除に失敗しました");
+                    song.setPathArtwork(null);
+                }
             }
         }
-        item.setPathArtwork(null);
+        song.setPathArtwork(null);
         AnimationButton btnArtworkInPlayingBar = activity.findViewById(R.id.btnArtworkInPlayingBar);
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         Bitmap bitmap = null;
         boolean bError = false;
         try {
-            mmr.setDataSource(activity, Uri.parse(item.getPath()));
+            mmr.setDataSource(activity, Uri.parse(song.getPath()));
         }
         catch(Exception e) {
             bError = true;
@@ -1268,7 +1736,77 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         else btnArtworkInPlayingBar.setImageResource(R.drawable.ic_playing_large_artwork);
         saveFiles(true, false, false, false, false);
     }
-    
+
+    private void setArtworkMultipleSelection(Uri uri)
+    {
+        Bitmap bitmap;
+        int nArtworkSize = getResources().getDisplayMetrics().widthPixels / 2;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+        }catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        bitmap = ThumbnailUtils.extractThumbnail(bitmap, nArtworkSize, nArtworkSize, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+        String strPathTo;
+        int i = 0;
+        File file;
+        while (true) {
+            strPathTo = activity.getFilesDir() + "/artwork" +  String.format(Locale.getDefault(), "%d", i) + ".png";
+            file = new File(strPathTo);
+            if (!file.exists()) break;
+            i++;
+        }
+
+        try {
+            FileOutputStream outStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+            outStream.close();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        for(i = 0; i < arSongs.size(); i++) {
+            SongItem song = arSongs.get(i);
+            if(song.isSelected()) {
+                boolean bFounded = false;
+                // 同じアートワークを使っている曲が無いかチェック
+                for(int j = 0; j < arPlaylists.size(); j++) {
+                    ArrayList<SongItem> arTempSongs = arPlaylists.get(j);
+                    for(int k = 0; k < arTempSongs.size(); k++) {
+                        if(j == nSelectedPlaylist && k == i) continue;
+                        SongItem songTemp = arTempSongs.get(k);
+                        if(song.getPathArtwork() != null && songTemp.getPathArtwork() != null && song.getPathArtwork().equals(songTemp.getPathArtwork())) {
+                            bFounded = true;
+                            break;
+                        }
+                    }
+                }
+
+                // 同じアートワークを使っている曲が無ければ削除
+                if(!bFounded) {
+                    if(song.getPathArtwork() != null) {
+                        File fileBefore = new File(song.getPathArtwork());
+                        if (fileBefore.exists()) {
+                            if (!fileBefore.delete()) System.out.println("ファイルの削除に失敗しました");
+                            song.setPathArtwork(null);
+                        }
+                    }
+                }
+
+                song.setPathArtwork(strPathTo);
+                if(nSelectedPlaylist == nPlayingPlaylist && i == nPlaying) {
+                    AnimationButton btnArtworkInPlayingBar = activity.findViewById(R.id.btnArtworkInPlayingBar);
+                    btnArtworkInPlayingBar.setImageBitmap(bitmap);
+                }
+            }
+        }
+        saveFiles(true, false, false, false, false);
+        finishMultipleSelection();
+    }
+
     public void showSongMenu(final int nItem)
     {
         nSelectedItem = nItem;
@@ -1337,12 +1875,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 @Override
                 public void onClick(View view)
                 {
-                    ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
-                    EffectSaver saver = arEffectSavers.get(nItem);
-                    saver.setSave(false);
+                    cancelSavingEffect();
                     songsAdapter.notifyDataSetChanged();
-
-                    saveFiles(false, true, false, false, false);
                     menu.dismiss();
                 }
             });
@@ -1373,44 +1907,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     menu.addMenu(arPlaylistNames.get(i), R.drawable.ic_actionsheet_folder, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ArrayList<SongItem> arSongsFrom = arPlaylists.get(nSelectedPlaylist);
-                            ArrayList<SongItem> arSongsTo = arPlaylists.get(nPlaylistTo);
-                            SongItem itemFrom = arSongsFrom.get(nItem);
-                            File file = new File(itemFrom.getPath());
-                            String strPath = itemFrom.getPath();
-                            if(file.getParent().equals(activity.getFilesDir().toString()))
-                                strPath = activity.copyFile(Uri.parse(itemFrom.getPath())).toString();
-                            SongItem itemTo = new SongItem(String.format(Locale.getDefault(), "%d", arSongsTo.size()+1), itemFrom.getTitle(), itemFrom.getArtist(), strPath);
-                            arSongsTo.add(itemTo);
-
-                            ArrayList<EffectSaver> arEffectSaversFrom = arEffects.get(nSelectedPlaylist);
-                            ArrayList<EffectSaver> arEffectSaversTo = arEffects.get(nPlaylistTo);
-                            EffectSaver saverFrom = arEffectSaversFrom.get(nItem);
-                            if(saverFrom.isSave()) {
-                                EffectSaver saverTo = new EffectSaver(saverFrom);
-                                arEffectSaversTo.add(saverTo);
-                            }
-                            else {
-                                EffectSaver saverTo = new EffectSaver();
-                                arEffectSaversTo.add(saverTo);
-                            }
-
-                            ArrayList<String> arTempLyricsFrom = arLyrics.get(nSelectedPlaylist);
-                            ArrayList<String> arTempLyricsTo = arLyrics.get(nPlaylistTo);
-                            String strLyrics = arTempLyricsFrom.get(nItem);
-                            arTempLyricsTo.add(strLyrics);
-
-                            if(nPlaylistTo == nPlayingPlaylist)
-                                arPlayed.add(false);
-
-                            for(int i = nItem; i < arSongsFrom.size(); i++) {
-                                SongItem songItem = arSongsFrom.get(i);
-                                songItem.setNumber(String.format(Locale.getDefault(), "%d", i+1));
-                            }
-
-                            songsAdapter.notifyDataSetChanged();
+                            copySong(nSelectedPlaylist, nItem, nPlaylistTo);
                             menu.dismiss();
-                            saveFiles(true, true, true, true, false);
                         }
                     });
                 }
@@ -1433,44 +1931,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     menu.addMenu(arPlaylistNames.get(i), R.drawable.ic_actionsheet_folder, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ArrayList<SongItem> arSongsFrom = arPlaylists.get(nSelectedPlaylist);
-                            ArrayList<SongItem> arSongsTo = arPlaylists.get(nPlaylistTo);
-                            SongItem item = arSongsFrom.get(nItem);
-                            arSongsTo.add(item);
-                            item.setNumber(String.format(Locale.getDefault(), "%d", arSongsTo.size()));
-                            arSongsFrom.remove(nItem);
-
-                            ArrayList<EffectSaver> arEffectSaversFrom = arEffects.get(nSelectedPlaylist);
-                            ArrayList<EffectSaver> arEffectSaversTo = arEffects.get(nPlaylistTo);
-                            EffectSaver saver = arEffectSaversFrom.get(nItem);
-                            arEffectSaversTo.add(saver);
-                            arEffectSaversFrom.remove(nItem);
-
-                            ArrayList<String> arTempLyricsFrom = arLyrics.get(nSelectedPlaylist);
-                            ArrayList<String> arTempLyricsTo = arLyrics.get(nPlaylistTo);
-                            String strLyrics = arTempLyricsFrom.get(nItem);
-                            arTempLyricsTo.add(strLyrics);
-                            arTempLyricsFrom.remove(nItem);
-
-                            if(nSelectedPlaylist == nPlayingPlaylist)
-                                arPlayed.remove(nItem);
-                            if(nPlaylistTo == nPlayingPlaylist)
-                                arPlayed.add(false);
-
-                            for(int i = nItem; i < arSongsFrom.size(); i++) {
-                                SongItem songItem = arSongsFrom.get(i);
-                                songItem.setNumber(String.format(Locale.getDefault(), "%d", i+1));
-                            }
-
-                            if(nSelectedPlaylist == nPlayingPlaylist) {
-                                if(nItem == nPlaying) {
-                                    nPlayingPlaylist = nPlaylistTo;
-                                    nPlaying = arSongsTo.size() - 1;
-                                }
-                                else if(nItem < nPlaying) nPlaying--;
-                            }
-
-                            songsAdapter.notifyDataSetChanged();
+                            moveSong(nSelectedPlaylist, nItem, nPlaylistTo);
                             menu.dismiss();
                         }
                     });
@@ -1521,6 +1982,92 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         });
         menu.setCancelMenu();
         menu.show();
+    }
+
+    private void copySong(int nPlaylistFrom, int nItem, int nPlaylistTo)
+    {
+        ArrayList<SongItem> arSongsFrom = arPlaylists.get(nPlaylistFrom);
+        ArrayList<SongItem> arSongsTo = arPlaylists.get(nPlaylistTo);
+        SongItem itemFrom = arSongsFrom.get(nItem);
+        File file = new File(itemFrom.getPath());
+        String strPath = itemFrom.getPath();
+        if(file.getParent().equals(activity.getFilesDir().toString()))
+            strPath = activity.copyFile(Uri.parse(itemFrom.getPath())).toString();
+        SongItem itemTo = new SongItem(String.format(Locale.getDefault(), "%d", arSongsTo.size()+1), itemFrom.getTitle(), itemFrom.getArtist(), strPath);
+        arSongsTo.add(itemTo);
+
+        ArrayList<EffectSaver> arEffectSaversFrom = arEffects.get(nSelectedPlaylist);
+        ArrayList<EffectSaver> arEffectSaversTo = arEffects.get(nPlaylistTo);
+        EffectSaver saverFrom = arEffectSaversFrom.get(nItem);
+        if(saverFrom.isSave()) {
+            EffectSaver saverTo = new EffectSaver(saverFrom);
+            arEffectSaversTo.add(saverTo);
+        }
+        else {
+            EffectSaver saverTo = new EffectSaver();
+            arEffectSaversTo.add(saverTo);
+        }
+
+        ArrayList<String> arTempLyricsFrom = arLyrics.get(nSelectedPlaylist);
+        ArrayList<String> arTempLyricsTo = arLyrics.get(nPlaylistTo);
+        String strLyrics = arTempLyricsFrom.get(nItem);
+        arTempLyricsTo.add(strLyrics);
+
+        if(nPlaylistTo == nPlayingPlaylist)
+            arPlayed.add(false);
+
+        for(int i = nItem; i < arSongsFrom.size(); i++) {
+            SongItem songItem = arSongsFrom.get(i);
+            songItem.setNumber(String.format(Locale.getDefault(), "%d", i+1));
+        }
+
+        songsAdapter.notifyDataSetChanged();
+        saveFiles(true, true, true, true, false);
+    }
+
+    private void moveSong(int nPlaylistFrom, int nItem, int nPlaylistTo)
+    {
+        ArrayList<SongItem> arSongsFrom = arPlaylists.get(nSelectedPlaylist);
+        ArrayList<SongItem> arSongsTo = arPlaylists.get(nPlaylistTo);
+        SongItem item = arSongsFrom.get(nItem);
+        arSongsTo.add(item);
+        item.setNumber(String.format(Locale.getDefault(), "%d", arSongsTo.size()));
+        arSongsFrom.remove(nItem);
+
+        ArrayList<EffectSaver> arEffectSaversFrom = arEffects.get(nSelectedPlaylist);
+        ArrayList<EffectSaver> arEffectSaversTo = arEffects.get(nPlaylistTo);
+        EffectSaver saver = arEffectSaversFrom.get(nItem);
+        arEffectSaversTo.add(saver);
+        arEffectSaversFrom.remove(nItem);
+
+        ArrayList<String> arTempLyricsFrom = arLyrics.get(nSelectedPlaylist);
+        ArrayList<String> arTempLyricsTo = arLyrics.get(nPlaylistTo);
+        String strLyrics = arTempLyricsFrom.get(nItem);
+        arTempLyricsTo.add(strLyrics);
+        arTempLyricsFrom.remove(nItem);
+
+        if(nSelectedPlaylist == nPlayingPlaylist)
+            arPlayed.remove(nItem);
+        if(nPlaylistTo == nPlayingPlaylist)
+            arPlayed.add(false);
+
+        for(int i = nItem; i < arSongsFrom.size(); i++) {
+            SongItem songItem = arSongsFrom.get(i);
+            songItem.setNumber(String.format(Locale.getDefault(), "%d", i+1));
+        }
+
+        if(nSelectedPlaylist == nPlayingPlaylist) {
+            if(nItem == nPlaying) {
+                nPlayingPlaylist = nPlaylistTo;
+                nPlaying = arSongsTo.size() - 1;
+                playlistsAdapter.notifyDataSetChanged();
+                tabAdapter.notifyDataSetChanged();
+            }
+            else if(nItem < nPlaying) nPlaying--;
+        }
+
+        songsAdapter.notifyDataSetChanged();
+        saveFiles(true, true, true, true, false);
     }
 
     public void changeTitleAndArtist(final int nItem)
@@ -1607,62 +2154,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     menu.dismiss();
                     songsAdapter.notifyDataSetChanged();
 
-                    songTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
-                        @Override
-                        public boolean onMove(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                            final int fromPos = viewHolder.getAdapterPosition();
-                            final int toPos = target.getAdapterPosition();
-
-                            ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
-                            SongItem itemTemp = arSongs.get(fromPos);
-                            arSongs.remove(fromPos);
-                            arSongs.add(toPos, itemTemp);
-
-                            ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
-                            EffectSaver saver = arEffectSavers.get(fromPos);
-                            arEffectSavers.remove(fromPos);
-                            arEffectSavers.add(toPos, saver);
-
-                            ArrayList<String> arTempLyrics = arLyrics.get(nSelectedPlaylist);
-                            String strLyrics = arTempLyrics.get(fromPos);
-                            arTempLyrics.remove(fromPos);
-                            arTempLyrics.add(toPos, strLyrics);
-
-                            if (nPlayingPlaylist == nSelectedPlaylist) {
-                                Boolean bTemp = arPlayed.get(fromPos);
-                                arPlayed.remove(fromPos);
-                                arPlayed.add(toPos, bTemp);
-                            }
-
-                            int nStart = fromPos < toPos ? fromPos : toPos;
-                            for (int i = nStart; i < arSongs.size(); i++) {
-                                SongItem songItem = arSongs.get(i);
-                                songItem.setNumber(String.format(Locale.getDefault(), "%d", i + 1));
-                            }
-
-                            if (fromPos == nPlaying) nPlaying = toPos;
-                            else if (fromPos < nPlaying && nPlaying <= toPos) nPlaying--;
-                            else if (fromPos > nPlaying && nPlaying >= toPos) nPlaying++;
-
-                            songsAdapter.notifyItemMoved(fromPos, toPos);
-
-                            return true;
-                        }
-
-                        @Override
-                        public void clearView(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder) {
-                            super.clearView(recyclerSongs, viewHolder);
-
-                            songsAdapter.notifyDataSetChanged();
-
-                            saveFiles(true, true, true, true, false);
-                        }
-
-                        @Override
-                        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                        }
-                    });
-                    songTouchHelper.attachToRecyclerView(recyclerSongs);
+                    startSort();
                 }
             });
             menu.addSeparator();
@@ -1873,6 +2365,66 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         menu.show();
     }
 
+    private void startSort()
+    {
+        songTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
+            @Override
+            public boolean onMove(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                final int fromPos = viewHolder.getAdapterPosition();
+                final int toPos = target.getAdapterPosition();
+
+                ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+                SongItem itemTemp = arSongs.get(fromPos);
+                arSongs.remove(fromPos);
+                arSongs.add(toPos, itemTemp);
+
+                ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
+                EffectSaver saver = arEffectSavers.get(fromPos);
+                arEffectSavers.remove(fromPos);
+                arEffectSavers.add(toPos, saver);
+
+                ArrayList<String> arTempLyrics = arLyrics.get(nSelectedPlaylist);
+                String strLyrics = arTempLyrics.get(fromPos);
+                arTempLyrics.remove(fromPos);
+                arTempLyrics.add(toPos, strLyrics);
+
+                if (nPlayingPlaylist == nSelectedPlaylist) {
+                    Boolean bTemp = arPlayed.get(fromPos);
+                    arPlayed.remove(fromPos);
+                    arPlayed.add(toPos, bTemp);
+                }
+
+                int nStart = fromPos < toPos ? fromPos : toPos;
+                for (int i = nStart; i < arSongs.size(); i++) {
+                    SongItem songItem = arSongs.get(i);
+                    songItem.setNumber(String.format(Locale.getDefault(), "%d", i + 1));
+                }
+
+                if (fromPos == nPlaying) nPlaying = toPos;
+                else if (fromPos < nPlaying && nPlaying <= toPos) nPlaying--;
+                else if (fromPos > nPlaying && nPlaying >= toPos) nPlaying++;
+
+                songsAdapter.notifyItemMoved(fromPos, toPos);
+
+                return true;
+            }
+
+            @Override
+            public void clearView(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder) {
+                super.clearView(recyclerSongs, viewHolder);
+
+                songsAdapter.notifyDataSetChanged();
+
+                saveFiles(true, true, true, true, false);
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            }
+        });
+        songTouchHelper.attachToRecyclerView(recyclerSongs);
+    }
+
     public void showLyrics()
     {
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
@@ -1986,7 +2538,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
 
         saveFiles(false, true, false, false, false);
+    }
 
+    private void cancelSavingEffect()
+    {
+        ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
+        EffectSaver saver = arEffectSavers.get(nSelectedItem);
+        saver.setSave(false);
+
+        saveFiles(false, true, false, false, false);
     }
 
     public void updateSavingEffect()

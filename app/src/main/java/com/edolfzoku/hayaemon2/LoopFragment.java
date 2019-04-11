@@ -58,6 +58,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
     public ArrayList<Double>  getArMarkerTime() { return arMarkerTime; }
     public void setArMarkerTime(ArrayList<Double> arMarkerTime) {
+        if(arMarkerTime == null) return;
         this.arMarkerTime = new ArrayList<>();
         int nScreenWidth = waveView.getWidth();
         int nMaxWidth = (int)(nScreenWidth * waveView.getZoom());

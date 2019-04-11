@@ -276,4 +276,8 @@
     <string name="speed">速度</string>
     <string name="pitch">音程</string>
     <string name="notificationDescription">ハヤえもんによる音声の再生</string>
+    <string name="select">選択</string>
+    <string name="deselect">選択解除</string>
+    <string name="selectAll">すべて選択</string>
+    <string name="selectedSongs">選択中の曲</string>
 </resources>
