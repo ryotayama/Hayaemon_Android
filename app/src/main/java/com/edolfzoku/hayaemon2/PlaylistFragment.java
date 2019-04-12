@@ -2147,17 +2147,31 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     {
         selectPlaylist(nPosition);
         String strPlaylist = arPlaylistNames.get(nPosition);
+        boolean bLockFounded = false;
+        boolean bUnlockFounded = false;
+        boolean bChangeArtworkFounded = false;
+        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        ArrayList<EffectSaver> arEffectSavers = arEffects.get(nSelectedPlaylist);
+        for(int i = 0; i < arSongs.size(); i++) {
+            SongItem song = arSongs.get(i);
+            song.setSelected(true);
+            EffectSaver saver = arEffectSavers.get(i);
+            if(song.getPathArtwork() != null && !song.getPathArtwork().equals("")) bChangeArtworkFounded = true;
+            if(saver.isSave()) bLockFounded = true;
+            else bUnlockFounded = true;
+        }
+
         final BottomMenu menu = new BottomMenu(activity);
         menu.setTitle(strPlaylist);
-        ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
-        menu.addMenu(getString(R.string.selectSongs), R.drawable.ic_actionsheet_select, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                menu.dismiss();
-                startMultipleSelection(-1);
-            }
-        });
-        if(arSongs.size() >= 2) {
+        if(arSongs.size() >= 1)
+            menu.addMenu(getString(R.string.selectSongs), R.drawable.ic_actionsheet_select, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    menu.dismiss();
+                    startMultipleSelection(-1);
+                }
+            });
+        if(arSongs.size() >= 2)
             menu.addMenu(getString(R.string.sortSongs), R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -2174,6 +2188,39 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     startSort();
                 }
             });
+        if(arSongs.size() >= 1) menu.addSeparator();
+        if(arSongs.size() >= 1) {
+            menu.addMenu(getString(R.string.changeArtwork), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    changeArtworkMultipleSelection();
+                    menu.dismiss();
+                }
+            });
+            if (bChangeArtworkFounded)
+                menu.addDestructiveMenu(getString(R.string.resetArtwork), R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        resetArtworkMultipleSelection();
+                        menu.dismiss();
+                    }
+                });
+            if (bUnlockFounded)
+                menu.addMenu(getString(R.string.restoreEffect), R.drawable.ic_actionsheet_lock, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        restoreEffectMultipleSelection();
+                        menu.dismiss();
+                    }
+                });
+            if (bLockFounded)
+                menu.addMenu(getString(R.string.cancelRestoreEffect), R.drawable.ic_actionsheet_unlock, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        cancelRestoreEffectMultipleSelection();
+                        menu.dismiss();
+                    }
+                });
             menu.addSeparator();
         }
         menu.addMenu(getString(R.string.changePlaylistName), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
