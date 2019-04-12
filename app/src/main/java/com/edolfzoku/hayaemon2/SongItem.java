@@ -26,6 +26,7 @@ class SongItem {
     private final String strPath;
     private float fPeak;
     private String strPathArtwork;
+    private String strTime;
 
     void setSelected(boolean bSelected) { this.bSelected = bSelected; }
     boolean isSelected() { return bSelected; }
@@ -40,6 +41,8 @@ class SongItem {
     float getPeak() { return fPeak; }
     void setPathArtwork(String strPathArtwork) { this.strPathArtwork = strPathArtwork; }
     String getPathArtwork() { return strPathArtwork; }
+    void setTime(String strTime) { this.strTime = strTime; }
+    String getTime() { return strTime; }
 
     SongItem(String strNumber, String strTitle, String strArtist, String strPath)
     {

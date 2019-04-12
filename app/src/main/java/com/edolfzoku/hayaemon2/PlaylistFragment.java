@@ -617,7 +617,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         ArrayList<SongItem> arSongs = activity.playlistFragment.getArPlaylists().get(activity.playlistFragment.getSelectedPlaylist());
         SongItem item = arSongs.get(nItem);
         item.setSelected(!item.isSelected());
-        boolean bSelected = false;
         int nSelected = 0;
         for(int i = 0; i < arSongs.size(); i++) {
             if(arSongs.get(i).isSelected()) nSelected++;
@@ -635,8 +634,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     public void startMultipleSelection(final int nItem)
     {
-        if(nItem == -1) bAllowSelectNone = true;
-        else bAllowSelectNone = false;
+        bAllowSelectNone = (nItem == -1);
         bMultiSelecting = true;
         bSorting = false;
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
@@ -1431,9 +1429,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         tabAdapter = new PlaylistTabAdapter(activity, arPlaylistNames);
         playlistsAdapter = new PlaylistsAdapter(activity, arPlaylistNames);
-        if (nSelectedPlaylist < arPlaylists.size())
-            songsAdapter = new SongsAdapter(activity, arPlaylists.get(nSelectedPlaylist));
-        else songsAdapter = new SongsAdapter(activity);
+        songsAdapter = new SongsAdapter(activity);
 
         recyclerPlaylists = activity.findViewById(R.id.recyclerPlaylists);
         recyclerPlaylists.setHasFixedSize(false);
@@ -2037,7 +2033,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     private void moveSong(int nPlaylistFrom, int nItem, int nPlaylistTo)
     {
-        ArrayList<SongItem> arSongsFrom = arPlaylists.get(nSelectedPlaylist);
+        ArrayList<SongItem> arSongsFrom = arPlaylists.get(nPlaylistFrom);
         ArrayList<SongItem> arSongsTo = arPlaylists.get(nPlaylistTo);
         SongItem item = arSongsFrom.get(nItem);
         arSongsTo.add(item);
@@ -4026,13 +4022,21 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     {
         if(recyclerTab != null) recyclerTab.scrollToPosition(nSelect);
         nSelectedPlaylist = nSelect;
-        ArrayList<SongItem> arSongs = arPlaylists.get(nSelect);
         if(tabAdapter != null) tabAdapter.notifyDataSetChanged();
-        if(songsAdapter != null) {
-            songsAdapter.changeItems(arSongs);
-            songsAdapter.notifyDataSetChanged();
-        }
+        if(songsAdapter != null) songsAdapter.notifyDataSetChanged();
         if(playlistsAdapter != null) playlistsAdapter.notifyDataSetChanged();
+    }
+
+    public void updateSongTime(SongItem item)
+    {
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        mmr.setDataSource(activity.getApplicationContext(), Uri.parse(item.getPath()));
+        long durationMs = Long.parseLong(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+        long duration = durationMs / 1000;
+        long lMinutes = duration / 60;
+        long lSeconds = duration % 60;
+        item.setTime(String.format(Locale.getDefault(), "%d:%02d", lMinutes, lSeconds));
+        saveFiles(true, false, false, false, false);
     }
 
     public void updateSongs()

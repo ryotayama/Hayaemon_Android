@@ -27,7 +27,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,12 +34,10 @@ import android.widget.TextView;
 import com.un4seen.bass.BASS;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
 {
     private final MainActivity activity;
-    private List<SongItem> items = null;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         final RelativeLayout songItem;
@@ -50,7 +47,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         final TextView textArtist;
         final ImageView imgStatus;
         final ImageView imgLock;
-        final FrameLayout frameSongMenu;
+        final TextView textTime;
         final ImageView imgSongMenu;
 
         ViewHolder(View view) {
@@ -62,25 +59,14 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             textArtist = view.findViewById(R.id.textArtist);
             imgStatus = view.findViewById(R.id.imgStatus);
             imgLock = view.findViewById(R.id.imgLock);
-            frameSongMenu = view.findViewById(R.id.frameSongMenu);
+            textTime = view.findViewById(R.id.textTime);
             imgSongMenu = view.findViewById(R.id.imgSongMenu);
         }
-    }
-
-    SongsAdapter(Context context, List<SongItem> items)
-    {
-        this.activity = (MainActivity)context;
-        this.items = items;
     }
 
     SongsAdapter(Context context)
     {
         this.activity = (MainActivity)context;
-    }
-
-    void changeItems(List<SongItem> items)
-    {
-        this.items = items;
     }
 
     @Override
@@ -95,7 +81,9 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position)
     {
-        SongItem item = items.get(position);
+        ArrayList<SongItem> arSongs = activity.playlistFragment.getArPlaylists ().get(activity.playlistFragment.getSelectedPlaylist());
+        SongItem item = arSongs.get(position);
+        if(item.getTime() == null) activity.playlistFragment.updateSongTime(item);
         final int nItem = Integer.parseInt(item.getNumber()) - 1;
         boolean bLock = activity.playlistFragment.isLock(nItem);
         boolean bSelected = activity.playlistFragment.isSelected(nItem);
@@ -129,6 +117,8 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         if(bLock) holder.imgLock.setVisibility(View.VISIBLE);
         else holder.imgLock.setVisibility(View.GONE);
 
+        holder.textTime.setText(item.getTime());
+
         if(activity.playlistFragment.isMultiSelecting()) {
             holder.songItem.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -137,9 +127,9 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
                     activity.playlistFragment.getSongsAdapter().notifyItemChanged(holder.getAdapterPosition(), holder.imgSelectSong);
                 }
             });
-            holder.frameSongMenu.setOnClickListener(null);
+            holder.imgSongMenu.setOnClickListener(null);
             holder.songItem.setOnLongClickListener(null);
-            holder.frameSongMenu.setOnTouchListener(new View.OnTouchListener() {
+            holder.imgSongMenu.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
                 {
@@ -151,6 +141,8 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             else holder.imgSelectSong.setImageResource(R.drawable.ic_button_check_off);
             holder.imgSelectSong.setVisibility(View.VISIBLE);
             holder.imgSongMenu.setImageResource(R.drawable.ic_sort);
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.imgSongMenu.getLayoutParams();
+            param.leftMargin = param.rightMargin = (int) (8 * activity.getResources().getDisplayMetrics().density + 0.5);
         }
         else if(activity.playlistFragment.isSorting()) {
             holder.songItem.setOnClickListener(new View.OnClickListener() {
@@ -159,9 +151,9 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
                     activity.playlistFragment.onSongItemClick(nItem);
                 }
             });
-            holder.frameSongMenu.setOnClickListener(null);
+            holder.imgSongMenu.setOnClickListener(null);
             holder.songItem.setOnLongClickListener(null);
-            holder.frameSongMenu.setOnTouchListener(new View.OnTouchListener() {
+            holder.imgSongMenu.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
                 {
@@ -171,6 +163,8 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             });
             holder.imgSelectSong.setVisibility(View.GONE);
             holder.imgSongMenu.setImageResource(R.drawable.ic_sort);
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.imgSongMenu.getLayoutParams();
+            param.leftMargin = param.rightMargin = (int) (8 * activity.getResources().getDisplayMetrics().density + 0.5);
         }
         else {
             holder.songItem.setOnClickListener(new View.OnClickListener() {
@@ -179,8 +173,8 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
                     activity.playlistFragment.onSongItemClick(nItem);
                 }
             });
-            holder.frameSongMenu.setOnTouchListener(null);
-            holder.frameSongMenu.setOnClickListener(new View.OnClickListener() {
+            holder.imgSongMenu.setOnTouchListener(null);
+            holder.imgSongMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     activity.playlistFragment.showSongMenu(holder.getAdapterPosition());
@@ -194,7 +188,9 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
                 }
             });
             holder.imgSelectSong.setVisibility(View.GONE);
-            holder.imgSongMenu.setImageResource(R.drawable.ic_listmenu);
+            holder.imgSongMenu.setImageResource(R.drawable.ic_button_more);
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.imgSongMenu.getLayoutParams();
+            param.leftMargin = param.rightMargin = 0;
         }
 
         if(activity.playlistFragment.getPlayingPlaylist() == activity.playlistFragment.getSelectedPlaylist() && nItem == activity.playlistFragment.getPlaying())
@@ -206,7 +202,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
     @Override
     public int getItemCount()
     {
-        if(items == null) return 0;
-        else return items.size();
+        ArrayList<SongItem> arSongs = activity.playlistFragment.getArPlaylists ().get(activity.playlistFragment.getSelectedPlaylist());
+        return arSongs.size();
     }
 }

@@ -45,7 +45,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
         final TextView textName;
         final TextView textSongCount;
         final ImageView imgRight;
-        final FrameLayout framePlaylistMenu;
         final ImageView imgPlaylistMenu;
 
         ViewHolder(View view) {
@@ -54,7 +53,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             textName = view.findViewById(R.id.textName);
             textSongCount = view.findViewById(R.id.textSongCount);
             imgRight = view.findViewById(R.id.imgRight);
-            framePlaylistMenu = view.findViewById(R.id.framePlaylistMenu);
             imgPlaylistMenu = view.findViewById(R.id.imgPlaylistMenu);
         }
     }
@@ -89,9 +87,9 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             }
         });
         if(activity.playlistFragment.isSorting()) {
-            holder.framePlaylistMenu.setOnClickListener(null);
+            holder.imgPlaylistMenu.setOnClickListener(null);
             holder.playlistItem.setOnLongClickListener(null);
-            holder.framePlaylistMenu.setOnTouchListener(new View.OnTouchListener() {
+            holder.imgPlaylistMenu.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
                 {
@@ -101,10 +99,12 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             });
             holder.imgPlaylistMenu.setImageResource(R.drawable.ic_sort);
             holder.imgRight.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.imgPlaylistMenu.getLayoutParams();
+            param.leftMargin = param.rightMargin = (int) (8 * activity.getResources().getDisplayMetrics().density + 0.5);
         }
         else {
-            holder.framePlaylistMenu.setOnTouchListener(null);
-            holder.framePlaylistMenu.setOnClickListener(new View.OnClickListener() {
+            holder.imgPlaylistMenu.setOnTouchListener(null);
+            holder.imgPlaylistMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     activity.playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
@@ -117,8 +117,10 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
                     return true;
                 }
             });
-            holder.imgPlaylistMenu.setImageResource(R.drawable.ic_listmenu);
+            holder.imgPlaylistMenu.setImageResource(R.drawable.ic_button_more);
             holder.imgRight.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.imgPlaylistMenu.getLayoutParams();
+            param.leftMargin = param.rightMargin = 0;
         }
 
         if(activity.playlistFragment.getPlayingPlaylist() == position && activity.playlistFragment.getPlaying() != -1)

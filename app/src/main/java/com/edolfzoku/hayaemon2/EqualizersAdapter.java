@@ -41,14 +41,12 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
     static class ViewHolder extends RecyclerView.ViewHolder {
         final RelativeLayout equalizerItem;
         final TextView textEqualizer;
-        final RelativeLayout relativeEqualizerMenu;
         final ImageView imgEqualizerMenu;
 
         ViewHolder(View view) {
             super(view);
             equalizerItem = view.findViewById(R.id.equalizerItem);
             textEqualizer = view.findViewById(R.id.textEqualizer);
-            relativeEqualizerMenu = view.findViewById(R.id.relativeEqualizerMenu);
             imgEqualizerMenu = view.findViewById(R.id.imgEqualizerMenu);
         }
     }
@@ -92,8 +90,8 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
         });
 
         if(activity.equalizerFragment.isSorting()) {
-            holder.relativeEqualizerMenu.setOnClickListener(null);
-            holder.relativeEqualizerMenu.setOnTouchListener(new View.OnTouchListener() {
+            holder.imgEqualizerMenu.setOnClickListener(null);
+            holder.imgEqualizerMenu.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
                 {
@@ -102,16 +100,20 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
                 }
             });
             holder.imgEqualizerMenu.setImageResource(R.drawable.ic_sort);
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.imgEqualizerMenu.getLayoutParams();
+            param.leftMargin = param.rightMargin = (int) (8 * activity.getResources().getDisplayMetrics().density + 0.5);
         }
         else {
-            holder.relativeEqualizerMenu.setOnTouchListener(null);
-            holder.relativeEqualizerMenu.setOnClickListener(new View.OnClickListener() {
+            holder.imgEqualizerMenu.setOnTouchListener(null);
+            holder.imgEqualizerMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     activity.equalizerFragment.showMenu(holder.getAdapterPosition());
                 }
             });
-            holder.imgEqualizerMenu.setImageResource(R.drawable.ic_listmenu);
+            holder.imgEqualizerMenu.setImageResource(R.drawable.ic_button_more);
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.imgEqualizerMenu.getLayoutParams();
+            param.leftMargin = param.rightMargin = 0;
         }
     }
 
