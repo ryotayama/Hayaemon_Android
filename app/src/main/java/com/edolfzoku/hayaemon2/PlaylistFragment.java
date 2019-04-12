@@ -125,6 +125,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     private int nSelectedItem;
     private boolean bSorting = false;
     private boolean bMultiSelecting = false;
+    private boolean bAllowSelectNone = false;
     public int hRecord = 0;
     private ByteBuffer recbuf;
     private SongSavingTask task;
@@ -621,7 +622,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         for(int i = 0; i < arSongs.size(); i++) {
             if(arSongs.get(i).isSelected()) nSelected++;
         }
-        if(nSelected == 0) finishMultipleSelection();
+        if(nSelected == 0 && !bAllowSelectNone) finishMultipleSelection();
         else if(nSelected == arSongs.size()) {
             ImageView imgSelectAllInMultipleSelection = activity.findViewById(R.id.imgSelectAllInMultipleSelection);
             imgSelectAllInMultipleSelection.setImageResource(R.drawable.ic_button_check_on);
@@ -634,6 +635,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     public void startMultipleSelection(final int nItem)
     {
+        if(nItem == -1) bAllowSelectNone = true;
+        else bAllowSelectNone = false;
         bMultiSelecting = true;
         bSorting = false;
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
@@ -715,15 +718,22 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
         }
 
+        ImageView imgSelectAllInMultipleSelection = activity.findViewById(R.id.imgSelectAllInMultipleSelection);
         if(bUnselectSongFounded) {
-            ImageView imgSelectAllInMultipleSelection = activity.findViewById(R.id.imgSelectAllInMultipleSelection);
             imgSelectAllInMultipleSelection.setImageResource(R.drawable.ic_button_check_on);
             for(int i = 0; i < arSongs.size(); i++) {
                 SongItem song = arSongs.get(i);
                 song.setSelected(true);
             }
         }
-        else finishMultipleSelection();
+        else {
+            imgSelectAllInMultipleSelection.setImageResource(R.drawable.ic_button_check_off);
+            for(int i = 0; i < arSongs.size(); i++) {
+                SongItem song = arSongs.get(i);
+                song.setSelected(false);
+            }
+            if(!bAllowSelectNone) finishMultipleSelection();
+        }
         songsAdapter.notifyDataSetChanged();
     }
 
@@ -2140,6 +2150,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         final BottomMenu menu = new BottomMenu(activity);
         menu.setTitle(strPlaylist);
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
+        menu.addMenu(getString(R.string.selectSongs), R.drawable.ic_actionsheet_select, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                startMultipleSelection(-1);
+            }
+        });
         if(arSongs.size() >= 2) {
             menu.addMenu(getString(R.string.sortSongs), R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
                 @Override
