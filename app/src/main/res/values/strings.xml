@@ -209,6 +209,7 @@
     <string name="changeRight">値を右に変更</string>
     <string name="restoreEffect">各画面の設定を保持</string>
     <string name="cancelRestoreEffect">各画面の設定保持を解除</string>
+    <string name="restoring">各画面の設定を保持中</string>
     <string name="delete">削除</string>
     <string name="doDelete">削除する</string>
     <string name="decideNot">やめる</string>
