@@ -116,6 +116,7 @@
     <string name="sharp">♯</string>
     <string name="flat">♭</string>
     <string name="menu">メニュー</string>
+    <string name="playlistmenu">再生リストのメニュー</string>
     <string name="rewind">前へ</string>
     <string name="play">再生</string>
     <string name="forward">次へ</string>
