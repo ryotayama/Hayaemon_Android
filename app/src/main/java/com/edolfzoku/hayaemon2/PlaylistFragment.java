@@ -1213,7 +1213,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         paramContainer.bottomMargin = 0;
         if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
             paramRecording.addRule(RelativeLayout.ABOVE, R.id.adView);
-        else paramRecording.addRule(RelativeLayout.ABOVE, R.id.relativePlaying);
+        else paramRecording.addRule(RelativeLayout.ABOVE, R.id.relativePlayingWithShadow);
         if(MainActivity.hStream == 0) paramRecording.bottomMargin = 0;
         else {
             if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
@@ -3477,7 +3477,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
         if(MainActivity.hStream == 0) return;
 
-        final RelativeLayout relativePlaying = activity.findViewById(R.id.relativePlaying);
+        final RelativeLayout relativePlayingWithShadow = activity.findViewById(R.id.relativePlayingWithShadow);
         AnimationButton btnArtworkInPlayingBar = activity.findViewById(R.id.btnArtworkInPlayingBar);
         Bitmap bitmap = null;
         if(item.getPathArtwork() != null && !item.getPathArtwork().equals("")) {
@@ -3514,7 +3514,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             textArtistInPlayingBar.setText(item.getArtist());
         }
 
-        if(relativePlaying.getVisibility() != View.VISIBLE)
+        if(relativePlayingWithShadow.getVisibility() != View.VISIBLE)
         {
             final RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams)activity.findViewById(R.id.container).getLayoutParams();
             final RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams)activity.findViewById(R.id.relativeRecording).getLayoutParams();
@@ -3526,9 +3526,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 paramContainer.bottomMargin = 0;
                 paramRecording.bottomMargin = (int) (-22 * getResources().getDisplayMetrics().density + 0.5);
             }
-            relativePlaying.setTranslationY((int) (82 * getResources().getDisplayMetrics().density + 0.5));
-            relativePlaying.setVisibility(View.VISIBLE);
-            relativePlaying.animate()
+            relativePlayingWithShadow.setTranslationY((int) (82 * getResources().getDisplayMetrics().density + 0.5));
+            relativePlayingWithShadow.setVisibility(View.VISIBLE);
+            relativePlayingWithShadow.animate()
                     .translationY(0)
                     .setDuration(200)
                     .setListener(new AnimatorListenerAdapter() {
@@ -3705,21 +3705,21 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         if(MainActivity.hStream == 0) return;
 
-        final RelativeLayout relativePlaying = activity.findViewById(R.id.relativePlaying);
+        final RelativeLayout relativePlayingWithShadow = activity.findViewById(R.id.relativePlayingWithShadow);
 
         SeekBar seekCurPos = activity.findViewById(R.id.seekCurPos);
         if(seekCurPos.getVisibility() == View.VISIBLE)
             activity.downViewPlaying(true);
         else {
-            relativePlaying.setVisibility(View.VISIBLE);
-            relativePlaying.animate()
+            relativePlayingWithShadow.setVisibility(View.VISIBLE);
+            relativePlayingWithShadow.animate()
                     .translationY((int) (82 * getResources().getDisplayMetrics().density + 0.5))
                     .setDuration(200)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
-                            relativePlaying.setVisibility(View.GONE);
+                            relativePlayingWithShadow.setVisibility(View.GONE);
                             final RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams) activity.findViewById(R.id.container).getLayoutParams();
                             final RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams) activity.findViewById(R.id.relativeRecording).getLayoutParams();
                             if (hRecord == 0) {

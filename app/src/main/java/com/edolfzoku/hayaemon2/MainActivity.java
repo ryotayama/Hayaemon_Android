@@ -817,7 +817,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(v.getId() == R.id.relativePlaying || v.getId() == R.id.imgViewDown)
         {
             final SeekBar seekCurPos = findViewById(R.id.seekCurPos);
-            final RelativeLayout relativePlaying = findViewById(R.id.relativePlaying);
+            final RelativeLayout relativePlayingWithShadow = findViewById(R.id.relativePlayingWithShadow);
             int nY = (int) event.getRawY();
             if (gestureDetector.onTouchEvent(event)) return false;
             if(seekCurPos.getVisibility() != View.VISIBLE) {
@@ -833,18 +833,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         paramContainer.addRule(RelativeLayout.ABOVE, R.id.adView);
                         paramContainer.bottomMargin = (int) (60.0 * getResources().getDisplayMetrics().density + 0.5);
                     }
-                    RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) relativePlaying.getLayoutParams();
+                    RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) relativePlayingWithShadow.getLayoutParams();
                     int nHeight = param.height - (nY - nLastY);
                     int nMinHeight = (int) (82.0 * getResources().getDisplayMetrics().density + 0.5);
                     int nMaxHeight = (int) (142.0 * getResources().getDisplayMetrics().density + 0.5);
                     if (nHeight < nMinHeight) nHeight = nMinHeight;
                     else if (nHeight > nMaxHeight) nHeight = nMaxHeight;
                     param.height = nHeight;
-                    relativePlaying.setLayoutParams(param);
+                    relativePlayingWithShadow.setLayoutParams(param);
                 }
                 nLastY = nY;
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) relativePlaying.getLayoutParams();
+                    RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) relativePlayingWithShadow.getLayoutParams();
                     int nMinHeight = (int) (82.0 * getResources().getDisplayMetrics().density + 0.5);
                     if (param.height > nMinHeight) return false;
                     else {
@@ -853,10 +853,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if (playlistFragment.hRecord != 0) {
                             paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativeRecording);
                             paramContainer.bottomMargin = 0;
-                            paramRecording.addRule(RelativeLayout.ABOVE, R.id.relativePlaying);
+                            paramRecording.addRule(RelativeLayout.ABOVE, R.id.relativePlayingWithShadow);
                             paramRecording.bottomMargin = (int) (-22 * getResources().getDisplayMetrics().density + 0.5);
                         } else {
-                            paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativePlaying);
+                            paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativePlayingWithShadow);
                             paramContainer.bottomMargin = (int) (-22 * getResources().getDisplayMetrics().density + 0.5);
                         }
                     }
@@ -873,16 +873,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     int nTranslationY = nY - nLastY;
                     if(nTranslationY < nMinTranslationY) nTranslationY = nMinTranslationY;
                     else if(nTranslationY > nMaxTranslationY) nTranslationY = nMaxTranslationY;
-                    relativePlaying.setTranslationY(nTranslationY);
+                    relativePlayingWithShadow.setTranslationY(nTranslationY);
                 }
                 if (event.getAction() == MotionEvent.ACTION_DOWN)
-                    nLastY = (int)relativePlaying.getTranslationY() + nY;
+                    nLastY = (int)relativePlayingWithShadow.getTranslationY() + nY;
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if(relativePlaying.getTranslationY() > (int) (100.0 * getResources().getDisplayMetrics().density + 0.5)) {
+                    if(relativePlayingWithShadow.getTranslationY() > (int) (100.0 * getResources().getDisplayMetrics().density + 0.5)) {
                         downViewPlaying(false);
                     }
                     else {
-                        final int nTranslationYFrom = (int)relativePlaying.getTranslationY();
+                        final int nTranslationYFrom = (int)relativePlayingWithShadow.getTranslationY();
                         final int nTranslationY = 0;
 
                         ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
@@ -890,7 +890,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                                 float fProgress = valueAnimator.getAnimatedFraction();
-                                relativePlaying.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
+                                relativePlayingWithShadow.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
                             }
                         });
                         anim.setDuration(200).start();
@@ -1310,6 +1310,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         playlistFragment.selectPlaylist(playlistFragment.getPlayingPlaylist());
         final ImageView imgViewDown = findViewById(R.id.imgViewDown);
         final SeekBar seekCurPos = findViewById(R.id.seekCurPos);
+        final RelativeLayout relativePlayingWithShadow = findViewById(R.id.relativePlayingWithShadow);
         final RelativeLayout relativePlaying = findViewById(R.id.relativePlaying);
         relativePlaying.setOnClickListener(null);
         final AnimationButton btnArtwork = findViewById(R.id.btnArtworkInPlayingBar);
@@ -1377,7 +1378,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnArtwork.setClickable(true);
         final long lDuration = 400;
         int nScreenWidth = getResources().getDisplayMetrics().widthPixels;
-        relativePlaying.setBackgroundResource(R.drawable.playingview);
+        relativePlayingWithShadow.setBackgroundResource(R.drawable.playingview);
         RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams) findViewById(R.id.container).getLayoutParams();
         RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams) findViewById(R.id.relativeRecording).getLayoutParams();
         if (playlistFragment.hRecord != 0) {
@@ -1413,10 +1414,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textArtist.setGravity(Gravity.CENTER);
         paramTitle.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
         paramArtist.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+        if(Build.VERSION.SDK_INT >= 17) {
+            paramTitle.addRule(RelativeLayout.ALIGN_PARENT_END, 0);
+            paramArtist.addRule(RelativeLayout.ALIGN_PARENT_END, 0);
+        }
 
-        final int nTranslationYFrom = (int)relativePlaying.getTranslationY();
+        final int nTranslationYFrom = (int)relativePlayingWithShadow.getTranslationY();
         final int nTranslationY = 0;
-        final int nRelativePlayingHeightFrom = relativePlaying.getHeight();
+        final int nRelativePlayingHeightFrom = relativePlayingWithShadow.getHeight();
         final int nRelativePlayingHeight = getResources().getDisplayMetrics().heightPixels - tabLayout.getHeight() - findViewById(R.id.linearControl).getHeight() - getStatusBarHeight() + (int) (16.0 * getResources().getDisplayMetrics().density + 0.5);
         final int nArtworkWidthFrom = btnArtwork.getWidth();
         final int nArtworkWidth = nScreenWidth / 2;
@@ -1456,7 +1461,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 float fProgress = valueAnimator.getAnimatedFraction();
                 advanceAnimation(tabLayout, "bottomMargin", 0, -tabLayout.getHeight(), fProgress);
                 advanceAnimation(viewSep2, "bottomMargin", 0, tabLayout.getHeight(), fProgress);
-                relativePlaying.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
+                relativePlayingWithShadow.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
+                advanceAnimation(relativePlayingWithShadow, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
                 advanceAnimation(relativePlaying, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
                 advanceAnimation(btnArtwork, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
                 advanceAnimation(btnArtwork, "height", nArtworkWidthFrom, nArtworkWidth, fProgress);
@@ -1517,11 +1523,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void downViewPlaying(final boolean bBottom)
     {
         final MainActivity activity = this;
+        final RelativeLayout relativePlayingWithShadow = findViewById(R.id.relativePlayingWithShadow);
         final RelativeLayout relativePlaying = findViewById(R.id.relativePlaying);
         final ImageView imgViewDown = findViewById(R.id.imgViewDown);
         final SeekBar seekCurPos = findViewById(R.id.seekCurPos);
         final long lDuration = 400;
-        relativePlaying.setBackgroundResource(R.drawable.topshadow);
+        relativePlayingWithShadow.setBackgroundResource(R.drawable.topshadow);
 
         final TabLayout tabLayout = findViewById(R.id.tabs);
         final View viewSep2 = findViewById(R.id.viewSep2);
@@ -1544,7 +1551,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final RelativeLayout.LayoutParams paramBtnPlay = (RelativeLayout.LayoutParams) btnPlay.getLayoutParams();
         final RelativeLayout.LayoutParams paramBtnForward = (RelativeLayout.LayoutParams) btnForward.getLayoutParams();
 
-        final int nTranslationYFrom = (int)relativePlaying.getTranslationY();
+        final int nTranslationYFrom = (int)relativePlayingWithShadow.getTranslationY();
         final int nTranslationY = 0;
         final int nRelativePlayingHeightFrom = getResources().getDisplayMetrics().heightPixels - tabLayout.getMeasuredHeight() - findViewById(R.id.linearControl).getMeasuredHeight() - getStatusBarHeight() + (int) (16.0 * getResources().getDisplayMetrics().density + 0.5);
         int nTempRelativePlayingHeight = (int) (82.0 * getResources().getDisplayMetrics().density + 0.5);
@@ -1590,7 +1597,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 float fProgress = valueAnimator.getAnimatedFraction();
                 advanceAnimation(tabLayout, "bottomMargin", -tabLayout.getHeight(), 0, fProgress);
                 advanceAnimation(viewSep2, "bottomMargin", tabLayout.getHeight(), 0, fProgress);
-                relativePlaying.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
+                relativePlayingWithShadow.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
+                advanceAnimation(relativePlayingWithShadow, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
                 advanceAnimation(relativePlaying, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
                 advanceAnimation(btnArtwork, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
                 advanceAnimation(btnArtwork, "height", nArtworkWidthFrom, nArtworkWidth, fProgress);
@@ -1623,6 +1631,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 paramTitle.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
                 textArtist.setGravity(Gravity.START);
                 paramArtist.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
+                if(Build.VERSION.SDK_INT >= 17) {
+                    paramTitle.addRule(RelativeLayout.ALIGN_PARENT_END, 1);
+                    paramArtist.addRule(RelativeLayout.ALIGN_PARENT_END, 1);
+                }
                 imgViewDown.clearAnimation();
                 imgViewDown.setVisibility(View.GONE);
                 seekCurPos.clearAnimation();
@@ -1649,17 +1661,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (playlistFragment.hRecord != 0) {
                     paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativeRecording);
                     paramContainer.bottomMargin = 0;
-                    paramRecording.addRule(RelativeLayout.ABOVE, R.id.relativePlaying);
+                    paramRecording.addRule(RelativeLayout.ABOVE, R.id.relativePlayingWithShadow);
                     if(bBottom) paramRecording.bottomMargin = 0;
                     else paramRecording.bottomMargin = (int) (-22 * getResources().getDisplayMetrics().density + 0.5);
                 } else {
-                    paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativePlaying);
+                    paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativePlayingWithShadow);
                     if(bBottom) paramContainer.bottomMargin = 0;
                     else paramContainer.bottomMargin = (int) (-22 * getResources().getDisplayMetrics().density + 0.5);
                 }
 
                 if(bBottom) {
-                    relativePlaying.setVisibility(View.GONE);
+                    relativePlayingWithShadow.setVisibility(View.GONE);
+                    RelativeLayout.LayoutParams paramPlayingWithShadow = (RelativeLayout.LayoutParams) findViewById(R.id.relativePlayingWithShadow).getLayoutParams();
+                    paramPlayingWithShadow.height = (int) (82.0 * getResources().getDisplayMetrics().density + 0.5);
                     RelativeLayout.LayoutParams paramPlaying = (RelativeLayout.LayoutParams) findViewById(R.id.relativePlaying).getLayoutParams();
                     paramPlaying.height = (int) (82.0 * getResources().getDisplayMetrics().density + 0.5);
                 }

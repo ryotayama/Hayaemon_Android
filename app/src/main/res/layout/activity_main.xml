@@ -123,7 +123,7 @@
             android:animateLayoutChanges="true"
             android:visibility="gone"
             android:layout_marginBottom="0dp"
-            android:layout_above="@+id/relativePlaying">
+            android:layout_above="@+id/relativePlayingWithShadow">
 
             <ImageView
                 android:contentDescription="@null"
@@ -175,7 +175,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/relativePlaying"
+            android:id="@+id/relativePlayingWithShadow"
             android:layout_width="match_parent"
             android:layout_height="82dp"
             android:background="@drawable/topshadow"
@@ -184,220 +184,232 @@
             android:clipToPadding="false"
             android:layout_above="@+id/adView">
 
-            <com.edolfzoku.hayaemon2.AnimationButton
-                android:id="@+id/btnArtworkInPlayingBar"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:src="@drawable/ic_playing_large_artwork"
-                android:scaleType="centerCrop"
-                android:background="@drawable/frameborder"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                />
-
-            <TextView
-                android:id="@+id/textTitleInPlayingBar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textSize="13dp"
-                android:textColor="#000"
-                android:singleLine="true"
-                android:animateLayoutChanges="true"
-                android:layout_marginTop="14dp"
-                android:layout_marginLeft="60dp"
-                android:layout_marginStart="60dp"
-                android:layout_marginRight="132dp"
-                android:layout_marginEnd="132dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                />
-
-            <TextView
-                android:id="@+id/textArtistInPlayingBar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textSize="10dp"
-                android:textColor="#666"
-                android:singleLine="true"
-                android:animateLayoutChanges="true"
-                android:layout_marginTop="33dp"
-                android:layout_marginLeft="60dp"
-                android:layout_marginStart="60dp"
-                android:layout_marginRight="132dp"
-                android:layout_marginEnd="132dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                />
-
-            <com.edolfzoku.hayaemon2.AnimationButton
-                android:id="@+id/btnRewindInPlayingBar"
-                android:layout_width="44dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_playing_large_rewind"
-                android:background="@null"
-                android:alpha="0.0"
-                android:layout_alignTop="@+id/btnPlayInPlayingBar"
-                android:layout_toLeftOf="@+id/btnPlayInPlayingBar"
-                android:layout_toStartOf="@+id/btnPlayInPlayingBar"
-                android:layout_marginRight="16dp"
-                android:layout_marginEnd="16dp"
-                android:visibility="gone"
-                />
-
-            <com.edolfzoku.hayaemon2.AnimationButton
-                android:id="@+id/btnPlayInPlayingBar"
-                android:layout_width="44dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_bar_button_play"
-                android:background="@null"
-                android:layout_marginRight="88dp"
-                android:layout_marginEnd="88dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                />
-
-            <com.edolfzoku.hayaemon2.AnimationButton
-                android:id="@+id/btnForwardInPlayingBar"
-                android:layout_width="44dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_bar_button_forward"
-                android:background="@null"
-                android:layout_marginRight="44dp"
-                android:layout_marginEnd="44dp"
-                android:animateLayoutChanges="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                />
-
-            <com.edolfzoku.hayaemon2.AnimationButton
-                android:id="@+id/btnCloseInPlayingBar"
-                android:layout_width="44dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_bar_button_close"
-                android:background="@null"
-                android:animateLayoutChanges="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                />
-
-            <ImageView
-                android:id="@+id/imgViewDown"
-                android:contentDescription="@string/downPlayingScreen"
+            <RelativeLayout
+                android:id="@+id/relativePlaying"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_playing_large_down"
-                android:paddingTop="8dp"
-                android:paddingBottom="16dp"
-                android:alpha="0.0"
+                android:layout_height="match_parent"
+                android:background="#FFF"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:visibility="gone"
-                android:clickable="true"
-                android:focusable="true"
-                />
+                >
 
-            <SeekBar
-                android:id="@+id/seekCurPos"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:alpha="0.0"
-                android:max="60"
-                android:progress="30"
-                android:thumb="@drawable/thumbplaying"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@+id/btnArtworkInPlayingBar"
-                android:visibility="gone"
-                />
+                <com.edolfzoku.hayaemon2.AnimationButton
+                    android:id="@+id/btnArtworkInPlayingBar"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:src="@drawable/ic_playing_large_artwork"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/frameborder"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    />
 
-            <TextView
-                android:id="@+id/textCurPos"
-                android:textSize="11dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:alpha="0.0"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_alignLeft="@+id/seekCurPos"
-                android:layout_alignStart="@+id/seekCurPos"
-                android:layout_below="@id/seekCurPos"
-                android:visibility="gone"
-                />
+                <TextView
+                    android:id="@+id/textTitleInPlayingBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="13dp"
+                    android:textColor="#000"
+                    android:singleLine="true"
+                    android:animateLayoutChanges="true"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginLeft="60dp"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginRight="132dp"
+                    android:layout_marginEnd="132dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    />
 
-            <TextView
-                android:id="@+id/textRemain"
-                android:textSize="11dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:alpha="0.0"
-                android:layout_marginRight="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_alignRight="@+id/seekCurPos"
-                android:layout_alignEnd="@+id/seekCurPos"
-                android:layout_below="@id/seekCurPos"
-                android:visibility="gone"
-                />
+                <TextView
+                    android:id="@+id/textArtistInPlayingBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="10dp"
+                    android:textColor="#666"
+                    android:singleLine="true"
+                    android:animateLayoutChanges="true"
+                    android:layout_marginTop="33dp"
+                    android:layout_marginLeft="60dp"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginRight="132dp"
+                    android:layout_marginEnd="132dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    />
 
-            <com.edolfzoku.hayaemon2.AnimationButton
-                android:id="@+id/btnMoreInPlayingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_playing_large_more"
-                android:background="@null"
-                android:alpha="0.0"
-                android:layout_marginRight="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignTop="@+id/btnPlayInPlayingBar"
-                android:visibility="gone"
-                />
+                <com.edolfzoku.hayaemon2.AnimationButton
+                    android:id="@+id/btnRewindInPlayingBar"
+                    android:layout_width="44dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_playing_large_rewind"
+                    android:background="@null"
+                    android:alpha="0.0"
+                    android:layout_alignTop="@+id/btnPlayInPlayingBar"
+                    android:layout_toLeftOf="@+id/btnPlayInPlayingBar"
+                    android:layout_toStartOf="@+id/btnPlayInPlayingBar"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:visibility="gone"
+                    />
 
-            <com.edolfzoku.hayaemon2.AnimationButton
-                android:id="@+id/btnShuffleInPlayingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_playing_large_mode_shuffle"
-                android:background="@null"
-                android:alpha="0.0"
-                android:layout_marginTop="20dp"
-                android:layout_alignLeft="@+id/btnRewindInPlayingBar"
-                android:layout_alignStart="@+id/btnRewindInPlayingBar"
-                android:layout_below="@+id/btnRewindInPlayingBar"
-                android:visibility="gone"
-                />
+                <com.edolfzoku.hayaemon2.AnimationButton
+                    android:id="@+id/btnPlayInPlayingBar"
+                    android:layout_width="44dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_bar_button_play"
+                    android:background="@null"
+                    android:layout_marginRight="88dp"
+                    android:layout_marginEnd="88dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    />
 
-            <com.edolfzoku.hayaemon2.AnimationButton
-                android:id="@+id/btnRepeatInPlayingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_playing_large_mode_repeat_all"
-                android:background="@null"
-                android:alpha="0.0"
-                android:layout_marginTop="20dp"
-                android:layout_alignRight="@+id/btnForwardInPlayingBar"
-                android:layout_alignEnd="@+id/btnForwardInPlayingBar"
-                android:layout_below="@+id/btnForwardInPlayingBar"
-                android:visibility="gone"
-                />
+                <com.edolfzoku.hayaemon2.AnimationButton
+                    android:id="@+id/btnForwardInPlayingBar"
+                    android:layout_width="44dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_bar_button_forward"
+                    android:background="@null"
+                    android:layout_marginRight="44dp"
+                    android:layout_marginEnd="44dp"
+                    android:animateLayoutChanges="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    />
+
+                <com.edolfzoku.hayaemon2.AnimationButton
+                    android:id="@+id/btnCloseInPlayingBar"
+                    android:layout_width="44dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_bar_button_close"
+                    android:background="@null"
+                    android:animateLayoutChanges="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    />
+
+                <ImageView
+                    android:id="@+id/imgViewDown"
+                    android:contentDescription="@string/downPlayingScreen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_playing_large_down"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="16dp"
+                    android:alpha="0.0"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:visibility="gone"
+                    android:clickable="true"
+                    android:focusable="true"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seekCurPos"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:alpha="0.0"
+                    android:max="60"
+                    android:progress="30"
+                    android:thumb="@drawable/thumbplaying"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/btnArtworkInPlayingBar"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:id="@+id/textCurPos"
+                    android:textSize="11dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.0"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_alignLeft="@+id/seekCurPos"
+                    android:layout_alignStart="@+id/seekCurPos"
+                    android:layout_below="@id/seekCurPos"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:id="@+id/textRemain"
+                    android:textSize="11dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.0"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_alignRight="@+id/seekCurPos"
+                    android:layout_alignEnd="@+id/seekCurPos"
+                    android:layout_below="@id/seekCurPos"
+                    android:visibility="gone"
+                    />
+
+                <com.edolfzoku.hayaemon2.AnimationButton
+                    android:id="@+id/btnMoreInPlayingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_playing_large_more"
+                    android:background="@null"
+                    android:alpha="0.0"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignTop="@+id/btnPlayInPlayingBar"
+                    android:visibility="gone"
+                    />
+
+                <com.edolfzoku.hayaemon2.AnimationButton
+                    android:id="@+id/btnShuffleInPlayingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_playing_large_mode_shuffle"
+                    android:background="@null"
+                    android:alpha="0.0"
+                    android:layout_marginTop="20dp"
+                    android:layout_alignLeft="@+id/btnRewindInPlayingBar"
+                    android:layout_alignStart="@+id/btnRewindInPlayingBar"
+                    android:layout_below="@+id/btnRewindInPlayingBar"
+                    android:visibility="gone"
+                    />
+
+                <com.edolfzoku.hayaemon2.AnimationButton
+                    android:id="@+id/btnRepeatInPlayingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_playing_large_mode_repeat_all"
+                    android:background="@null"
+                    android:alpha="0.0"
+                    android:layout_marginTop="20dp"
+                    android:layout_alignRight="@+id/btnForwardInPlayingBar"
+                    android:layout_alignEnd="@+id/btnForwardInPlayingBar"
+                    android:layout_below="@+id/btnForwardInPlayingBar"
+                    android:visibility="gone"
+                    />
+
+            </RelativeLayout>
 
         </RelativeLayout>
 

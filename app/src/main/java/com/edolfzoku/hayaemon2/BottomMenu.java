@@ -130,6 +130,7 @@ class BottomMenu extends BottomSheetDialog {
         imgLocal.setId(R.id.imgLocal);
         RelativeLayout.LayoutParams paramImgLocal = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         paramImgLocal.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
         paramImgLocal.addRule(RelativeLayout.CENTER_VERTICAL);
         paramImgLocal.leftMargin = (int) (18 * getContext().getResources().getDisplayMetrics().density + 0.5);
         paramImgLocal.rightMargin = (int) (8 * getContext().getResources().getDisplayMetrics().density + 0.5);
