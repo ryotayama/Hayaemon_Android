@@ -94,7 +94,6 @@
         android:id="@+id/textTime"
         android:layout_width="28dp"
         android:layout_height="match_parent"
-        android:text="00:00"
         android:textSize="11dp"
         android:textColor="#000"
         android:gravity="center_vertical|end"

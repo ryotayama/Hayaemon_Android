@@ -23,6 +23,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -117,7 +118,10 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         if(bLock) holder.imgLock.setVisibility(View.VISIBLE);
         else holder.imgLock.setVisibility(View.GONE);
 
-        holder.textTime.setText(item.getTime());
+        String strTime = item.getTime();
+        holder.textTime.setText(strTime);
+        if(strTime.length() >= 6) holder.textTime.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
+        else holder.textTime.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11);
 
         if(activity.playlistFragment.isMultiSelecting()) {
             holder.songItem.setOnClickListener(new View.OnClickListener() {
