@@ -55,6 +55,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -70,6 +71,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -1034,18 +1037,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnShuffle.setImageResource(R.drawable.ic_bar_button_mode_shuffle_on);
                 btnShuffleInPlayingBar.setContentDescription(getString(R.string.shuffleOn));
                 btnShuffleInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_shuffle_on);
+                sendAccessibilityEvent(getString(R.string.shuffleOn), v);
             }
             else if(btnShuffle.getContentDescription().toString().equals(getString(R.string.shuffleOn))) {
                 btnShuffle.setContentDescription(getString(R.string.singleOn));
                 btnShuffle.setImageResource(R.drawable.ic_bar_button_mode_single_on);
                 btnShuffleInPlayingBar.setContentDescription(getString(R.string.singleOn));
                 btnShuffleInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_single_on);
+                sendAccessibilityEvent(getString(R.string.singleOn), v);
             }
             else {
                 btnShuffle.setContentDescription(getString(R.string.shuffleOff));
                 btnShuffle.setImageResource(R.drawable.ic_bar_button_mode_shuffle);
                 btnShuffleInPlayingBar.setContentDescription(getString(R.string.shuffleOff));
                 btnShuffleInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_shuffle);
+                sendAccessibilityEvent(getString(R.string.shuffleOff), v);
             }
             playlistFragment.saveFiles(false, false, false, false, true);
         }
@@ -1058,18 +1064,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnRepeat.setImageResource(R.drawable.ic_bar_button_mode_repeat_all_on);
                 btnRepeatInPlayingBar.setContentDescription(getString(R.string.repeatAllOn));
                 btnRepeatInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_repeat_all_on);
+                sendAccessibilityEvent(getString(R.string.repeatAllOn), v);
             }
             else if(btnRepeat.getContentDescription().toString().equals(getString(R.string.repeatAllOn))) {
                 btnRepeat.setContentDescription(getString(R.string.repeatSingleOn));
                 btnRepeat.setImageResource(R.drawable.ic_bar_button_mode_repeat_single_on);
                 btnRepeatInPlayingBar.setContentDescription(getString(R.string.repeatSingleOn));
                 btnRepeatInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_repeat_one_on);
+                sendAccessibilityEvent(getString(R.string.repeatSingleOn), v);
             }
             else {
                 btnRepeat.setContentDescription(getString(R.string.repeatOff));
                 btnRepeat.setImageResource(R.drawable.ic_bar_button_mode_repeat);
                 btnRepeatInPlayingBar.setContentDescription(getString(R.string.repeatOff));
                 btnRepeatInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_repeat_all);
+                sendAccessibilityEvent(getString(R.string.repeatOff), v);
             }
             playlistFragment.saveFiles(false, false, false, false, true);
         }
@@ -2174,5 +2183,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    public void sendAccessibilityEvent(String text, View source) {
+        AccessibilityManager manager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
+        if(manager == null || !manager.isEnabled()) return;
+        int nEventType;
+        if (Build.VERSION.SDK_INT < 16) nEventType = AccessibilityEvent.TYPE_VIEW_FOCUSED;
+        else nEventType = AccessibilityEventCompat.TYPE_ANNOUNCEMENT;
+        AccessibilityEvent event = AccessibilityEvent.obtain(nEventType);
+        event.setClassName(getClass().getName());
+        event.getText().add(text);
+        event.setSource(source);
+        manager.sendAccessibilityEvent(event);
     }
 }
