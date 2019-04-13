@@ -2143,6 +2143,219 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     {
         selectPlaylist(nPosition);
         String strPlaylist = arPlaylistNames.get(nPosition);
+
+        final BottomMenu menu = new BottomMenu(activity);
+        menu.setTitle(strPlaylist);
+        menu.addMenu(getString(R.string.changePlaylistName), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle(R.string.changePlaylistName);
+                final EditText editText = new EditText (activity);
+                editText.setHint(R.string.playlist);
+                editText.setHintTextColor(Color.argb(255, 192, 192, 192));
+                editText.setText(arPlaylistNames.get(nPosition));
+                builder.setView(editText);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        arPlaylistNames.set(nPosition, editText.getText().toString());
+
+                        tabAdapter.notifyDataSetChanged();
+                        playlistsAdapter.notifyDataSetChanged();
+
+                        saveFiles(true, true, true, true, false);
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, null);
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        editText.requestFocus();
+                        editText.setSelection(editText.getText().toString().length());
+                        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if (null != imm) imm.showSoftInput(editText, 0);
+                    }
+                });
+                alertDialog.show();
+            }
+        });
+        menu.addMenu(getString(R.string.copyPlaylist), R.drawable.ic_actionsheet_copy, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle(R.string.copyPlaylist);
+                final EditText editText = new EditText (activity);
+                editText.setHint(R.string.playlist);
+                editText.setHintTextColor(Color.argb(255, 192, 192, 192));
+                editText.setText(String.format(Locale.getDefault(), "%s のコピー", arPlaylistNames.get(nPosition)));
+                builder.setView(editText);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        int nTo = nPosition + 1;
+                        arPlaylistNames.add(nTo, editText.getText().toString());
+                        ArrayList<SongItem> arSongs = new ArrayList<>();
+                        arPlaylists.add(nTo, arSongs);
+                        ArrayList<EffectSaver> arEffectSavers = new ArrayList<>();
+                        arEffects.add(nTo, arEffectSavers);
+                        ArrayList<String> arTempLyrics = new ArrayList<>();
+                        arLyrics.add(nTo, arTempLyrics);
+
+                        ArrayList<SongItem> arSongsFrom = arPlaylists.get(nPosition);
+                        for(SongItem item : arSongsFrom) {
+                            File file = new File(item.getPath());
+                            String strPath = item.getPath();
+                            if(file.getParent().equals(activity.getFilesDir().toString()))
+                                strPath = activity.copyFile(Uri.parse(item.getPath())).toString();
+                            SongItem itemTo = new SongItem(String.format(Locale.getDefault(), "%d", arSongs.size()+1), item.getTitle(), item.getArtist(), strPath);
+                            arSongs.add(itemTo);
+                        }
+
+                        ArrayList<EffectSaver> arEffectSaversFrom = arEffects.get(nPosition);
+                        for(EffectSaver saver : arEffectSaversFrom) {
+                            if(saver.isSave()) {
+                                EffectSaver saverTo = new EffectSaver(saver);
+                                arEffectSavers.add(saverTo);
+                            }
+                            else {
+                                EffectSaver saverTo = new EffectSaver();
+                                arEffectSavers.add(saverTo);
+                            }
+                        }
+
+                        ArrayList<String> arLyricsFrom = arLyrics.get(nSelectedPlaylist);
+                        arTempLyrics.addAll(arLyricsFrom);
+
+                        tabAdapter.notifyDataSetChanged();
+                        playlistsAdapter.notifyDataSetChanged();
+                        selectPlaylist(nTo);
+                        if(activity != null)
+                            saveFiles(true, true, true, true, false);
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, null);
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        editText.requestFocus();
+                        editText.setSelection(editText.getText().toString().length());
+                        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if (null != imm) imm.showSoftInput(editText, 0);
+                    }
+                });
+                alertDialog.show();
+            }
+        });
+        menu.addDestructiveMenu(getString(R.string.emptyPlaylist), R.drawable.ic_actionsheet_folder_erase, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle(R.string.emptyPlaylist);
+                builder.setMessage(R.string.askEmptyPlaylist);
+                builder.setPositiveButton(getString(R.string.decideNot), null);
+                builder.setNegativeButton(getString(R.string.doEmpty), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ArrayList<SongItem> arSongs;
+                        ArrayList<EffectSaver> arEffectSavers;
+                        ArrayList<String> arTempLyrics;
+                        arSongs = arPlaylists.get(nPosition);
+                        arEffectSavers = arEffects.get(nPosition);
+                        arTempLyrics = arLyrics.get(nPosition);
+                        for(int i = 0; i < arSongs.size(); i++) {
+                            SongItem song = arSongs.get(i);
+                            File file = new File(song.getPath());
+                            if(file.getParent() != null && file.getParent().equals(activity.getFilesDir().toString())) {
+                                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
+                            }
+                        }
+                        arSongs.clear();
+                        arEffectSavers.clear();
+                        arTempLyrics.clear();
+
+                        songsAdapter.notifyDataSetChanged();
+                        playlistsAdapter.notifyDataSetChanged();
+                        tabAdapter.notifyDataSetChanged();
+
+                        saveFiles(true, true, true, true, false);
+                    }
+                });
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                    }
+                });
+                alertDialog.show();
+            }
+        });
+        menu.addDestructiveMenu(getString(R.string.deletePlaylist), R.drawable.ic_actionsheet_delete, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle(R.string.deletePlaylist);
+                builder.setMessage(R.string.askDeletePlaylist);
+                builder.setPositiveButton(getString(R.string.decideNot), null);
+                builder.setNegativeButton(getString(R.string.doDelete), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if(nPosition == nPlayingPlaylist) stop();
+                        else if(nPosition < nPlayingPlaylist) nPlayingPlaylist--;
+                        ArrayList<SongItem> arSongs = arPlaylists.get(nPosition);
+                        for(int i = 0; i < arSongs.size(); i++) {
+                            SongItem song = arSongs.get(i);
+                            File file = new File(song.getPath());
+                            if(file.getParent().equals(activity.getFilesDir().toString())) {
+                                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
+                            }
+                        }
+                        arPlaylists.remove(nPosition);
+                        arEffects.remove(nPosition);
+                        arPlaylistNames.remove(nPosition);
+                        arLyrics.remove(nPosition);
+                        if(arPlaylists.size() == 0)
+                            addPlaylist(String.format(Locale.getDefault(), "%s 1", getString(R.string.playlist)));
+
+                        int nSelect = nPosition;
+                        if(nSelect >= arPlaylists.size()) nSelect = arPlaylists.size() - 1;
+
+                        selectPlaylist(nSelect);
+
+                        saveFiles(true, true, true, true, false);
+                    }
+                });
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                    }
+                });
+                alertDialog.show();
+            }
+        });
+        menu.setCancelMenu();
+        menu.show();
+    }
+
+    public void showPlaylistTabMenu(final int nPosition)
+    {
+        selectPlaylist(nPosition);
+        String strPlaylist = arPlaylistNames.get(nPosition);
         boolean bLockFounded = false;
         boolean bUnlockFounded = false;
         boolean bChangeArtworkFounded = false;

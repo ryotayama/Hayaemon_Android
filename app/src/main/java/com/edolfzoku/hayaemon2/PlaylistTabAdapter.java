@@ -79,7 +79,7 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
             holder.btnPlaylistMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    activity.playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
+                    activity.playlistFragment.showPlaylistTabMenu(holder.getAdapterPosition());
                 }
             });
         }
@@ -108,7 +108,7 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
         holder.textPlaylistTab.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                activity.playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
+                activity.playlistFragment.showPlaylistTabMenu(holder.getAdapterPosition());
                 return true;
             }
         });
