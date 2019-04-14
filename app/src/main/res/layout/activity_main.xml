@@ -196,6 +196,7 @@
 
                 <com.edolfzoku.hayaemon2.AnimationButton
                     android:id="@+id/btnArtworkInPlayingBar"
+                    android:contentDescription="@string/artworkImage"
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:src="@drawable/ic_playing_large_artwork"
@@ -251,6 +252,7 @@
 
                 <com.edolfzoku.hayaemon2.AnimationButton
                     android:id="@+id/btnRewindInPlayingBar"
+                    android:contentDescription="@string/rewind"
                     android:layout_width="44dp"
                     android:layout_height="60dp"
                     android:src="@drawable/ic_playing_large_rewind"
@@ -266,6 +268,7 @@
 
                 <com.edolfzoku.hayaemon2.AnimationButton
                     android:id="@+id/btnPlayInPlayingBar"
+                    android:contentDescription="@string/play"
                     android:layout_width="44dp"
                     android:layout_height="60dp"
                     android:src="@drawable/ic_bar_button_play"
@@ -279,6 +282,7 @@
 
                 <com.edolfzoku.hayaemon2.AnimationButton
                     android:id="@+id/btnForwardInPlayingBar"
+                    android:contentDescription="@string/forward"
                     android:layout_width="44dp"
                     android:layout_height="60dp"
                     android:src="@drawable/ic_bar_button_forward"
@@ -293,6 +297,7 @@
 
                 <com.edolfzoku.hayaemon2.AnimationButton
                     android:id="@+id/btnCloseInPlayingBar"
+                    android:contentDescription="@string/close"
                     android:layout_width="44dp"
                     android:layout_height="60dp"
                     android:src="@drawable/ic_bar_button_close"
@@ -321,6 +326,7 @@
 
                 <SeekBar
                     android:id="@+id/seekCurPos"
+                    android:contentDescription="@string/adjustCurPos"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
@@ -368,6 +374,7 @@
 
                 <com.edolfzoku.hayaemon2.AnimationButton
                     android:id="@+id/btnMoreInPlayingBar"
+                    android:contentDescription="@string/menu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_playing_large_more"

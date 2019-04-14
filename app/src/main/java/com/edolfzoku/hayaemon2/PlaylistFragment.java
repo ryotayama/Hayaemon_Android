@@ -3405,6 +3405,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         btnPlay.setContentDescription(getString(R.string.pause));
         btnPlay.setImageResource(R.drawable.ic_bar_button_pause);
         AnimationButton btnPlayInPlayingBar = activity.findViewById(R.id.btnPlayInPlayingBar);
+        btnPlayInPlayingBar.setContentDescription(getString(R.string.pause));
         if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
             btnPlayInPlayingBar.setImageResource(R.drawable.ic_playing_large_pause);
         else btnPlayInPlayingBar.setImageResource(R.drawable.ic_bar_button_pause);
@@ -3421,6 +3422,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         btnPlay.setContentDescription(getString(R.string.play));
         btnPlay.setImageResource(R.drawable.ic_bar_button_play);
         AnimationButton btnPlayInPlayingBar = activity.findViewById(R.id.btnPlayInPlayingBar);
+        btnPlayInPlayingBar.setContentDescription(getString(R.string.play));
         if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
             btnPlayInPlayingBar.setImageResource(R.drawable.ic_playing_large_play);
         else btnPlayInPlayingBar.setImageResource(R.drawable.ic_bar_button_play);
@@ -3809,6 +3811,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         btnPlay.setContentDescription(getString(R.string.pause));
         btnPlay.setImageResource(R.drawable.ic_bar_button_pause);
         AnimationButton btnPlayInPlayingBar = activity.findViewById(R.id.btnPlayInPlayingBar);
+        btnPlayInPlayingBar.setContentDescription(getString(R.string.pause));
         if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
             btnPlayInPlayingBar.setImageResource(R.drawable.ic_playing_large_pause);
         else btnPlayInPlayingBar.setImageResource(R.drawable.ic_bar_button_pause);
@@ -3953,6 +3956,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         btnPlay.setContentDescription(getString(R.string.play));
         btnPlay.setImageResource(R.drawable.ic_bar_button_play);
         AnimationButton btnPlayInPlayingBar = activity.findViewById(R.id.btnPlayInPlayingBar);
+        btnPlayInPlayingBar.setContentDescription(getString(R.string.play));
         if(activity.findViewById(R.id.seekCurPos).getVisibility() == View.VISIBLE)
             btnPlayInPlayingBar.setImageResource(R.drawable.ic_playing_large_play);
         else btnPlayInPlayingBar.setImageResource(R.drawable.ic_bar_button_play);
