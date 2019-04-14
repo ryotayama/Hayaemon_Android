@@ -420,6 +420,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 public void onClick(View view) {
                     btnRewind5Sec.setImageResource(R.drawable.ic_abloop_01sec_prev);
                     btnRewind5Sec2.setImageResource(R.drawable.ic_abloop_01sec_prev);
+                    btnRewind5Sec.setContentDescription(getString(R.string.rewind1Sec));
+                    btnRewind5Sec2.setContentDescription(getString(R.string.rewind1Sec));
                     btnRewind5Sec.setTag(1);
                     btnRewind5Sec2.setTag(1);
                     menu.dismiss();
@@ -430,6 +432,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 public void onClick(View view) {
                     btnRewind5Sec.setImageResource(R.drawable.ic_abloop_02sec_prev);
                     btnRewind5Sec2.setImageResource(R.drawable.ic_abloop_02sec_prev);
+                    btnRewind5Sec.setContentDescription(getString(R.string.rewind2Sec));
+                    btnRewind5Sec2.setContentDescription(getString(R.string.rewind2Sec));
                     btnRewind5Sec.setTag(2);
                     btnRewind5Sec2.setTag(2);
                     menu.dismiss();
@@ -440,6 +444,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 public void onClick(View view) {
                     btnRewind5Sec.setImageResource(R.drawable.ic_abloop_03sec_prev);
                     btnRewind5Sec2.setImageResource(R.drawable.ic_abloop_03sec_prev);
+                    btnRewind5Sec.setContentDescription(getString(R.string.rewind3Sec));
+                    btnRewind5Sec2.setContentDescription(getString(R.string.rewind3Sec));
                     btnRewind5Sec.setTag(3);
                     btnRewind5Sec2.setTag(3);
                     menu.dismiss();
@@ -450,6 +456,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 public void onClick(View view) {
                     btnRewind5Sec.setImageResource(R.drawable.ic_abloop_05sec_prev);
                     btnRewind5Sec2.setImageResource(R.drawable.ic_abloop_05sec_prev);
+                    btnRewind5Sec.setContentDescription(getString(R.string.rewind5Sec));
+                    btnRewind5Sec2.setContentDescription(getString(R.string.rewind5Sec));
                     btnRewind5Sec.setTag(5);
                     btnRewind5Sec2.setTag(5);
                     menu.dismiss();
@@ -460,6 +468,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 public void onClick(View view) {
                     btnRewind5Sec.setImageResource(R.drawable.ic_abloop_10sec_prev);
                     btnRewind5Sec2.setImageResource(R.drawable.ic_abloop_10sec_prev);
+                    btnRewind5Sec.setContentDescription(getString(R.string.rewind10Sec));
+                    btnRewind5Sec2.setContentDescription(getString(R.string.rewind10Sec));
                     btnRewind5Sec.setTag(10);
                     btnRewind5Sec2.setTag(10);
                     menu.dismiss();
@@ -478,6 +488,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 public void onClick(View view) {
                     btnForward5Sec.setImageResource(R.drawable.ic_abloop_01sec_next);
                     btnForward5Sec2.setImageResource(R.drawable.ic_abloop_01sec_next);
+                    btnForward5Sec.setContentDescription(getString(R.string.forward1Sec));
+                    btnForward5Sec2.setContentDescription(getString(R.string.forward1Sec));
                     btnForward5Sec.setTag(1);
                     btnForward5Sec2.setTag(1);
                     menu.dismiss();
@@ -488,6 +500,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 public void onClick(View view) {
                     btnForward5Sec.setImageResource(R.drawable.ic_abloop_02sec_next);
                     btnForward5Sec2.setImageResource(R.drawable.ic_abloop_02sec_next);
+                    btnForward5Sec.setContentDescription(getString(R.string.forward2Sec));
+                    btnForward5Sec2.setContentDescription(getString(R.string.forward2Sec));
                     btnForward5Sec.setTag(2);
                     btnForward5Sec2.setTag(2);
                     menu.dismiss();
@@ -498,6 +512,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 public void onClick(View view) {
                     btnForward5Sec.setImageResource(R.drawable.ic_abloop_03sec_next);
                     btnForward5Sec2.setImageResource(R.drawable.ic_abloop_03sec_next);
+                    btnForward5Sec.setContentDescription(getString(R.string.forward3Sec));
+                    btnForward5Sec2.setContentDescription(getString(R.string.forward3Sec));
                     btnForward5Sec.setTag(3);
                     btnForward5Sec2.setTag(3);
                     menu.dismiss();
@@ -508,6 +524,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 public void onClick(View view) {
                     btnForward5Sec.setImageResource(R.drawable.ic_abloop_05sec_next);
                     btnForward5Sec2.setImageResource(R.drawable.ic_abloop_05sec_next);
+                    btnForward5Sec.setContentDescription(getString(R.string.forward5Sec));
+                    btnForward5Sec2.setContentDescription(getString(R.string.forward5Sec));
                     btnForward5Sec.setTag(5);
                     btnForward5Sec2.setTag(5);
                     menu.dismiss();
@@ -518,6 +536,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 public void onClick(View view) {
                     btnForward5Sec.setImageResource(R.drawable.ic_abloop_10sec_next);
                     btnForward5Sec2.setImageResource(R.drawable.ic_abloop_10sec_next);
+                    btnForward5Sec.setContentDescription(getString(R.string.forward10Sec));
+                    btnForward5Sec2.setContentDescription(getString(R.string.forward10Sec));
                     btnForward5Sec.setTag(10);
                     btnForward5Sec2.setTag(10);
                     menu.dismiss();
