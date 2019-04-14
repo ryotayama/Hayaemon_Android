@@ -262,6 +262,8 @@
 
         <View
             android:id="@+id/viewBtnALeft"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -282,6 +284,8 @@
 
         <View
             android:id="@+id/viewBtnARight"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -291,6 +295,8 @@
 
         <View
             android:id="@+id/viewBtnRewindLeft"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -311,6 +317,8 @@
 
         <View
             android:id="@+id/viewBtnRewindRight"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -345,6 +353,8 @@
 
         <View
             android:id="@+id/viewBtnForwardLeft"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -365,6 +375,8 @@
 
         <View
             android:id="@+id/viewBtnForwardRight"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -374,6 +386,8 @@
 
         <View
             android:id="@+id/viewBtnBLeft"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -394,6 +408,8 @@
 
         <View
             android:id="@+id/viewBtnBRight"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
