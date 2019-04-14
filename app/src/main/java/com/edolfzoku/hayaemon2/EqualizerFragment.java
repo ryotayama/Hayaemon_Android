@@ -269,6 +269,10 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                                 TextView textView = arTextValue.get(j);
                                 textView.setText(String.valueOf(nLevel));
                             }
+
+                            for (int j = 0; j < arEqualizerItems.size(); j++)
+                                arEqualizerItems.get(j).setSelected(false);
+                            equalizersAdapter.notifyDataSetChanged();
                         }
 
                         public void onStartTrackingTouch(SeekBar seekBar) {
@@ -524,13 +528,17 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
     public void onEqualizerItemClick(int nEqualizer)
     {
-        for(int i = 0; i < arEqualizerItems.size(); i++) {
+        EqualizerItem itemSelected = arEqualizerItems.get(nEqualizer);
+        boolean bSelected = !itemSelected.isSelected();
+        int nSelected = 0;
+        if(bSelected) nSelected = nEqualizer;
+        setEQ(nSelected);
+        for (int i = 0; i < arEqualizerItems.size(); i++) {
             EqualizerItem item = arEqualizerItems.get(i);
-            if(i == nEqualizer) item.setSelected(true);
+            if (i == nSelected) item.setSelected(true);
             else item.setSelected(false);
         }
         equalizersAdapter.notifyDataSetChanged();
-        setEQ(nEqualizer);
     }
 
     private void loadData()
@@ -540,9 +548,9 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         ArrayList<EqualizerItem> arEqualizerItems = gson.fromJson(preferences.getString("arEqualizerItems",""), new TypeToken<ArrayList<EqualizerItem>>(){}.getType());
         if(arEqualizerItems != null) setArEqualizerItems(arEqualizerItems);
         else resetPresets();
-        for(int i = 0; i < this.arEqualizerItems.size(); i++) {
+        this.arEqualizerItems.get(0).setSelected(true);
+        for(int i = 1; i < this.arEqualizerItems.size(); i++)
             this.arEqualizerItems.get(i).setSelected(false);
-        }
     }
 
     private void saveData()
