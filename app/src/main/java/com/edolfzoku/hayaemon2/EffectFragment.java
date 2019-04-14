@@ -663,6 +663,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         activity.findViewById(R.id.editTimeEffectDetail).setOnFocusChangeListener(this);
         activity.findViewById(R.id.editSpeedEffectDetail).setOnFocusChangeListener(this);
+
+        arEffectItems.get(0).setSelected(true);
     }
 
     public void onEffectItemClick(int nEffect)
@@ -704,6 +706,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             handler = null;
         }
         applyEffect();
+        boolean bSelected = false;
+        for(int i = 0; i < arEffectItems.size(); i++) {
+            if(arEffectItems.get(i).isSelected()) bSelected = true;
+        }
+        if(!bSelected) arEffectItems.get(0).setSelected(true);
         effectsAdapter.notifyDataSetChanged();
         activity.playlistFragment.updateSavingEffect();
     }
