@@ -96,6 +96,10 @@ public class ForegroundService extends IntentService {
         intentForward.setAction("action_forward");
         PendingIntent pendingIntentForward = PendingIntent.getService(getApplicationContext(), 1, intentForward, 0);
 
+        Intent intentForeground = new Intent(getApplicationContext(), MainActivity.class);
+        intentForeground.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntentForeground = PendingIntent.getActivity(getApplicationContext(), 1, intentForeground, 0);
+
         if(bitmap == null)
             bitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher);
 
@@ -114,6 +118,7 @@ public class ForegroundService extends IntentService {
                 .setLargeIcon(bitmap)
                 .setContentTitle(item.getTitle())
                 .setContentText(item.getArtist())
+                .setContentIntent(pendingIntentForeground)
                 .build();
 
         startForeground(1, notification);
