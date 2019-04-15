@@ -1065,8 +1065,14 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         View viewMaskB = activity.findViewById(R.id.viewMaskB);
                         viewMaskB.setVisibility(View.INVISIBLE);
 
+                        double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
+                        int nMinute = (int)(dLength / 60);
+                        int nSecond = (int)(dLength % 60);
+                        int nHour = nMinute / 60;
+                        nMinute = nMinute % 60;
+                        int nDec = (int)((dLength * 100) % 100);
                         EditText textBValue  = activity.findViewById(R.id.textBValue);
-                        textBValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", 0, 0, 0, 0));
+                        textBValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
                     }
                     else {
                         activity.dLoopB = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
@@ -1323,6 +1329,14 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
     public void drawWaveForm(String strPath)
     {
+        EditText textBValue  = activity.findViewById(R.id.textBValue);
+        double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
+        int nMinute = (int)(dLength / 60);
+        int nSecond = (int)(dLength % 60);
+        int nHour = nMinute / 60;
+        nMinute = nMinute % 60;
+        int nDec = (int)((dLength * 100) % 100);
+        textBValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
         waveView.drawWaveForm(strPath);
     }
 
