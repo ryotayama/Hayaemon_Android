@@ -3412,6 +3412,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         songsAdapter.notifyDataSetChanged();
         playlistsAdapter.notifyDataSetChanged();
         tabAdapter.notifyDataSetChanged();
+        activity.getForegroundService().setMainActivity(activity);
+        activity.getForegroundService().startForeground();
     }
 
     public void pause()
@@ -3427,6 +3429,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             btnPlayInPlayingBar.setImageResource(R.drawable.ic_playing_large_play);
         else btnPlayInPlayingBar.setImageResource(R.drawable.ic_bar_button_play);
         songsAdapter.notifyDataSetChanged();
+        activity.getForegroundService().setMainActivity(activity);
+        activity.getForegroundService().startForeground();
     }
 
     public void playPrev()
@@ -3821,7 +3825,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(bReloadLyrics) showLyrics();
 
         activity.getForegroundService().setMainActivity(activity);
-        activity.getForegroundService().startForeground(item.getTitle(), item.getArtist(), bitmap);
+        activity.getForegroundService().startForeground();
     }
 
     private String getLyrics(int nPlaylist, int nSong) {

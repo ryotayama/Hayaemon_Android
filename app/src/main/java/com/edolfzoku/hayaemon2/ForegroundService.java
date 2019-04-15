@@ -9,12 +9,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
 import com.un4seen.bass.BASS;
+
+import java.util.ArrayList;
 
 public class ForegroundService extends IntentService {
     private MainActivity activity;
@@ -45,7 +49,30 @@ public class ForegroundService extends IntentService {
         super.onDestroy();
     }
 
-    public void startForeground(String strTitle, String strArtist, Bitmap bitmap) {
+    public void startForeground() {
+        ArrayList<SongItem> arSongs = activity.playlistFragment.getArPlaylists().get(activity.playlistFragment.getPlayingPlaylist());
+        SongItem item = arSongs.get(activity.playlistFragment.getPlaying());
+
+        Bitmap bitmap = null;
+        if(item.getPathArtwork() != null && !item.getPathArtwork().equals("")) {
+            bitmap = BitmapFactory.decodeFile(item.getPathArtwork());
+        }
+        else {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            boolean bError = false;
+            try {
+                mmr.setDataSource(getApplicationContext(), Uri.parse(item.getPath()));
+            } catch (Exception e) {
+                bError = true;
+            }
+            if (!bError) {
+                byte[] data = mmr.getEmbeddedPicture();
+                if (data != null) {
+                    bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                }
+            }
+        }
+
         if (Build.VERSION.SDK_INT >= 26) {
             NotificationManager notificationManager =
                     (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -57,43 +84,37 @@ public class ForegroundService extends IntentService {
                 notificationManager.createNotificationChannel(channel);
         }
 
-        Notification notification;
-        if (Build.VERSION.SDK_INT >= 21) {
-            Intent intentRewind = new Intent(getApplicationContext(), ForegroundService.class );
-            intentRewind.setAction("action_rewind");
-            PendingIntent pendingIntentRewind = PendingIntent.getService(getApplicationContext(), 1, intentRewind, 0);
+        Intent intentRewind = new Intent(getApplicationContext(), ForegroundService.class );
+        intentRewind.setAction("action_rewind");
+        PendingIntent pendingIntentRewind = PendingIntent.getService(getApplicationContext(), 1, intentRewind, 0);
 
-            Intent intentPause = new Intent(getApplicationContext(), ForegroundService.class );
-            intentPause.setAction("action_pause");
-            PendingIntent pendingIntentPause = PendingIntent.getService(getApplicationContext(), 1, intentPause, 0);
+        Intent intentPlayPause = new Intent(getApplicationContext(), ForegroundService.class );
+        intentPlayPause.setAction("action_playpause");
+        PendingIntent pendingIntentPlayPause = PendingIntent.getService(getApplicationContext(), 1, intentPlayPause, 0);
 
-            Intent intentForward = new Intent(getApplicationContext(), ForegroundService.class );
-            intentForward.setAction("action_forward");
-            PendingIntent pendingIntentForward = PendingIntent.getService(getApplicationContext(), 1, intentForward, 0);
+        Intent intentForward = new Intent(getApplicationContext(), ForegroundService.class );
+        intentForward.setAction("action_forward");
+        PendingIntent pendingIntentForward = PendingIntent.getService(getApplicationContext(), 1, intentForward, 0);
 
-            if(bitmap == null)
-                bitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher);
+        if(bitmap == null)
+            bitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher);
 
-            notification = new NotificationCompat.Builder(this, "default")
-                    .addAction(new NotificationCompat.Action.Builder(R.drawable.ic_rewind, "Previous", pendingIntentRewind).build())
-                    .addAction(new NotificationCompat.Action.Builder(R.drawable.ic_pause, "Pause", pendingIntentPause).build())
-                    .addAction(new NotificationCompat.Action.Builder(R.drawable.ic_forward, "Next", pendingIntentForward).build())
-                    .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
-                            .setShowActionsInCompactView(0, 1, 2))
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setLargeIcon(bitmap)
-                    .setContentTitle(strTitle)
-                    .setContentText(strArtist)
-                    .build();
-        }
-        else {
-            notification = new NotificationCompat.Builder(this, "default")
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setLargeIcon(bitmap)
-                    .setContentTitle(strTitle)
-                    .setContentText(strArtist)
-                    .build();
-        }
+        NotificationCompat.Action actionPlayPause;
+        if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING)
+            actionPlayPause = new NotificationCompat.Action.Builder(R.drawable.ic_pause, "Pause", pendingIntentPlayPause).build();
+        else
+            actionPlayPause = new NotificationCompat.Action.Builder(R.drawable.ic_play, "Play", pendingIntentPlayPause).build();
+        Notification notification = new NotificationCompat.Builder(this, "default")
+                .addAction(new NotificationCompat.Action.Builder(R.drawable.ic_rewind, "Previous", pendingIntentRewind).build())
+                .addAction(actionPlayPause)
+                .addAction(new NotificationCompat.Action.Builder(R.drawable.ic_forward, "Next", pendingIntentForward).build())
+                .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(0, 1, 2))
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(bitmap)
+                .setContentTitle(item.getTitle())
+                .setContentText(item.getArtist())
+                .build();
 
         startForeground(1, notification);
     }
@@ -123,7 +144,7 @@ public class ForegroundService extends IntentService {
                     });
                 }
                 break;
-            case "action_pause":
+            case "action_playpause":
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
