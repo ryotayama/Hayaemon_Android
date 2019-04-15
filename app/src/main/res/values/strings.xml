@@ -15,7 +15,7 @@
     <string name="doubling">ダブリング</string>
     <string name="transcribeSlideGuitar">サイドギターの耳コピ</string>
     <string name="transcribeBassOctave">ベースの耳コピ（オクターブ上げ）</string>
-    <string name="pan">パン</string>
+    <string name="pan">パン（左右バランス）</string>
     <string name="normalize">ノーマライズ</string>
     <string name="compressor">コンプレッサー</string>
     <string name="frequency">再生周波数</string>
