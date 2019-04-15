@@ -306,22 +306,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             handler.postDelayed(timer, 80);
         }
         else if(v.getId() == R.id.btnRewind)
-        {
-            if(MainActivity.hStream == 0) return;
-            if(!activity.effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) > activity.dLoopA + 1.0)
-                BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA), BASS.BASS_POS_BYTE);
-            else if(activity.effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) < activity.dLoopA - 1.0)
-                BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB), BASS.BASS_POS_BYTE);
-            else
-                playPrev();
-        }
+            onRewindBtnClick();
         else if(v.getId() == R.id.btnPlay)
-            onPlayBtnClicked();
+            onPlayBtnClick();
         else if(v.getId() == R.id.btnForward)
-        {
-            if(MainActivity.hStream == 0) return;
-            playNext(true);
-        }
+            onForwardBtnClick();
         else if(v.getId() == R.id.btnRecord)
         {
             startRecord();
@@ -568,7 +557,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         play();
                     else if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING) {
                         bForceNormal = true;
-                        onPlayBtnClicked();
+                        onPlayBtnClick();
                     }
                         }
                 });
@@ -592,7 +581,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                             play();
                         else if(MainActivity.hStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.hStream) != BASS.BASS_ACTIVE_PLAYING) {
                             bForceReverse = true;
-                            onPlayBtnClicked();
+                            onPlayBtnClick();
                         }
                     }
                 });
@@ -997,7 +986,24 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         finishMultipleSelection();
     }
 
-    public void onPlayBtnClicked()
+    public void onRewindBtnClick()
+    {
+        if(MainActivity.hStream == 0) return;
+        if(!activity.effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) > activity.dLoopA + 1.0)
+            BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA), BASS.BASS_POS_BYTE);
+        else if(activity.effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE)) < activity.dLoopA - 1.0)
+            BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB), BASS.BASS_POS_BYTE);
+        else
+            playPrev();
+    }
+
+    public void onForwardBtnClick()
+    {
+        if(MainActivity.hStream == 0) return;
+        playNext(true);
+    }
+
+    public void onPlayBtnClick()
     {
         if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING)
             pause();
@@ -3412,8 +3418,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         songsAdapter.notifyDataSetChanged();
         playlistsAdapter.notifyDataSetChanged();
         tabAdapter.notifyDataSetChanged();
-        activity.getForegroundService().setMainActivity(activity);
-        activity.getForegroundService().startForeground();
+        activity.startNotification();
     }
 
     public void pause()
@@ -3429,8 +3434,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             btnPlayInPlayingBar.setImageResource(R.drawable.ic_playing_large_play);
         else btnPlayInPlayingBar.setImageResource(R.drawable.ic_bar_button_play);
         songsAdapter.notifyDataSetChanged();
-        activity.getForegroundService().setMainActivity(activity);
-        activity.getForegroundService().startForeground();
+        activity.startNotification();
     }
 
     public void playPrev()
@@ -3824,8 +3828,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         tabAdapter.notifyDataSetChanged();
         if(bReloadLyrics) showLyrics();
 
-        activity.getForegroundService().setMainActivity(activity);
-        activity.getForegroundService().startForeground();
+        activity.startNotification();
     }
 
     private String getLyrics(int nPlaylist, int nSong) {
@@ -3969,7 +3972,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         playlistsAdapter.notifyDataSetChanged();
         tabAdapter.notifyDataSetChanged();
 
-        activity.getForegroundService().stopForeground();
+        activity.stopNotification();
     }
 
     public void addSong(MainActivity activity, Uri uri)

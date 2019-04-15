@@ -131,19 +131,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BroadcastReceiver receiver;
     private AdView mAdView;
     private boolean mBound = false;
-    private ForegroundService foregroundService = null;
-    private final ServiceConnection connection = new ServiceConnection() {
-
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            foregroundService = ((ForegroundService.ForegroundServiceBinder)service).getService();
-        }
-
-        public void onServiceDisconnected(ComponentName name) {
-            foregroundService = null;
-        }
-    };
-
-    public ForegroundService getForegroundService() { return foregroundService; }
 
     public IInAppBillingService getService() { return mService; }
     public void setPlayNextByBPos(boolean bPlayNextByBPos) { this.bPlayNextByBPos = bPlayNextByBPos; }
@@ -161,10 +148,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
 
         hStream = 0;
-
-        startService(new Intent(this, ForegroundService.class));
-        Intent in = new Intent(getApplicationContext(), ForegroundService.class);
-        bindService(in, connection, Context.BIND_AUTO_CREATE);
 
         setContentView(R.layout.activity_main);
 
@@ -425,40 +408,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
 
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if(intent.getAction() == null) return;
-                if(intent.getAction().equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
-                    if(BASS.BASS_ChannelIsActive(hStream) == BASS.BASS_ACTIVE_PLAYING)
-                        playlistFragment.pause();
-                    return;
-                }
-                try {
-                    Bundle ownedItems = mService.getPurchases(3, getPackageName(), "inapp", null);
-                    if(ownedItems != null && ownedItems.getInt("RESPONSE_CODE") == 0) {
-                        ArrayList<String> ownedSkus =
-                                ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
-                        ArrayList<String> purchaseDataList =
-                                ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
-                        if(purchaseDataList != null && ownedSkus != null) {
-                            for (int i = 0; i < purchaseDataList.size(); i++) {
-                                String sku = ownedSkus.get(i);
+        if(receiver == null) {
+            receiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (intent.getAction() == null) return;
+                    if (intent.getAction().equals("action_rewind")) {
+                        playlistFragment.onRewindBtnClick();
+                        return;
+                    }
+                    if (intent.getAction().equals("action_playpause")) {
+                        playlistFragment.onPlayBtnClick();
+                        return;
+                    }
+                    if (intent.getAction().equals("action_forward")) {
+                        playlistFragment.onForwardBtnClick();
+                        return;
+                    } else if (intent.getAction().equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
+                        if (BASS.BASS_ChannelIsActive(hStream) == BASS.BASS_ACTIVE_PLAYING)
+                            playlistFragment.pause();
+                        return;
+                    }
+                    try {
+                        Bundle ownedItems = mService.getPurchases(3, getPackageName(), "inapp", null);
+                        if (ownedItems != null && ownedItems.getInt("RESPONSE_CODE") == 0) {
+                            ArrayList<String> ownedSkus =
+                                    ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
+                            ArrayList<String> purchaseDataList =
+                                    ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
+                            if (purchaseDataList != null && ownedSkus != null) {
+                                for (int i = 0; i < purchaseDataList.size(); i++) {
+                                    String sku = ownedSkus.get(i);
 
-                                if (sku.equals("hideads")) {
-                                    hideAds();
+                                    if (sku.equals("hideads")) {
+                                        hideAds();
+                                    }
                                 }
                             }
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        finish();
                     }
-                } catch(Exception e) {
-                    e.printStackTrace();
-                    finish();
                 }
-            }
-        };
-        registerReceiver(receiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
-        registerReceiver(receiver, new IntentFilter("com.android.vending.billing.PURCHASES_UPDATED"));
+            };
+            registerReceiver(receiver, new IntentFilter("action_rewind"));
+            registerReceiver(receiver, new IntentFilter("action_playpause"));
+            registerReceiver(receiver, new IntentFilter("action_forward"));
+            registerReceiver(receiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
+            registerReceiver(receiver, new IntentFilter("com.android.vending.billing.PURCHASES_UPDATED"));
+        }
 
         try {
             Bundle ownedItems = mService.getPurchases(3, getPackageName(), "inapp", null);
@@ -484,7 +483,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(receiver);
+        if(hStream == 0 && receiver != null) unregisterReceiver(receiver);
+    }
+
+    public void startNotification()
+    {
+        ArrayList<SongItem> arSongs = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist());
+        SongItem item = arSongs.get(playlistFragment.getPlaying());
+        Intent intent = new Intent(this, ForegroundService.class);
+        intent.putExtra("strTitle", item.getTitle());
+        intent.putExtra("strArtist", item.getArtist());
+        intent.putExtra("strPathArtwork", item.getPathArtwork());
+        intent.putExtra("strPath", item.getPath());
+        if (Build.VERSION.SDK_INT >= 26) startForegroundService(intent);
+        else startService(intent);
+    }
+
+    public void stopNotification()
+    {
+        Intent intent = new Intent(this, ForegroundService.class);
+        stopService(intent);
     }
 
     @Override
@@ -1239,18 +1257,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             openSetting();
         }
         else if(v.getId() == R.id.btnPlayInPlayingBar)
-            playlistFragment.onPlayBtnClicked();
+            playlistFragment.onPlayBtnClick();
         else if(v.getId() == R.id.btnForwardInPlayingBar)
-            playlistFragment.playNext(true);
-        else if(v.getId() == R.id.btnRewindInPlayingBar) {
-            if(hStream == 0) return;
-            if(!effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(hStream, BASS.BASS_ChannelGetPosition(hStream, BASS.BASS_POS_BYTE)) > dLoopA + 1.0)
-                BASS.BASS_ChannelSetPosition(hStream, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopA), BASS.BASS_POS_BYTE);
-            else if(effectFragment.isReverse() && BASS.BASS_ChannelBytes2Seconds(hStream, BASS.BASS_ChannelGetPosition(hStream, BASS.BASS_POS_BYTE)) < dLoopA - 1.0)
-                BASS.BASS_ChannelSetPosition(hStream, BASS.BASS_ChannelSeconds2Bytes(hStream, dLoopB), BASS.BASS_POS_BYTE);
-            else
-                playlistFragment.playPrev();
-        }
+            playlistFragment.onForwardBtnClick();
+        else if(v.getId() == R.id.btnRewindInPlayingBar)
+            playlistFragment.onRewindBtnClick();
         else if(v.getId() == R.id.relativePlaying)
             upViewPlaying();
         else if(v.getId() == R.id.imgViewDown)
@@ -2136,8 +2147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onDestroy() {
         BASS.BASS_Free();
 
-        foregroundService.stopForeground();
-        unbindService(connection);
+        stopNotification();
         unbindService(mServiceConn);
         mBound = false;
         super.onDestroy();
