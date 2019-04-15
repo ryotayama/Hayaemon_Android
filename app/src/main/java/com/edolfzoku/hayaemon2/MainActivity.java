@@ -303,13 +303,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        getSupportFragmentManager().putFragment(savedInstanceState, "playlistFragment", playlistFragment);
-        getSupportFragmentManager().putFragment(savedInstanceState, "loopFragment", loopFragment);
-        getSupportFragmentManager().putFragment(savedInstanceState, "controlFragment", controlFragment);
-        getSupportFragmentManager().putFragment(savedInstanceState, "equalizerFragment", equalizerFragment);
-        getSupportFragmentManager().putFragment(savedInstanceState, "effectFragment", effectFragment);
-
         super.onSaveInstanceState(savedInstanceState);
+
+        if(playlistFragment.isAdded())
+            getSupportFragmentManager().putFragment(savedInstanceState, "playlistFragment", playlistFragment);
+        if(loopFragment.isAdded())
+            getSupportFragmentManager().putFragment(savedInstanceState, "loopFragment", loopFragment);
+        if(controlFragment.isAdded())
+            getSupportFragmentManager().putFragment(savedInstanceState, "controlFragment", controlFragment);
+        if(equalizerFragment.isAdded())
+            getSupportFragmentManager().putFragment(savedInstanceState, "equalizerFragment", equalizerFragment);
+        if(effectFragment.isAdded())
+            getSupportFragmentManager().putFragment(savedInstanceState, "effectFragment", effectFragment);
     }
 
     private class SingleTapConfirm extends GestureDetector.SimpleOnGestureListener
