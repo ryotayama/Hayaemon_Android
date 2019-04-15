@@ -129,7 +129,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     long nPos = 0;
                     int nScreenWidth = waveView.getWidth();
                     int nMaxWidth = (int)(nScreenWidth * waveView.getZoom());
-                    int nLeft = -1;
+                    int nLeft = -(int)(1.0 * getResources().getDisplayMetrics().density + 0.5);
                     EditText textCurValue = activity.findViewById(R.id.textCurValue);
                     if(MainActivity.hStream != 0) {
                         double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
