@@ -483,7 +483,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        if(hStream == 0 && receiver != null) unregisterReceiver(receiver);
+        if(hStream == 0 && receiver != null) {
+            try {
+                unregisterReceiver(receiver);
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+            receiver = null;
+        }
     }
 
     public void startNotification()
