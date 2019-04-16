@@ -99,7 +99,7 @@ public class ForegroundService extends IntentService {
                     .addAction(new NotificationCompat.Action.Builder(R.drawable.ic_forward, "Next", pendingIntentForward).build())
                     .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
                             .setShowActionsInCompactView(0, 1, 2))
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_statusbar)
                     .setLargeIcon(bitmap)
                     .setContentTitle(strTitle)
                     .setContentText(strArtist)
