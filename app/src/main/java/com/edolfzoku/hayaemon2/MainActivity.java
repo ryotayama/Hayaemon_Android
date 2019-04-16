@@ -1455,7 +1455,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final int nTranslationYFrom = (int)relativePlayingWithShadow.getTranslationY();
         final int nTranslationY = 0;
         final int nRelativePlayingHeightFrom = relativePlayingWithShadow.getHeight();
-        final int nRelativePlayingHeight = getResources().getDisplayMetrics().heightPixels - tabLayout.getHeight() - findViewById(R.id.linearControl).getHeight() - getStatusBarHeight() + (int) (16.0 * getResources().getDisplayMetrics().density + 0.5);
+        final int nRelativePlayingHeight = getResources().getDisplayMetrics().heightPixels - findViewById(R.id.linearControl).getHeight() - getStatusBarHeight() + (int) (16.0 * getResources().getDisplayMetrics().density + 0.5);
         final int nArtworkWidthFrom = btnArtwork.getWidth();
         final int nArtworkWidth = nScreenWidth / 2;
         final int nArtworkMarginFrom = (int) (8.0 * getResources().getDisplayMetrics().density + 0.5);
@@ -1496,6 +1496,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 advanceAnimation(viewSep2, "bottomMargin", 0, tabLayout.getHeight(), fProgress);
                 relativePlayingWithShadow.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
                 advanceAnimation(relativePlayingWithShadow, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
+                advanceAnimation(relativePlayingWithShadow, "bottomMargin", 0, -tabLayout.getHeight(), fProgress);
                 advanceAnimation(relativePlaying, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
                 advanceAnimation(btnArtwork, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
                 advanceAnimation(btnArtwork, "height", nArtworkWidthFrom, nArtworkWidth, fProgress);
@@ -1632,6 +1633,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 advanceAnimation(viewSep2, "bottomMargin", tabLayout.getHeight(), 0, fProgress);
                 relativePlayingWithShadow.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
                 advanceAnimation(relativePlayingWithShadow, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
+                advanceAnimation(relativePlayingWithShadow, "bottomMargin", -tabLayout.getHeight(), 0, fProgress);
                 advanceAnimation(relativePlaying, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
                 advanceAnimation(btnArtwork, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
                 advanceAnimation(btnArtwork, "height", nArtworkWidthFrom, nArtworkWidth, fProgress);
