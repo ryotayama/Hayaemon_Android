@@ -170,8 +170,10 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:layout_alignBaseline="@id/textTimeEffectDetail"
-                android:layout_toRightOf="@id/textTimeEffectDetail"
-                android:layout_toEndOf="@id/textTimeEffectDetail"
+                android:layout_alignLeft="@+id/editSpeedEffectDetail"
+                android:layout_alignStart="@+id/editSpeedEffectDetail"
+                android:layout_alignRight="@+id/editSpeedEffectDetail"
+                android:layout_alignEnd="@+id/editSpeedEffectDetail"
                 android:background="@drawable/editborder"
                 />
 
@@ -198,10 +200,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:layout_alignBaseline="@id/textSpeedEffectDetail"
-                android:layout_alignLeft="@+id/editTimeEffectDetail"
-                android:layout_alignStart="@+id/editTimeEffectDetail"
-                android:layout_alignRight="@+id/editTimeEffectDetail"
-                android:layout_alignEnd="@+id/editTimeEffectDetail"
+                android:layout_toRightOf="@id/textSpeedEffectDetail"
+                android:layout_toEndOf="@id/textSpeedEffectDetail"
                 android:background="@drawable/editborder"
                 />
 

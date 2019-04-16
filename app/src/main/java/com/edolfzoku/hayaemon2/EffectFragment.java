@@ -162,7 +162,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         TextView textEffectName = activity.findViewById(R.id.textEffectName);
         if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeIncreaseSpeed).getEffectName())) {
             EditText editTimeEffectDetail = activity.findViewById(R.id.editTimeEffectDetail);
-            editTimeEffectDetail.setText(String.format(Locale.getDefault(), "%.1f秒", fTimeOfIncreaseSpeed));
+            editTimeEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%s", fTimeOfIncreaseSpeed, getString(R.string.sec)));
         }
     }
     public float getIncreaseSpeed() { return fIncreaseSpeed; }
@@ -180,7 +180,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         TextView textEffectName = activity.findViewById(R.id.textEffectName);
         if(textEffectName.getText().toString().equals(arEffectItems.get(kEffectTypeDecreaseSpeed).getEffectName())) {
             EditText editTimeEffectDetail = activity.findViewById(R.id.editTimeEffectDetail);
-            editTimeEffectDetail.setText(String.format(Locale.getDefault(), "%.1f秒", fTimeOfDecreaseSpeed));
+            editTimeEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%s", fTimeOfDecreaseSpeed, getString(R.string.sec)));
         }
     }
     public float getDecreaseSpeed() { return fDecreaseSpeed; }
@@ -561,7 +561,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         arEffectItems.add(item);
         item = new EffectItem(getString(R.string.doubling), false);
         arEffectItems.add(item);
-        item = new EffectItem(getString(R.string.transcribeSlideGuitar), false);
+        item = new EffectItem(getString(R.string.transcribeSideGuitar), false);
         arEffectItems.add(item);
         item = new EffectItem(getString(R.string.transcribeBassOctave), false);
         arEffectItems.add(item);
@@ -773,7 +773,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             textEffectLabel.setText(R.string.incSpeedTitle);
             EditText editTimeEffectDetail = activity.findViewById(R.id.editTimeEffectDetail);
-            editTimeEffectDetail.setText(String.format(Locale.getDefault(), "%.1f秒", fTimeOfIncreaseSpeed));
+            editTimeEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%s", fTimeOfIncreaseSpeed, getString(R.string.sec)));
             EditText editSpeedEffectDetail = activity.findViewById(R.id.editSpeedEffectDetail);
             editSpeedEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%%", fIncreaseSpeed));
         }
@@ -781,7 +781,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             textEffectLabel.setText(R.string.decSpeedTitle);
             EditText editTimeEffectDetail = activity.findViewById(R.id.editTimeEffectDetail);
-            editTimeEffectDetail.setText(String.format(Locale.getDefault(), "%.1f秒", fTimeOfDecreaseSpeed));
+            editTimeEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%s", fTimeOfDecreaseSpeed, getString(R.string.sec)));
             EditText editSpeedEffectDetail = activity.findViewById(R.id.editSpeedEffectDetail);
             editSpeedEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%%", fDecreaseSpeed));
         }
@@ -1263,7 +1263,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     hDspDoubling = BASS.BASS_ChannelSetDSP(hStream, doublingDSP, null, 0);
                 }
             }
-            else if(strEffect.equals(getString(R.string.transcribeSlideGuitar))) {
+            else if(strEffect.equals(getString(R.string.transcribeSideGuitar))) {
                 if (info.chans != 1)
                     hDspVocalCancel = BASS.BASS_ChannelSetDSP(hStream, vocalCancelDSP, null, 0);
                 array = new int[]{0, -30, -20, -12, -7, -4, -3, -2, -1, 0, 0, 0, 0, 0, -1, -2, -3, -4, -7, -12, -20, -24, -27, -28, -29, -30, -30, -30, -30, -30, -30, -30};

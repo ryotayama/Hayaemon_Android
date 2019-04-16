@@ -460,7 +460,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         switch(v.getId()) {
             case R.id.btnAddEqualizer:
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle(R.string.savePreset);
+                builder.setTitle(R.string.addPreset);
                 LinearLayout linearLayout = new LinearLayout(activity);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
                 final EditText editPreset = new EditText(activity);

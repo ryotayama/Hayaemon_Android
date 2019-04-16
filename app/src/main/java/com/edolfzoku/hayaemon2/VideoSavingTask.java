@@ -80,7 +80,7 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
             AndroidSequenceEncoder encoder = new AndroidSequenceEncoder(out, Rational.R(1, 1));
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;
-            Bitmap bitmap = BitmapFactory.decodeResource(playlistFragment.getResources(), R.drawable.cameraroll_jp, options);
+            Bitmap bitmap = BitmapFactory.decodeResource(playlistFragment.getResources(), R.drawable.cameraroll, options);
             encoder.encodeImage(bitmap);
             encoder.encodeImage(bitmap);
             bitmap.recycle();
