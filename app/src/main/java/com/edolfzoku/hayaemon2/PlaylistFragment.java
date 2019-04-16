@@ -3502,7 +3502,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     arPlayed.set(i, false);
                 }
             }
-            if (arPlayed.size() > 1)
+            if (arPlayed.size() >= 1)
             {
                 Random random = new Random();
                 if (arTemp.size() == 0 || arTemp.size() == arPlayed.size())
