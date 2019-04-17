@@ -169,33 +169,17 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     else
                         textCurValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", 0, 0, 0, 0));
                     int nTop = viewCurPos.getTop();
-                    if(nLeft < nScreenWidth / 2) {
-                        viewCurPos.animate()
-                                .x(nLeft)
-                                .y(nTop)
-                                .setDuration(lDelay)
-                                .setInterpolator(new LinearInterpolator())
-                                .start();
-                        if(!bContinue) waveView.invalidate();
-                    }
-                    else if(nScreenWidth / 2 <= nLeft && nLeft < nMaxWidth - nScreenWidth / 2) {
-                        viewCurPos.animate()
-                                .x(nScreenWidth / 2.0f)
-                                .y(nTop)
-                                .setDuration(lDelay)
-                                .setInterpolator(new LinearInterpolator())
-                                .start();
-                        if(!bContinue) waveView.invalidate();
-                    }
-                    else {
-                        viewCurPos.animate()
-                                .x(nScreenWidth - (nMaxWidth - nLeft))
-                                .y(nTop)
-                                .setDuration(lDelay)
-                                .setInterpolator(new LinearInterpolator())
-                                .start();
-                        if(!bContinue) waveView.invalidate();
-                    }
+                    if(nScreenWidth / 2 <= nLeft && nLeft < nMaxWidth - nScreenWidth / 2)
+                        nLeft = (int)(nScreenWidth / 2.0f);
+                    else if (nMaxWidth - nScreenWidth / 2 <= nLeft)
+                        nLeft = nScreenWidth - (nMaxWidth - nLeft);
+                    viewCurPos.animate()
+                            .x(nLeft)
+                            .y(nTop)
+                            .setDuration(lDelay)
+                            .setInterpolator(new LinearInterpolator())
+                            .start();
+                    if(!bContinue) waveView.invalidate();
                     View viewMaskA = activity.findViewById(R.id.viewMaskA);
                     View viewMaskB = activity.findViewById(R.id.viewMaskB);
                     if(activity.bLoopA) {
@@ -203,7 +187,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         if(MainActivity.hStream != 0)
                             nPosA = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA);
                         nPosA = nPos - nPosA;
-                        int nLeftA = (int) (viewCurPos.getX() - nMaxWidth * nPosA / nLength);
+                        int nLeftA = (int) (nLeft - nMaxWidth * nPosA / nLength);
                         if(nLeftA < 0) nLeftA = 0;
                         viewMaskA.getLayoutParams().width = nLeftA;
                         viewMaskA.requestLayout();
@@ -213,7 +197,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         if(MainActivity.hStream != 0)
                             nPosB = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB);
                         nPosB = nPos - nPosB;
-                        int nLeftB = (int) (viewCurPos.getX() - nMaxWidth * nPosB / nLength);
+                        int nLeftB = (int) (nLeft - nMaxWidth * nPosB / nLength);
                         if(nLeftB < 0) nLeftB = 0;
                         else if(nLeftB > waveView.getWidth()) nLeftB = waveView.getWidth();
                         viewMaskB.setTranslationX(nLeftB);
@@ -227,7 +211,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                             double dMarkerPos = arMarkerTime.get(i);
                             long nMarkerPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dMarkerPos);
                             nMarkerPos = nPos - nMarkerPos;
-                            int nMarkerLeft = (int) (viewCurPos.getX() - nMaxWidth * nMarkerPos / (float)nLength - textView.getMeasuredWidth() / 2.0f);
+                            int nMarkerLeft = (int) (nLeft - nMaxWidth * nMarkerPos / (float)nLength - textView.getMeasuredWidth() / 2.0f);
                             if (nMarkerLeft < -textView.getMeasuredWidth())
                                 nMarkerLeft = -textView.getMeasuredWidth();
                             textView.setTranslationX(nMarkerLeft);
