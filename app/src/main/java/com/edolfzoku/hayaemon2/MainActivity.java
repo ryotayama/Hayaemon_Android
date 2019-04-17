@@ -701,7 +701,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         catch(PackageManager.NameNotFoundException e) {
             strCurrentVersionName = strVersionName;
         }
-        if(!bHideUpdateLogNext)
+        if(!bHideUpdateLogNext && Locale.getDefault().equals(Locale.JAPAN))
         {
             if(strVersionName != null && !strCurrentVersionName.equals(strVersionName))
                 bShowUpdateLog = true;
