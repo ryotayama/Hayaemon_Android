@@ -197,6 +197,7 @@ public class WaveView extends View {
             int nWidth = getMaxTextureSize();
             if(nTotalWidth + nWidth > nMaxWidth)
                 nWidth = nMaxWidth - nTotalWidth;
+            if(nWidth <= 0) break;
             Bitmap bitmap = Bitmap.createBitmap(nWidth, getHeight(), Bitmap.Config.RGB_565);
             Canvas canvas = new Canvas(bitmap);
             canvas.drawColor(Color.WHITE);
