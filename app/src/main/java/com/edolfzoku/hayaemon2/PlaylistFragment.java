@@ -1641,7 +1641,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     {
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         SongItem song = arSongs.get(nSelectedItem);
-        if(song.getPathArtwork() != null) {
+        String strPathArtwork = song.getPathArtwork();
+        if(strPathArtwork != null) {
             boolean bFounded = false;
             // 同じアートワークを使っている曲が無いかチェック
             for(int j = 0; j < arPlaylists.size(); j++) {
@@ -1658,7 +1659,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
             // 同じアートワークを使っている曲が無ければ削除
             if(!bFounded) {
-                File fileBefore = new File(song.getPathArtwork());
+                File fileBefore = new File(strPathArtwork);
                 if (fileBefore.exists()) {
                     if (!fileBefore.delete()) System.out.println("ファイルの削除に失敗しました");
                     song.setPathArtwork(null);
@@ -1703,7 +1704,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     {
         ArrayList<SongItem> arSongs = arPlaylists.get(nSelectedPlaylist);
         SongItem song = arSongs.get(nSelectedItem);
-        if(song.getPathArtwork() != null) {
+        String strPathArtwork = song.getPathArtwork();
+        if(strPathArtwork != null) {
             boolean bFounded = false;
             // 同じアートワークを使っている曲が無いかチェック
             for(int j = 0; j < arPlaylists.size(); j++) {
@@ -1720,7 +1722,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
             // 同じアートワークを使っている曲が無ければ削除
             if(!bFounded) {
-                File fileBefore = new File(song.getPathArtwork());
+                File fileBefore = new File(strPathArtwork);
                 if (fileBefore.exists()) {
                     if (!fileBefore.delete()) System.out.println("ファイルの削除に失敗しました");
                     song.setPathArtwork(null);
@@ -3699,6 +3701,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             MainActivity.hStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE);
         }
         if(MainActivity.hStream == 0) return;
+        activity.nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
+        activity.dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, activity.nLength);
+        activity.getSeekCurPos().setMax((int)activity.dLength);
 
         final RelativeLayout relativePlayingWithShadow = activity.findViewById(R.id.relativePlayingWithShadow);
         AnimationButton btnArtworkInPlayingBar = activity.findViewById(R.id.btnArtworkInPlayingBar);
@@ -3959,6 +3964,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         nPlaying = -1;
         BASS.BASS_ChannelStop(MainActivity.hStream);
         MainActivity.hStream = 0;
+        activity.loopFragment.getTextCurValue().setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", 0, 0, 0, 0));
         AnimationButton btnPlay = activity.findViewById(R.id.btnPlay);
         btnPlay.setContentDescription(getString(R.string.play));
         btnPlay.setImageResource(R.drawable.ic_bar_button_play);

@@ -36,7 +36,6 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.un4seen.bass.BASS;
@@ -49,8 +48,13 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     private final Handler handler;
     private MainActivity activity;
 
-    private View viewCurPos;
-    private WaveView waveView;
+    private View mViewCurPos;
+    private WaveView mWaveView;
+    private LinearLayout mABButton;
+    private LinearLayout mMarkerButton;
+    private EditText mTextCurValue;
+    private View mViewMaskA;
+    private View mViewMaskB;
 
     private ArrayList<Double> arMarkerTime;
     private final ArrayList<TextView> arMarkerText;
@@ -60,8 +64,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     public void setArMarkerTime(ArrayList<Double> arMarkerTime) {
         if(arMarkerTime == null) return;
         this.arMarkerTime = new ArrayList<>();
-        int nScreenWidth = waveView.getWidth();
-        int nMaxWidth = (int)(nScreenWidth * waveView.getZoom());
+        int nScreenWidth = mWaveView.getWidth();
+        int nMaxWidth = (int)(nScreenWidth * mWaveView.getZoom());
         double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
         for(int i = 0; i < arMarkerTime.size(); i++) {
             double dPos = arMarkerTime.get(i);
@@ -72,8 +76,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             RelativeLayout layout = activity.findViewById(R.id.relative_loop);
             layout.addView(textView);
             textView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-            int nLeft = (int) (viewCurPos.getX() - nMaxWidth * dPos / dLength - textView.getMeasuredWidth() / 2.0f);
-            int nTop = waveView.getTop() - textView.getMeasuredHeight();
+            int nLeft = (int) (mViewCurPos.getX() - nMaxWidth * dPos / dLength - textView.getMeasuredWidth() / 2.0f);
+            int nTop = mWaveView.getTop() - textView.getMeasuredHeight();
             textView.setTranslationX(nLeft);
             textView.setTranslationY(nTop);
             textView.requestLayout();
@@ -82,6 +86,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     }
     public int getMarker() { return nMarker; }
     public void setMarker(int nMarker) { this.nMarker = nMarker; }
+    public EditText getTextCurValue() { return mTextCurValue; }
 
     public LoopFragment()
     {
@@ -115,25 +120,27 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewCurPos = activity.findViewById(R.id.viewCurPos);
-        waveView = activity.findViewById(R.id.waveView);
-        waveView.setLoopFragment(this);
-        waveView.setOnTouchListener(this);
+        mViewCurPos = activity.findViewById(R.id.viewCurPos);
+        mABButton = activity.findViewById(R.id.ABButton);
+        mMarkerButton = activity.findViewById(R.id.MarkerButton);
+        mTextCurValue = activity.findViewById(R.id.textCurValue);
+        mViewMaskA = activity.findViewById(R.id.viewMaskA);
+        mViewMaskB = activity.findViewById(R.id.viewMaskB);
+        mWaveView = activity.findViewById(R.id.waveView);
+        mWaveView.setLoopFragment(this);
+        mWaveView.setOnTouchListener(this);
         final long lDelay = 250;
         handler.post(new Runnable() {
             @Override
             public void run() {
                 if (activity != null) {
-                    LinearLayout ABButton = activity.findViewById(R.id.ABButton);
-                    long nLength = 0;
                     long nPos = 0;
-                    int nScreenWidth = waveView.getWidth();
-                    int nMaxWidth = (int)(nScreenWidth * waveView.getZoom());
-                    int nLeft = -(int)(1.0 * getResources().getDisplayMetrics().density + 0.5);
-                    EditText textCurValue = activity.findViewById(R.id.textCurValue);
+                    int nScreenWidth = mWaveView.getWidth();
+                    int nMaxWidth = (int)(nScreenWidth * mWaveView.getZoom());
+                    int nLeft = -(int)(1.0 * activity.getDensity() + 0.5);
                     if(MainActivity.hStream != 0) {
                         double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
-                        if (ABButton.getVisibility() == View.VISIBLE && ((activity.bLoopA && dPos < activity.dLoopA) || (activity.bLoopB && activity.dLoopB < dPos)) && !activity.isPlayNextByBPos()) {
+                        if (mABButton.getVisibility() == View.VISIBLE && ((activity.bLoopA && dPos < activity.dLoopA) || (activity.bLoopB && activity.dLoopB < dPos)) && !activity.isPlayNextByBPos()) {
                             if (activity.effectFragment.isReverse())
                                 dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB));
                             else
@@ -145,77 +152,76 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         int nSecond = (int) (dPos % 60);
                         int nHour = nMinute / 60;
 
-                        double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
-                        if(dLength < 0) dLength = 0;
-                        double dRemain = dLength - dPos;
-                        int nRemainMinute = (int)(dRemain / 60);
-                        int nRemainSecond = (int)(dRemain % 60);
+                        if(activity.getSeekCurPos().getVisibility() == View.VISIBLE) {
+                            double dRemain = activity.dLength - dPos;
+                            int nRemainMinute = (int) (dRemain / 60);
+                            int nRemainSecond = (int) (dRemain % 60);
 
-                        TextView textCurPos = activity.findViewById(R.id.textCurPos);
-                        textCurPos.setText(String.format(Locale.getDefault(), "%d:%02d", nMinute, nSecond));
-                        TextView textRemain = activity.findViewById(R.id.textRemain);
-                        textRemain.setText(String.format(Locale.getDefault(), "-%d:%02d", nRemainMinute, nRemainSecond));
-                        SeekBar seekCurPos = activity.findViewById(R.id.seekCurPos);
-                        seekCurPos.setMax((int)dLength);
-                        seekCurPos.setProgress((int)dPos);
+                            activity.getTextCurPos().setText(String.format(Locale.getDefault(), "%d:%02d", nMinute, nSecond));
+                            String strRemain = String.format(Locale.getDefault(), "-%d:%02d", nRemainMinute, nRemainSecond);
+                            if (!activity.getTextRemain().getText().toString().equals(strRemain))
+                                activity.getTextRemain().setText(strRemain);
+                            activity.getSeekCurPos().setProgress((int) dPos);
+                        }
 
                         nMinute = nMinute % 60;
                         int nDec = (int) ((dPos * 100) % 100);
-                        textCurValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
-                        nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
+
+                        if(activity.getViewPager().getCurrentItem() == 1) {
+                            String strCurValue = String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec);
+                            if (!mTextCurValue.getText().toString().equals(strCurValue))
+                                mTextCurValue.setText(strCurValue);
+                        }
                         nPos = BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE);
-                        nLeft = (int) (nMaxWidth * nPos / nLength);
+                        nLeft = (int) (nMaxWidth * nPos / activity.nLength);
                     }
-                    else
-                        textCurValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", 0, 0, 0, 0));
-                    int nTop = viewCurPos.getTop();
-                    if(nScreenWidth / 2 <= nLeft && nLeft < nMaxWidth - nScreenWidth / 2)
-                        nLeft = (int)(nScreenWidth / 2.0f);
-                    else if (nMaxWidth - nScreenWidth / 2 <= nLeft)
-                        nLeft = nScreenWidth - (nMaxWidth - nLeft);
-                    viewCurPos.animate()
-                            .x(nLeft)
-                            .y(nTop)
-                            .setDuration(lDelay)
-                            .setInterpolator(new LinearInterpolator())
-                            .start();
-                    if(!bContinue) waveView.invalidate();
-                    View viewMaskA = activity.findViewById(R.id.viewMaskA);
-                    View viewMaskB = activity.findViewById(R.id.viewMaskB);
-                    if(activity.bLoopA) {
-                        long nPosA = 0;
-                        if(MainActivity.hStream != 0)
-                            nPosA = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA);
-                        nPosA = nPos - nPosA;
-                        int nLeftA = (int) (nLeft - nMaxWidth * nPosA / nLength);
-                        if(nLeftA < 0) nLeftA = 0;
-                        viewMaskA.getLayoutParams().width = nLeftA;
-                        viewMaskA.requestLayout();
-                    }
-                    if(activity.bLoopB) {
-                        long nPosB = 0;
-                        if(MainActivity.hStream != 0)
-                            nPosB = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB);
-                        nPosB = nPos - nPosB;
-                        int nLeftB = (int) (nLeft - nMaxWidth * nPosB / nLength);
-                        if(nLeftB < 0) nLeftB = 0;
-                        else if(nLeftB > waveView.getWidth()) nLeftB = waveView.getWidth();
-                        viewMaskB.setTranslationX(nLeftB);
-                        viewMaskB.getLayoutParams().width = waveView.getWidth() - nLeftB;
-                        viewMaskB.requestLayout();
-                    }
-                    final LinearLayout MarkerButton = activity.findViewById(R.id.MarkerButton);
-                    if(MarkerButton.getVisibility() == View.VISIBLE) {
-                        for (int i = 0; i < arMarkerTime.size(); i++) {
-                            TextView textView = arMarkerText.get(i);
-                            double dMarkerPos = arMarkerTime.get(i);
-                            long nMarkerPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dMarkerPos);
-                            nMarkerPos = nPos - nMarkerPos;
-                            int nMarkerLeft = (int) (nLeft - nMaxWidth * nMarkerPos / (float)nLength - textView.getMeasuredWidth() / 2.0f);
-                            if (nMarkerLeft < -textView.getMeasuredWidth())
-                                nMarkerLeft = -textView.getMeasuredWidth();
-                            textView.setTranslationX(nMarkerLeft);
-                            textView.requestLayout();
+                    if(activity.getViewPager().getCurrentItem() == 1) {
+                        int nTop = mViewCurPos.getTop();
+                        if(nScreenWidth / 2 <= nLeft && nLeft < nMaxWidth - nScreenWidth / 2)
+                            nLeft = (int)(nScreenWidth / 2.0f);
+                        else if (nMaxWidth - nScreenWidth / 2 <= nLeft)
+                            nLeft = nScreenWidth - (nMaxWidth - nLeft);
+                        mViewCurPos.animate()
+                                .x(nLeft)
+                                .y(nTop)
+                                .setDuration(lDelay)
+                                .setInterpolator(new LinearInterpolator())
+                                .start();
+                        if (!bContinue) mWaveView.invalidate();
+                        if (activity.bLoopA) {
+                            long nPosA = 0;
+                            if (MainActivity.hStream != 0)
+                                nPosA = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA);
+                            nPosA = nPos - nPosA;
+                            int nLeftA = (int) (nLeft - nMaxWidth * nPosA / activity.nLength);
+                            if (nLeftA < 0) nLeftA = 0;
+                            mViewMaskA.getLayoutParams().width = nLeftA;
+                            mViewMaskA.requestLayout();
+                        }
+                        if (activity.bLoopB) {
+                            long nPosB = 0;
+                            if (MainActivity.hStream != 0)
+                                nPosB = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopB);
+                            nPosB = nPos - nPosB;
+                            int nLeftB = (int) (nLeft - nMaxWidth * nPosB / activity.nLength);
+                            if (nLeftB < 0) nLeftB = 0;
+                            else if (nLeftB > mWaveView.getWidth()) nLeftB = mWaveView.getWidth();
+                            mViewMaskB.setTranslationX(nLeftB);
+                            mViewMaskB.getLayoutParams().width = mWaveView.getWidth() - nLeftB;
+                            mViewMaskB.requestLayout();
+                        }
+                        if (mMarkerButton.getVisibility() == View.VISIBLE) {
+                            for (int i = 0; i < arMarkerTime.size(); i++) {
+                                TextView textView = arMarkerText.get(i);
+                                double dMarkerPos = arMarkerTime.get(i);
+                                long nMarkerPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dMarkerPos);
+                                nMarkerPos = nPos - nMarkerPos;
+                                int nMarkerLeft = (int) (nLeft - nMaxWidth * nMarkerPos / (float) activity.nLength - textView.getMeasuredWidth() / 2.0f);
+                                if (nMarkerLeft < -textView.getMeasuredWidth())
+                                    nMarkerLeft = -textView.getMeasuredWidth();
+                                textView.setTranslationX(nMarkerLeft);
+                                textView.requestLayout();
+                            }
                         }
                     }
                 }
@@ -275,10 +281,6 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         btnForward5Sec.setTag(5);
 
         final LinearLayout ABLabel = activity.findViewById(R.id.ABLabel);
-        final LinearLayout ABButton = activity.findViewById(R.id.ABButton);
-        final LinearLayout MarkerButton = activity.findViewById(R.id.MarkerButton);
-        final View viewMaskA = activity.findViewById(R.id.viewMaskA);
-        final View viewMaskB = activity.findViewById(R.id.viewMaskB);
 
         final RadioGroup radioGroupLoopMode = activity.findViewById(R.id.radioGroupLoopMode);
         radioGroupLoopMode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -286,13 +288,13 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             public void onCheckedChanged(RadioGroup radioGroup, int nItem) {
                 if(nItem == R.id.radioButtonABLoop) {
                     ABLabel.setVisibility(View.VISIBLE);
-                    ABButton.setVisibility(View.VISIBLE);
-                    if(activity.bLoopA) viewMaskA.setVisibility(View.VISIBLE);
-                    if(activity.bLoopB) viewMaskB.setVisibility(View.VISIBLE);
+                    mABButton.setVisibility(View.VISIBLE);
+                    if(activity.bLoopA) mViewMaskA.setVisibility(View.VISIBLE);
+                    if(activity.bLoopB) mViewMaskB.setVisibility(View.VISIBLE);
                     activity.setSync();
                     activity.playlistFragment.updateSavingEffect();
 
-                    MarkerButton.setVisibility(View.INVISIBLE);
+                    mMarkerButton.setVisibility(View.INVISIBLE);
                     for(int i = 0 ; i < arMarkerText.size(); i++)
                     {
                         TextView textView = arMarkerText.get(i);
@@ -300,7 +302,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     }
                 }
                 else {
-                    MarkerButton.setVisibility(View.VISIBLE);
+                    mMarkerButton.setVisibility(View.VISIBLE);
                     for(int i = 0 ; i < arMarkerText.size(); i++)
                     {
                         TextView textView = arMarkerText.get(i);
@@ -310,9 +312,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     activity.playlistFragment.updateSavingEffect();
 
                     ABLabel.setVisibility(View.INVISIBLE);
-                    ABButton.setVisibility(View.INVISIBLE);
-                    viewMaskA.setVisibility(View.INVISIBLE);
-                    viewMaskB.setVisibility(View.INVISIBLE);
+                    mABButton.setVisibility(View.INVISIBLE);
+                    mViewMaskA.setVisibility(View.INVISIBLE);
+                    mViewMaskB.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -323,13 +325,13 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     }
 
     private void setZoomOut() {
-        waveView = activity.findViewById(R.id.waveView);
-        waveView.setZoom(waveView.getZoom() * 0.99f);
+        mWaveView = activity.findViewById(R.id.waveView);
+        mWaveView.setZoom(mWaveView.getZoom() * 0.99f);
     }
 
     private void setZoomIn() {
-        waveView = activity.findViewById(R.id.waveView);
-        waveView.setZoom(waveView.getZoom() * 1.01f);
+        mWaveView = activity.findViewById(R.id.waveView);
+        mWaveView.setZoom(mWaveView.getZoom() * 1.01f);
     }
 
     private final Runnable repeatZoomOut = new Runnable()
@@ -342,16 +344,16 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             setZoomOut();
             long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
             long nPos = BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE);
-            int nScreenWidth = waveView.getWidth();
-            int nMaxWidth = (int)(nScreenWidth * waveView.getZoom());
+            int nScreenWidth = mWaveView.getWidth();
+            int nMaxWidth = (int)(nScreenWidth * mWaveView.getZoom());
             int nLeft = (int) (nMaxWidth * nPos / nLength);
             if(nLeft < nScreenWidth / 2)
-                waveView.setPivotX(0.0f);
+                mWaveView.setPivotX(0.0f);
             else if(nScreenWidth / 2 <= nLeft && nLeft < nMaxWidth - nScreenWidth / 2)
-                waveView.setPivotX(0.5f);
+                mWaveView.setPivotX(0.5f);
             else
-                waveView.setPivotX(1.0f);
-            waveView.setScaleX(waveView.getZoom());
+                mWaveView.setPivotX(1.0f);
+            mWaveView.setScaleX(mWaveView.getZoom());
             handler.postDelayed(this, 10);
         }
     };
@@ -366,16 +368,16 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             setZoomIn();
             long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
             long nPos = BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE);
-            int nScreenWidth = waveView.getWidth();
-            int nMaxWidth = (int)(nScreenWidth * waveView.getZoom());
+            int nScreenWidth = mWaveView.getWidth();
+            int nMaxWidth = (int)(nScreenWidth * mWaveView.getZoom());
             int nLeft = (int) (nMaxWidth * nPos / nLength);
             if(nLeft < nScreenWidth / 2)
-                waveView.setPivotX(0.0f);
+                mWaveView.setPivotX(0.0f);
             else if(nScreenWidth / 2 <= nLeft && nLeft < nMaxWidth - nScreenWidth / 2)
-                waveView.setPivotX(0.5f);
+                mWaveView.setPivotX(0.5f);
             else
-                waveView.setPivotX(1.0f);
-            waveView.setScaleX(waveView.getZoom());
+                mWaveView.setPivotX(1.0f);
+            mWaveView.setScaleX(mWaveView.getZoom());
             handler.postDelayed(this, 10);
         }
     };
@@ -776,9 +778,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
         long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
         long nPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dLoopA);
-        int nScreenWidth = waveView.getWidth();
-        int nMaxWidth = (int)(nScreenWidth * waveView.getZoom());
-        int nLeft = (int) (viewCurPos.getX() - nMaxWidth * nPos / nLength);
+        int nScreenWidth = mWaveView.getWidth();
+        int nMaxWidth = (int)(nScreenWidth * mWaveView.getZoom());
+        int nLeft = (int) (mViewCurPos.getX() - nMaxWidth * nPos / nLength);
         if(nLeft > 0) nLeft = 0;
         View viewMaskA = activity.findViewById(R.id.viewMaskA);
         viewMaskA.getLayoutParams().width = nLeft;
@@ -819,14 +821,14 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         btnB.setImageResource(R.drawable.ic_abloop_b_on);
         long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
         long nPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, dLoopB);
-        int nScreenWidth = waveView.getWidth();
-        int nMaxWidth = (int)(nScreenWidth * waveView.getZoom());
-        int nLeft = (int) (viewCurPos.getX() - nMaxWidth * nPos / nLength);
+        int nScreenWidth = mWaveView.getWidth();
+        int nMaxWidth = (int)(nScreenWidth * mWaveView.getZoom());
+        int nLeft = (int) (mViewCurPos.getX() - nMaxWidth * nPos / nLength);
         if(nLeft < 0) nLeft = 0;
-        else if(nLeft > waveView.getWidth()) nLeft = waveView.getWidth();
+        else if(nLeft > mWaveView.getWidth()) nLeft = mWaveView.getWidth();
         View viewMaskB = activity.findViewById(R.id.viewMaskB);
         viewMaskB.setTranslationX(nLeft);
-        viewMaskB.getLayoutParams().width = waveView.getWidth() - nLeft;
+        viewMaskB.getLayoutParams().width = mWaveView.getWidth() - nLeft;
         viewMaskB.setVisibility(View.VISIBLE);
         viewMaskB.requestLayout();
         BASS.BASS_ChannelSetPosition(MainActivity.hStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.hStream, activity.dLoopA), BASS.BASS_POS_BYTE);
@@ -894,8 +896,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 if(MainActivity.hStream == 0) return false;
                 bContinue = false;
                 setZoomOut();
-                waveView = activity.findViewById(R.id.waveView);
-                waveView.redrawWaveForm();
+                mWaveView = activity.findViewById(R.id.waveView);
+                mWaveView.redrawWaveForm();
             }
         }
         else if(v.getId() == R.id.relativeZoomIn) {
@@ -903,8 +905,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 if(MainActivity.hStream == 0) return false;
                 bContinue = false;
                 setZoomIn();
-                waveView = activity.findViewById(R.id.waveView);
-                waveView.redrawWaveForm();
+                mWaveView = activity.findViewById(R.id.waveView);
+                mWaveView.redrawWaveForm();
             }
         }
         else if(v.getId() == R.id.viewBtnRewindLeft || v.getId() == R.id.viewBtnRewindRight || v.getId() == R.id.btnRewind5Sec || v.getId() == R.id.btnRewind5Sec2)
@@ -1013,7 +1015,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         btnA.setImageResource(R.drawable.ic_abloop_a_on);
                         long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
                         long nPos = BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE);
-                        int nBkWidth = waveView.getWidth();
+                        int nBkWidth = mWaveView.getWidth();
                         int nLeft = (int) (nBkWidth * nPos / nLength);
                         View viewMaskA = activity.findViewById(R.id.viewMaskA);
                         viewMaskA.getLayoutParams().width = nLeft;
@@ -1065,7 +1067,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         btnB.setImageResource(R.drawable.ic_abloop_b_on);
                         long nLength = BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE);
                         long nPos = BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE);
-                        int nBkWidth = waveView.getWidth();
+                        int nBkWidth = mWaveView.getWidth();
                         int nLeft = (int) (nBkWidth * nPos / nLength);
                         View viewMaskB = activity.findViewById(R.id.viewMaskB);
                         viewMaskB.setTranslationX(nLeft);
@@ -1145,8 +1147,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             {
                 if(MainActivity.hStream != 0)
                 {
-                    int nScreenWidth = waveView.getWidth();
-                    int nMaxWidth = (int)(nScreenWidth * waveView.getZoom());
+                    int nScreenWidth = mWaveView.getWidth();
+                    int nMaxWidth = (int)(nScreenWidth * mWaveView.getZoom());
                     double dCurPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetPosition(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
                     TextView textView = new TextView(activity);
@@ -1154,7 +1156,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     RelativeLayout layout = activity.findViewById(R.id.relative_loop);
                     layout.addView(textView);
                     textView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-                    int nLeft = (int) (viewCurPos.getX() - nMaxWidth * dCurPos / dLength - textView.getMeasuredWidth() / 2.0f);
+                    int nLeft = (int) (mViewCurPos.getX() - nMaxWidth * dCurPos / dLength - textView.getMeasuredWidth() / 2.0f);
                     RelativeLayout relativeWave = activity.findViewById(R.id.relativeWave);
                     int nTop = relativeWave.getTop() - textView.getMeasuredHeight();
                     textView.setTranslationX(nLeft);
@@ -1246,8 +1248,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         else if(v.getId() == R.id.waveView)
         {
             float fX = event.getX();
-            viewCurPos = activity.findViewById(R.id.viewCurPos);
-            int nBkWidth = waveView.getWidth();
+            mViewCurPos = activity.findViewById(R.id.viewCurPos);
+            int nBkWidth = mWaveView.getWidth();
             double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.hStream, BASS.BASS_ChannelGetLength(MainActivity.hStream, BASS.BASS_POS_BYTE));
             double dPos = dLength * fX / nBkWidth;
             LinearLayout ABButton = activity.findViewById(R.id.ABButton);
@@ -1306,7 +1308,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         arMarkerTime.clear();
         arMarkerText.clear();
 
-        waveView.clearWaveForm(true);
+        mWaveView.clearWaveForm(true);
 
         if(bSave) activity.playlistFragment.updateSavingEffect();
     }
@@ -1321,7 +1323,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         nMinute = nMinute % 60;
         int nDec = (int)((dLength * 100) % 100);
         textBValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
-        waveView.drawWaveForm(strPath);
+        mWaveView.drawWaveForm(strPath);
     }
 
     public double getMarkerSrcPos()

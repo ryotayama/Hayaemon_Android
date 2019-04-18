@@ -121,6 +121,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DrawerLayout mDrawerLayout;
     boolean bLoopA, bLoopB;
     double dLoopA, dLoopB;
+    long nLength;
+    double dLength;
     private HoldableViewPager mViewPager;
     private int hSync;
     private IInAppBillingService mService;
@@ -131,11 +133,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BroadcastReceiver receiver;
     private AdView mAdView;
     private boolean mBound = false;
+    private float mDensity;
+
+    private SeekBar mSeekCurPos;
+    private TextView mTextCurPos;
+    private TextView mTextRemain;
 
     public IInAppBillingService getService() { return mService; }
     public void setPlayNextByBPos(boolean bPlayNextByBPos) { this.bPlayNextByBPos = bPlayNextByBPos; }
     public boolean isPlayNextByBPos() { return bPlayNextByBPos; }
     public void setWaitEnd(boolean bWaitEnd) { this.bWaitEnd = bWaitEnd; }
+    public HoldableViewPager getViewPager() { return mViewPager; }
+    public float getDensity() { return mDensity; }
+    public SeekBar getSeekCurPos() { return mSeekCurPos; }
+    public TextView getTextCurPos() { return mTextCurPos; }
+    public TextView getTextRemain() { return mTextRemain; }
 
     public MainActivity() { }
 
@@ -146,6 +158,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        mDensity = getResources().getDisplayMetrics().density;
 
         hStream = 0;
 
@@ -255,9 +269,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btnRepeatInPlayingBar).setOnClickListener(this);
         findViewById(R.id.btnMoreInPlayingBar).setOnClickListener(this);
         final RelativeLayout relativePlaying = findViewById(R.id.relativePlaying);
-        final SeekBar seekCurPos = findViewById(R.id.seekCurPos);
-        seekCurPos.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
-        seekCurPos.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        mSeekCurPos = findViewById(R.id.seekCurPos);
+        mSeekCurPos.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekCurPos.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
             }
@@ -1435,8 +1449,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final TextView textArtist = findViewById(R.id.textArtistInPlayingBar);
         final AnimationButton btnPlay = findViewById(R.id.btnPlayInPlayingBar);
         final AnimationButton btnForward = findViewById(R.id.btnForwardInPlayingBar);
-        final TextView textCurPos = findViewById(R.id.textCurPos);
-        final TextView textRemain = findViewById(R.id.textRemain);
+        mTextCurPos = findViewById(R.id.textCurPos);
+        mTextRemain = findViewById(R.id.textRemain);
         final AnimationButton btnRewind = findViewById(R.id.btnRewindInPlayingBar);
         final AnimationButton btnMore = findViewById(R.id.btnMoreInPlayingBar);
         final AnimationButton btnShuffle = findViewById(R.id.btnShuffleInPlayingBar);
@@ -1532,8 +1546,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         imgViewDown.setVisibility(View.VISIBLE);
         seekCurPos.setVisibility(View.VISIBLE);
-        textCurPos.setVisibility(View.VISIBLE);
-        textRemain.setVisibility(View.VISIBLE);
+        mTextCurPos.setVisibility(View.VISIBLE);
+        mTextRemain.setVisibility(View.VISIBLE);
         btnRewind.setVisibility(View.VISIBLE);
         btnMore.setVisibility(View.VISIBLE);
         btnShuffle.setVisibility(View.VISIBLE);
@@ -1546,8 +1560,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         imgViewDown.animate().alpha(1.0f).setDuration(lDuration);
         seekCurPos.animate().alpha(1.0f).setDuration(lDuration);
-        textCurPos.animate().alpha(1.0f).setDuration(lDuration);
-        textRemain.animate().alpha(1.0f).setDuration(lDuration);
+        mTextCurPos.animate().alpha(1.0f).setDuration(lDuration);
+        mTextRemain.animate().alpha(1.0f).setDuration(lDuration);
         btnRewind.animate().alpha(1.0f).setDuration(lDuration);
         btnMore.animate().alpha(1.0f).setDuration(lDuration);
         btnShuffle.animate().alpha(1.0f).setDuration(lDuration);
