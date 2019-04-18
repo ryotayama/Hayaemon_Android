@@ -251,10 +251,10 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
                 codec.stop();
                 codec.release();
             }
-            if (inputFile.exists()) {
+            if (inputFile != null && inputFile.exists()) {
                 if(!inputFile.delete()) System.out.println("ファイルが削除できませんでした");
             }
-            if (inputMp4File.exists()) {
+            if (inputMp4File != null && inputMp4File.exists()) {
                 if(!inputMp4File.delete()) System.out.println("ファイルが削除できませんでした");
             }
         }
