@@ -496,7 +496,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void startNotification()
     {
+        if(playlistFragment.getPlayingPlaylist() < 0 && playlistFragment.getArPlaylists().size() <= playlistFragment.getPlayingPlaylist())
+            return;
         ArrayList<SongItem> arSongs = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist());
+        if(playlistFragment.getPlaying() < 0 && arSongs.size() <= playlistFragment.getPlaying())
+            return;
         SongItem item = arSongs.get(playlistFragment.getPlaying());
         Intent intent = new Intent(this, ForegroundService.class);
         intent.putExtra("strTitle", item.getTitle());
