@@ -4254,7 +4254,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     public void updateSongTime(SongItem item)
     {
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        mmr.setDataSource(activity.getApplicationContext(), Uri.parse(item.getPath()));
+        try {
+            mmr.setDataSource(activity.getApplicationContext(), Uri.parse(item.getPath()));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         long durationMs = Long.parseLong(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
         long duration = durationMs / 1000;
         long lMinutes = duration / 60;
