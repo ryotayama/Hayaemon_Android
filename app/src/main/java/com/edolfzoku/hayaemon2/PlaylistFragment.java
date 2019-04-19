@@ -739,6 +739,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         if(nSelectedPlaylist == nPlayingPlaylist && i == nPlaying)
                             bDeletePlaying = true;
                         removeSong(nSelectedPlaylist, i);
+                        i--;
                     }
                 }
 
