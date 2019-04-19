@@ -4259,19 +4259,93 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     public void updateSongTime(SongItem item)
     {
-        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        try {
-            mmr.setDataSource(activity.getApplicationContext(), Uri.parse(item.getPath()));
+        String strPath = item.getPath();
+        int hTempStream;
+        BASS.BASS_FILEPROCS fileprocs = new BASS.BASS_FILEPROCS() {
+            @Override
+            public boolean FILESEEKPROC(long offset, Object user) {
+                FileChannel fc=(FileChannel)user;
+                try {
+                    fc.position(offset);
+                    return true;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }
+
+            @Override
+            public int FILEREADPROC(ByteBuffer buffer, int length, Object user) {
+                FileChannel fc=(FileChannel)user;
+                try {
+                    return fc.read(buffer);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return 0;
+            }
+
+            @Override
+            public long FILELENPROC(Object user) {
+                FileChannel fc=(FileChannel)user;
+                try {
+                    return fc.size();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return 0;
+            }
+
+            @Override
+            public void FILECLOSEPROC(Object user) {
+                FileChannel fc=(FileChannel)user;
+                try {
+                    fc.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        Uri uri = Uri.parse(strPath);
+        boolean bError = false;
+        if(uri.getScheme() != null && uri.getScheme().equals("content")) {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            try {
+                mmr.setDataSource(activity.getApplicationContext(), Uri.parse(strPath));
+            }
+            catch(Exception e) {
+                bError = true;
+                e.printStackTrace();
+            }
+            if(!bError) {
+                long durationMs = Long.parseLong(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                long duration = durationMs / 1000;
+                long lMinutes = duration / 60;
+                long lSeconds = duration % 60;
+                item.setTime(String.format(Locale.getDefault(), "%d:%02d", lMinutes, lSeconds));
+                saveFiles(true, false, false, false, false);
+                return;
+            }
+            else {
+                ContentResolver cr = activity.getApplicationContext().getContentResolver();
+
+                try {
+                    AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+                    if (afd == null) return;
+                    FileChannel fc = afd.createInputStream().getChannel();
+                    hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, fileprocs, fc);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return;
+                }
+            }
         }
-        catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
-        long durationMs = Long.parseLong(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-        long duration = durationMs / 1000;
-        long lMinutes = duration / 60;
-        long lSeconds = duration % 60;
-        item.setTime(String.format(Locale.getDefault(), "%d:%02d", lMinutes, lSeconds));
+        else hTempStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+        double dLength = BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE)) + 0.5;
+        int nMinutes = (int)(dLength / 60);
+        int nSeconds = (int)(dLength % 60);
+        item.setTime(String.format(Locale.getDefault(), "%d:%02d", nMinutes, nSeconds));
         saveFiles(true, false, false, false, false);
     }
 

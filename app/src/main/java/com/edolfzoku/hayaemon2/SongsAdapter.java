@@ -120,7 +120,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
 
         String strTime = item.getTime();
         holder.textTime.setText(strTime);
-        if(strTime.length() >= 6) holder.textTime.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
+        if(strTime != null && strTime.length() >= 6) holder.textTime.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
         else holder.textTime.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11);
 
         if(activity.playlistFragment.isMultiSelecting()) {
