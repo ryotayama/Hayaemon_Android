@@ -72,6 +72,7 @@ public class SpeedFragmentDialog extends DialogFragment {
         mIntNumberPicker.setDisplayedValues(arInts);
         mIntNumberPicker.setMaxValue(390);
         mIntNumberPicker.setMinValue(0);
+        mIntNumberPicker.setWrapSelectorWheel(false);
         for(int i = 0; i < arInts.length; i++)
         {
             if(arInts[i].equals(strIntSpeed))
@@ -83,6 +84,7 @@ public class SpeedFragmentDialog extends DialogFragment {
         mDecimalNumberPicker.setDisplayedValues(arDecimals);
         mDecimalNumberPicker.setMaxValue(9);
         mDecimalNumberPicker.setMinValue(0);
+        mDecimalNumberPicker.setWrapSelectorWheel(false);
         for(int i = 0; i < arDecimals.length; i++)
         {
             if(arDecimals[i].equals(strDecimalSpeed))

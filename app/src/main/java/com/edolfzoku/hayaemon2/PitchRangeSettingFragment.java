@@ -57,22 +57,27 @@ public class PitchRangeSettingFragment extends Fragment implements View.OnClickL
         btnClosePitchRangeSetting.setOnClickListener(this);
 
         final NumberPicker intPitchRangeFromPicker = mActivity.findViewById(R.id.intPitchRangeFromPicker);
-        final String[] arFromInts = {"24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9", "8", "7", "6"};
+        final String[] arFromInts = {"60", "48", "36", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9 ", "8 ", "7 ", "6 "};
         intPitchRangeFromPicker.setDisplayedValues(arFromInts);
-        intPitchRangeFromPicker.setMaxValue(18);
+        intPitchRangeFromPicker.setMaxValue(21);
         intPitchRangeFromPicker.setMinValue(0);
         intPitchRangeFromPicker.setWrapSelectorWheel(false);
         intPitchRangeFromPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
-                int nMaxPitch = Integer.parseInt(arFromInts[nNewValue]);
+                int nMaxPitch = Integer.parseInt(arFromInts[nNewValue].trim());
                 mActivity.controlFragment.setMaxPitch(nMaxPitch);
                 SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 preferences.edit().putInt("nMaxPitch", nMaxPitch).apply();
             }
         });
 
-        String strMaxPitch = String.format(Locale.getDefault(), "%d", mActivity.controlFragment.getMaxPitch());
+        int nMaxPitch = mActivity.controlFragment.getMaxPitch();
+        String strMaxPitch;
+        if(nMaxPitch >= 10)
+            strMaxPitch = String.format(Locale.getDefault(), "%d", nMaxPitch);
+        else
+            strMaxPitch = String.format(Locale.getDefault(), "%d ", nMaxPitch);
         for(int i = 0; i < arFromInts.length; i++)
         {
             if(arFromInts[i].equals(strMaxPitch))
@@ -80,22 +85,27 @@ public class PitchRangeSettingFragment extends Fragment implements View.OnClickL
         }
 
         final NumberPicker intPitchRangeToPicker = mActivity.findViewById(R.id.intPitchRangeToPicker);
-        final String[] arToInts = {"24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9", "8", "7", "6"};
+        final String[] arToInts = {"60", "48", "36", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9 ", "8 ", "7 ", "6 "};
         intPitchRangeToPicker.setDisplayedValues(arToInts);
-        intPitchRangeToPicker.setMaxValue(18);
+        intPitchRangeToPicker.setMaxValue(21);
         intPitchRangeToPicker.setMinValue(0);
         intPitchRangeToPicker.setWrapSelectorWheel(false);
         intPitchRangeToPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
-                int nMinPitch = Integer.parseInt(arToInts[nNewValue]) * -1;
+                int nMinPitch = Integer.parseInt(arToInts[nNewValue].trim()) * -1;
                 mActivity.controlFragment.setMinPitch(nMinPitch);
                 SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 preferences.edit().putInt("nMinPitch", nMinPitch).apply();
             }
         });
 
-        String strMinPitch = String.format(Locale.getDefault(), "%d", mActivity.controlFragment.getMinPitch() * -1);
+        int nMinPitch = mActivity.controlFragment.getMinPitch() * -1;
+        String strMinPitch;
+        if(nMinPitch >= 10)
+            strMinPitch = String.format(Locale.getDefault(), "%d", nMinPitch);
+        else
+            strMinPitch = String.format(Locale.getDefault(), "%d ", nMinPitch);
         for(int i = 0; i < arToInts.length; i++)
         {
             if(arToInts[i].equals(strMinPitch))

@@ -271,7 +271,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
 
     private void setPitchUp()
     {
-        float fMaxPitch = 24.0f;
+        float fMaxPitch = 60.0f;
         mPitch += 1.0;
         if(mPitch >= fMaxPitch) mPitch = fMaxPitch;
             setPitch(mPitch);
@@ -279,7 +279,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
 
     private void setPitchDown()
     {
-        float fMinPitch = -24.0f;
+        float fMinPitch = -60.0f;
         mPitch -= 1.0;
         if(mPitch <= fMinPitch) mPitch = fMinPitch;
             setPitch(mPitch);
@@ -312,13 +312,16 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         int nBkTop = mViewBk.getTop();
         int nBkHeight = mViewBk.getHeight();
         float fBkHeight = nBkHeight - nPtHeight;
+        float fHalfHeight = fBkHeight / 2.0f;
         float fMaxPitch = mMaxPitch;
         float fMinPitch = mMinPitch;
         float fDummyPitch = mPitch;
         if(fDummyPitch > fMaxPitch) fDummyPitch = fMaxPitch;
         else if(fDummyPitch < fMinPitch) fDummyPitch = fMinPitch;
         float fX = mImgPoint.getX() + nPtWidth / 2.0f;
-        float fY = nBkTop + fBkHeight - ((fDummyPitch - fMinPitch) / (fMaxPitch - fMinPitch)) * fBkHeight;
+        float fY;
+        if(mPitch > 0.0f) fY = nBkTop + fHalfHeight - (fDummyPitch / fMaxPitch) * fHalfHeight;
+        else fY = nBkTop + fHalfHeight - (fDummyPitch / -fMinPitch) * fHalfHeight;
         mImgPoint.animate()
             .x(fX - nPtWidth / 2.0f)
             .y(fY)
@@ -520,6 +523,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             if(event.getAction() == MotionEvent.ACTION_DOWN) mTouchingFlag = true;
             else if(event.getAction() == MotionEvent.ACTION_UP) mTouchingFlag = false;
 
+            boolean bSave = event.getAction() == MotionEvent.ACTION_UP;
             int nPtWidth = mImgPoint.getWidth();
             int nPtHeight = mImgPoint.getHeight();
             int nBkLeft = mViewBk.getLeft();
@@ -545,7 +549,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 if(fX >= nBkLeft + nBkWidth / 2) mSpeed = (fDX / fBkHalfWidth) * fMaxSpeed;
                 else mSpeed = (fDX / fBkHalfWidth) * -fMinSpeed;
                 if(mSnapFlag) mSpeed = Math.round(mSpeed);
-                setSpeed(mSpeed);
+                setSpeed(mSpeed, bSave);
             }
 
             if(!mLockPitchFlag && !mLinkFlag)
@@ -554,11 +558,13 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 if(fY < nBkTop + nPtHeight / 2) fY = nBkTop + nPtHeight / 2.0f;
                 else if(fY > nBkTop + nBkHeight - nPtHeight / 2) fY = nBkTop + nBkHeight - nPtHeight / 2.0f;
                 float fBkHeight = nBkHeight - nPtHeight;
+                float fHalfHeight = fBkHeight / 2.0f;
                 float fDY = fY - (nBkTop + nPtHeight / 2.0f);
                 fY -= nPtHeight / 2.0f;
                 float fMaxPitch = mMaxPitch;
                 float fMinPitch = mMinPitch;
-                mPitch = ((fDY / fBkHeight) * (fMaxPitch - fMinPitch) + fMinPitch) * -1;
+                if(fDY <= fHalfHeight) mPitch = ((fHalfHeight - fDY) / fHalfHeight) * fMaxPitch;
+                else mPitch = ((fDY - fHalfHeight) / fHalfHeight) * fMinPitch;
                 if(mSnapFlag) mPitch = Math.round(mPitch);
                 if(MainActivity.sStream != 0)
                     BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, mPitch);
@@ -582,7 +588,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                         .setDuration(0)
                         .start();
 
-                mActivity.playlistFragment.updateSavingEffect();
+                if(bSave) mActivity.playlistFragment.updateSavingEffect();
             }
 
             return true;
