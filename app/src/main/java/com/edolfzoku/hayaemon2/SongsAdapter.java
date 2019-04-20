@@ -38,36 +38,46 @@ import java.util.ArrayList;
 
 public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
 {
-    private final MainActivity activity;
+    private final MainActivity mActivity;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final RelativeLayout songItem;
-        final ImageView imgSelectSong;
-        final TextView textNumber;
-        final TextView textTitle;
-        final TextView textArtist;
-        final ImageView imgStatus;
-        final ImageView imgLock;
-        final TextView textTime;
-        final ImageView imgSongMenu;
+        private final RelativeLayout mSongItem;
+        private final ImageView mImgSelectSong;
+        private final TextView mTextNumber;
+        private final TextView mTextTitle;
+        private final TextView mTextArtist;
+        private final ImageView mImgStatus;
+        private final ImageView mImgLock;
+        private final TextView mTextTime;
+        private final ImageView mImgSongMenu;
+
+        public RelativeLayout getSongItem() { return mSongItem; }
+        public ImageView getImgSelectSong() { return mImgSelectSong; }
+        public TextView getTextNumber() { return mTextNumber; }
+        public TextView getTextTitle() { return mTextTitle; }
+        public TextView getTextArtist() { return mTextArtist; }
+        public ImageView getImgStatus() { return mImgStatus; }
+        public ImageView getImgLock() { return mImgLock; }
+        public TextView getTextTime() { return mTextTime; }
+        public ImageView getImgSongMenu() { return mImgSongMenu; }
 
         ViewHolder(View view) {
             super(view);
-            songItem = view.findViewById(R.id.songItem);
-            imgSelectSong = view.findViewById(R.id.imgSelectSong);
-            textNumber = view.findViewById(R.id.textNumber);
-            textTitle = view.findViewById(R.id.textTitle);
-            textArtist = view.findViewById(R.id.textArtist);
-            imgStatus = view.findViewById(R.id.imgStatus);
-            imgLock = view.findViewById(R.id.imgLock);
-            textTime = view.findViewById(R.id.textTime);
-            imgSongMenu = view.findViewById(R.id.imgSongMenu);
+            mSongItem = view.findViewById(R.id.songItem);
+            mImgSelectSong = view.findViewById(R.id.imgSelectSong);
+            mTextNumber = view.findViewById(R.id.textNumber);
+            mTextTitle = view.findViewById(R.id.textTitle);
+            mTextArtist = view.findViewById(R.id.textArtist);
+            mImgStatus = view.findViewById(R.id.imgStatus);
+            mImgLock = view.findViewById(R.id.imgLock);
+            mTextTime = view.findViewById(R.id.textTime);
+            mImgSongMenu = view.findViewById(R.id.imgSongMenu);
         }
     }
 
     SongsAdapter(Context context)
     {
-        this.activity = (MainActivity)context;
+        mActivity = (MainActivity)context;
     }
 
     @Override
@@ -82,131 +92,131 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position)
     {
-        ArrayList<SongItem> arSongs = activity.playlistFragment.getArPlaylists ().get(activity.playlistFragment.getSelectedPlaylist());
+        ArrayList<SongItem> arSongs = mActivity.playlistFragment.getArPlaylists ().get(mActivity.playlistFragment.getSelectedPlaylist());
         SongItem item = arSongs.get(position);
-        if(item.getTime() == null) activity.playlistFragment.updateSongTime(item);
+        if(item.getTime() == null) mActivity.playlistFragment.updateSongTime(item);
         final int nItem = Integer.parseInt(item.getNumber()) - 1;
-        boolean bLock = activity.playlistFragment.isLock(nItem);
-        boolean bSelected = activity.playlistFragment.isSelected(nItem);
+        boolean bLock = mActivity.playlistFragment.isLock(nItem);
+        boolean bSelected = mActivity.playlistFragment.isSelected(nItem);
 
         holder.itemView.setLongClickable(true);
 
-        holder.textNumber.setText(item.getNumber());
-        holder.textTitle.setText(item.getTitle());
+        holder.getTextNumber().setText(item.getNumber());
+        holder.getTextTitle().setText(item.getTitle());
         if(item.getArtist() == null || item.getArtist().equals(""))
         {
-            holder.textArtist.setTextColor(Color.argb(255, 147, 156, 160));
-            holder.textArtist.setText(R.string.unknownArtist);
+            holder.getTextArtist().setTextColor(Color.argb(255, 147, 156, 160));
+            holder.getTextArtist().setText(R.string.unknownArtist);
         }
         else
         {
-            holder.textArtist.setTextColor(Color.argb(255, 102, 102, 102));
-            holder.textArtist.setText(item.getArtist());
+            holder.getTextArtist().setTextColor(Color.argb(255, 102, 102, 102));
+            holder.getTextArtist().setText(item.getArtist());
         }
-        if(activity.playlistFragment.getPlayingPlaylist() == activity.playlistFragment.getSelectedPlaylist() && nItem == activity.playlistFragment.getPlaying()) {
-            if(BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING)
-                holder.imgStatus.setImageResource(R.drawable.circle_music);
+        if(mActivity.playlistFragment.getPlayingPlaylist() == mActivity.playlistFragment.getSelectedPlaylist() && nItem == mActivity.playlistFragment.getPlaying()) {
+            if(BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_PLAYING)
+                holder.getImgStatus().setImageResource(R.drawable.circle_music);
             else
-                holder.imgStatus.setImageResource(R.drawable.pause_circle);
-            holder.textNumber.setVisibility(View.INVISIBLE);
+                holder.getImgStatus().setImageResource(R.drawable.pause_circle);
+            holder.getTextNumber().setVisibility(View.INVISIBLE);
         }
         else {
-            holder.imgStatus.setImageDrawable(null);
-            holder.textNumber.setVisibility(View.VISIBLE);
+            holder.getImgStatus().setImageDrawable(null);
+            holder.getTextNumber().setVisibility(View.VISIBLE);
         }
 
-        if(bLock) holder.imgLock.setVisibility(View.VISIBLE);
-        else holder.imgLock.setVisibility(View.GONE);
+        if(bLock) holder.getImgLock().setVisibility(View.VISIBLE);
+        else holder.getImgLock().setVisibility(View.GONE);
 
         String strTime = item.getTime();
-        holder.textTime.setText(strTime);
-        if(strTime != null && strTime.length() >= 6) holder.textTime.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
-        else holder.textTime.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11);
+        holder.getTextTime().setText(strTime);
+        if(strTime != null && strTime.length() >= 6) holder.getTextTime().setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
+        else holder.getTextTime().setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11);
 
-        if(activity.playlistFragment.isMultiSelecting()) {
-            holder.songItem.setOnClickListener(new View.OnClickListener() {
+        if(mActivity.playlistFragment.isMultiSelecting()) {
+            holder.getSongItem().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    activity.playlistFragment.onTouchMultipleSelectionItem(holder.getAdapterPosition());
-                    activity.playlistFragment.getSongsAdapter().notifyItemChanged(holder.getAdapterPosition(), holder.imgSelectSong);
+                    mActivity.playlistFragment.onTouchMultipleSelectionItem(holder.getAdapterPosition());
+                    mActivity.playlistFragment.getSongsAdapter().notifyItemChanged(holder.getAdapterPosition(), holder.getImgSelectSong());
                 }
             });
-            holder.imgSongMenu.setOnClickListener(null);
-            holder.songItem.setOnLongClickListener(null);
-            holder.imgSongMenu.setOnTouchListener(new View.OnTouchListener() {
+            holder.getImgSongMenu().setOnClickListener(null);
+            holder.getSongItem().setOnLongClickListener(null);
+            holder.getImgSongMenu().setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
                 {
-                    activity.playlistFragment.getSongTouchHelper().startDrag(holder);
+                    mActivity.playlistFragment.getSongTouchHelper().startDrag(holder);
                     return true;
                 }
             });
-            if(bSelected) holder.imgSelectSong.setImageResource(R.drawable.ic_button_check_on);
-            else holder.imgSelectSong.setImageResource(R.drawable.ic_button_check_off);
-            holder.imgSelectSong.setVisibility(View.VISIBLE);
-            holder.imgSongMenu.setImageResource(R.drawable.ic_sort);
-            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.imgSongMenu.getLayoutParams();
-            param.leftMargin = param.rightMargin = (int) (8 * activity.getResources().getDisplayMetrics().density + 0.5);
+            if(bSelected) holder.getImgSelectSong().setImageResource(R.drawable.ic_button_check_on);
+            else holder.getImgSelectSong().setImageResource(R.drawable.ic_button_check_off);
+            holder.getImgSelectSong().setVisibility(View.VISIBLE);
+            holder.getImgSongMenu().setImageResource(R.drawable.ic_sort);
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.getImgSongMenu().getLayoutParams();
+            param.leftMargin = param.rightMargin = (int) (8 * mActivity.getDensity());
         }
-        else if(activity.playlistFragment.isSorting()) {
-            holder.songItem.setOnClickListener(new View.OnClickListener() {
+        else if(mActivity.playlistFragment.isSorting()) {
+            holder.getSongItem().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    activity.playlistFragment.onSongItemClick(nItem);
+                    mActivity.playlistFragment.onSongItemClick(nItem);
                 }
             });
-            holder.imgSongMenu.setOnClickListener(null);
-            holder.songItem.setOnLongClickListener(null);
-            holder.imgSongMenu.setOnTouchListener(new View.OnTouchListener() {
+            holder.getImgSongMenu().setOnClickListener(null);
+            holder.getSongItem().setOnLongClickListener(null);
+            holder.getImgSongMenu().setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
                 {
-                    activity.playlistFragment.getSongTouchHelper().startDrag(holder);
+                    mActivity.playlistFragment.getSongTouchHelper().startDrag(holder);
                     return true;
                 }
             });
-            holder.imgSelectSong.setVisibility(View.GONE);
-            holder.imgSongMenu.setImageResource(R.drawable.ic_sort);
-            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.imgSongMenu.getLayoutParams();
-            param.leftMargin = param.rightMargin = (int) (8 * activity.getResources().getDisplayMetrics().density + 0.5);
+            holder.getImgSelectSong().setVisibility(View.GONE);
+            holder.getImgSongMenu().setImageResource(R.drawable.ic_sort);
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.getImgSongMenu().getLayoutParams();
+            param.leftMargin = param.rightMargin = (int) (8 * mActivity.getDensity());
         }
         else {
-            holder.songItem.setOnClickListener(new View.OnClickListener() {
+            holder.getSongItem().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    activity.playlistFragment.onSongItemClick(nItem);
+                    mActivity.playlistFragment.onSongItemClick(nItem);
                 }
             });
-            holder.imgSongMenu.setOnTouchListener(null);
-            holder.imgSongMenu.setOnClickListener(new View.OnClickListener() {
+            holder.getImgSongMenu().setOnTouchListener(null);
+            holder.getImgSongMenu().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    activity.playlistFragment.showSongMenu(holder.getAdapterPosition());
+                    mActivity.playlistFragment.showSongMenu(holder.getAdapterPosition());
                 }
             });
-            holder.songItem.setOnLongClickListener(new View.OnLongClickListener() {
+            holder.getSongItem().setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    activity.playlistFragment.startMultipleSelection(holder.getAdapterPosition());
+                    mActivity.playlistFragment.startMultipleSelection(holder.getAdapterPosition());
                     return true;
                 }
             });
-            holder.imgSelectSong.setVisibility(View.GONE);
-            holder.imgSongMenu.setImageResource(R.drawable.ic_button_more);
-            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.imgSongMenu.getLayoutParams();
+            holder.getImgSelectSong().setVisibility(View.GONE);
+            holder.getImgSongMenu().setImageResource(R.drawable.ic_button_more);
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.getImgSongMenu().getLayoutParams();
             param.leftMargin = param.rightMargin = 0;
         }
 
-        if(activity.playlistFragment.getPlayingPlaylist() == activity.playlistFragment.getSelectedPlaylist() && nItem == activity.playlistFragment.getPlaying())
-            holder.songItem.setBackgroundColor(Color.argb(255, 224, 239, 255));
+        if(mActivity.playlistFragment.getPlayingPlaylist() == mActivity.playlistFragment.getSelectedPlaylist() && nItem == mActivity.playlistFragment.getPlaying())
+            holder.getSongItem().setBackgroundColor(Color.argb(255, 224, 239, 255));
         else
-            holder.songItem.setBackgroundColor(Color.argb(255, 255, 255, 255));
+            holder.getSongItem().setBackgroundColor(Color.argb(255, 255, 255, 255));
     }
 
     @Override
     public int getItemCount()
     {
-        ArrayList<SongItem> arSongs = activity.playlistFragment.getArPlaylists ().get(activity.playlistFragment.getSelectedPlaylist());
+        ArrayList<SongItem> arSongs = mActivity.playlistFragment.getArPlaylists ().get(mActivity.playlistFragment.getSelectedPlaylist());
         return arSongs.size();
     }
 }

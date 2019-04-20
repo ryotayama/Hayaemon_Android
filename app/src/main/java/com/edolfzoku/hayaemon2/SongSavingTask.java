@@ -27,42 +27,42 @@ import com.un4seen.bass.BASSenc;
 import java.nio.ByteBuffer;
 
 class SongSavingTask extends AsyncTask<Integer, Integer, Integer> {
-    private final int nPurpose; // 0: saveSongToLocal, 1: export, 2: saveSongToGallery
-    private final PlaylistFragment playlistFragment;
-    private final int hTempStream ;
-    private final int hEncode;
-    private final String strPathTo;
-    private final AlertDialog alert;
-    private final double dEnd;
+    private final int mPurpose; // 0: saveSongToLocal, 1: export, 2: saveSongToGallery
+    private final PlaylistFragment mPlaylistFragment;
+    private final int mTempStream;
+    private final int mEncode;
+    private final String mPathTo;
+    private final AlertDialog mAlert;
+    private final double mEnd;
 
-    SongSavingTask(int nPurpose, PlaylistFragment playlistFragment, int hTempStream, int hEncode, String strPathTo, AlertDialog alert, double dEnd)
+    SongSavingTask(int nPurpose, PlaylistFragment playlistFragment, int tempStream, int encode, String pathTo, AlertDialog alert, double end)
     {
-        this.nPurpose = nPurpose;
-        this.playlistFragment = playlistFragment;
-        this.hTempStream = hTempStream;
-        this.hEncode = hEncode;
-        this.strPathTo = strPathTo;
-        this.alert = alert;
-        this.dEnd = dEnd;
+        mPurpose = nPurpose;
+        mPlaylistFragment = playlistFragment;
+        mTempStream = tempStream;
+        mEncode = encode;
+        mPathTo = pathTo;
+        mAlert = alert;
+        mEnd = end;
     }
 
     @Override
     protected Integer doInBackground(Integer... params)
     {
-        while(BASS.BASS_ChannelIsActive(hTempStream) > 0 && BASSenc.BASS_Encode_IsActive(hEncode) > 0)
+        while(BASS.BASS_ChannelIsActive(mTempStream) > 0 && BASSenc.BASS_Encode_IsActive(mEncode) > 0)
         {
             ByteBuffer buffer = ByteBuffer.allocate(10000);
-            BASS.BASS_ChannelGetData(hTempStream, buffer, 10000 | BASS.BASS_DATA_FLOAT);
-            double dPos = BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetPosition(hTempStream, BASS.BASS_POS_BYTE));
-            if(dPos >= dEnd) break;
-            if(playlistFragment.isFinish()) break;
+            BASS.BASS_ChannelGetData(mTempStream, buffer, 10000 | BASS.BASS_DATA_FLOAT);
+            double dPos = BASS.BASS_ChannelBytes2Seconds(mTempStream, BASS.BASS_ChannelGetPosition(mTempStream, BASS.BASS_POS_BYTE));
+            if(dPos >= mEnd) break;
+            if(mPlaylistFragment.isFinish()) break;
 
-            MainActivity activity = (MainActivity)playlistFragment.getActivity();
+            MainActivity activity = (MainActivity)mPlaylistFragment.getActivity();
             if(activity == null) return 0;
             if(activity.effectFragment.isReverse())
-                publishProgress((int)((dEnd - dPos) / dEnd * 100.0));
+                publishProgress((int)((mEnd - dPos) / mEnd * 100.0));
             else
-                publishProgress((int)(dPos / dEnd * 100.0));
+                publishProgress((int)(dPos / mEnd * 100.0));
         }
         return 0;
     }
@@ -70,20 +70,20 @@ class SongSavingTask extends AsyncTask<Integer, Integer, Integer> {
     @Override
     protected  void onProgressUpdate(Integer... progress)
     {
-        if(nPurpose == 2)
-            playlistFragment.setProgress(progress[0] / 2);
+        if(mPurpose == 2)
+            mPlaylistFragment.setProgress(progress[0] / 2);
         else
-            playlistFragment.setProgress(progress[0]);
+            mPlaylistFragment.setProgress(progress[0]);
     }
 
     @Override
     protected void onPostExecute(Integer result)
     {
-        if(nPurpose == 0)
-            playlistFragment.finishSaveSongToLocal(hTempStream, hEncode, strPathTo, alert);
-        else if(nPurpose == 1)
-            playlistFragment.finishExport(hTempStream, hEncode, strPathTo, alert);
+        if(mPurpose == 0)
+            mPlaylistFragment.finishSaveSongToLocal(mTempStream, mEncode, mPathTo, mAlert);
+        else if(mPurpose == 1)
+            mPlaylistFragment.finishExport(mTempStream, mEncode, mPathTo, mAlert);
         else
-            playlistFragment.finishSaveSongToGallery(hTempStream, hEncode, strPathTo, alert);
+            mPlaylistFragment.finishSaveSongToGallery(mTempStream, mEncode, mPathTo, mAlert);
     }
 }

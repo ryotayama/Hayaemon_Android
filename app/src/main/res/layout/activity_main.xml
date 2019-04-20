@@ -447,6 +447,7 @@
         <com.google.android.gms.ads.AdView
             xmlns:ads="http://schemas.android.com/apk/res-auto"
             android:id="@+id/adView"
+            android:background="#FFF"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/viewSep2"

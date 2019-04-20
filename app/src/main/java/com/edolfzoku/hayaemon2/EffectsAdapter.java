@@ -34,28 +34,33 @@ import java.util.List;
 
 public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHolder>
 {
-    private final MainActivity activity;
-    private final List<EffectItem> items;
+    private final MainActivity mActivity;
+    private final List<EffectItem> mItems;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final RelativeLayout effectItem;
-        final TextView textEffect;
-        final ImageButton buttonEffectDetail;
-        final ImageView imgRight;
+        private RelativeLayout mEffectItem;
+        private TextView mTextEffect;
+        private ImageButton mBtnEffectDetail;
+        private ImageView mImgRight;
+
+        public RelativeLayout getEffectItem() { return mEffectItem; }
+        public TextView getTextEffect() { return mTextEffect; }
+        public ImageButton getButtonEffectDetail() { return mBtnEffectDetail; }
+        public ImageView getImgRight() { return mImgRight; }
 
         ViewHolder(View view) {
             super(view);
-            effectItem = view.findViewById(R.id.effectItem);
-            textEffect = view.findViewById(R.id.textEffect);
-            buttonEffectDetail = view.findViewById(R.id.buttonEffectDetail);
-            imgRight = view.findViewById(R.id.imgRight);
+            mEffectItem = view.findViewById(R.id.effectItem);
+            mTextEffect = view.findViewById(R.id.textEffect);
+            mBtnEffectDetail = view.findViewById(R.id.btnEffectDetail);
+            mImgRight = view.findViewById(R.id.imgRight);
         }
     }
 
     EffectsAdapter(Context context, List<EffectItem> items)
     {
-        this.activity = (MainActivity)context;
-        this.items = items;
+        mActivity = (MainActivity)context;
+        this.mItems = items;
     }
 
     @Override
@@ -69,32 +74,32 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull final EffectsAdapter.ViewHolder holder, int position)
     {
-        EffectItem item = items.get(position);
+        EffectItem item = mItems.get(position);
         String name = item.getEffectName();
-        holder.textEffect.setText(name);
+        holder.getTextEffect().setText(name);
 
-        if(activity.effectFragment.isSelectedItem(position))
+        if(mActivity.effectFragment.isSelectedItem(position))
             holder.itemView.setBackgroundColor(Color.argb(255, 221, 221, 221));
         else
             holder.itemView.setBackgroundColor(Color.argb(255, 255, 255, 255));
-        holder.effectItem.setOnClickListener(new View.OnClickListener() {
+        holder.getEffectItem().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.effectFragment.onEffectItemClick(holder.getAdapterPosition());
+                mActivity.effectFragment.onEffectItemClick(holder.getAdapterPosition());
             }
         });
 
         if(!item.isEditEnabled()) {
-            holder.buttonEffectDetail.setVisibility(View.GONE);
-            holder.imgRight.setVisibility(View.GONE);
+            holder.getButtonEffectDetail().setVisibility(View.GONE);
+            holder.getImgRight().setVisibility(View.GONE);
         }
         else {
-            holder.buttonEffectDetail.setVisibility(View.VISIBLE);
-            holder.imgRight.setVisibility(View.VISIBLE);
-            holder.buttonEffectDetail.setOnClickListener(new View.OnClickListener() {
+            holder.getButtonEffectDetail().setVisibility(View.VISIBLE);
+            holder.getImgRight().setVisibility(View.VISIBLE);
+            holder.getButtonEffectDetail().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    activity.effectFragment.onEffectDetailClick(holder.getAdapterPosition());
+                    mActivity.effectFragment.onEffectDetailClick(holder.getAdapterPosition());
                 }
             });
         }
@@ -103,6 +108,6 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
     @Override
     public int getItemCount()
     {
-        return items.size();
+        return mItems.size();
     }
 }

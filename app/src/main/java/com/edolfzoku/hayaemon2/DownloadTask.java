@@ -13,17 +13,17 @@ import java.net.URL;
 
 class DownloadTask extends AsyncTask<Integer, Integer, Integer>
 {
-    private final PlaylistFragment playlistFragment;
-    private final URL url;
-    private final String strPathTo;
-    private final AlertDialog alert;
+    private final PlaylistFragment mPlaylistFragment;
+    private final URL mUrl;
+    private final String mStrPathTo;
+    private final AlertDialog mAlert;
 
     DownloadTask(PlaylistFragment playlistFragment, URL url, String strPathTo, AlertDialog alert)
     {
-        this.playlistFragment = playlistFragment;
-        this.url = url;
-        this.strPathTo = strPathTo;
-        this.alert = alert;
+        mPlaylistFragment = playlistFragment;
+        mUrl = url;
+        mStrPathTo = strPathTo;
+        mAlert = alert;
     }
 
     @Override
@@ -31,14 +31,14 @@ class DownloadTask extends AsyncTask<Integer, Integer, Integer>
     {
         HttpURLConnection connection = null;
         try {
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpURLConnection) mUrl.openConnection();
             connection.connect();
 
             final int status = connection.getResponseCode();
             if (status == HttpURLConnection.HTTP_OK) {
                 final InputStream input = connection.getInputStream();
                 final DataInputStream dataInput = new DataInputStream(input);
-                final FileOutputStream fileOutput = new FileOutputStream(strPathTo);
+                final FileOutputStream fileOutput = new FileOutputStream(mStrPathTo);
                 final DataOutputStream dataOut = new DataOutputStream(fileOutput);
                 final byte[] buffer = new byte[4096];
                 int readByte;
@@ -47,7 +47,7 @@ class DownloadTask extends AsyncTask<Integer, Integer, Integer>
 
                 while((readByte = dataInput.read(buffer)) != -1)
                 {
-                    if(playlistFragment.isFinish()) break;
+                    if(mPlaylistFragment.isFinish()) break;
                     totalReatByte += readByte;
                     if(contentLength != 0)
                         publishProgress((int)(totalReatByte / contentLength * 100.0));
@@ -79,12 +79,12 @@ class DownloadTask extends AsyncTask<Integer, Integer, Integer>
     @Override
     protected void onProgressUpdate(Integer... progress)
     {
-        playlistFragment.setProgress(progress[0]);
+        mPlaylistFragment.setProgress(progress[0]);
     }
 
     @Override
     protected void onPostExecute(Integer integer)
     {
-        playlistFragment.finishAddURL(strPathTo, alert, integer);
+        mPlaylistFragment.finishAddURL(mStrPathTo, mAlert, integer);
     }
 }

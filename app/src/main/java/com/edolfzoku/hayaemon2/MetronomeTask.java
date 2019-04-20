@@ -3,15 +3,15 @@ package com.edolfzoku.hayaemon2;
 import java.util.TimerTask;
 
 class MetronomeTask extends TimerTask {
-    private final EffectFragment effectFragment;
+    private final EffectFragment mEffectFragment;
 
     MetronomeTask(EffectFragment effectFragment)
     {
-        this.effectFragment = effectFragment;
+        mEffectFragment = effectFragment;
     }
 
     @Override
     public void run() {
-        effectFragment.playMetronome();
+        mEffectFragment.playMetronome();
     }
 }

@@ -31,10 +31,10 @@ import android.view.MotionEvent;
 public class HoldableViewPager extends ViewPager {
 
     // スワイプの禁止フラグ(true: スワイプ禁止, false: スワイプOK)
-    private boolean isSwipeHold = false;
+    private boolean mSwipeHold = false;
 
     public void setSwipeHold(boolean enabled) {
-        isSwipeHold = enabled;
+        mSwipeHold = enabled;
     }
 
     // コンストラクタ
@@ -50,7 +50,7 @@ public class HoldableViewPager extends ViewPager {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        if(isSwipeHold) {
+        if(mSwipeHold) {
             // スワイプ禁止の場合
             return false;
         }
@@ -60,7 +60,7 @@ public class HoldableViewPager extends ViewPager {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        if(isSwipeHold) {
+        if(mSwipeHold) {
             // スワイプ禁止の場合
             return false;
         }

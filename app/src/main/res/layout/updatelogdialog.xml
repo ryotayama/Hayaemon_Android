@@ -66,7 +66,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="16dp"
         android:text="次回から表示しない"
-        android:layout_above="@+id/buttons"
+        android:layout_above="@+id/btns"
         android:id="@+id/switchNextHidden"
         />
 
@@ -76,7 +76,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:id="@+id/buttons"
+        android:id="@+id/btns"
         >
 
         <Button
@@ -85,7 +85,7 @@
             android:layout_weight="1"
             style="?android:attr/borderlessButtonStyle"
             android:text="@string/close"
-            android:id="@+id/buttonClose"
+            android:id="@+id/btnClose"
             />
 
         <Button
@@ -94,7 +94,7 @@
             android:layout_weight="1"
             style="?android:attr/borderlessButtonStyle"
             android:text="シェア"
-            android:id="@+id/buttonShare"
+            android:id="@+id/btnShare"
             />
 
     </LinearLayout>

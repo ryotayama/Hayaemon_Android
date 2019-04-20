@@ -35,31 +35,35 @@ import java.util.List;
 
 public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.ViewHolder>
 {
-    private final MainActivity activity;
-    private List<EqualizerItem> items;
+    private final MainActivity mActivity;
+    private List<EqualizerItem> mItems;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final RelativeLayout equalizerItem;
-        final TextView textEqualizer;
-        final ImageView imgEqualizerMenu;
+        private RelativeLayout mEqualizerItem;
+        private TextView mTextEqualizer;
+        private ImageView mImgEqualizerMenu;
+
+        RelativeLayout getEqualizerItem() { return mEqualizerItem; }
+        TextView getTextEqualizer() { return mTextEqualizer; }
+        ImageView getImgEqualizerMenu() { return mImgEqualizerMenu; }
 
         ViewHolder(View view) {
             super(view);
-            equalizerItem = view.findViewById(R.id.equalizerItem);
-            textEqualizer = view.findViewById(R.id.textEqualizer);
-            imgEqualizerMenu = view.findViewById(R.id.imgEqualizerMenu);
+            mEqualizerItem = view.findViewById(R.id.equalizerItem);
+            mTextEqualizer = view.findViewById(R.id.textEqualizer);
+            mImgEqualizerMenu = view.findViewById(R.id.imgEqualizerMenu);
         }
     }
 
     EqualizersAdapter(Context context, List<EqualizerItem> items)
     {
-        this.activity = (MainActivity)context;
-        this.items = items;
+        mActivity = (MainActivity)context;
+        mItems = items;
     }
 
     void changeItems(List<EqualizerItem> items)
     {
-        this.items = items;
+        mItems = items;
     }
 
     @Override
@@ -74,45 +78,45 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull final EqualizersAdapter.ViewHolder holder, int position)
     {
-        EqualizerItem item = items.get(position);
+        EqualizerItem item = mItems.get(position);
         String name = item.getEqualizerName();
-        holder.textEqualizer.setText(name);
+        holder.getTextEqualizer().setText(name);
 
-        if(activity.equalizerFragment.isSelectedItem(position))
+        if(mActivity.equalizerFragment.isSelectedItem(position))
             holder.itemView.setBackgroundColor(Color.argb(255, 221, 221, 221));
         else
             holder.itemView.setBackgroundColor(Color.argb(255, 255, 255, 255));
-        holder.equalizerItem.setOnClickListener(new View.OnClickListener() {
+        holder.getEqualizerItem().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.equalizerFragment.onEqualizerItemClick(holder.getAdapterPosition());
+                mActivity.equalizerFragment.onEqualizerItemClick(holder.getAdapterPosition());
             }
         });
 
-        if(activity.equalizerFragment.isSorting()) {
-            holder.imgEqualizerMenu.setOnClickListener(null);
-            holder.imgEqualizerMenu.setOnTouchListener(new View.OnTouchListener() {
+        if(mActivity.equalizerFragment.isSorting()) {
+            holder.getImgEqualizerMenu().setOnClickListener(null);
+            holder.getImgEqualizerMenu().setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
                 {
-                    activity.equalizerFragment.getEqualizerTouchHelper().startDrag(holder);
+                    mActivity.equalizerFragment.getEqualizerTouchHelper().startDrag(holder);
                     return true;
                 }
             });
-            holder.imgEqualizerMenu.setImageResource(R.drawable.ic_sort);
-            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.imgEqualizerMenu.getLayoutParams();
-            param.leftMargin = param.rightMargin = (int) (8 * activity.getResources().getDisplayMetrics().density + 0.5);
+            holder.getImgEqualizerMenu().setImageResource(R.drawable.ic_sort);
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.getImgEqualizerMenu().getLayoutParams();
+            param.leftMargin = param.rightMargin = (int) (8 * mActivity.getDensity());
         }
         else {
-            holder.imgEqualizerMenu.setOnTouchListener(null);
-            holder.imgEqualizerMenu.setOnClickListener(new View.OnClickListener() {
+            holder.getImgEqualizerMenu().setOnTouchListener(null);
+            holder.getImgEqualizerMenu().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    activity.equalizerFragment.showMenu(holder.getAdapterPosition());
+                    mActivity.equalizerFragment.showMenu(holder.getAdapterPosition());
                 }
             });
-            holder.imgEqualizerMenu.setImageResource(R.drawable.ic_button_more);
-            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.imgEqualizerMenu.getLayoutParams();
+            holder.getImgEqualizerMenu().setImageResource(R.drawable.ic_button_more);
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.getImgEqualizerMenu().getLayoutParams();
             param.leftMargin = param.rightMargin = 0;
         }
     }
@@ -120,6 +124,6 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
     @Override
     public int getItemCount()
     {
-        return items.size();
+        return mItems.size();
     }
 }

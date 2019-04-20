@@ -27,7 +27,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,8 +36,8 @@ import java.util.Locale;
 
 public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.ViewHolder>
 {
-    private final MainActivity activity;
-    private final List<String> items;
+    private final MainActivity mActivity;
+    private final List<String> mItems;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         final RelativeLayout playlistItem;
@@ -59,8 +58,8 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
 
     PlaylistsAdapter(Context context, List<String> items)
     {
-        this.activity = (MainActivity)context;
-        this.items = items;
+        mActivity = (MainActivity)context;
+        mItems = items;
     }
 
     @Override
@@ -75,45 +74,45 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
     @Override
     public void onBindViewHolder(@NonNull final PlaylistsAdapter.ViewHolder holder, int position)
     {
-        String item = items.get(position);
+        String item = mItems.get(position);
 
         holder.textName.setText(item);
-        holder.textSongCount.setText(String.format(Locale.getDefault(), "%d曲", activity.playlistFragment.getSongCount(position)));
+        holder.textSongCount.setText(String.format(Locale.getDefault(), "%d曲", mActivity.playlistFragment.getSongCount(position)));
 
         holder.playlistItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.playlistFragment.onPlaylistItemClick(holder.getAdapterPosition());
+                mActivity.playlistFragment.onPlaylistItemClick(holder.getAdapterPosition());
             }
         });
-        if(activity.playlistFragment.isSorting()) {
+        if(mActivity.playlistFragment.isSorting()) {
             holder.imgPlaylistMenu.setOnClickListener(null);
             holder.playlistItem.setOnLongClickListener(null);
             holder.imgPlaylistMenu.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
                 {
-                    activity.playlistFragment.getPlaylistTouchHelper().startDrag(holder);
+                    mActivity.playlistFragment.getPlaylistTouchHelper().startDrag(holder);
                     return true;
                 }
             });
             holder.imgPlaylistMenu.setImageResource(R.drawable.ic_sort);
             holder.imgRight.setVisibility(View.GONE);
             RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.imgPlaylistMenu.getLayoutParams();
-            param.leftMargin = param.rightMargin = (int) (8 * activity.getResources().getDisplayMetrics().density + 0.5);
+            param.leftMargin = param.rightMargin = (int) (8 * mActivity.getDensity());
         }
         else {
             holder.imgPlaylistMenu.setOnTouchListener(null);
             holder.imgPlaylistMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    activity.playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
+                    mActivity.playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
                 }
             });
             holder.playlistItem.setOnLongClickListener(new View.OnLongClickListener()
             {
                 public boolean onLongClick(View v) {
-                    activity.playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
+                    mActivity.playlistFragment.showPlaylistMenu(holder.getAdapterPosition());
                     return true;
                 }
             });
@@ -123,7 +122,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             param.leftMargin = param.rightMargin = 0;
         }
 
-        if(activity.playlistFragment.getPlayingPlaylist() == position && activity.playlistFragment.getPlaying() != -1)
+        if(mActivity.playlistFragment.getPlayingPlaylist() == position && mActivity.playlistFragment.getPlaying() != -1)
             holder.playlistItem.setBackgroundColor(Color.argb(255, 224, 239, 255));
         else
             holder.playlistItem.setBackgroundColor(Color.argb(255, 255, 255, 255));
@@ -132,6 +131,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
     @Override
     public int getItemCount()
     {
-        return items.size();
+        return mItems.size();
     }
 }

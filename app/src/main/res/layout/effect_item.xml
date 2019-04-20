@@ -32,7 +32,7 @@
     >
 
         <ImageButton
-            android:id="@+id/buttonEffectDetail"
+            android:id="@+id/btnEffectDetail"
             android:contentDescription="@string/detail"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -58,8 +58,8 @@
             android:layout_marginRight="4dp"
             android:layout_marginEnd="4dp"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/buttonEffectDetail"
-            android:layout_toEndOf="@+id/buttonEffectDetail"
+            android:layout_toRightOf="@+id/btnEffectDetail"
+            android:layout_toEndOf="@+id/btnEffectDetail"
             />
 
     </RelativeLayout>

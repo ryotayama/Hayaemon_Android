@@ -24,32 +24,32 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 class SectionsPagerAdapter extends FragmentPagerAdapter {
-    private final PlaylistFragment playlistFragment;
-    private final LoopFragment loopFragment;
-    private final ControlFragment controlFragment;
-    private final EqualizerFragment equalizerFragment;
-    private final EffectFragment effectFragment;
+    private final PlaylistFragment mPlaylistFragment;
+    private final LoopFragment mLoopFragment;
+    private final ControlFragment mControlFragment;
+    private final EqualizerFragment mEqualizerFragment;
+    private final EffectFragment mEffectFragment;
 
     SectionsPagerAdapter(Context context, FragmentManager fm)
     {
         super(fm);
         MainActivity activity = (MainActivity)context;
-        playlistFragment = activity.playlistFragment == null ? new PlaylistFragment() : activity.playlistFragment;
-        loopFragment = activity.loopFragment == null ? new LoopFragment() : activity.loopFragment;
-        controlFragment = activity.controlFragment == null ? new ControlFragment() : activity.controlFragment;
-        equalizerFragment = activity.equalizerFragment == null ? new EqualizerFragment() : activity.equalizerFragment;
-        effectFragment = activity.effectFragment == null ? new EffectFragment() : activity.effectFragment;
+        mPlaylistFragment = activity.playlistFragment == null ? new PlaylistFragment() : activity.playlistFragment;
+        mLoopFragment = activity.loopFragment == null ? new LoopFragment() : activity.loopFragment;
+        mControlFragment = activity.controlFragment == null ? new ControlFragment() : activity.controlFragment;
+        mEqualizerFragment = activity.equalizerFragment == null ? new EqualizerFragment() : activity.equalizerFragment;
+        mEffectFragment = activity.effectFragment == null ? new EffectFragment() : activity.effectFragment;
     }
 
     @Override
     public Fragment getItem(int position)
     {
         switch (position) {
-            case 0: return playlistFragment;
-            case 1: return loopFragment;
-            case 2: return controlFragment;
-            case 3: return equalizerFragment;
-            case 4: return effectFragment;
+            case 0: return mPlaylistFragment;
+            case 1: return mLoopFragment;
+            case 2: return mControlFragment;
+            case 3: return mEqualizerFragment;
+            case 4: return mEffectFragment;
             default: return null;
         }
     }

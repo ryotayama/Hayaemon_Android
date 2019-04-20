@@ -23,7 +23,9 @@ import java.util.Locale;
 
 public class SettingFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener
 {
-    private MainActivity activity = null;
+    private MainActivity mActivity = null;
+    private Switch mSwitchElegant;
+    private Switch mSwitchPurple;
 
     public SettingFragment()
     {
@@ -34,7 +36,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
         super.onAttach(context);
 
         if (context instanceof MainActivity) {
-            activity = (MainActivity) context;
+            mActivity = (MainActivity) context;
         }
     }
 
@@ -42,7 +44,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
     public void onDetach() {
         super.onDetach();
 
-        activity = null;
+        mActivity = null;
     }
 
     @Override
@@ -55,50 +57,51 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Button btnCloseSetting = activity.findViewById(R.id.btnCloseSetting);
+        mSwitchElegant = mActivity.findViewById(R.id.switchElegant);
+        mSwitchPurple = mActivity.findViewById(R.id.switchPurple);
+
+        Button btnCloseSetting = mActivity.findViewById(R.id.btnCloseSetting);
         btnCloseSetting.setOnClickListener(this);
 
-        activity.findViewById(R.id.relativeSpeedRangeValue).setOnClickListener(this);
-        TextView textSpeedRangeValue = activity.findViewById(R.id.textSpeedRangeValue);
-        textSpeedRangeValue.setText(String.format(Locale.getDefault(), "%d%% ～ %d%%", activity.controlFragment.getMinSpeed(), activity.controlFragment.getMaxSpeed()));
+        mActivity.findViewById(R.id.relativeSpeedRangeValue).setOnClickListener(this);
+        TextView textSpeedRangeValue = mActivity.findViewById(R.id.textSpeedRangeValue);
+        textSpeedRangeValue.setText(String.format(Locale.getDefault(), "%d%% ～ %d%%", mActivity.controlFragment.getMinSpeed(), mActivity.controlFragment.getMaxSpeed()));
 
-        activity.findViewById(R.id.relativePitchRangeValue).setOnClickListener(this);
-        TextView textPitchRangeValue = activity.findViewById(R.id.textPitchRangeValue);
-        textPitchRangeValue.setText(String.format(Locale.getDefault(), "♯%d ～ ♭%d", activity.controlFragment.getMaxPitch(), activity.controlFragment.getMinPitch() * -1));
+        mActivity.findViewById(R.id.relativePitchRangeValue).setOnClickListener(this);
+        TextView textPitchRangeValue = mActivity.findViewById(R.id.textPitchRangeValue);
+        textPitchRangeValue.setText(String.format(Locale.getDefault(), "♯%d ～ ♭%d", mActivity.controlFragment.getMaxPitch(), mActivity.controlFragment.getMinPitch() * -1));
 
-        Switch switchRepeat = activity.findViewById(R.id.switchRepeat);
-        switchRepeat.setChecked(!activity.isPlayNextByBPos());
+        Switch switchRepeat = mActivity.findViewById(R.id.switchRepeat);
+        switchRepeat.setChecked(!mActivity.isPlayNextByBPos());
         switchRepeat.setOnCheckedChangeListener(this);
 
-        Switch switchSnap = activity.findViewById(R.id.switchSnap);
-        switchSnap.setChecked(activity.controlFragment.isSnap());
+        Switch switchSnap = mActivity.findViewById(R.id.switchSnap);
+        switchSnap.setChecked(mActivity.controlFragment.isSnap());
         switchSnap.setOnCheckedChangeListener(this);
 
-        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Boolean bPurplePurchased = preferences.getBoolean("unipointer_p", false);
         Boolean bElegantPurchased = preferences.getBoolean("unipointer_e", false);
         if(bPurplePurchased || bElegantPurchased) {
-            RelativeLayout relativePurchaseSetting = activity.findViewById(R.id.relativePurchaseSetting);
+            RelativeLayout relativePurchaseSetting = mActivity.findViewById(R.id.relativePurchaseSetting);
             relativePurchaseSetting.setVisibility(View.VISIBLE);
-            ImageView imgPoint = activity.findViewById(R.id.imgPoint);
+            ImageView imgPoint = mActivity.findViewById(R.id.imgPoint);
             int nTag = 0;
             if(imgPoint.getTag() != null) nTag = (Integer)imgPoint.getTag();
             if(bPurplePurchased) {
-                RelativeLayout relativePurple = activity.findViewById(R.id.relativePurple);
+                RelativeLayout relativePurple = mActivity.findViewById(R.id.relativePurple);
                 relativePurple.setVisibility(View.VISIBLE);
-                Switch switchPurple = activity.findViewById(R.id.switchPurple);
-                switchPurple.setChecked(nTag == 1);
-                switchPurple.setOnCheckedChangeListener(this);
+                mSwitchPurple.setChecked(nTag == 1);
+                mSwitchPurple.setOnCheckedChangeListener(this);
             }
             if(bElegantPurchased) {
-                RelativeLayout relativeElegant = activity.findViewById(R.id.relativeElegant);
+                RelativeLayout relativeElegant = mActivity.findViewById(R.id.relativeElegant);
                 relativeElegant.setVisibility(View.VISIBLE);
-                Switch switchElegant = activity.findViewById(R.id.switchElegant);
-                switchElegant.setChecked(nTag == 2);
-                switchElegant.setOnCheckedChangeListener(this);
+                mSwitchElegant.setChecked(nTag == 2);
+                mSwitchElegant.setOnCheckedChangeListener(this);
             }
             if(!bPurplePurchased || !bElegantPurchased) {
-                View viewDivider = activity.findViewById(R.id.viewDivider);
+                View viewDivider = mActivity.findViewById(R.id.viewDivider);
                 viewDivider.setVisibility(View.GONE);
             }
         }
@@ -108,21 +111,21 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
     public void onClick(View view)
     {
         if(view.getId() == R.id.btnCloseSetting) {
-            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
             final FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
             transaction.remove(this);
             transaction.commit();
         }
         else if(view.getId() == R.id.relativeSpeedRangeValue) {
-            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
             final FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
             transaction.replace(R.id.relativeMain, new SpeedRangeSettingFragment());
             transaction.commit();
         }
         else if(view.getId() == R.id.relativePitchRangeValue) {
-            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
             final FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
             transaction.replace(R.id.relativeMain, new PitchRangeSettingFragment());
@@ -133,20 +136,19 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b)
     {
-        SharedPreferences preferences = activity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         if(compoundButton.getId() == R.id.switchRepeat) {
-            activity.setPlayNextByBPos(!b);
-            preferences.edit().putBoolean("bPlayNextByBPos", activity.isPlayNextByBPos()).apply();
+            mActivity.setPlayNextByBPos(!b);
+            preferences.edit().putBoolean("bPlayNextByBPos", mActivity.isPlayNextByBPos()).apply();
         }
         else if(compoundButton.getId() == R.id.switchSnap) {
-            activity.controlFragment.setSnap(b);
+            mActivity.controlFragment.setSnap(b);
             preferences.edit().putBoolean("bSnap", b).apply();
         }
         else if(compoundButton.getId() == R.id.switchPurple) {
-            Switch switchElegant = activity.findViewById(R.id.switchElegant);
-            ImageView imgPoint = activity.findViewById(R.id.imgPoint);
+            ImageView imgPoint = mActivity.controlFragment.getImgPoint();
             if(b) {
-                switchElegant.setChecked(false);
+                mSwitchElegant.setChecked(false);
                 imgPoint.setImageResource(R.drawable.control_pointer_uni_murasaki);
                 imgPoint.setTag(1);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -156,17 +158,16 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
             else {
                 imgPoint.setImageResource(R.drawable.ic_point);
                 imgPoint.setTag(0);
-                imgPoint.getLayoutParams().width = (int) (20 * activity.getResources().getDisplayMetrics().density + 0.5);
-                imgPoint.getLayoutParams().height = (int) (20 * activity.getResources().getDisplayMetrics().density + 0.5);
+                imgPoint.getLayoutParams().width = (int) (20 * mActivity.getDensity());
+                imgPoint.getLayoutParams().height = (int) (20 * mActivity.getDensity());
                 preferences.edit().putInt("imgPointTag", 0).apply();
             }
             imgPoint.requestLayout();
         }
         else if(compoundButton.getId() == R.id.switchElegant) {
-            Switch switchPurple = activity.findViewById(R.id.switchPurple);
-            ImageView imgPoint = activity.findViewById(R.id.imgPoint);
+            ImageView imgPoint = mActivity.controlFragment.getImgPoint();
             if(b) {
-                switchPurple.setChecked(false);
+                mSwitchPurple.setChecked(false);
                 imgPoint.setImageResource(R.drawable.control_pointer_uni_bafun);
                 imgPoint.setTag(2);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -176,8 +177,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
             else {
                 imgPoint.setImageResource(R.drawable.ic_point);
                 imgPoint.setTag(0);
-                imgPoint.getLayoutParams().width = (int) (20 * activity.getResources().getDisplayMetrics().density + 0.5);
-                imgPoint.getLayoutParams().height = (int) (20 * activity.getResources().getDisplayMetrics().density + 0.5);
+                imgPoint.getLayoutParams().width = (int) (20 * mActivity.getDensity());
+                imgPoint.getLayoutParams().height = (int) (20 * mActivity.getDensity());
                 preferences.edit().putInt("imgPointTag", 0).apply();
             }
             imgPoint.requestLayout();

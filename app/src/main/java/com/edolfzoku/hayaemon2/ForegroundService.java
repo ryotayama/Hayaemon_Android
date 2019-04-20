@@ -89,7 +89,7 @@ public class ForegroundService extends IntentService {
                 bitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher);
 
             NotificationCompat.Action actionPlayPause;
-            if (BASS.BASS_ChannelIsActive(MainActivity.hStream) == BASS.BASS_ACTIVE_PLAYING)
+            if (BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_PLAYING)
                 actionPlayPause = new NotificationCompat.Action.Builder(R.drawable.ic_pause, "Pause", pendingIntentPlayPause).build();
             else
                 actionPlayPause = new NotificationCompat.Action.Builder(R.drawable.ic_play, "Play", pendingIntentPlayPause).build();

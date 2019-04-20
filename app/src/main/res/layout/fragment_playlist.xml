@@ -106,7 +106,7 @@
         >
 
         <ImageButton
-            android:id="@+id/buttonLeft"
+            android:id="@+id/btnLeft"
             android:contentDescription="@string/changePlaylistScreen"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -128,14 +128,14 @@
             android:divider="#BFBFBF"
             android:dividerHeight="1px"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/buttonLeft"
-            android:layout_toEndOf="@+id/buttonLeft"
-            android:layout_toLeftOf="@+id/buttonAddPlaylist_small"
-            android:layout_toStartOf="@+id/buttonAddPlaylist_small"
+            android:layout_toRightOf="@+id/btnLeft"
+            android:layout_toEndOf="@+id/btnLeft"
+            android:layout_toLeftOf="@+id/btnAddPlaylist_small"
+            android:layout_toStartOf="@+id/btnAddPlaylist_small"
             />
 
         <ImageButton
-            android:id="@+id/buttonAddPlaylist_small"
+            android:id="@+id/btnAddPlaylist_small"
             android:contentDescription="@string/addPlaylist"
             android:layout_width="48dp"
             android:layout_height="48dp"

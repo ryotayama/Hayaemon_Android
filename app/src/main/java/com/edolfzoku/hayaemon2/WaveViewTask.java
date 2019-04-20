@@ -35,24 +35,24 @@ import java.util.ArrayList;
 
 class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
 {
-    private final WeakReference<WaveView> waveViewRef;
-    private float fPeak = 0.0f;
-    private final int hTempStream;
-    private final int nWidth;
-    private final int nHeight;
-    private final float fZoom;
-    private final ArrayList<Bitmap> arBitmaps;
-    private final ArrayList<Canvas> arCanvases;
+    private final WeakReference<WaveView> mWaveViewRef;
+    private float mPeak = 0.0f;
+    private final int mTempStream;
+    private final int mWidth;
+    private final int mHeight;
+    private final float mZoom;
+    private final ArrayList<Bitmap> mBitmaps;
+    private final ArrayList<Canvas> mCanvases;
 
-    WaveViewTask(WaveView view, int hTempStream, int nWidth, int nHeight, float fZoom, ArrayList<Bitmap> arBitmaps, ArrayList<Canvas> arCanvases)
+    WaveViewTask(WaveView view, int tempStream, int width, int height, float zoom, ArrayList<Bitmap> bitmaps, ArrayList<Canvas> canvases)
     {
-        waveViewRef = new WeakReference<>(view);
-        this.hTempStream = hTempStream;
-        this.nWidth = nWidth;
-        this.nHeight = nHeight;
-        this.fZoom = fZoom;
-        this.arBitmaps = arBitmaps;
-        this.arCanvases = arCanvases;
+        mWaveViewRef = new WeakReference<>(view);
+        mTempStream = tempStream;
+        mWidth = width;
+        mHeight = height;
+        mZoom = zoom;
+        mBitmaps = bitmaps;
+        mCanvases = canvases;
     }
 
     @Override
@@ -60,31 +60,37 @@ class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
     {
         Paint paint = new Paint();
         paint.setStrokeWidth(1.0f);
-        long lMaxLength = BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE);
-        int nMaxWidth = (int)(nWidth * fZoom);
+        long lMaxLength = BASS.BASS_ChannelGetLength(mTempStream, BASS.BASS_POS_BYTE);
+        int nMaxWidth = (int)(mWidth * mZoom);
         int nTotalWidth = 0;
         int nEnd = 0;
         BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
-        BASS.BASS_ChannelGetInfo(hTempStream, info);
+        BASS.BASS_ChannelGetInfo(mTempStream, info);
         boolean bStereo = true;
         if(info.chans == 1) bStereo = false;
-        for(int i = 0; i < arCanvases.size(); i++) {
-            Canvas canvas = arCanvases.get(i);
-            Bitmap bitmap = arBitmaps.get(i);
-            int nWidth = bitmap.getWidth();
-            nTotalWidth += nWidth;
+        float fTempPeak = 0.0f;
+        for(int i = 0; i < mCanvases.size(); i++) {
+            Canvas canvas = mCanvases.get(i);
+            Bitmap bitmap = mBitmaps.get(i);
+            int mWidth = bitmap.getWidth();
+            nTotalWidth += mWidth;
             int nStart = nEnd;
             nEnd = (int)(lMaxLength * nTotalWidth / nMaxWidth);
             long lLength = nEnd - nStart;
-            for(int j = 0; j < nWidth; j++)
+            for(int j = 0; j < mWidth; j++)
             {
-                BASS.BASS_ChannelSetPosition(hTempStream, nStart + lLength * j / nWidth, BASS.BASS_POS_BYTE);
+                BASS.BASS_ChannelSetPosition(mTempStream, nStart + lLength * j / mWidth, BASS.BASS_POS_BYTE);
                 float[] arLevels = new float[2];
-                if(bStereo)
-                    BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_STEREO);
-                else
-                    BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_MONO);
-                int nHalfHeight = nHeight / 2;
+                if(bStereo) {
+                    BASS.BASS_ChannelGetLevelEx(mTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_STEREO);
+                    if (fTempPeak < arLevels[0]) fTempPeak = arLevels[0];
+                    if (fTempPeak < arLevels[1]) fTempPeak = arLevels[1];
+                }
+                else {
+                    BASS.BASS_ChannelGetLevelEx(mTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_MONO);
+                    if (fTempPeak < arLevels[0]) fTempPeak = arLevels[0];
+                }
+                int nHalfHeight = mHeight / 2;
                 int nLeftHeight = (int)(nHalfHeight * arLevels[0]);
                 int nRightHeight;
                 if(bStereo)
@@ -102,30 +108,16 @@ class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
             }
         }
 
-        BASS.BASS_ChannelSetPosition(hTempStream, 0, BASS.BASS_POS_BYTE);
-        float fTempPeak = 0.0f;
-        float[] arLevels = new float[2];
-        if(bStereo) {
-            while (BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_STEREO)) {
-                if (fTempPeak < arLevels[0]) fTempPeak = arLevels[0];
-                if (fTempPeak < arLevels[1]) fTempPeak = arLevels[1];
-            }
-        }
-        else {
-            while (BASS.BASS_ChannelGetLevelEx(hTempStream, arLevels, 0.1f, BASS.BASS_LEVEL_MONO)) {
-                if (fTempPeak < arLevels[0]) fTempPeak = arLevels[0];
-            }
-        }
-        fPeak = fTempPeak;
+        mPeak = fTempPeak;
         return 0;
     }
 
     @Override
     protected void onPostExecute(Integer result)
     {
-        WaveView waveView = waveViewRef.get();
+        WaveView waveView = mWaveViewRef.get();
         waveView.invalidate();
         MainActivity activity = (MainActivity)waveView.getLoopFragment().getActivity();
-        if(activity != null) activity.playlistFragment.setPeak(fPeak);
+        if(activity != null) activity.playlistFragment.setPeak(mPeak);
     }
 }

@@ -99,12 +99,12 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/buttonEffectMinus"
-                android:layout_toStartOf="@+id/buttonEffectMinus"
+                android:layout_toLeftOf="@+id/btnEffectMinus"
+                android:layout_toStartOf="@+id/btnEffectMinus"
                 />
 
             <ImageButton
-                android:id="@+id/buttonEffectMinus"
+                android:id="@+id/btnEffectMinus"
                 android:contentDescription="@string/minus"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
@@ -114,12 +114,12 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="2dp"
-                android:layout_toLeftOf="@+id/buttonEffectPlus"
-                android:layout_toStartOf="@+id/buttonEffectPlus"
+                android:layout_toLeftOf="@+id/btnEffectPlus"
+                android:layout_toStartOf="@+id/btnEffectPlus"
                 />
 
             <ImageButton
-                android:id="@+id/buttonEffectPlus"
+                android:id="@+id/btnEffectPlus"
                 android:contentDescription="@string/plus"
                 android:layout_width="48dp"
                 android:layout_height="48dp"

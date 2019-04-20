@@ -7,9 +7,9 @@ import android.view.animation.ScaleAnimation;
 
 public class AnimationButton extends android.support.v7.widget.AppCompatImageButton
 {
-    private boolean bAnimation = true;
+    private boolean mAnimationFlag = true;
 
-    public void setAnimation(boolean bAnimation) { this.bAnimation = bAnimation; }
+    public void setAnimation(boolean animationFlag) { mAnimationFlag = animationFlag; }
 
     public AnimationButton(Context context, AttributeSet attr)
     {
@@ -19,7 +19,7 @@ public class AnimationButton extends android.support.v7.widget.AppCompatImageBut
     @Override
     public void setPressed(boolean pressed)
     {
-        if(!bAnimation) return;
+        if(!mAnimationFlag) return;
 
         if (pressed) {
             /* 押してる時 */

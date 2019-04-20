@@ -17,16 +17,16 @@ import java.util.Locale;
 
 public class TimeEffectDetailFragmentDialog extends DialogFragment
 {
-    private MainActivity activity = null;
-    private NumberPicker intNumberPicker;
-    private NumberPicker decimalNumberPicker;
+    private MainActivity mActivity = null;
+    private NumberPicker mIntNumberPicker;
+    private NumberPicker mDecimalNumberPicker;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
         if (context instanceof MainActivity) {
-            activity = (MainActivity) context;
+            mActivity = (MainActivity) context;
         }
     }
 
@@ -34,18 +34,18 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
     public void onDetach() {
         super.onDetach();
 
-        activity = null;
+        mActivity = null;
     }
 
     @Override
     public @NonNull Dialog onCreateDialog(Bundle savedInstanceState) {
-        LayoutInflater inflater = activity.getLayoutInflater();
-        View view = inflater.inflate(R.layout.timeeffectdetailpicker, (ViewGroup)activity.findViewById(R.id.layout_root), false);
+        LayoutInflater inflater = mActivity.getLayoutInflater();
+        View view = inflater.inflate(R.layout.timeeffectdetailpicker, (ViewGroup)mActivity.findViewById(R.id.layout_root), false);
         float fTime;
-        TextView textEffectName = activity.findViewById(R.id.textEffectName);
+        TextView textEffectName = mActivity.findViewById(R.id.textEffectName);
         if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
-            fTime = activity.effectFragment.getTimeOfIncreaseSpeed();
-        else fTime = activity.effectFragment.getTimeOfDecreaseSpeed();
+            fTime = mActivity.effectFragment.getTimeOfIncreaseSpeed();
+        else fTime = mActivity.effectFragment.getTimeOfDecreaseSpeed();
         int nInt = (int)fTime;
         int nDecimal = (int)((fTime - (float)nInt) * 10.0f + 0.05f);
         String strInt;
@@ -53,69 +53,69 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
         else strInt = String.format(Locale.getDefault(), "%d ", nInt);
         String strDecimal = String.format(Locale.getDefault(), "%d", nDecimal);
 
-        intNumberPicker = view.findViewById(R.id.intTimeEffectDetailPicker);
+        mIntNumberPicker = view.findViewById(R.id.intTimeEffectDetailPicker);
         final String[] arInts = {"10", "9 ", "8 ", "7 ", "6 ", "5 ", "4 ", "3 ", "2 ", "1 ", "0 "};
         final String[] arDecimals = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
-        intNumberPicker.setDisplayedValues(arInts);
-        intNumberPicker.setMaxValue(10);
-        intNumberPicker.setMinValue(0);
-        intNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        mIntNumberPicker.setDisplayedValues(arInts);
+        mIntNumberPicker.setMaxValue(10);
+        mIntNumberPicker.setMinValue(0);
+        mIntNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
-                String strTime = arInts[nNewValue].trim() + "." + arDecimals[decimalNumberPicker.getValue()];
+                String strTime = arInts[nNewValue].trim() + "." + arDecimals[mDecimalNumberPicker.getValue()];
                 float fTime = Float.parseFloat(strTime);
                 if(fTime < 0.1f) {
                     fTime = 0.1f;
                     numberPicker.setValue(10);
-                    decimalNumberPicker.setValue(8);
+                    mDecimalNumberPicker.setValue(8);
                 }
 
-                TextView textEffectName = activity.findViewById(R.id.textEffectName);
+                TextView textEffectName = mActivity.findViewById(R.id.textEffectName);
                 if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
-                    activity.effectFragment.setTimeOfIncreaseSpeed(fTime);
-                else activity.effectFragment.setTimeOfDecreaseSpeed(fTime);
+                    mActivity.effectFragment.setTimeOfIncreaseSpeed(fTime);
+                else mActivity.effectFragment.setTimeOfDecreaseSpeed(fTime);
             }
         });
         for(int i = 0; i < arInts.length; i++)
         {
             if(arInts[i].equals(strInt))
-                intNumberPicker.setValue(i);
+                mIntNumberPicker.setValue(i);
         }
 
-        decimalNumberPicker = view.findViewById(R.id.decimalTimeEffectDetailPicker);
-        decimalNumberPicker.setDisplayedValues(arDecimals);
-        decimalNumberPicker.setMaxValue(9);
-        decimalNumberPicker.setMinValue(0);
-        decimalNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        mDecimalNumberPicker = view.findViewById(R.id.decimalTimeEffectDetailPicker);
+        mDecimalNumberPicker.setDisplayedValues(arDecimals);
+        mDecimalNumberPicker.setMaxValue(9);
+        mDecimalNumberPicker.setMinValue(0);
+        mDecimalNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
-                String strTime = arInts[intNumberPicker.getValue()].trim() + "." + arDecimals[nNewValue];
+                String strTime = arInts[mIntNumberPicker.getValue()].trim() + "." + arDecimals[nNewValue];
                 float fTime = Float.parseFloat(strTime);
                 if(fTime < 0.1f) {
                     fTime = 0.1f;
-                    intNumberPicker.setValue(10);
+                    mIntNumberPicker.setValue(10);
                     numberPicker.setValue(8);
                 }
 
-                TextView textEffectName = activity.findViewById(R.id.textEffectName);
+                TextView textEffectName = mActivity.findViewById(R.id.textEffectName);
                 if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
-                    activity.effectFragment.setTimeOfIncreaseSpeed(fTime);
-                else activity.effectFragment.setTimeOfDecreaseSpeed(fTime);
+                    mActivity.effectFragment.setTimeOfIncreaseSpeed(fTime);
+                else mActivity.effectFragment.setTimeOfDecreaseSpeed(fTime);
             }
         });
         for(int i = 0; i < arDecimals.length; i++)
         {
             if(arDecimals[i].equals(strDecimal))
-                decimalNumberPicker.setValue(i);
+                mDecimalNumberPicker.setValue(i);
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(R.string.adjustTime);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                activity.effectFragment.clearFocus();
+                mActivity.effectFragment.clearFocus();
             }
         });
         builder.setView(view);
@@ -124,6 +124,6 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
 
     @Override
     public void onCancel(DialogInterface dialog) {
-        activity.effectFragment.clearFocus();
+        mActivity.effectFragment.clearFocus();
     }
 }

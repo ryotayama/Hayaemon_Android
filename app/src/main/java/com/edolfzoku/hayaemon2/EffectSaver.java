@@ -21,12 +21,12 @@ package com.edolfzoku.hayaemon2;
 import java.util.ArrayList;
 
 class EffectSaver {
-    private boolean bSave = false;
-    private float fSpeed = 0.0f;
-    private float fPitch = 0.0f;
-    private int nVol = 0;
-    private int nEQ20K = 0;
-    private int nEQ16K = 0;
+    private boolean mSave = false;
+    private float mSpeed = 0.0f;
+    private float mPitch = 0.0f;
+    private int mVol = 0;
+    private int mEQ20K = 0;
+    private int mEQ16K = 0;
     private int nEQ12_5K = 0;
     private int nEQ10K = 0;
     private int nEQ8K = 0;
@@ -60,17 +60,17 @@ class EffectSaver {
     private float fPan = 0.0f;
     private float fFreq = 0.0f;
     private int nBPM = 0;
-    private float fVol1 = 0.0f;
-    private float fVol2 = 0.0f;
-    private float fVol3 = 0.0f;
-    private float fVol4 = 0.0f;
-    private float fVol5 = 0.0f;
-    private float fVol6 = 0.0f;
-    private float fVol7 = 0.0f;
-    private float fTimeOfIncreaseSpeed = 1.0f;
-    private float fIncreaseSpeed = 0.1f;
-    private float fTimeOfDecreaseSpeed = 1.0f;
-    private float fDecreaseSpeed = 0.1f;
+    private float mVol1 = 0.0f;
+    private float mVol2 = 0.0f;
+    private float mVol3 = 0.0f;
+    private float mVol4 = 0.0f;
+    private float mVol5 = 0.0f;
+    private float mVol6 = 0.0f;
+    private float mVol7 = 0.0f;
+    private float mTimeOmIncreaseSpeed = 1.0f;
+    private float mIncreaseSpeed = 0.1f;
+    private float mTimeOmDecreaseSpeed = 1.0f;
+    private float mDecreaseSpeed = 0.1f;
     private boolean bABLoop = false;
     private boolean bLoop = false;
     private boolean bLoopA = false;
@@ -81,66 +81,66 @@ class EffectSaver {
     private boolean bLoopMarker = false;
     private int nMarker = 0;
 
-    void setSave(boolean bSave) { this.bSave = bSave; }
-    void setSpeed(float fSpeed) { this.fSpeed = fSpeed; }
-    void setPitch(float fPitch) { this.fPitch = fPitch; }
-    void setVol(int nVol) { this.nVol = nVol; }
-    void setEQ20K(int nEQ20K) { this.nEQ20K = nEQ20K; }
-    void setEQ16K(int nEQ16K) { this.nEQ16K = nEQ16K; }
-    void setEQ12_5K(int nEQ12_5K) { this.nEQ12_5K = nEQ12_5K; }
-    void setEQ10K(int nEQ10K) { this.nEQ10K = nEQ10K; }
-    void setEQ8K(int nEQ8K) { this.nEQ8K = nEQ8K; }
-    void setEQ6_3K(int nEQ6_3K) { this.nEQ6_3K = nEQ6_3K; }
-    void setEQ5K(int nEQ5K) { this.nEQ5K = nEQ5K; }
-    void setEQ4K(int nEQ4K) { this.nEQ4K = nEQ4K; }
-    void setEQ3_15K(int nEQ3_15K) { this.nEQ3_15K = nEQ3_15K; }
-    void setEQ2_5K(int nEQ2_5K) { this.nEQ2_5K = nEQ2_5K; }
-    void setEQ2K(int nEQ2K) { this.nEQ2K = nEQ2K; }
-    void setEQ1_6K(int nEQ1_6K) { this.nEQ1_6K = nEQ1_6K; }
-    void setEQ1_25K(int nEQ1_25K) { this.nEQ1_25K = nEQ1_25K; }
-    void setEQ1K(int nEQ1K) { this.nEQ1K = nEQ1K; }
-    void setEQ800(int nEQ800) { this.nEQ800 = nEQ800; }
-    void setEQ630(int nEQ630) { this.nEQ630 = nEQ630; }
-    void setEQ500(int nEQ500) { this.nEQ500 = nEQ500; }
-    void setEQ400(int nEQ400) { this.nEQ400 = nEQ400; }
-    void setEQ315(int nEQ315) { this.nEQ315 = nEQ315; }
-    void setEQ250(int nEQ250) { this.nEQ250 = nEQ250; }
-    void setEQ200(int nEQ200) { this.nEQ200 = nEQ200; }
-    void setEQ160(int nEQ160) { this.nEQ160 = nEQ160; }
-    void setEQ125(int nEQ125) { this.nEQ125 = nEQ125; }
-    void setEQ100(int nEQ100) { this.nEQ100 = nEQ100; }
-    void setEQ80(int nEQ80) { this.nEQ80 = nEQ80; }
-    void setEQ63(int nEQ63) { this.nEQ63 = nEQ63; }
-    void setEQ50(int nEQ50) { this.nEQ50 = nEQ50; }
-    void setEQ40(int nEQ40) { this.nEQ40 = nEQ40; }
-    void setEQ31_5(int nEQ31_5) { this.nEQ31_5 = nEQ31_5; }
-    void setEQ25(int nEQ25) { this.nEQ25 = nEQ25; }
-    void setEQ20(int nEQ20) { this.nEQ20 = nEQ20; }
-    void setEffectItems(ArrayList<EffectItem> arEffectItems) {
-        this.arEffectItems = new ArrayList<>();
-        for(int i = 0; i < arEffectItems.size(); i++) {
-            EffectItem itemFrom = arEffectItems.get(i);
+    void setSave(boolean save) { mSave = save; }
+    void setSpeed(float speed) { mSpeed = speed; }
+    void setPitch(float pitch) { mPitch = pitch; }
+    void setVol(int vol) { mVol = vol; }
+    void setEQ20K(int eq20K) { mEQ20K = eq20K; }
+    void setEQ16K(int eq16K) { mEQ16K = eq16K; }
+    void setEQ12_5K(int eq12_5K) { nEQ12_5K = eq12_5K; }
+    void setEQ10K(int eq10K) { nEQ10K = eq10K; }
+    void setEQ8K(int eq8K) { nEQ8K = eq8K; }
+    void setEQ6_3K(int eq6_3K) { nEQ6_3K = eq6_3K; }
+    void setEQ5K(int eq5K) { nEQ5K = eq5K; }
+    void setEQ4K(int eq4K) { nEQ4K = eq4K; }
+    void setEQ3_15K(int eq3_15K) { nEQ3_15K = eq3_15K; }
+    void setEQ2_5K(int eq2_5K) { nEQ2_5K = eq2_5K; }
+    void setEQ2K(int eq2K) { nEQ2K = eq2K; }
+    void setEQ1_6K(int eq1_6K) { nEQ1_6K = eq1_6K; }
+    void setEQ1_25K(int eq1_25K) { nEQ1_25K = eq1_25K; }
+    void setEQ1K(int eq1K) { nEQ1K = eq1K; }
+    void setEQ800(int eq800) { nEQ800 = eq800; }
+    void setEQ630(int eq630) { nEQ630 = eq630; }
+    void setEQ500(int eq500) { nEQ500 = eq500; }
+    void setEQ400(int eq400) { nEQ400 = eq400; }
+    void setEQ315(int eq315) { nEQ315 = eq315; }
+    void setEQ250(int eq250) { nEQ250 = eq250; }
+    void setEQ200(int eq200) { nEQ200 = eq200; }
+    void setEQ160(int eq160) { nEQ160 = eq160; }
+    void setEQ125(int eq125) { nEQ125 = eq125; }
+    void setEQ100(int eq100) { nEQ100 = eq100; }
+    void setEQ80(int eq80) { nEQ80 = eq80; }
+    void setEQ63(int eq63) { nEQ63 = eq63; }
+    void setEQ50(int eq50) { nEQ50 = eq50; }
+    void setEQ40(int eq40) { nEQ40 = eq40; }
+    void setEQ31_5(int eq31_5) { nEQ31_5 = eq31_5; }
+    void setEQ25(int eq25) { nEQ25 = eq25; }
+    void setEQ20(int eq20) { nEQ20 = eq20; }
+    void setEffectItems(ArrayList<EffectItem> effectItems) {
+        arEffectItems = new ArrayList<>();
+        for(int i = 0; i < effectItems.size(); i++) {
+            EffectItem itemFrom = effectItems.get(i);
             EffectItem itemTo = new EffectItem();
             itemTo.setEffectName(itemFrom.getEffectName());
             itemTo.setSelected(itemFrom.isSelected());
             itemTo.setbEditEnabled(itemFrom.isEditEnabled());
-            this.arEffectItems.add(itemTo);
+            arEffectItems.add(itemTo);
         }
     }
     void setPan(float fPan) { this.fPan = fPan; }
     void setFreq(float fFreq) { this.fFreq = fFreq; }
     void setBPM(int nBPM) { this.nBPM = nBPM; }
-    void setVol1(float fVol1) { this.fVol1 = fVol1; }
-    void setVol2(float fVol2) { this.fVol2 = fVol2; }
-    void setVol3(float fVol3) { this.fVol3 = fVol3; }
-    void setVol4(float fVol4) { this.fVol4 = fVol4; }
-    void setVol5(float fVol5) { this.fVol5 = fVol5; }
-    void setVol6(float fVol6) { this.fVol6 = fVol6; }
-    void setVol7(float fVol7) { this.fVol7 = fVol7; }
-    void setTimeOfIncreaseSpeed(float fTimeOfIncreaseSpeed) { this.fTimeOfIncreaseSpeed = fTimeOfIncreaseSpeed; }
-    void setIncreaseSpeed(float fIncreaseSpeed) { this.fIncreaseSpeed = fIncreaseSpeed; }
-    void setTimeOfDecreaseSpeed(float fTimeOfDecreaseSpeed) { this.fTimeOfDecreaseSpeed = fTimeOfDecreaseSpeed; }
-    void setDecreaseSpeed(float fDecreaseSpeed) { this.fDecreaseSpeed = fDecreaseSpeed; }
+    void setVol1(float mVol1) { this.mVol1 = mVol1; }
+    void setVol2(float mVol2) { this.mVol2 = mVol2; }
+    void setVol3(float mVol3) { this.mVol3 = mVol3; }
+    void setVol4(float mVol4) { this.mVol4 = mVol4; }
+    void setVol5(float mVol5) { this.mVol5 = mVol5; }
+    void setVol6(float mVol6) { this.mVol6 = mVol6; }
+    void setVol7(float mVol7) { this.mVol7 = mVol7; }
+    void setTimeOmIncreaseSpeed(float mTimeOmIncreaseSpeed) { this.mTimeOmIncreaseSpeed = mTimeOmIncreaseSpeed; }
+    void setIncreaseSpeed(float mIncreaseSpeed) { this.mIncreaseSpeed = mIncreaseSpeed; }
+    void setTimeOmDecreaseSpeed(float mTimeOmDecreaseSpeed) { this.mTimeOmDecreaseSpeed = mTimeOmDecreaseSpeed; }
+    void setDecreaseSpeed(float mDecreaseSpeed) { this.mDecreaseSpeed = mDecreaseSpeed; }
     void setIsABLoop(boolean bABLoop) { this.bABLoop = bABLoop; }
     void setIsLoopA(boolean bLoopA) { this.bLoopA = bLoopA; }
     void setLoopA(double dLoopA) { this.dLoopA = dLoopA; }
@@ -150,12 +150,12 @@ class EffectSaver {
     void setIsLoopMarker(boolean bLoopMarker) { this.bLoopMarker = bLoopMarker; }
     void setMarker(int nMarker) { this.nMarker = nMarker; }
 
-    boolean isSave() { return bSave; }
-    float getSpeed() { return fSpeed; }
-    float getPitch() { return fPitch; }
-    int getVol() { return nVol; }
-    int getEQ20K() { return nEQ20K; }
-    int getEQ16K() { return nEQ16K; }
+    boolean isSave() { return mSave; }
+    float getSpeed() { return mSpeed; }
+    float getPitch() { return mPitch; }
+    int getVol() { return mVol; }
+    int getEQ20K() { return mEQ20K; }
+    int getEQ16K() { return mEQ16K; }
     int getEQ12_5K() { return nEQ12_5K; }
     int getEQ10K() { return nEQ10K; }
     int getEQ8K() { return nEQ8K; }
@@ -189,17 +189,17 @@ class EffectSaver {
     float getPan() { return fPan; }
     float getFreq() { return fFreq; }
     int getBPM() { return nBPM; }
-    float getVol1() { return fVol1; }
-    float getVol2() { return fVol2; }
-    float getVol3() { return fVol3; }
-    float getVol4() { return fVol4; }
-    float getVol5() { return fVol5; }
-    float getVol6() { return fVol6; }
-    float getVol7() { return fVol7; }
-    float getTimeOfIncreaseSpeed() { return fTimeOfIncreaseSpeed; }
-    float getIncreaseSpeed() { return fIncreaseSpeed; }
-    float getTimeOfDecreaseSpeed() { return fTimeOfDecreaseSpeed; }
-    float getDecreaseSpeed() { return fDecreaseSpeed; }
+    float getVol1() { return mVol1; }
+    float getVol2() { return mVol2; }
+    float getVol3() { return mVol3; }
+    float getVol4() { return mVol4; }
+    float getVol5() { return mVol5; }
+    float getVol6() { return mVol6; }
+    float getVol7() { return mVol7; }
+    float getTimeOmIncreaseSpeed() { return mTimeOmIncreaseSpeed; }
+    float getIncreaseSpeed() { return mIncreaseSpeed; }
+    float getTimeOmDecreaseSpeed() { return mTimeOmDecreaseSpeed; }
+    float getDecreaseSpeed() { return mDecreaseSpeed; }
     boolean isABLoop() { return bABLoop; }
     boolean isLoopA() { return bLoopA; }
     double getLoopA() { return dLoopA; }
@@ -213,12 +213,12 @@ class EffectSaver {
     }
 
     EffectSaver(EffectSaver saver) {
-        bSave = saver.bSave;
-        fSpeed = saver.fSpeed;
-        fPitch = saver.fPitch;
-        nVol = saver.nVol;
-        nEQ20K = saver.nEQ20K;
-        nEQ16K = saver.nEQ16K;
+        mSave = saver.mSave;
+        mSpeed = saver.mSpeed;
+        mPitch = saver.mPitch;
+        mVol = saver.mVol;
+        mEQ20K = saver.mEQ20K;
+        mEQ16K = saver.mEQ16K;
         nEQ12_5K = saver.nEQ12_5K;
         nEQ10K = saver.nEQ10K;
         nEQ8K = saver.nEQ8K;
@@ -253,17 +253,17 @@ class EffectSaver {
         fPan = saver.fPan;
         fFreq = saver.fFreq;
         nBPM = saver.nBPM;
-        fVol1 = saver.fVol1;
-        fVol2 = saver.fVol2;
-        fVol3 = saver.fVol3;
-        fVol4 = saver.fVol4;
-        fVol5 = saver.fVol5;
-        fVol6 = saver.fVol6;
-        fVol7 = saver.fVol7;
-        fTimeOfIncreaseSpeed = saver.fTimeOfIncreaseSpeed;
-        fIncreaseSpeed = saver.fIncreaseSpeed;
-        fTimeOfDecreaseSpeed = saver.fTimeOfDecreaseSpeed;
-        fDecreaseSpeed = saver.fDecreaseSpeed;
+        mVol1 = saver.mVol1;
+        mVol2 = saver.mVol2;
+        mVol3 = saver.mVol3;
+        mVol4 = saver.mVol4;
+        mVol5 = saver.mVol5;
+        mVol6 = saver.mVol6;
+        mVol7 = saver.mVol7;
+        mTimeOmIncreaseSpeed = saver.mTimeOmIncreaseSpeed;
+        mIncreaseSpeed = saver.mIncreaseSpeed;
+        mTimeOmDecreaseSpeed = saver.mTimeOmDecreaseSpeed;
+        mDecreaseSpeed = saver.mDecreaseSpeed;
         bABLoop = saver.bABLoop;
         bLoop = saver.bLoop;
         bLoopA = saver.bLoopA;
