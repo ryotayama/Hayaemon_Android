@@ -80,22 +80,27 @@ public class SpeedRangeSettingFragment extends Fragment implements View.OnClickL
         }
 
         final NumberPicker intSpeedRangeToPicker = mActivity.findViewById(R.id.intSpeedRangeToPicker);
-        final String[] arToInts = {"400", "300", "200"};
+        final String[] arToInts = {"5000", "4000", "3000", "2000", "1000", "900 ", "800 ", "700 ", "600 ", "500 ", "400 ", "300 ", "200 "};
         intSpeedRangeToPicker.setDisplayedValues(arToInts);
-        intSpeedRangeToPicker.setMaxValue(2);
+        intSpeedRangeToPicker.setMaxValue(12);
         intSpeedRangeToPicker.setMinValue(0);
         intSpeedRangeToPicker.setWrapSelectorWheel(false);
         intSpeedRangeToPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
-                int nMaxSpeed = Integer.parseInt(arToInts[nNewValue]);
+                int nMaxSpeed = Integer.parseInt(arToInts[nNewValue].trim());
                 mActivity.controlFragment.setMaxSpeed(nMaxSpeed);
                 SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 preferences.edit().putInt("nMaxSpeed", nMaxSpeed).apply();
             }
         });
 
-        String strMaxSpeed = String.format(Locale.getDefault(), "%d", mActivity.controlFragment.getMaxSpeed());
+        int nMaxSpeed = mActivity.controlFragment.getMaxSpeed();
+        String strMaxSpeed;
+        if(nMaxSpeed >= 1000)
+            strMaxSpeed = String.format(Locale.getDefault(), "%d", nMaxSpeed);
+        else
+            strMaxSpeed = String.format(Locale.getDefault(), "%d ", nMaxSpeed);
         for(int i = 0; i < arToInts.length; i++)
         {
             if(arToInts[i].equals(strMaxSpeed))

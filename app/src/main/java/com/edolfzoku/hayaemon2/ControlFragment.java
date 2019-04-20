@@ -185,7 +185,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
 
     private void setSpeedUp()
     {
-        float fMaxSpeed = 4.0f;
+        float fMaxSpeed = 50.0f;
         fMaxSpeed = (fMaxSpeed - 1.0f) * 100.0f;
         mSpeed += 1.0;
         if(mSpeed >= fMaxSpeed) mSpeed = fMaxSpeed;
@@ -224,11 +224,14 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         float fMinSpeed = mMinSpeed / 100.0f;
         fMaxSpeed = (fMaxSpeed - 1.0f) * 100.0f;
         fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
+        float fDummySpeed = mSpeed;
+        if(fDummySpeed > fMaxSpeed) fDummySpeed = fMaxSpeed;
+        else if(fDummySpeed < fMinSpeed) fDummySpeed = fMinSpeed;
         float fX;
         if(mSpeed >= 0.0)
-            fX = nBkLeft + fCenter + (mSpeed / fMaxSpeed) * (fCenter - nPtWidth / 2.0f);
+            fX = nBkLeft + fCenter + (fDummySpeed / fMaxSpeed) * (fCenter - nPtWidth / 2.0f);
         else
-            fX = nBkLeft + fCenter - (mSpeed / fMinSpeed) * (fCenter - nPtWidth / 2.0f);
+            fX = nBkLeft + fCenter - (fDummySpeed / fMinSpeed) * (fCenter - nPtWidth / 2.0f);
         float fY = mImgPoint.getY() + nPtHeight / 2.0f;
         mImgPoint.animate()
             .x(fX - nPtWidth / 2.0f)
