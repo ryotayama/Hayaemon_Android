@@ -283,4 +283,5 @@
     <string name="selectAll">Select All</string>
     <string name="selectedSongs">Selected Songs</string>
     <string name="sec">sec.</string>
+    <string name="zeroHMS">00:00:00.00</string>
 </resources>

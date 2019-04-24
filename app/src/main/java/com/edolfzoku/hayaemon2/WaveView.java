@@ -33,6 +33,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.un4seen.bass.BASS;
+import com.un4seen.bass.BASS_FX;
 
 import java.io.File;
 import java.io.IOException;
@@ -216,6 +217,7 @@ public class WaveView extends View {
         EGLDisplay dpy = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
         int[] vers = new int[2];
         egl.eglInitialize(dpy, vers);
+        vers = null;
 
         int[] configAttr = {
                 EGL10.EGL_COLOR_BUFFER_TYPE, EGL10.EGL_RGB_BUFFER,
@@ -262,7 +264,7 @@ public class WaveView extends View {
         File file = new File(mPath);
         if(file.getParent().equals(getContext().getFilesDir().toString()))
         {
-            mTempStream = BASS.BASS_StreamCreateFile(mPath, 0, 0, BASS.BASS_STREAM_DECODE);
+            mTempStream = BASS.BASS_StreamCreateFile(mPath, 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
         }
         else
         {
@@ -312,19 +314,13 @@ public class WaveView extends View {
                 }
             };
 
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            try {
-                mmr.setDataSource(getContext(), Uri.parse(mPath));
-            }
-            catch(Exception e) {
-                e.printStackTrace();
-            }
             ContentResolver cr = getContext().getContentResolver();
             try {
-                AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(mPath), "r");
-                if(afd != null) {
-                    FileChannel fc = afd.createInputStream().getChannel();
-                    mTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(mPath), "r");
+                if(params.assetFileDescriptor != null) {
+                    params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
+                    mTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

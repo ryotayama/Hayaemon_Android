@@ -21,8 +21,6 @@ package com.edolfzoku.hayaemon2;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +28,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -47,12 +46,9 @@ import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_FX;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
@@ -212,12 +208,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             for(int j = 0; j < effectItems.size(); j++)
             {
                 EffectItem itemSaved = effectItems.get(j);
-                if(item.getEffectName().equals(itemSaved.getEffectName()))
+                if(item.getEffectName().equals(itemSaved.getEffectName())) {
                     item.setSelected(itemSaved.isSelected());
+                    mEffectsAdapter.notifyItemChanged(i);
+                }
             }
         }
-
-        mEffectsAdapter.notifyDataSetChanged();
     }
     public float getPan()
     {
@@ -651,6 +647,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         LinearLayoutManager playlistsManager = new LinearLayoutManager(mActivity);
         recyclerEffects.setLayoutManager(playlistsManager);
         recyclerEffects.setAdapter(mEffectsAdapter);
+        ((DefaultItemAnimator) recyclerEffects.getItemAnimator()).setSupportsChangeAnimations(false);
         mBtnFinith.setOnClickListener(this);
         mBtnEffectMinus.setOnClickListener(this);
         mBtnEffectMinus.setOnLongClickListener(this);
@@ -663,12 +660,15 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mEditSpeedEffectDetail.setOnFocusChangeListener(this);
 
         mEffectItems.get(0).setSelected(true);
+        mEffectsAdapter.notifyItemChanged(0);
     }
 
     public void onEffectItemClick(int nEffect)
     {
+        if(nEffect < 0 || mEffectItems.size() <= nEffect) return;
         EffectItem item = mEffectItems.get(nEffect);
         item.setSelected(!item.isSelected());
+        mEffectsAdapter.notifyItemChanged(nEffect);
         if(!item.isSelected() && nEffect == EFFECTTYPE_REVERSE)
         {
             int chan = BASS_FX.BASS_FX_TempoGetSource(MainActivity.sStream);
@@ -709,7 +709,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             if(mEffectItems.get(i).isSelected()) bSelected = true;
         }
         if(!bSelected) mEffectItems.get(0).setSelected(true);
-        mEffectsAdapter.notifyDataSetChanged();
+        mEffectsAdapter.notifyItemChanged(0);
         mActivity.playlistFragment.updateSavingEffect();
     }
 
@@ -717,6 +717,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     {
         EffectItem item = mEffectItems.get(0);
         item.setSelected(true);
+        mEffectsAdapter.notifyItemChanged(0);
         for(int i = 1; i < mEffectItems.size(); i++)
         {
             if(mEffectItems.get(i).isSelected() && (i == EFFECTTYPE_RANDOM || i == EFFECTTYPE_OLDRECORD || i == EFFECTTYPE_LOWBATTERY || i == EFFECTTYPE_EARTRAINING))
@@ -732,10 +733,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mActivity.controlFragment.setPitch(0.0f);
             }
             mEffectItems.get(i).setSelected(false);
+            mEffectsAdapter.notifyItemChanged(i);
         }
         mPan = 0.0f;
         mFreq = 1.0f;
-        mEffectsAdapter.notifyDataSetChanged();
         setTimeOfIncreaseSpeed(1.0f);
         setIncreaseSpeed(0.1f);
         setTimeOfDecreaseSpeed(1.0f);
@@ -1083,6 +1084,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if(!mEffectItems.get(nEffect).isSelected()) return;
 
         mEffectItems.get(nEffect).setSelected(false);
+        mEffectsAdapter.notifyItemChanged(nEffect);
 
         if(nEffect == EFFECTTYPE_RANDOM || nEffect == EFFECTTYPE_TRANSCRIBESIDEGUITAR || nEffect == EFFECTTYPE_OLDRECORD || nEffect == EFFECTTYPE_LOWBATTERY || nEffect == EFFECTTYPE_EARTRAINING)
             mActivity.equalizerFragment.setEQ(0);
@@ -1528,8 +1530,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 }
                 if (mSEStream == 0) {
                     mSE1PlayingFlag = true;
-                    InputStream is = getResources().openRawResource(R.raw.recordnoise);
-                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                    params.inputStream = getResources().openRawResource(R.raw.recordnoise);
+                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
                     mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 4.653), endRecordNoise, this);
                     BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol1);
                     BASS.BASS_ChannelPlay(mSEStream, true);
@@ -1582,8 +1585,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             else if(strEffect.equals(getString(R.string.recordNoise))) {
                 if (mSEStream == 0) {
                     mSE1PlayingFlag = true;
-                    InputStream is = getResources().openRawResource(R.raw.recordnoise);
-                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                    params.inputStream = getResources().openRawResource(R.raw.recordnoise);
+                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
                     mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 4.653), endRecordNoise, this);
                     BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol1);
                     BASS.BASS_ChannelPlay(mSEStream, true);
@@ -1592,8 +1596,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             else if(strEffect.equals(getString(R.string.wave))) {
                 if (mSEStream == 0) {
                     mSE1PlayingFlag = true;
-                    InputStream is = getResources().openRawResource(R.raw.wave);
-                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                    params.inputStream = getResources().openRawResource(R.raw.wave);
+                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
                     mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 38.399), endWave, this);
                     BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol2);
                     BASS.BASS_ChannelPlay(mSEStream, true);
@@ -1602,8 +1607,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             else if(strEffect.equals(getString(R.string.rain))) {
                 if (mSEStream == 0) {
                     mSE1PlayingFlag = true;
-                    InputStream is = getResources().openRawResource(R.raw.rain);
-                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                    params.inputStream = getResources().openRawResource(R.raw.rain);
+                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
                     mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 1.503), endRain, this);
                     BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol3);
                     BASS.BASS_ChannelPlay(mSEStream, true);
@@ -1612,8 +1618,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             else if(strEffect.equals(getString(R.string.river))) {
                 if (mSEStream == 0) {
                     mSE1PlayingFlag = true;
-                    InputStream is = getResources().openRawResource(R.raw.river);
-                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                    params.inputStream = getResources().openRawResource(R.raw.river);
+                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
                     mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 60.000), endRiver, this);
                     BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol4);
                     BASS.BASS_ChannelPlay(mSEStream, true);
@@ -1622,8 +1629,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             else if(strEffect.equals(getString(R.string.war))) {
                 if (mSEStream == 0) {
                     mSE1PlayingFlag = true;
-                    InputStream is = getResources().openRawResource(R.raw.war);
-                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                    params.inputStream = getResources().openRawResource(R.raw.war);
+                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
                     mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 30.000), endWar, this);
                     BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol5);
                     BASS.BASS_ChannelPlay(mSEStream, true);
@@ -1632,8 +1640,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             else if(strEffect.equals(getString(R.string.fire))) {
                 if (mSEStream == 0) {
                     mSE1PlayingFlag = true;
-                    InputStream is = getResources().openRawResource(R.raw.fire);
-                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                    params.inputStream = getResources().openRawResource(R.raw.fire);
+                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
                     mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 90.000), endFire, this);
                     BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol6);
                     BASS.BASS_ChannelPlay(mSEStream, true);
@@ -1642,8 +1651,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             else if(strEffect.equals(getString(R.string.concertHall))) {
                 if (mSEStream == 0) {
                     mSE1PlayingFlag = true;
-                    InputStream is = getResources().openRawResource(R.raw.cheer);
-                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                    params.inputStream = getResources().openRawResource(R.raw.cheer);
+                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
                     mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 14.000), endCheer, this);
                     BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol7);
 
@@ -1663,67 +1673,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             hTempStream = BASS.BASS_StreamCreateFile(song.getPath(), 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
         else
         {
-            BASS.BASS_FILEPROCS fileprocs=new BASS.BASS_FILEPROCS() {
-                @Override
-                public boolean FILESEEKPROC(long offset, Object user) {
-                    FileChannel fc=(FileChannel)user;
-                    try {
-                        fc.position(offset);
-                        return true;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return false;
-                }
-
-                @Override
-                public int FILEREADPROC(ByteBuffer buffer, int length, Object user) {
-                    FileChannel fc=(FileChannel)user;
-                    try {
-                        return fc.read(buffer);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return 0;
-                }
-
-                @Override
-                public long FILELENPROC(Object user) {
-                    FileChannel fc=(FileChannel)user;
-                    try {
-                        return fc.size();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return 0;
-                }
-
-                @Override
-                public void FILECLOSEPROC(Object user) {
-                    FileChannel fc=(FileChannel)user;
-                    try {
-                        fc.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            try {
-                mmr.setDataSource(getContext(), Uri.parse(song.getPath()));
-            }
-            catch(Exception e) {
-                e.printStackTrace();
-            }
             ContentResolver cr = mActivity.getContentResolver();
             try {
-                AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(song.getPath()), "r");
-                if(afd != null) {
-                    FileChannel fc = afd.createInputStream().getChannel();
-                    hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, fileprocs, fc);
+                MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(song.getPath()), "r");
+                if(params.assetFileDescriptor != null) {
+                    params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
+                    hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
                 }
-            } catch (IOException e) {
+            }
+            catch(Exception e) {
                 e.printStackTrace();
             }
         }
@@ -1939,56 +1898,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
     };
 
-    private final BASS.BASS_FILEPROCS fileprocs = new BASS.BASS_FILEPROCS()
-    {
-        @Override
-        public boolean FILESEEKPROC(long offset, Object user)
-        {
-            return false;
-        }
-
-        @Override
-        public int FILEREADPROC(ByteBuffer buffer, int length, Object user)
-        { 
-            if(length == 0)
-                return 0;
-            InputStream is=(InputStream)user;
-            byte b[]=new byte[length];
-            int r;
-            try
-            {
-                r = is.read(b);
-            }
-            catch (Exception e)
-            {
-                return 0;
-            }
-            if (r <= 0) return 0;
-            buffer.put(b, 0, r);
-            return r;
-        }
-
-        @Override
-        public long FILELENPROC(Object user)
-        {
-            return 0;
-        }
-
-        @Override
-        public void FILECLOSEPROC(Object user)
-        {
-            InputStream is=(InputStream)user;
-            try
-            {
-                is.close();
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
-    };
-
     private final BASS.SYNCPROC endRecordNoise = new BASS.SYNCPROC()
     {
         public void SYNCPROC(int handle, int channel, int data, final Object user)
@@ -2002,8 +1911,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     {
         if(mSE1PlayingFlag)
         {
-            InputStream is = getResources().openRawResource(R.raw.recordnoise);
-            mSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+            params.inputStream = getResources().openRawResource(R.raw.recordnoise);
+            mSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             BASS.BASS_ChannelSetAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f);
             BASS.BASS_ChannelSetPosition(mSEStream2, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 1.417), BASS.BASS_POS_BYTE);
             if(mSync != 0)
@@ -2019,8 +1929,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
         else if(BASS.BASS_ChannelIsActive(mSEStream2) == BASS.BASS_ACTIVE_PLAYING)
         {
-            InputStream is = getResources().openRawResource(R.raw.recordnoise);
-            mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+            params.inputStream = getResources().openRawResource(R.raw.recordnoise);
+            mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f);
             BASS.BASS_ChannelSetPosition(mSEStream, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 1.417), BASS.BASS_POS_BYTE);
             if(mSync != 0)
@@ -2049,8 +1960,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     {
         if(mSE1PlayingFlag)
         {
-            InputStream is = getResources().openRawResource(R.raw.wave);
-            mSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+            params.inputStream = getResources().openRawResource(R.raw.wave);
+            mSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             BASS.BASS_ChannelSetAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f);
             BASS.BASS_ChannelSetPosition(mSEStream2, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 0.283), BASS.BASS_POS_BYTE);
             if(mSync != 0)
@@ -2066,8 +1978,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
         else if(BASS.BASS_ChannelIsActive(mSEStream2) == BASS.BASS_ACTIVE_PLAYING)
         {
-            InputStream is = getResources().openRawResource(R.raw.wave);
-            mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+            params.inputStream = getResources().openRawResource(R.raw.wave);
+            mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f);
             BASS.BASS_ChannelSetPosition(mSEStream, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 0.283), BASS.BASS_POS_BYTE);
             if(mSync != 0)
@@ -2096,8 +2009,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     {
         if(mSE1PlayingFlag)
         {
-            InputStream is = getResources().openRawResource(R.raw.rain);
-            mSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+            params.inputStream = getResources().openRawResource(R.raw.rain);
+            mSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             BASS.BASS_ChannelSetAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f);
             BASS.BASS_ChannelSetPosition(mSEStream2, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 0.303), BASS.BASS_POS_BYTE);
             if(mSync != 0)
@@ -2113,8 +2027,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
         else if(BASS.BASS_ChannelIsActive(mSEStream2) == BASS.BASS_ACTIVE_PLAYING)
         {
-            InputStream is = getResources().openRawResource(R.raw.rain);
-            mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+            params.inputStream = getResources().openRawResource(R.raw.rain);
+            mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f);
             BASS.BASS_ChannelSetPosition(mSEStream, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 0.303), BASS.BASS_POS_BYTE);
             if(mSync != 0)
@@ -2143,8 +2058,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     {
         if(mSE1PlayingFlag)
         {
-            InputStream is = getResources().openRawResource(R.raw.river);
-            mSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+            params.inputStream = getResources().openRawResource(R.raw.river);
+            mSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             BASS.BASS_ChannelSetAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f);
             BASS.BASS_ChannelSetPosition(mSEStream2, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 0.0), BASS.BASS_POS_BYTE);
             if(mSync != 0)
@@ -2160,8 +2076,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
         else if(BASS.BASS_ChannelIsActive(mSEStream2) == BASS.BASS_ACTIVE_PLAYING)
         {
-            InputStream is = getResources().openRawResource(R.raw.river);
-            mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+            params.inputStream = getResources().openRawResource(R.raw.river);
+            mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f);
             BASS.BASS_ChannelSetPosition(mSEStream, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 0.0), BASS.BASS_POS_BYTE);
             if(mSync != 0)
@@ -2190,8 +2107,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     {
         if(mSE1PlayingFlag)
         {
-            InputStream is = getResources().openRawResource(R.raw.war);
-            mSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+            params.inputStream = getResources().openRawResource(R.raw.war);
+            mSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             BASS.BASS_ChannelSetAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f);
             BASS.BASS_ChannelSetPosition(mSEStream2, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 0.0), BASS.BASS_POS_BYTE);
             if(mSync != 0)
@@ -2207,8 +2125,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
         else if(BASS.BASS_ChannelIsActive(mSEStream2) == BASS.BASS_ACTIVE_PLAYING)
         {
-            InputStream is = getResources().openRawResource(R.raw.war);
-            mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+            params.inputStream = getResources().openRawResource(R.raw.war);
+            mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f);
             BASS.BASS_ChannelSetPosition(mSEStream, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 0.0), BASS.BASS_POS_BYTE);
             if(mSync != 0)
@@ -2237,8 +2156,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     {
         if(mSE1PlayingFlag)
         {
-            InputStream is = getResources().openRawResource(R.raw.fire);
-            mSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+            params.inputStream = getResources().openRawResource(R.raw.fire);
+            mSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             BASS.BASS_ChannelSetAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f);
             BASS.BASS_ChannelSetPosition(mSEStream2, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 0.0), BASS.BASS_POS_BYTE);
             if(mSync != 0)
@@ -2254,8 +2174,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
         else if(BASS.BASS_ChannelIsActive(mSEStream2) == BASS.BASS_ACTIVE_PLAYING)
         {
-            InputStream is = getResources().openRawResource(R.raw.fire);
-            mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+            params.inputStream = getResources().openRawResource(R.raw.fire);
+            mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f);
             BASS.BASS_ChannelSetPosition(mSEStream, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 0.0), BASS.BASS_POS_BYTE);
             if(mSync != 0)
@@ -2286,8 +2207,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             Float fVol = 0.0f;
             BASS.BASS_ChannelGetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, fVol);
-            InputStream is = getResources().openRawResource(R.raw.cheer);
-            mSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+            params.inputStream = getResources().openRawResource(R.raw.cheer);
+            mSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             BASS.BASS_ChannelSetAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f);
             BASS.BASS_ChannelSetPosition(mSEStream2, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 1.0), BASS.BASS_POS_BYTE);
             if(mSync != 0)
@@ -2305,8 +2227,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             Float fVol = 0.0f;
             BASS.BASS_ChannelGetAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, fVol);
-            InputStream is = getResources().openRawResource(R.raw.cheer);
-            mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, 0, fileprocs, is);
+            MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+            params.inputStream = getResources().openRawResource(R.raw.cheer);
+            mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f);
             BASS.BASS_ChannelSetPosition(mSEStream, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 1.0), BASS.BASS_POS_BYTE);
             if(mSync != 0)

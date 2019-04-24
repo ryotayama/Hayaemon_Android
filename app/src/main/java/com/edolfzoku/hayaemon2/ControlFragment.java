@@ -213,7 +213,11 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         if(MainActivity.sStream != 0)
             BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, mSpeed);
         mTextSpeedValue.clearFocus();
-        mTextSpeedValue.setText(String.format(Locale.getDefault(), "%.1f%%", mSpeed + 100));
+        float tempSpeed = mSpeed + 100;
+        int speedInt = (int)tempSpeed;
+        int speedDec = (int)((tempSpeed * 10) % 10);
+        String strSpeed = speedInt + "." + speedDec + "%";
+        mTextSpeedValue.setText(strSpeed);
 
         int nPtWidth = mImgPoint.getWidth();
         int nPtHeight = mImgPoint.getHeight();
@@ -299,16 +303,14 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         if(MainActivity.sStream != 0)
             BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, mPitch);
         mTextPitchValue.clearFocus();
-        if(mPitch > 0.05)
-            mTextPitchValue.setText(String.format(Locale.getDefault(), "♯%.1f", mPitch));
-        else if(mPitch < -0.05)
-            mTextPitchValue.setText(String.format(Locale.getDefault(), "♭%.1f", mPitch * -1));
-        else
-        {
-            mTextPitchValue.setText(String.format(Locale.getDefault(), "　%.1f", mPitch));
-            if(mTextPitchValue.getText().toString().equals("　-0.0"))
-                mTextPitchValue.setText("　0.0");
-        }
+        float fTempPitch = mPitch < 0.0f ? mPitch * -1 : mPitch;
+        int pitchInt = (int)fTempPitch;
+        int pitchDec = (int)((fTempPitch * 10) % 10);
+        String strPitch;
+        if(mPitch > 0.05) strPitch = "♯" + pitchInt + "." + pitchDec;
+        else if(mPitch < -0.05) strPitch = "♭" + pitchInt + "." + pitchDec;
+        else strPitch = "　" + pitchInt + "." + pitchDec;
+        mTextPitchValue.setText(strPitch);
 
         int nPtWidth = mImgPoint.getWidth();
         int nPtHeight = mImgPoint.getHeight();

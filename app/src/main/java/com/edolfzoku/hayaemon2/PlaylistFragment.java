@@ -59,6 +59,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -94,6 +95,7 @@ import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -890,18 +892,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 if(mSelectedPlaylist == mPlayingPlaylist && i == mPlaying) {
                     MediaMetadataRetriever mmr = new MediaMetadataRetriever();
                     Bitmap bitmap = null;
-                    boolean bError = false;
                     try {
                         mmr.setDataSource(mActivity, Uri.parse(song.getPath()));
+                        byte[] data = mmr.getEmbeddedPicture();
+                        if(data != null) bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
                     }
                     catch(Exception e) {
-                        bError = true;
+                        e.printStackTrace();
                     }
-                    if(!bError) {
-                        byte[] data = mmr.getEmbeddedPicture();
-                        if(data != null) {
-                            bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                        }
+                    finally {
+                        mmr.release();
                     }
                     if(bitmap != null) mActivity.getBtnArtworkInPlayingBar().setImageBitmap(bitmap);
                     else mActivity.getBtnArtworkInPlayingBar().setImageResource(R.drawable.ic_playing_large_artwork);
@@ -921,9 +921,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             if (song.isSelected()) {
                 mSelectedItem = i;
                 setSavingEffect();
+                mSongsAdapter.notifyItemChanged(i);
             }
         }
-        mSongsAdapter.notifyDataSetChanged();
         finishMultipleSelection();
     }
 
@@ -935,9 +935,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             if (song.isSelected()) {
                 mSelectedItem = i;
                 cancelSavingEffect();
+                mSongsAdapter.notifyItemChanged(i);
             }
         }
-        mSongsAdapter.notifyDataSetChanged();
         finishMultipleSelection();
     }
 
@@ -1110,7 +1110,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 ArrayList<String> arTempLyrics = mLyrics.get(mSelectedPlaylist);
                 arTempLyrics.add(null);
                 if(mSelectedPlaylist == mPlayingPlaylist) mPlays.add(false);
-                mSongsAdapter.notifyDataSetChanged();
+                mSongsAdapter.notifyItemInserted(arSongs.size() - 1);
 
                 saveFiles(true, true, true, true, false);
             }
@@ -1324,7 +1324,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 ArrayList<String> arTempLyrics = mLyrics.get(mSelectedPlaylist);
                 arTempLyrics.add(null);
                 if(mSelectedPlaylist == mPlayingPlaylist) mPlays.add(false);
-                mSongsAdapter.notifyDataSetChanged();
+                mSongsAdapter.notifyItemInserted(arSongs.size() - 1);
 
                 saveFiles(true, true, true, true, false);
             }
@@ -1428,6 +1428,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         LinearLayoutManager playlistsManager = new LinearLayoutManager(mActivity);
         mRecyclerPlaylists.setLayoutManager(playlistsManager);
         mRecyclerPlaylists.setAdapter(mPlaylistsAdapter);
+        ((DefaultItemAnimator) mRecyclerPlaylists.getItemAnimator()).setSupportsChangeAnimations(false);
         mRecyclerPlaylists.setOnClickListener(this);
 
         mRecyclerTab.setHasFixedSize(false);
@@ -1435,11 +1436,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         tabManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRecyclerTab.setLayoutManager(tabManager);
         mRecyclerTab.setAdapter(mTabAdapter);
+        ((DefaultItemAnimator) mRecyclerTab.getItemAnimator()).setSupportsChangeAnimations(false);
 
         mRecyclerSongs.setHasFixedSize(false);
         LinearLayoutManager songsManager = new LinearLayoutManager(mActivity);
         mRecyclerSongs.setLayoutManager(songsManager);
         mRecyclerSongs.setAdapter(mSongsAdapter);
+        ((DefaultItemAnimator) mRecyclerSongs.getItemAnimator()).setSupportsChangeAnimations(false);
         mRecyclerSongs.setOnClickListener(this);
         btnRewind.setOnClickListener(this);
         btnPlay.setOnClickListener(this);
@@ -1498,7 +1501,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         }
                     }
                 }
-                mSongsAdapter.notifyDataSetChanged();
             }
         }
         else if(requestCode == 2)
@@ -1529,7 +1531,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         }
                     }
                 }
-                mSongsAdapter.notifyDataSetChanged();
             }
         }
         else if(requestCode == 3)
@@ -1558,7 +1559,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         }
                     }
                 }
-                mSongsAdapter.notifyDataSetChanged();
             }
         }
         else if(requestCode == 4)
@@ -1587,7 +1587,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         }
                     }
                 }
-                mSongsAdapter.notifyDataSetChanged();
             }
         }
 
@@ -1688,18 +1687,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         song.setPathArtwork(null);
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         Bitmap bitmap = null;
-        boolean bError = false;
         try {
             mmr.setDataSource(mActivity, Uri.parse(song.getPath()));
+            byte[] data = mmr.getEmbeddedPicture();
+            if(data != null) bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
         }
         catch(Exception e) {
-            bError = true;
+            e.printStackTrace();
         }
-        if(!bError) {
-            byte[] data = mmr.getEmbeddedPicture();
-            if(data != null) {
-                bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-            }
+        finally {
+            mmr.release();
         }
         if(bitmap != null) mBtnArtworkInPlayingBar.setImageBitmap(bitmap);
         else mBtnArtworkInPlayingBar.setImageResource(R.drawable.ic_playing_large_artwork);
@@ -1843,7 +1840,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 public void onClick(View view)
                 {
                     cancelSavingEffect();
-                    mSongsAdapter.notifyDataSetChanged();
+                    mSongsAdapter.notifyItemChanged(mSelectedItem);
                     menu.dismiss();
                 }
             });
@@ -1855,7 +1852,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 public void onClick(View view)
                 {
                     setSavingEffect();
-                    mSongsAdapter.notifyDataSetChanged();
+                    mSongsAdapter.notifyItemChanged(mSelectedItem);
                     menu.dismiss();
                 }
             });
@@ -1983,12 +1980,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(nPlaylistTo == mPlayingPlaylist)
             mPlays.add(false);
 
-        for(int i = nItem; i < arSongsFrom.size(); i++) {
-            SongItem songItem = arSongsFrom.get(i);
-            songItem.setNumber(String.format(Locale.getDefault(), "%d", i+1));
-        }
-
-        mSongsAdapter.notifyDataSetChanged();
+        if(mSelectedPlaylist == nPlaylistTo)
+            mSongsAdapter.notifyItemInserted(arSongsTo.size() - 1);
         saveFiles(true, true, true, true, false);
     }
 
@@ -2077,7 +2070,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     }
                 }
 
-                mSongsAdapter.notifyDataSetChanged();
+                mSongsAdapter.notifyItemChanged(nItem);
 
                 saveFiles(true, true, true, true, false);
             }
@@ -2120,8 +2113,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     public void onClick(DialogInterface dialog, int id) {
                         mPlaylistNames.set(nPosition, editText.getText().toString());
 
-                        mTabAdapter.notifyDataSetChanged();
-                        mPlaylistsAdapter.notifyDataSetChanged();
+                        mTabAdapter.notifyItemChanged(nPosition);
+                        mPlaylistsAdapter.notifyItemChanged(nPosition);
 
                         saveFiles(true, true, true, true, false);
                     }
@@ -2189,8 +2182,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         ArrayList<String> mLyricsFrom = mLyrics.get(mSelectedPlaylist);
                         arTempLyrics.addAll(mLyricsFrom);
 
-                        mTabAdapter.notifyDataSetChanged();
-                        mPlaylistsAdapter.notifyDataSetChanged();
+                        mTabAdapter.notifyItemInserted(nTo);
+                        mPlaylistsAdapter.notifyItemInserted(nTo);
                         selectPlaylist(nTo);
                         if(mActivity != null)
                             saveFiles(true, true, true, true, false);
@@ -2222,12 +2215,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 builder.setPositiveButton(getString(R.string.decideNot), null);
                 builder.setNegativeButton(getString(R.string.doEmpty), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        ArrayList<SongItem> arSongs;
-                        ArrayList<EffectSaver> arEffectSavers;
-                        ArrayList<String> arTempLyrics;
-                        arSongs = mPlaylists.get(nPosition);
-                        arEffectSavers = mEffects.get(nPosition);
-                        arTempLyrics = mLyrics.get(nPosition);
+                        ArrayList<SongItem> arSongs = mPlaylists.get(nPosition);
+                        ArrayList<EffectSaver> arEffectSavers = mEffects.get(nPosition);
+                        ArrayList<String> arTempLyrics = mLyrics.get(nPosition);
                         for(int i = 0; i < arSongs.size(); i++) {
                             SongItem song = arSongs.get(i);
                             File file = new File(song.getPath());
@@ -2240,8 +2230,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         arTempLyrics.clear();
 
                         mSongsAdapter.notifyDataSetChanged();
-                        mPlaylistsAdapter.notifyDataSetChanged();
-                        mTabAdapter.notifyDataSetChanged();
+                        mPlaylistsAdapter.notifyItemChanged(nPosition);
+                        mTabAdapter.notifyItemChanged(nPosition);
 
                         saveFiles(true, true, true, true, false);
                     }
@@ -2404,8 +2394,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     public void onClick(DialogInterface dialog, int id) {
                         mPlaylistNames.set(nPosition, editText.getText().toString());
 
-                        mTabAdapter.notifyDataSetChanged();
-                        mPlaylistsAdapter.notifyDataSetChanged();
+                        mTabAdapter.notifyItemChanged(nPosition);
+                        mPlaylistsAdapter.notifyItemChanged(nPosition);
 
                         saveFiles(true, true, true, true, false);
                     }
@@ -2473,8 +2463,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         ArrayList<String> mLyricsFrom = mLyrics.get(mSelectedPlaylist);
                         arTempLyrics.addAll(mLyricsFrom);
 
-                        mTabAdapter.notifyDataSetChanged();
-                        mPlaylistsAdapter.notifyDataSetChanged();
+                        mTabAdapter.notifyItemInserted(nTo);
+                        mPlaylistsAdapter.notifyItemInserted(nTo);
                         selectPlaylist(nTo);
                         if(mActivity != null)
                             saveFiles(true, true, true, true, false);
@@ -2524,8 +2514,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         arTempLyrics.clear();
 
                         mSongsAdapter.notifyDataSetChanged();
-                        mPlaylistsAdapter.notifyDataSetChanged();
-                        mTabAdapter.notifyDataSetChanged();
+                        mPlaylistsAdapter.notifyItemChanged(nPosition);
+                        mTabAdapter.notifyItemChanged(nPosition);
 
                         saveFiles(true, true, true, true, false);
                     }
@@ -2932,73 +2922,22 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         SongItem item = arSongs.get(mSelectedItem);
         String strPath = item.getPath();
         int _hTempStream;
-        BASS.BASS_FILEPROCS fileprocs=new BASS.BASS_FILEPROCS() {
-            @Override
-            public boolean FILESEEKPROC(long offset, Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    fc.position(offset);
-                    return true;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return false;
-            }
-
-            @Override
-            public int FILEREADPROC(ByteBuffer buffer, int length, Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    return fc.read(buffer);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return 0;
-            }
-
-            @Override
-            public long FILELENPROC(Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    return fc.size();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return 0;
-            }
-
-            @Override
-            public void FILECLOSEPROC(Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    fc.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
         Uri uri = Uri.parse(strPath);
         if(uri.getScheme() != null && uri.getScheme().equals("content")) {
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            try {
-                mmr.setDataSource(mActivity.getApplicationContext(), Uri.parse(strPath));
-            }
-            catch(Exception e) {
-                e.printStackTrace();
-            }
             ContentResolver cr = mActivity.getApplicationContext().getContentResolver();
-
             try {
-                AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
-                if(afd == null) return;
-                FileChannel fc = afd.createInputStream().getChannel();
-                _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+                if(params.assetFileDescriptor == null) return;
+                params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
+                _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             } catch (Exception e) {
+                e.printStackTrace();
                 return;
             }
         }
         else {
-            _hTempStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE);
+            _hTempStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
         }
         if(_hTempStream == 0) return;
 
@@ -3199,7 +3138,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         arEffectSavers.add(saverNew);
         arTempLyrics.add(strLyrics);
         if(mSelectedPlaylist == mPlayingPlaylist) mPlays.add(false);
-        mSongsAdapter.notifyDataSetChanged();
+        mSongsAdapter.notifyItemInserted(arSongs.size() - 1);
 
         saveFiles(true, true, true, true, false);
     }
@@ -3550,68 +3489,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
         mPlays.set(nSong, true);
 
-        BASS.BASS_FILEPROCS fileprocs=new BASS.BASS_FILEPROCS() {
-            @Override
-            public boolean FILESEEKPROC(long offset, Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    fc.position(offset);
-                    return true;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return false;
-            }
-
-            @Override
-            public int FILEREADPROC(ByteBuffer buffer, int length, Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    return fc.read(buffer);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return 0;
-            }
-
-            @Override
-            public long FILELENPROC(Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    return fc.size();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return 0;
-            }
-
-            @Override
-            public void FILECLOSEPROC(Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    fc.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
         Uri uri = Uri.parse(strPath);
         if(uri.getScheme() != null && uri.getScheme().equals("content")) {
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            try {
-                mmr.setDataSource(mActivity.getApplicationContext(), Uri.parse(strPath));
-            }
-            catch(Exception e) {
-                e.printStackTrace();
-            }
             ContentResolver cr = mActivity.getApplicationContext().getContentResolver();
-
             try {
-                AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
-                if(afd == null) return;
-                FileChannel fc = afd.createInputStream().getChannel();
-                MainActivity.sStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE, fileprocs, fc);
+                MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+                if(params.assetFileDescriptor == null) return;
+                params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
+                MainActivity.sStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             } catch (Exception e) {
                 removeSong(mPlayingPlaylist, mPlaying);
                 if(mPlaying >= mPlaylists.get(mPlayingPlaylist).size())
@@ -3622,7 +3508,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
         }
         else {
-            MainActivity.sStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE);
+            MainActivity.sStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
         }
         if(MainActivity.sStream == 0) return;
         long byteLength = BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE);
@@ -3637,17 +3523,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
         else {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            boolean bError = false;
             try {
                 mmr.setDataSource(mActivity.getApplicationContext(), Uri.parse(item.getPath()));
-            } catch (Exception e) {
-                bError = true;
-            }
-            if (!bError) {
                 byte[] data = mmr.getEmbeddedPicture();
-                if (data != null) {
-                    bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                }
+                if (data != null) bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            finally {
+                mmr.release();
             }
         }
         if(bitmap != null) mBtnArtworkInPlayingBar.setImageBitmap(bitmap);
@@ -3730,7 +3614,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         int hFx31_5 = BASS.BASS_ChannelSetFX(MainActivity.sStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
         int hFx25 = BASS.BASS_ChannelSetFX(MainActivity.sStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
         int hFx20 = BASS.BASS_ChannelSetFX(MainActivity.sStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        mActivity.equalizerFragment.setArHFX(new int[]{hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20});
+        mActivity.equalizerFragment.setArHFX(new ArrayList<>(Arrays.asList(hFx20K, hFx16K, hFx12_5K, hFx10K, hFx8K, hFx6_3K, hFx5K, hFx4K, hFx3_15K, hFx2_5K, hFx2K, hFx1_6K, hFx1_25K, hFx1K, hFx800, hFx630, hFx500, hFx400, hFx315, hFx250, hFx200, hFx160, hFx125, hFx100, hFx80, hFx63, hFx50, hFx40, hFx31_5, hFx25, hFx20)));
         if(mPlaying < 0) mPlaying = 0;
         else if(mPlaying >= arEffectSavers.size()) mPlaying = arEffectSavers.size() - 1;
         EffectSaver saver = arEffectSavers.get(mPlaying);
@@ -3880,7 +3764,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mPlaying = -1;
         BASS.BASS_ChannelStop(MainActivity.sStream);
         MainActivity.sStream = 0;
-        mActivity.loopFragment.getTextCurValue().setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", 0, 0, 0, 0));
+        mActivity.loopFragment.getTextCurValue().setText(getString(R.string.zeroHMS));
         mActivity.getBtnPlay().setContentDescription(getString(R.string.play));
         mActivity.getBtnPlay().setImageResource(R.drawable.ic_bar_button_play);
         mActivity.getBtnPlayInPlayingBar().setContentDescription(getString(R.string.play));
@@ -3897,22 +3781,22 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     public void addSong(MainActivity mActivity, Uri uri)
     {
-        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        boolean bError = false;
-        try {
-            mmr.setDataSource(mActivity.getApplicationContext(), uri);
-        }
-        catch(Exception e) {
-            bError = true;
-        }
         if(mSelectedPlaylist < 0) mSelectedPlaylist = 0;
         else if(mSelectedPlaylist >= mPlaylists.size()) mSelectedPlaylist = mPlaylists.size() - 1;
         ArrayList<SongItem> arSongs = mPlaylists.get(mSelectedPlaylist);
         String strTitle = null;
         String strArtist = null;
-        if(!bError) {
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        try {
+            mmr.setDataSource(mActivity.getApplicationContext(), uri);
             strTitle = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
             strArtist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            mmr.release();
         }
         if(strTitle != null) {
             SongItem item = new SongItem(String.format(Locale.getDefault(), "%d", arSongs.size()+1), strTitle, strArtist, uri.toString());
@@ -3936,39 +3820,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         arTempLyrics.add(null);
 
         if(mSelectedPlaylist == mPlayingPlaylist) mPlays.add(false);
+
+        mSongsAdapter.notifyItemInserted(arSongs.size() - 1);
     }
 
     @SuppressWarnings("deprecation")
     private void addVideo(final MainActivity mActivity, Uri uri)
     {
         if(Build.VERSION.SDK_INT < 18) return;
-        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        try {
-            mmr.setDataSource(mActivity.getApplicationContext(), uri);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-            return;
-        }
-
         ContentResolver cr = mActivity.getApplicationContext().getContentResolver();
 
-        AssetFileDescriptor afd = null;
-        try {
-            afd = cr.openAssetFileDescriptor(uri, "r");
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-        if(afd == null) return;
-        MediaExtractor extractor = new MediaExtractor();
-        try {
-            extractor.setDataSource(afd.getFileDescriptor());
-        }
-        catch (Exception e) {
-            return;
-        }
-        int trackCount = extractor.getTrackCount();
         String strPathTo;
         int n = 0;
         File fileForCheck;
@@ -3979,58 +3840,70 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             n++;
         }
         final File file = new File(strPathTo);
-        MediaMuxer muxer;
+
+        AssetFileDescriptor afd = null;
+        MediaExtractor extractor = null;
+        MediaMuxer muxer = null;
         try {
+            afd = cr.openAssetFileDescriptor(uri, "r");
+            extractor = new MediaExtractor();
+            if(afd != null) extractor.setDataSource(afd.getFileDescriptor());
+            int trackCount = extractor.getTrackCount();
             muxer = new MediaMuxer(strPathTo, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+            int audioTrackIndex = 0;
+            for (int i = 0; i < trackCount; i++) {
+                MediaFormat format = extractor.getTrackFormat(i);
+                String COMPRESSED_AUDIO_FILE_MIME_TYPE = format.getString(MediaFormat.KEY_MIME);
+
+                if(COMPRESSED_AUDIO_FILE_MIME_TYPE.startsWith("audio/")) {
+                    extractor.selectTrack(i);
+                    audioTrackIndex = muxer.addTrack(format);
+                }
+            }
+            boolean sawEOS = false;
+            int offset = 100;
+            ByteBuffer dstBuf = ByteBuffer.allocate(256 * 1024);
+            MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
+            muxer.start();
+            while (!sawEOS) {
+                bufferInfo.offset = offset;
+                bufferInfo.size = extractor.readSampleData(dstBuf, offset);
+                if ((bufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0) {
+                    bufferInfo.size = 0;
+                }
+                else if (bufferInfo.size < 0) {
+                    sawEOS = true;
+                    bufferInfo.size = 0;
+                }
+                else {
+                    bufferInfo.presentationTimeUs = extractor.getSampleTime();
+                    if(Build.VERSION.SDK_INT >= 21)
+                        bufferInfo.flags = MediaCodec.BUFFER_FLAG_KEY_FRAME;
+                    else
+                        bufferInfo.flags = MediaCodec.BUFFER_FLAG_SYNC_FRAME;
+                    dstBuf.position(bufferInfo.offset);
+                    dstBuf.limit(bufferInfo.offset + bufferInfo.size);
+                    muxer.writeSampleData(audioTrackIndex, dstBuf, bufferInfo);
+                    extractor.advance();
+                }
+            }
+            muxer.stop();
+        }
+        catch(NullPointerException ne) {
+            ne.printStackTrace();
         }
         catch(Exception e) {
-            return;
-        }
-        int audioTrackIndex = 0;
-        for (int i = 0; i < trackCount; i++) {
-            MediaFormat format = extractor.getTrackFormat(i);
-            String COMPRESSED_AUDIO_FILE_MIME_TYPE = format.getString(MediaFormat.KEY_MIME);
-
-            if(COMPRESSED_AUDIO_FILE_MIME_TYPE.startsWith("audio/")) {
-                extractor.selectTrack(i);
-                audioTrackIndex = muxer.addTrack(format);
-            }
-        }
-        boolean sawEOS = false;
-        int offset = 100;
-        ByteBuffer dstBuf = ByteBuffer.allocate(256 * 1024);
-        MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
-        muxer.start();
-        while (!sawEOS) {
-            bufferInfo.offset = offset;
-            bufferInfo.size = extractor.readSampleData(dstBuf, offset);
-            if ((bufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0) {
-                bufferInfo.size = 0;
-            }
-            else if (bufferInfo.size < 0) {
-                sawEOS = true;
-                bufferInfo.size = 0;
-            }
-            else {
-                bufferInfo.presentationTimeUs = extractor.getSampleTime();
-                if(Build.VERSION.SDK_INT >= 21)
-                    bufferInfo.flags = MediaCodec.BUFFER_FLAG_KEY_FRAME;
-                else
-                    bufferInfo.flags = MediaCodec.BUFFER_FLAG_SYNC_FRAME;
-                dstBuf.position(bufferInfo.offset);
-                dstBuf.limit(bufferInfo.offset + bufferInfo.size);
-                muxer.writeSampleData(audioTrackIndex, dstBuf, bufferInfo);
-                extractor.advance();
-            }
-        }
-        muxer.stop();
-        muxer.release();
-        try {
-            afd.close();
-        }
-        catch(Exception e)
-        {
             e.printStackTrace();
+        }
+        finally {
+            try {
+                if(afd != null) afd.close();
+                if(extractor != null) extractor.release();
+                if(muxer != null) muxer.release();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
@@ -4061,7 +3934,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 ArrayList<String> arTempLyrics = mLyrics.get(mSelectedPlaylist);
                 arTempLyrics.add(null);
                 if(mSelectedPlaylist == mPlayingPlaylist) mPlays.add(false);
-                mSongsAdapter.notifyDataSetChanged();
+                mSongsAdapter.notifyItemInserted(arSongs.size() - 1);
 
                 saveFiles(true, true, true, true, false);
             }
@@ -4112,16 +3985,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             songItem.setNumber(String.format(Locale.getDefault(), "%d", i+1));
         }
 
-        mSongsAdapter.notifyDataSetChanged();
-
         ArrayList<EffectSaver> arEffectSavers = mEffects.get(nPlaylist);
         arEffectSavers.remove(nSong);
 
         ArrayList<String> arTempLyrics = mLyrics.get(nPlaylist);
         arTempLyrics.remove(nSong);
 
-        saveFiles(true, true, true, true, false);
+        mSongsAdapter.notifyDataSetChanged();
 
+        saveFiles(true, true, true, true, false);
     }
 
     private String getFileNameFromUri(Context context, Uri uri) {
@@ -4174,66 +4046,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     public void updateSongTime(SongItem item)
     {
         String strPath = item.getPath();
-        int hTempStream;
-        BASS.BASS_FILEPROCS fileprocs = new BASS.BASS_FILEPROCS() {
-            @Override
-            public boolean FILESEEKPROC(long offset, Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    fc.position(offset);
-                    return true;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return false;
-            }
-
-            @Override
-            public int FILEREADPROC(ByteBuffer buffer, int length, Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    return fc.read(buffer);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return 0;
-            }
-
-            @Override
-            public long FILELENPROC(Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    return fc.size();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return 0;
-            }
-
-            @Override
-            public void FILECLOSEPROC(Object user) {
-                FileChannel fc=(FileChannel)user;
-                try {
-                    fc.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
+        int hTempStream = 0;
 
         Uri uri = Uri.parse(strPath);
-        boolean bError = false;
         if(uri.getScheme() != null && uri.getScheme().equals("content")) {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            long durationMs = 0;
             try {
                 mmr.setDataSource(mActivity.getApplicationContext(), Uri.parse(strPath));
-            }
-            catch(Exception e) {
-                bError = true;
-                e.printStackTrace();
-            }
-            if(!bError) {
-                long durationMs = Long.parseLong(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                durationMs = Long.parseLong(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
                 long duration = durationMs / 1000;
                 long lMinutes = duration / 60;
                 long lSeconds = duration % 60;
@@ -4241,14 +4062,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 saveFiles(true, false, false, false, false);
                 return;
             }
-            else {
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+            finally {
+                mmr.release();
+            }
+            if(durationMs == 0) {
                 ContentResolver cr = mActivity.getApplicationContext().getContentResolver();
-
                 try {
-                    AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
-                    if (afd == null) return;
-                    FileChannel fc = afd.createInputStream().getChannel();
-                    hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, fileprocs, fc);
+                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                    params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+                    if (params.assetFileDescriptor == null) return;
+                    params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
+                    hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
                 } catch (Exception e) {
                     e.printStackTrace();
                     return;
@@ -4261,12 +4088,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         int nSeconds = (int)(dLength % 60);
         item.setTime(String.format(Locale.getDefault(), "%d:%02d", nMinutes, nSeconds));
         saveFiles(true, false, false, false, false);
-    }
-
-    public void updateSongs()
-    {
-        if(mSongsAdapter != null)
-            mSongsAdapter.notifyDataSetChanged();
     }
 
     public void saveFiles(boolean bPlaylists, boolean bEffects, boolean bLyrics, boolean bPlaylistNames, boolean bPlayMode)

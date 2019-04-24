@@ -151,7 +151,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         AnimationButton btnNextmarker = mActivity.findViewById(R.id.btnNextmarker);
         final LinearLayout ABLabel = mActivity.findViewById(R.id.ABLabel);
 
-        mTextCurValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", 0, 0, 0, 0));
+        mTextAValue.setText(getString(R.string.zeroHMS));
+        mTextBValue.setText(getString(R.string.zeroHMS));
+        mTextCurValue.setText(getString(R.string.zeroHMS));
 
         mWaveView.setLoopFragment(this);
         mWaveView.setOnTouchListener(this);
@@ -183,10 +185,10 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                             int nRemainMinute = (int) (dRemain / 60);
                             int nRemainSecond = (int) (dRemain % 60);
 
-                            mActivity.getTextCurPos().setText(String.format(Locale.getDefault(), "%d:%02d", nMinute, nSecond));
-                            String strRemain = String.format(Locale.getDefault(), "-%d:%02d", nRemainMinute, nRemainSecond);
-                            if (!mActivity.getTextRemain().getText().toString().equals(strRemain))
-                                mActivity.getTextRemain().setText(strRemain);
+                            String strCurPos = nMinute + (nSecond < 10 ? ":0" : ":") + nSecond;
+                            mActivity.getTextCurPos().setText(strCurPos);
+                            String strRemain = "-" + nRemainMinute + (nRemainSecond < 10 ? ":0" : ":") + nRemainSecond;
+                            mActivity.getTextRemain().setText(strRemain);
                             mActivity.getSeekCurPos().setProgress((int) dPos);
                         }
 
@@ -1262,8 +1264,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             mRelativeLoop.removeView(textView);
         }
 
-        mTextAValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", 0, 0, 0, 0));
-        mTextBValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", 0, 0, 0, 0));
+        mTextAValue.setText(getString(R.string.zeroHMS));
+        mTextBValue.setText(getString(R.string.zeroHMS));
 
         mMarkerTimes.clear();
         mMarkerTexts.clear();
@@ -1281,7 +1283,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         int nHour = nMinute / 60;
         nMinute = nMinute % 60;
         int nDec = (int)((dLength * 100) % 100);
-        mTextBValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
+        String strTextBValue = (nHour < 10 ? "0" : "") + nHour + (nMinute < 10 ? ":0" : ":") + nMinute + (nSecond < 10 ? ":0" : ":") + nSecond + (nDec < 10 ? ".0" : ".") + nDec;
+        mTextBValue.setText(strTextBValue);
         mWaveView.drawWaveForm(strPath);
     }
 

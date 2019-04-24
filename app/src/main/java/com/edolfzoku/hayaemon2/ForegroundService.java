@@ -18,8 +18,15 @@ import android.support.v4.app.NotificationCompat;
 import com.un4seen.bass.BASS;
 
 public class ForegroundService extends IntentService {
+    private PendingIntent pendingIntentForeground = null;
+    private NotificationCompat.Action actionRewind= null;
+    private NotificationCompat.Action actionPlayPause= null;
+    private NotificationCompat.Action actionForward= null;
+    private Notification notification;
+    private NotificationCompat.Builder builder;
 
-    public ForegroundService() {
+    public ForegroundService()
+    {
         super("ForegroundService");
     }
 
@@ -44,17 +51,17 @@ public class ForegroundService extends IntentService {
             }
             else {
                 MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                boolean bError = false;
                 try {
-                    mmr.setDataSource(getApplicationContext(), Uri.parse(strPath));
-                } catch (Exception e) {
-                    bError = true;
-                }
-                if (!bError) {
+                    mmr.setDataSource(this, Uri.parse(strPath));
                     byte[] data = mmr.getEmbeddedPicture();
-                    if (data != null) {
-                        bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    }
+                    if (data != null) bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    int nSize = (int)(64 * getResources().getDisplayMetrics().density);
+                    if(bitmap != null) bitmap = Bitmap.createScaledBitmap(bitmap, nSize, nSize, false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                finally {
+                    mmr.release();
                 }
             }
 
@@ -69,44 +76,77 @@ public class ForegroundService extends IntentService {
                     notificationManager.createNotificationChannel(channel);
             }
 
-            Intent intentRewind = new Intent(getApplicationContext(), ForegroundService.class);
-            intentRewind.setAction("action_rewind");
-            PendingIntent pendingIntentRewind = PendingIntent.getService(getApplicationContext(), 1, intentRewind, 0);
-
-            Intent intentPlayPause = new Intent(getApplicationContext(), ForegroundService.class);
-            intentPlayPause.setAction("action_playpause");
-            PendingIntent pendingIntentPlayPause = PendingIntent.getService(getApplicationContext(), 1, intentPlayPause, 0);
-
-            Intent intentForward = new Intent(getApplicationContext(), ForegroundService.class);
-            intentForward.setAction("action_forward");
-            PendingIntent pendingIntentForward = PendingIntent.getService(getApplicationContext(), 1, intentForward, 0);
-
-            Intent intentForeground = new Intent(getApplicationContext(), MainActivity.class);
-            intentForeground.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent pendingIntentForeground = PendingIntent.getActivity(getApplicationContext(), 1, intentForeground, 0);
-
             if (bitmap == null)
                 bitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher);
 
-            NotificationCompat.Action actionPlayPause;
-            if (BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_PLAYING)
-                actionPlayPause = new NotificationCompat.Action.Builder(R.drawable.ic_pause, "Pause", pendingIntentPlayPause).build();
-            else
-                actionPlayPause = new NotificationCompat.Action.Builder(R.drawable.ic_play, "Play", pendingIntentPlayPause).build();
-            Notification notification = new NotificationCompat.Builder(this, "default")
-                    .addAction(new NotificationCompat.Action.Builder(R.drawable.ic_rewind, "Previous", pendingIntentRewind).build())
-                    .addAction(actionPlayPause)
-                    .addAction(new NotificationCompat.Action.Builder(R.drawable.ic_forward, "Next", pendingIntentForward).build())
-                    .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
-                            .setShowActionsInCompactView(0, 1, 2))
-                    .setSmallIcon(R.drawable.ic_statusbar)
-                    .setLargeIcon(bitmap)
-                    .setContentTitle(strTitle)
-                    .setContentText(strArtist)
-                    .setContentIntent(pendingIntentForeground)
-                    .build();
+            if(actionRewind == null) {
+                Intent intentRewind = new Intent(this, ForegroundService.class);
+                intentRewind.setAction("action_rewind");
+                PendingIntent pendingIntentRewind = PendingIntent.getService(this, 1, intentRewind, 0);
+                actionRewind = new NotificationCompat.Action.Builder(R.drawable.ic_rewind, "Previous", pendingIntentRewind).build();
+            }
 
-            startForeground(1, notification);
+            if(actionPlayPause == null) {
+                Intent intentPlayPause = new Intent(this, ForegroundService.class);
+                intentPlayPause.setAction("action_playpause");
+                PendingIntent pendingIntentPlayPause = PendingIntent.getService(this, 1, intentPlayPause, 0);
+                actionPlayPause = new NotificationCompat.Action.Builder(R.drawable.ic_pause, "Pause", pendingIntentPlayPause).build();
+            }
+
+            if(actionForward == null) {
+                Intent intentForward = new Intent(this, ForegroundService.class);
+                intentForward.setAction("action_forward");
+                PendingIntent pendingIntentForward = PendingIntent.getService(this, 1, intentForward, 0);
+                actionForward = new NotificationCompat.Action.Builder(R.drawable.ic_forward, "Next", pendingIntentForward).build();
+            }
+
+            if(pendingIntentForeground == null) {
+                Intent intentForeground = new Intent(this, MainActivity.class);
+                intentForeground.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                pendingIntentForeground = PendingIntent.getActivity(this, 1, intentForeground, 0);
+            }
+
+            int iconPlayPause;
+            String playPauseTitle;
+            if (BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_PLAYING) {
+                iconPlayPause = R.drawable.ic_pause;
+                playPauseTitle = "Pause";
+            }
+            else {
+                iconPlayPause = R.drawable.ic_play;
+                playPauseTitle = "Play";
+            }
+            actionPlayPause.icon = iconPlayPause;
+            actionPlayPause.title = playPauseTitle;
+            if(builder == null) {
+                builder = new NotificationCompat.Builder(this, "default");
+                builder.addAction(actionRewind);
+                builder.addAction(actionPlayPause);
+                builder.addAction(actionForward);
+                builder.setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
+                builder.setSmallIcon(R.drawable.ic_statusbar);
+                builder.setLargeIcon(bitmap);
+                builder.setContentTitle(strTitle);
+                builder.setContentText(strArtist);
+                builder.setContentIntent(pendingIntentForeground);
+                builder.setOngoing(true);
+                notification = builder.build();
+                startForeground(1, notification);
+            }
+            else {
+                builder.setLargeIcon(bitmap);
+                builder.setContentTitle(strTitle);
+                builder.setContentText(strArtist);
+                if(Build.VERSION.SDK_INT >= 19) {
+                    notification.actions[1].icon = iconPlayPause;
+                    notification.actions[1].title = playPauseTitle;
+                }
+                notification = builder.build();
+                NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+                if(notificationManager != null)
+                    notificationManager.notify(1, notification);
+            }
+            bitmap.recycle();
         }
         else getBaseContext().sendBroadcast(new Intent(intent.getAction()));
         return START_STICKY_COMPATIBILITY;

@@ -43,10 +43,10 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
         private ImageButton mBtnEffectDetail;
         private ImageView mImgRight;
 
-        public RelativeLayout getEffectItem() { return mEffectItem; }
-        public TextView getTextEffect() { return mTextEffect; }
-        public ImageButton getButtonEffectDetail() { return mBtnEffectDetail; }
-        public ImageView getImgRight() { return mImgRight; }
+        RelativeLayout getEffectItem() { return mEffectItem; }
+        TextView getTextEffect() { return mTextEffect; }
+        ImageButton getButtonEffectDetail() { return mBtnEffectDetail; }
+        ImageView getImgRight() { return mImgRight; }
 
         ViewHolder(View view) {
             super(view);

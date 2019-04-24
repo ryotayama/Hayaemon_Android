@@ -126,7 +126,6 @@
 
         <EditText
             android:id="@+id/textAValue"
-            android:text="00:00:00.00"
             android:inputType="text"
             android:hint="@null"
             android:autofillHints="@null"
@@ -154,7 +153,6 @@
 
         <EditText
             android:id="@+id/textBValue"
-            android:text="00:00:00.00"
             android:inputType="text"
             android:hint="@null"
             android:autofillHints="@null"

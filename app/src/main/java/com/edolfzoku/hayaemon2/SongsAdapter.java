@@ -51,15 +51,15 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         private final TextView mTextTime;
         private final ImageView mImgSongMenu;
 
-        public RelativeLayout getSongItem() { return mSongItem; }
-        public ImageView getImgSelectSong() { return mImgSelectSong; }
-        public TextView getTextNumber() { return mTextNumber; }
-        public TextView getTextTitle() { return mTextTitle; }
-        public TextView getTextArtist() { return mTextArtist; }
-        public ImageView getImgStatus() { return mImgStatus; }
-        public ImageView getImgLock() { return mImgLock; }
-        public TextView getTextTime() { return mTextTime; }
-        public ImageView getImgSongMenu() { return mImgSongMenu; }
+        RelativeLayout getSongItem() { return mSongItem; }
+        ImageView getImgSelectSong() { return mImgSelectSong; }
+        TextView getTextNumber() { return mTextNumber; }
+        TextView getTextTitle() { return mTextTitle; }
+        TextView getTextArtist() { return mTextArtist; }
+        ImageView getImgStatus() { return mImgStatus; }
+        ImageView getImgLock() { return mImgLock; }
+        TextView getTextTime() { return mTextTime; }
+        ImageView getImgSongMenu() { return mImgSongMenu; }
 
         ViewHolder(View view) {
             super(view);

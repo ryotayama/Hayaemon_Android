@@ -29,6 +29,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -64,7 +65,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     private float[] mCenters;
     private ArrayList<TextView> mTextValues;
     private ArrayList<SeekBar> mSeeks;
-    private int[] mHfxs;
+    private ArrayList<Integer> mHfxs;
     private int mLastChecked = 0;
     private boolean mSorting = false;
     private boolean mContinue = true;
@@ -93,7 +94,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
     public EqualizerFragment()
     {
-        mHfxs = null;
+        mHfxs = new ArrayList<>();
         mEqualizerItems = new ArrayList<>();
         mHandler = new Handler();
     }
@@ -161,6 +162,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         final LinearLayoutManager equalizersManager = new LinearLayoutManager(mActivity);
         mRecyclerEqualizers.setLayoutManager(equalizersManager);
         mRecyclerEqualizers.setAdapter(mEqualizersAdapter);
+        ((DefaultItemAnimator) mRecyclerEqualizers.getItemAnimator()).setSupportsChangeAnimations(false);
 
         mTextValues = new ArrayList<>();
         mTextValues.add((TextView)mActivity.findViewById(R.id.textVolValue));
@@ -267,16 +269,17 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                                     eq.lChannel = BASS_FX.BASS_BFX_CHANALL;
                                     eq.fGain = nLevel;
                                     eq.fCenter = mCenters[j-1];
-                                    BASS.BASS_FXSetParameters(mHfxs[j-1], eq);
+                                    BASS.BASS_FXSetParameters(mHfxs.get(j-1), eq);
                                 }
 
                                 TextView textView = mTextValues.get(j);
                                 textView.setText(String.valueOf(nLevel));
                             }
 
-                            for (int j = 0; j < mEqualizerItems.size(); j++)
+                            for (int j = 0; j < mEqualizerItems.size(); j++) {
                                 mEqualizerItems.get(j).setSelected(false);
-                            mEqualizersAdapter.notifyDataSetChanged();
+                                mEqualizersAdapter.notifyItemChanged(j);
+                            }
                         }
 
                         public void onStartTrackingTouch(SeekBar seekBar) {
@@ -478,8 +481,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                             arPresets.add(Integer.parseInt((String) mTextValues.get(i).getText()));
                         }
                         mEqualizerItems.add(new EqualizerItem(editPreset.getText().toString(), arPresets));
+                        mEqualizersAdapter.notifyItemInserted(mEqualizerItems.size() - 1);
                         saveData();
-                        mEqualizersAdapter.notifyDataSetChanged();
                     }
                 });
                 builder.setNegativeButton(R.string.cancel, null);
@@ -643,7 +646,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     eq.lChannel = BASS_FX.BASS_BFX_CHANALL;
                     eq.fGain = nLevel;
                     eq.fCenter = mCenters[i-1];
-                    BASS.BASS_FXSetParameters(mHfxs[i-1], eq);
+                    BASS.BASS_FXSetParameters(mHfxs.get(i-1), eq);
                 }
             }
         }
@@ -694,7 +697,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     eq.lChannel = BASS_FX.BASS_BFX_CHANALL;
                     eq.fGain = nLevel;
                     eq.fCenter = mCenters[i-1];
-                    BASS.BASS_FXSetParameters(mHfxs[i-1], eq);
+                    BASS.BASS_FXSetParameters(mHfxs.get(i-1), eq);
                 }
 
                 SeekBar seekBar = mSeeks.get(i);
@@ -735,7 +738,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 eq.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 eq.fGain = nLevel;
                 eq.fCenter = mCenters[i];
-                BASS.BASS_FXSetParameters(mHfxs[i], eq);
+                BASS.BASS_FXSetParameters(mHfxs.get(i), eq);
             }
 
             seekBar = mSeeks.get(i + 1);
@@ -788,7 +791,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             eq.lChannel = BASS_FX.BASS_BFX_CHANALL;
             eq.fGain = nLevel;
             eq.fCenter = mCenters[i-1];
-            BASS.BASS_FXSetParameters(mHfxs[i-1], eq);
+            BASS.BASS_FXSetParameters(mHfxs.get(i-1), eq);
         }
 
         SeekBar seekBar = mSeeks.get(i);
@@ -799,8 +802,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         if (bSave) mActivity.playlistFragment.updateSavingEffect();
     }
 
-    void setArHFX(int[] hfxs) {
-        mHfxs = hfxs;
+    void setArHFX(ArrayList<Integer> hfxs) {
+        mHfxs = new ArrayList<>(hfxs);
     }
 
     public void showMenu(final int nItem) {
@@ -823,7 +826,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         mEqualizerItems.get(nItem).setEqualizerName(editPreset.getText().toString());
-                        mEqualizersAdapter.notifyDataSetChanged();
+                        mEqualizersAdapter.notifyItemChanged(nItem);
                         saveData();
                     }
                 });
@@ -941,7 +944,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     private void removeItem(int nItem)
     {
         mEqualizerItems.remove(nItem);
-        mEqualizersAdapter.notifyDataSetChanged();
+        mEqualizersAdapter.notifyItemRemoved(nItem);
         saveData();
     }
 }

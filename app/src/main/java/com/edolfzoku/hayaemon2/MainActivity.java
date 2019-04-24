@@ -34,6 +34,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -102,6 +103,8 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -183,6 +186,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public MainActivity() { }
 
+    static class FileProcsParams {
+        AssetFileDescriptor assetFileDescriptor = null;
+        FileChannel fileChannel = null;
+        InputStream inputStream = null;
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -262,7 +271,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     }
                 }
-                playlistFragment.updateSongs();
+                if(playlistFragment.getSongsAdapter() != null)
+                    playlistFragment.getSongsAdapter().notifyDataSetChanged();
                 SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 Gson gson = new Gson();
                 preferences.edit().putString("arPlaylists", gson.toJson(playlistFragment.getArPlaylists())).apply();
@@ -1071,17 +1081,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 else {
                     MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                    boolean bError = false;
                     try {
                         mmr.setDataSource(getApplicationContext(), Uri.parse(item.getPath()));
-                    } catch (Exception e) {
-                        bError = true;
-                    }
-                    if (!bError) {
                         byte[] data = mmr.getEmbeddedPicture();
-                        if (data != null) {
-                            bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                        }
+                        if (data != null) bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    finally {
+                        mmr.release();
                     }
                 }
                 if(bitmap != null) imgViewArtworkInMenu.setImageBitmap(bitmap);
@@ -1173,13 +1182,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             EffectSaver saver = arEffectSavers.get(playlistFragment.getPlaying());
             if(saver.isSave()) {
                 saver.setSave(false);
-                playlistFragment.getSongsAdapter().notifyDataSetChanged();
+                playlistFragment.getSongsAdapter().notifyItemChanged(playlistFragment.getPlaying());
 
                 playlistFragment.saveFiles(false, true, false, false, false);
             }
             else {
                 playlistFragment.setSavingEffect();
-                playlistFragment.getSongsAdapter().notifyDataSetChanged();
+                playlistFragment.getSongsAdapter().notifyItemChanged(playlistFragment.getPlaying());
             }
         }
         else if(v.getId() == R.id.relativeSave)
@@ -1366,7 +1375,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onClick(View view)
                     {
                         saver.setSave(false);
-                        playlistFragment.getSongsAdapter().notifyDataSetChanged();
+                        playlistFragment.getSongsAdapter().notifyItemChanged(nPlaying);
 
                         playlistFragment.saveFiles(false, true, false, false, false);
                         menu.dismiss();
@@ -1380,8 +1389,65 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onClick(View view)
                     {
                         playlistFragment.setSavingEffect();
-                        playlistFragment.getSongsAdapter().notifyDataSetChanged();
+                        playlistFragment.getSongsAdapter().notifyItemChanged(nPlaying);
                         menu.dismiss();
+                    }
+                });
+            }
+            menu.setCancelMenu();
+            menu.show();
+        }
+        else if(v.getId() == R.id.btnArtworkInPlayingBar) {
+            final int nPlaying = playlistFragment.getPlaying();
+            playlistFragment.setSelectedItem(nPlaying);
+            final SongItem item = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist()).get(nPlaying);
+            final BottomMenu menu = new BottomMenu(this);
+            menu.setTitle(getString(R.string.changeArtwork));
+            menu.addMenu(getString(R.string.setFromGallery), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    menu.dismiss();
+                    if (Build.VERSION.SDK_INT < 19)
+                    {
+                        final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        intent.setType("image/*");
+                        playlistFragment.startActivityForResult(intent, 3);
+                    }
+                    else
+                    {
+                        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("image/*");
+                        playlistFragment.startActivityForResult(intent, 3);
+                    }
+                }
+            });
+            if(item.getPathArtwork() != null && !item.getPathArtwork().equals("")) {
+                final MainActivity activity = this;
+                menu.addDestructiveMenu(getString(R.string.resetArtwork), R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        menu.dismiss();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                        builder.setTitle(R.string.resetArtwork);
+                        builder.setMessage(R.string.askResetArtwork);
+                        builder.setPositiveButton(getString(R.string.decideNot), null);
+                        builder.setNegativeButton(getString(R.string.doReset), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                playlistFragment.resetArtwork();
+                            }
+                        });
+                        final AlertDialog alertDialog = builder.create();
+                        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                        {
+                            @Override
+                            public void onShow(DialogInterface arg0)
+                            {
+                                Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                                negativeButton.setTextColor(Color.argb(255, 255, 0, 0));
+                            }
+                        });
+                        alertDialog.show();
                     }
                 });
             }
@@ -1395,65 +1461,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         playlistFragment.selectPlaylist(playlistFragment.getPlayingPlaylist());
         mRelativePlaying.setOnClickListener(null);
         final Activity activity = this;
-        mBtnArtworkInPlayingBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final int nPlaying = playlistFragment.getPlaying();
-                playlistFragment.setSelectedItem(nPlaying);
-                final SongItem item = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist()).get(nPlaying);
-                final BottomMenu menu = new BottomMenu(activity);
-                menu.setTitle(getString(R.string.changeArtwork));
-                menu.addMenu(getString(R.string.setFromGallery), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        menu.dismiss();
-                        if (Build.VERSION.SDK_INT < 19)
-                        {
-                            final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                            intent.setType("image/*");
-                            playlistFragment.startActivityForResult(intent, 3);
-                        }
-                        else
-                        {
-                            final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                            intent.addCategory(Intent.CATEGORY_OPENABLE);
-                            intent.setType("image/*");
-                            playlistFragment.startActivityForResult(intent, 3);
-                        }
-                    }
-                });
-                if(item.getPathArtwork() != null && !item.getPathArtwork().equals("")) {
-                    menu.addDestructiveMenu(getString(R.string.resetArtwork), R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                        menu.dismiss();
-                            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                            builder.setTitle(R.string.resetArtwork);
-                            builder.setMessage(R.string.askResetArtwork);
-                            builder.setPositiveButton(getString(R.string.decideNot), null);
-                            builder.setNegativeButton(getString(R.string.doReset), new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    playlistFragment.resetArtwork();
-                                }
-                            });
-                            final AlertDialog alertDialog = builder.create();
-                            alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
-                            {
-                                @Override
-                                public void onShow(DialogInterface arg0)
-                                {
-                                    Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                                    negativeButton.setTextColor(Color.argb(255, 255, 0, 0));
-                                }
-                            });
-                            alertDialog.show();
-                            }
-                    });
-                }
-                menu.setCancelMenu();
-                menu.show();
-            }
-        });
+        mBtnArtworkInPlayingBar.setOnClickListener(this);
         mBtnArtworkInPlayingBar.setAnimation(true);
         mBtnArtworkInPlayingBar.setClickable(true);
         final long lDuration = 400;
@@ -2229,4 +2237,82 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         event.setSource(source);
         manager.sendAccessibilityEvent(event);
     }
+
+    public static final BASS.BASS_FILEPROCS fileProcs = new BASS.BASS_FILEPROCS() {
+        @Override
+        public boolean FILESEEKPROC(long offset, Object user) {
+            FileProcsParams params = (FileProcsParams)user;
+            FileChannel fileChannel = params.fileChannel;
+            if(fileChannel != null) {
+                try {
+                    fileChannel.position(offset);
+                    return true;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public int FILEREADPROC(ByteBuffer buffer, int length, Object user) {
+            FileProcsParams params = (FileProcsParams)user;
+            FileChannel fileChannel = params.fileChannel;
+            InputStream inputStream = params.inputStream;
+            if(fileChannel != null) {
+                try {
+                    return fileChannel.read(buffer);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            else {
+                if(length == 0)
+                    return 0;
+                byte b[] = new byte[length];
+                int r;
+                try
+                {
+                    r = inputStream.read(b);
+                }
+                catch (Exception e)
+                {
+                    return 0;
+                }
+                if (r <= 0) return 0;
+                buffer.put(b, 0, r);
+                return r;
+            }
+            return 0;
+        }
+
+        @Override
+        public long FILELENPROC(Object user) {
+            FileProcsParams params = (FileProcsParams)user;
+            FileChannel fileChannel = params.fileChannel;
+            if(fileChannel != null) {
+                try {
+                    return fileChannel.size();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return 0;
+        }
+
+        @Override
+        public void FILECLOSEPROC(Object user) {
+            FileProcsParams params = (FileProcsParams)user;
+            AssetFileDescriptor assetFileDescriptor = params.assetFileDescriptor;
+            FileChannel fileChannel = params.fileChannel;
+            InputStream inputStream = params.inputStream;
+            try {
+                if(fileChannel != null) fileChannel.close();
+                if(assetFileDescriptor != null) assetFileDescriptor.close();
+                if(inputStream != null) inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    };
 }
