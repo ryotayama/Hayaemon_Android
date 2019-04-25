@@ -60,6 +60,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     private ArrayList<Double> mMarkerTimes;
     private final ArrayList<TextView> mMarkerTexts;
     private boolean mContinue = false;
+    private boolean mTouching = false;
 
     public LinearLayout getABButton() { return mABButton; }
     public AnimationButton getBtnLoopmarker() { return mBtnLoopmarker; }
@@ -125,6 +126,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         super.onViewCreated(view, savedInstanceState);
 
         mViewCurPos = mActivity.findViewById(R.id.viewCurPos);
+        mViewCurPos.setX(-(int) (1.0 * mActivity.getDensity()));
         mABButton = mActivity.findViewById(R.id.ABButton);
         mMarkerButton = mActivity.findViewById(R.id.MarkerButton);
         mTextCurValue = mActivity.findViewById(R.id.textCurValue);
@@ -157,105 +159,6 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
         mWaveView.setLoopFragment(this);
         mWaveView.setOnTouchListener(this);
-        final long lDelay = 250;
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mActivity != null) {
-                    long nPos = 0;
-                    int nScreenWidth = mWaveView.getWidth();
-                    int nMaxWidth = (int)(nScreenWidth * mWaveView.getZoom());
-                    int nLeft = -(int)(1.0 * mActivity.getDensity());
-                    if(MainActivity.sStream != 0) {
-                        double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE));
-                        if (mABButton.getVisibility() == View.VISIBLE && ((mActivity.isLoopA() && dPos < mActivity.getLoopAPos()) || (mActivity.isLoopB() && mActivity.getLoopBPos() < dPos)) && !mActivity.isPlayNextByBPos()) {
-                            if (mActivity.effectFragment.isReverse())
-                                dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, mActivity.getLoopBPos()));
-                            else
-                                dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, mActivity.getLoopAPos()));
-                            BASS.BASS_ChannelSetPosition(MainActivity.sStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, dPos), BASS.BASS_POS_BYTE);
-                        }
-                        if (dPos < 0) dPos = 0;
-                        int nMinute = (int) (dPos / 60);
-                        int nSecond = (int) (dPos % 60);
-                        int nHour = nMinute / 60;
-
-                        if(mActivity.getSeekCurPos().getVisibility() == View.VISIBLE) {
-                            double dRemain = mActivity.getLength() - dPos;
-                            int nRemainMinute = (int) (dRemain / 60);
-                            int nRemainSecond = (int) (dRemain % 60);
-
-                            String strCurPos = nMinute + (nSecond < 10 ? ":0" : ":") + nSecond;
-                            mActivity.getTextCurPos().setText(strCurPos);
-                            String strRemain = "-" + nRemainMinute + (nRemainSecond < 10 ? ":0" : ":") + nRemainSecond;
-                            mActivity.getTextRemain().setText(strRemain);
-                            mActivity.getSeekCurPos().setProgress((int) dPos);
-                        }
-
-                        nMinute = nMinute % 60;
-                        int nDec = (int) ((dPos * 100) % 100);
-
-                        if(mActivity.getViewPager().getCurrentItem() == 1) {
-                            String strCurValue = String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec);
-                            if (!mTextCurValue.getText().toString().equals(strCurValue))
-                                mTextCurValue.setText(strCurValue);
-                        }
-                        nPos = BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE);
-                        nLeft = (int) (nMaxWidth * nPos / mActivity.getByteLength());
-                    }
-                    if(mActivity.getViewPager().getCurrentItem() == 1) {
-                        int nTop = mViewCurPos.getTop();
-                        if(nScreenWidth / 2 <= nLeft && nLeft < nMaxWidth - nScreenWidth / 2)
-                            nLeft = (int)(nScreenWidth / 2.0f);
-                        else if (nMaxWidth - nScreenWidth / 2 <= nLeft)
-                            nLeft = nScreenWidth - (nMaxWidth - nLeft);
-                        mViewCurPos.animate()
-                                .x(nLeft)
-                                .y(nTop)
-                                .setDuration(lDelay)
-                                .setInterpolator(new LinearInterpolator())
-                                .start();
-                        if (!mContinue) mWaveView.invalidate();
-                        if (mActivity.isLoopA()) {
-                            long nPosA = 0;
-                            if (MainActivity.sStream != 0)
-                                nPosA = BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, mActivity.getLoopAPos());
-                            nPosA = nPos - nPosA;
-                            int nLeftA = (int) (nLeft - nMaxWidth * nPosA / mActivity.getByteLength());
-                            if (nLeftA < 0) nLeftA = 0;
-                            mViewMaskA.getLayoutParams().width = nLeftA;
-                            mViewMaskA.requestLayout();
-                        }
-                        if (mActivity.isLoopB()) {
-                            long nPosB = 0;
-                            if (MainActivity.sStream != 0)
-                                nPosB = BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, mActivity.getLoopBPos());
-                            nPosB = nPos - nPosB;
-                            int nLeftB = (int) (nLeft - nMaxWidth * nPosB / mActivity.getByteLength());
-                            if (nLeftB < 0) nLeftB = 0;
-                            else if (nLeftB > mWaveView.getWidth()) nLeftB = mWaveView.getWidth();
-                            mViewMaskB.setTranslationX(nLeftB);
-                            mViewMaskB.getLayoutParams().width = mWaveView.getWidth() - nLeftB;
-                            mViewMaskB.requestLayout();
-                        }
-                        if (mMarkerButton.getVisibility() == View.VISIBLE) {
-                            for (int i = 0; i < mMarkerTimes.size(); i++) {
-                                TextView textView = mMarkerTexts.get(i);
-                                double dMarkerPos = mMarkerTimes.get(i);
-                                long mMarkerPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, dMarkerPos);
-                                mMarkerPos = nPos - mMarkerPos;
-                                int mMarkerLeft = (int) (nLeft - nMaxWidth * mMarkerPos / (float) mActivity.getByteLength() - textView.getWidth() / 2.0f);
-                                if (mMarkerLeft < -textView.getWidth())
-                                    mMarkerLeft = -textView.getWidth();
-                                textView.setTranslationX(mMarkerLeft);
-                                textView.requestLayout();
-                            }
-                        }
-                    }
-                }
-                mHandler.postDelayed(this, lDelay);
-            }
-        });
         relativeZoomOut.setOnTouchListener(this);
         relativeZoomOut.setOnLongClickListener(this);
         relativeZoomIn.setOnTouchListener(this);
@@ -334,6 +237,124 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         mTextAValue.setOnFocusChangeListener(this);
         mTextBValue.setOnFocusChangeListener(this);
         mTextCurValue.setOnFocusChangeListener(this);
+    }
+
+    private Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            long lDelay = 250;
+            updateCurPos();
+            mHandler.postDelayed(this, lDelay);
+        }
+    };
+
+    void updateCurPos()
+    {
+        long lDelay = 0;
+        long nPos = 0;
+        int nScreenWidth = mWaveView.getWidth();
+        int nMaxWidth = (int) (nScreenWidth * mWaveView.getZoom());
+        int nLeft = -(int) (1.0 * mActivity.getDensity());
+        if (MainActivity.sStream != 0) {
+            if(BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_PLAYING && !mTouching)
+                lDelay = 250;
+            double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE));
+            if (mABButton.getVisibility() == View.VISIBLE && ((mActivity.isLoopA() && dPos < mActivity.getLoopAPos()) || (mActivity.isLoopB() && mActivity.getLoopBPos() < dPos)) && !mActivity.isPlayNextByBPos()) {
+                if (mActivity.effectFragment.isReverse())
+                    dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, mActivity.getLoopBPos()));
+                else
+                    dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, mActivity.getLoopAPos()));
+                BASS.BASS_ChannelSetPosition(MainActivity.sStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, dPos), BASS.BASS_POS_BYTE);
+            }
+            if (dPos < 0) dPos = 0;
+            int nMinute = (int) (dPos / 60);
+            int nSecond = (int) (dPos % 60);
+            int nHour = nMinute / 60;
+
+            if (mActivity.getSeekCurPos().getVisibility() == View.VISIBLE) {
+                double dRemain = mActivity.getLength() - dPos;
+                int nRemainMinute = (int) (dRemain / 60);
+                int nRemainSecond = (int) (dRemain % 60);
+
+                String strCurPos = nMinute + (nSecond < 10 ? ":0" : ":") + nSecond;
+                mActivity.getTextCurPos().setText(strCurPos);
+                String strRemain = "-" + nRemainMinute + (nRemainSecond < 10 ? ":0" : ":") + nRemainSecond;
+                mActivity.getTextRemain().setText(strRemain);
+                mActivity.getSeekCurPos().setProgress((int) dPos);
+            }
+
+            nMinute = nMinute % 60;
+            int nDec = (int) ((dPos * 100) % 100);
+
+            if (mActivity.getViewPager().getCurrentItem() == 1) {
+                String strCurValue = String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec);
+                if (!mTextCurValue.getText().toString().equals(strCurValue))
+                    mTextCurValue.setText(strCurValue);
+            }
+            nPos = BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE);
+            nLeft = (int) (nMaxWidth * nPos / mActivity.getByteLength());
+        }
+        if (mActivity.getViewPager().getCurrentItem() == 1) {
+            int nTop = mViewCurPos.getTop();
+            if (nScreenWidth / 2 <= nLeft && nLeft < nMaxWidth - nScreenWidth / 2)
+                nLeft = (int) (nScreenWidth / 2.0f);
+            else if (nMaxWidth - nScreenWidth / 2 <= nLeft)
+                nLeft = nScreenWidth - (nMaxWidth - nLeft);
+            mViewCurPos.animate()
+                    .x(nLeft)
+                    .y(nTop)
+                    .setDuration(lDelay)
+                    .setInterpolator(new LinearInterpolator())
+                    .start();
+            if (!mContinue) mWaveView.invalidate();
+            if (mActivity.isLoopA()) {
+                long nPosA = 0;
+                if (MainActivity.sStream != 0)
+                    nPosA = BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, mActivity.getLoopAPos());
+                nPosA = nPos - nPosA;
+                int nLeftA = (int) (nLeft - nMaxWidth * nPosA / mActivity.getByteLength());
+                if (nLeftA < 0) nLeftA = 0;
+                mViewMaskA.getLayoutParams().width = nLeftA;
+                mViewMaskA.requestLayout();
+            }
+            if (mActivity.isLoopB()) {
+                long nPosB = 0;
+                if (MainActivity.sStream != 0)
+                    nPosB = BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, mActivity.getLoopBPos());
+                nPosB = nPos - nPosB;
+                int nLeftB = (int) (nLeft - nMaxWidth * nPosB / mActivity.getByteLength());
+                if (nLeftB < 0) nLeftB = 0;
+                else if (nLeftB > mWaveView.getWidth()) nLeftB = mWaveView.getWidth();
+                mViewMaskB.setTranslationX(nLeftB);
+                mViewMaskB.getLayoutParams().width = mWaveView.getWidth() - nLeftB;
+                mViewMaskB.requestLayout();
+            }
+            if (mMarkerButton.getVisibility() == View.VISIBLE) {
+                for (int i = 0; i < mMarkerTimes.size(); i++) {
+                    TextView textView = mMarkerTexts.get(i);
+                    double dMarkerPos = mMarkerTimes.get(i);
+                    long mMarkerPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, dMarkerPos);
+                    mMarkerPos = nPos - mMarkerPos;
+                    int mMarkerLeft = (int) (nLeft - nMaxWidth * mMarkerPos / (float) mActivity.getByteLength() - textView.getWidth() / 2.0f);
+                    if (mMarkerLeft < -textView.getWidth())
+                        mMarkerLeft = -textView.getWidth();
+                    textView.setTranslationX(mMarkerLeft);
+                    textView.requestLayout();
+                }
+            }
+        }
+    }
+
+    public void startTimer()
+    {
+        stopTimer();
+        mHandler.post(mRunnable);
+    }
+
+    void stopTimer()
+    {
+        mHandler.removeCallbacks(mRunnable);
+        updateCurPos();
     }
 
     private void setZoomOut() {
@@ -1226,6 +1247,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         }
         else if(v.getId() == R.id.waveView)
         {
+            if(event.getAction() == MotionEvent.ACTION_DOWN) mTouching = true;
+            else if(event.getAction() == MotionEvent.ACTION_UP)  mTouching = false;
+
             float fX = event.getX();
             int nBkWidth = mWaveView.getWidth();
             double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE));
@@ -1233,6 +1257,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             if(mABButton.getVisibility() == View.VISIBLE && ((mActivity.isLoopA() && dPos < mActivity.getLoopAPos()) || (mActivity.isLoopB() && mActivity.getLoopBPos() < dPos)))
                 dPos = mActivity.getLoopAPos();
             setCurPos(dPos);
+            updateCurPos();
             return true;
         }
 

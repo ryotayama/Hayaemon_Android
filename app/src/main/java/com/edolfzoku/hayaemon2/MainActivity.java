@@ -1953,6 +1953,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onPageSelected(int position) {
                 if(position == 0 && findViewById(R.id.relativeSongs).getVisibility() == View.VISIBLE) mViewSep1.setVisibility(View.INVISIBLE);
                 else mViewSep1.setVisibility(View.VISIBLE);
+                if(position == 1) loopFragment.updateCurPos();
                 for(int i = 0; i < 5; i++) {
                     TabLayout.Tab tab = mTabLayout.getTabAt(i);
                     if(tab == null) continue;

@@ -3282,6 +3282,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     {
         if(MainActivity.sStream == 0) return;
         BASS.BASS_ChannelPlay(MainActivity.sStream, false);
+        mActivity.loopFragment.startTimer();
         mActivity.getBtnPlay().setContentDescription(getString(R.string.pause));
         mActivity.getBtnPlay().setImageResource(R.drawable.ic_bar_button_pause);
         mActivity.getBtnPlayInPlayingBar().setContentDescription(getString(R.string.pause));
@@ -3298,6 +3299,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     {
         if(MainActivity.sStream == 0) return;
         BASS.BASS_ChannelPause(MainActivity.sStream);
+        mActivity.loopFragment.stopTimer();
         mActivity.getBtnPlay().setContentDescription(getString(R.string.play));
         mActivity.getBtnPlay().setImageResource(R.drawable.ic_bar_button_play);
         mActivity.getBtnPlayInPlayingBar().setContentDescription(getString(R.string.play));
@@ -3624,7 +3626,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mActivity.equalizerFragment.setEQ();
         mActivity.effectFragment.applyEffect();
         mActivity.setSync();
-        if(bPlay) BASS.BASS_ChannelPlay(MainActivity.sStream, false);
+        if(bPlay) {
+            BASS.BASS_ChannelPlay(MainActivity.sStream, false);
+            mActivity.loopFragment.startTimer();
+        }
         mActivity.getBtnPlay().setContentDescription(getString(R.string.pause));
         mActivity.getBtnPlay().setImageResource(R.drawable.ic_bar_button_pause);
         mActivity.getBtnPlayInPlayingBar().setContentDescription(getString(R.string.pause));
@@ -3765,6 +3770,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mPlaying = -1;
         BASS.BASS_ChannelStop(MainActivity.sStream);
         MainActivity.sStream = 0;
+        mActivity.loopFragment.stopTimer();
         mActivity.loopFragment.getTextCurValue().setText(getString(R.string.zeroHMS));
         mActivity.getBtnPlay().setContentDescription(getString(R.string.play));
         mActivity.getBtnPlay().setImageResource(R.drawable.ic_bar_button_play);
