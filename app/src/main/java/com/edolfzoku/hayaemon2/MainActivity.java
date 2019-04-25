@@ -2213,9 +2213,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(keyCode == KeyEvent.KEYCODE_BACK){
             ItemFragment itemFragment = null;
+            SettingFragment settingFragment = null;
             for (Fragment f : getSupportFragmentManager().getFragments()) {
                 if(f.getClass().getName().equals("com.edolfzoku.hayaemon2.ItemFragment"))
                     itemFragment = (ItemFragment)f;
+                else if(f.getClass().getName().equals("com.edolfzoku.hayaemon2.SettingFragment"))
+                    settingFragment = (SettingFragment)f;
             }
             if(mDrawerLayout.isDrawerOpen(Gravity.START)) {
                 mDrawerLayout.closeDrawer(Gravity.START);
@@ -2223,6 +2226,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             else if(itemFragment != null) { // 課金アイテム画面
                 findViewById(R.id.btnCloseItem).performClick();
+                return true;
+            }
+            else if(settingFragment != null) { // オプション設定画面
+                findViewById(R.id.btnCloseSetting).performClick();
                 return true;
             }
             else if(mTabLayout.getSelectedTabPosition() == 0) { // 再生リスト画面
