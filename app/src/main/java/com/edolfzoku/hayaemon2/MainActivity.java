@@ -52,6 +52,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
@@ -2211,8 +2212,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
         if(keyCode == KeyEvent.KEYCODE_BACK){
+            ItemFragment itemFragment = null;
+            for (Fragment f : getSupportFragmentManager().getFragments()) {
+                if(f.getClass().getName().equals("com.edolfzoku.hayaemon2.ItemFragment"))
+                    itemFragment = (ItemFragment)f;
+            }
             if(mDrawerLayout.isDrawerOpen(Gravity.START)) {
                 mDrawerLayout.closeDrawer(Gravity.START);
+                return true;
+            }
+            else if(itemFragment != null) { // 課金アイテム画面
+                findViewById(R.id.btnCloseItem).performClick();
                 return true;
             }
             else if(mTabLayout.getSelectedTabPosition() == 0) { // 再生リスト画面
