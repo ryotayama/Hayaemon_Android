@@ -2209,8 +2209,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+
         if(keyCode == KeyEvent.KEYCODE_BACK){
-            if(mTabLayout.getSelectedTabPosition() == 0) { // 再生リスト画面
+            if(mDrawerLayout.isDrawerOpen(Gravity.START)) {
+                mDrawerLayout.closeDrawer(Gravity.START);
+                return true;
+            }
+            else if(mTabLayout.getSelectedTabPosition() == 0) { // 再生リスト画面
                 if(findViewById(R.id.relativeLyrics).getVisibility() == View.VISIBLE) {
                     findViewById(R.id.btnFinishLyrics).performClick();
                     return true;
