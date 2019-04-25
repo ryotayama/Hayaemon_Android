@@ -3632,6 +3632,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             mActivity.getBtnPlayInPlayingBar().setImageResource(R.drawable.ic_playing_large_pause);
         else mActivity.getBtnPlayInPlayingBar().setImageResource(R.drawable.ic_bar_button_pause);
         mSongsAdapter.notifyDataSetChanged();
+        if(mSelectedPlaylist == mPlayingPlaylist) mRecyclerSongs.scrollToPosition(mPlaying);
         mPlaylistsAdapter.notifyDataSetChanged();
         mTabAdapter.notifyDataSetChanged();
         if(bReloadLyrics) showLyrics();
