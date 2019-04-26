@@ -54,9 +54,18 @@ public class ForegroundService extends IntentService {
                 try {
                     mmr.setDataSource(this, Uri.parse(strPath));
                     byte[] data = mmr.getEmbeddedPicture();
-                    if (data != null) bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    int nSize = (int)(64 * getResources().getDisplayMetrics().density);
-                    if(bitmap != null) bitmap = Bitmap.createScaledBitmap(bitmap, nSize, nSize, false);
+                    if(data != null) {
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inJustDecodeBounds = true;
+                        BitmapFactory.decodeByteArray(data, 0, data.length, options);
+                        int imageHeight = options.outHeight;
+                        int imageWidth = options.outWidth;
+                        int maxSize = (int)(128 * getResources().getDisplayMetrics().density);
+                        while ((imageHeight > maxSize) || (imageWidth > maxSize)) {
+                            imageHeight /= 2; imageWidth /= 2;
+                        }
+                        bitmap = decodeSampledBitmapFromByteArray(data, imageWidth, imageHeight);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -150,6 +159,44 @@ public class ForegroundService extends IntentService {
         }
         else getBaseContext().sendBroadcast(new Intent(intent.getAction()));
         return START_STICKY_COMPATIBILITY;
+    }
+
+    public static Bitmap decodeSampledBitmapFromByteArray(byte[] data,
+                                                          int reqWidth, int reqHeight) {
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeByteArray(data, 0, data.length, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeByteArray(data, 0, data.length, options);
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
     }
 
     @Override
