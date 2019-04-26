@@ -2261,6 +2261,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     findViewById(R.id.btnFinishLyrics).performClick();
                     return true;
                 }
+                else if(playlistFragment.isMultiSelecting()) { // 複数選択モード中
+                    playlistFragment.finishMultipleSelection();
+                    return true;
+                }
             }
             else if(mTabLayout.getSelectedTabPosition() == 1) { // ループ画面
                 mViewPager.setCurrentItem(0);

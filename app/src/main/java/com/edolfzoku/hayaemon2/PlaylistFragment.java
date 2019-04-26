@@ -625,7 +625,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         startSort();
     }
 
-    private void finishMultipleSelection()
+    public void finishMultipleSelection()
     {
         mMultiSelecting = false;
         mSorting = false;
