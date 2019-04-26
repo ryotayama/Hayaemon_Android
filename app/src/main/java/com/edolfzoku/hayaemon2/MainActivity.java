@@ -2259,9 +2259,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return true;
                 }
             }
+            else if(mTabLayout.getSelectedTabPosition() == 1) { // ループ画面
+                mViewPager.setCurrentItem(0);
+                return true;
+            }
+            else if(mTabLayout.getSelectedTabPosition() == 2) { // コントロール画面
+                mViewPager.setCurrentItem(0);
+                return true;
+            }
+            else if(mTabLayout.getSelectedTabPosition() == 3) { // イコライザ画面
+                mViewPager.setCurrentItem(0);
+                return true;
+            }
             else if(mTabLayout.getSelectedTabPosition() == 4) { // エフェクト画面
-                if(findViewById(R.id.relativeEffectDetail).getVisibility() == View.VISIBLE) {
+                if(findViewById(R.id.relativeEffectDetail).getVisibility() == View.VISIBLE) { // エフェクト詳細画面
                     findViewById(R.id.btnFinish).performClick();
+                    return true;
+                }
+                else { // 通常のエフェクト画面
+                    mViewPager.setCurrentItem(0);
                     return true;
                 }
             }
