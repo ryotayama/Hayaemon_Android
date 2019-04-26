@@ -1461,7 +1461,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         playlistFragment.selectPlaylist(playlistFragment.getPlayingPlaylist());
         mRelativePlaying.setOnClickListener(null);
-        final Activity activity = this;
         mBtnArtworkInPlayingBar.setOnClickListener(this);
         mBtnArtworkInPlayingBar.setAnimation(true);
         mBtnArtworkInPlayingBar.setClickable(true);

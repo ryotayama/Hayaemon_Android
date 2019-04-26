@@ -1432,7 +1432,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mRecyclerPlaylists.setOnClickListener(this);
 
         mRecyclerTab.setHasFixedSize(false);
-        LinearLayoutManager tabManager = new LinearLayoutManager(mActivity);
+        CenterLayoutManager tabManager = new CenterLayoutManager(mActivity);
         tabManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRecyclerTab.setLayoutManager(tabManager);
         mRecyclerTab.setAdapter(mTabAdapter);
@@ -4043,7 +4043,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     public void selectPlaylist(int nSelect)
     {
-        if(mRecyclerTab != null) mRecyclerTab.scrollToPosition(nSelect);
+        if(mRecyclerTab != null) mRecyclerTab.smoothScrollToPosition(nSelect);
         mSelectedPlaylist = nSelect;
         if(mTabAdapter != null) mTabAdapter.notifyDataSetChanged();
         if(mSongsAdapter != null) mSongsAdapter.notifyDataSetChanged();
