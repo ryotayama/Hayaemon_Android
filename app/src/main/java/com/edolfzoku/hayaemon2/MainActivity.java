@@ -2215,13 +2215,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ItemFragment itemFragment = null;
             SettingFragment settingFragment = null;
             SpeedRangeSettingFragment speedRangeSettingFragment = null;
+            PitchRangeSettingFragment pitchRangeSettingFragment = null;
             for (Fragment f : getSupportFragmentManager().getFragments()) {
-                if(f.getClass().getName().equals("com.edolfzoku.hayaemon2.ItemFragment"))
-                    itemFragment = (ItemFragment)f;
-                else if(f.getClass().getName().equals("com.edolfzoku.hayaemon2.SettingFragment"))
-                    settingFragment = (SettingFragment)f;
-                else if(f.getClass().getName().equals("com.edolfzoku.hayaemon2.SpeedRangeSettingFragment"))
-                    speedRangeSettingFragment = (SpeedRangeSettingFragment)f;
+                switch(f.getClass().getName())
+                {
+                    case "com.edolfzoku.hayaemon2.ItemFragment":
+                        itemFragment = (ItemFragment)f;
+                        break;
+                    case "com.edolfzoku.hayaemon2.SettingFragment":
+                        settingFragment = (SettingFragment)f;
+                        break;
+                    case "com.edolfzoku.hayaemon2.SpeedRangeSettingFragment":
+                        speedRangeSettingFragment = (SpeedRangeSettingFragment)f;
+                        break;
+                    case "com.edolfzoku.hayaemon2.PitchRangeSettingFragment":
+                        pitchRangeSettingFragment = (PitchRangeSettingFragment)f;
+                        break;
+                }
             }
             if(mDrawerLayout.isDrawerOpen(Gravity.START)) {
                 mDrawerLayout.closeDrawer(Gravity.START);
@@ -2237,6 +2247,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             else if(speedRangeSettingFragment != null) { // 速度の表示範囲画面
                 findViewById(R.id.btnReturnSpeedRangeSetting).performClick();
+                return true;
+            }
+            else if(pitchRangeSettingFragment != null) { // 音程の表示範囲画面
+                findViewById(R.id.btnReturnPitchRangeSetting).performClick();
                 return true;
             }
             else if(mTabLayout.getSelectedTabPosition() == 0) { // 再生リスト画面
