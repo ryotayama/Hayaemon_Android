@@ -1464,6 +1464,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         btnCopyInMultipleSelection.setOnClickListener(this);
         btnMoveInMultipleSelection.setOnClickListener(this);
         btnMoreInMultipleSelection.setOnClickListener(this);
+
+        SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        int nSelectedPlaylist = preferences.getInt("SelectedPlaylist", 0);
+        selectPlaylist(nSelectedPlaylist);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -4048,6 +4052,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(mTabAdapter != null) mTabAdapter.notifyDataSetChanged();
         if(mSongsAdapter != null) mSongsAdapter.notifyDataSetChanged();
         if(mPlaylistsAdapter != null) mPlaylistsAdapter.notifyDataSetChanged();
+        if(mActivity != null) {
+            SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+            preferences.edit().putInt("SelectedPlaylist", mSelectedPlaylist).apply();
+        }
     }
 
     public void updateSongTime(SongItem item)
