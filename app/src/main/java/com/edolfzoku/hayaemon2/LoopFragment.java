@@ -964,6 +964,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, mActivity.getLoopAPos()));
                     BASS.BASS_ChannelSetPosition(MainActivity.sStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, dPos), BASS.BASS_POS_BYTE);
                     mActivity.setSync();
+                    mTouching = true;
+                    updateCurPos();
+                    mTouching = false;
                 }
             }
         }
@@ -1003,6 +1006,9 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, mActivity.getLoopAPos()));
                     BASS.BASS_ChannelSetPosition(MainActivity.sStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, dPos), BASS.BASS_POS_BYTE);
                     mActivity.setSync();
+                    mTouching = true;
+                    updateCurPos();
+                    mTouching = false;
                 }
             }
         }
