@@ -2236,6 +2236,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mDrawerLayout.closeDrawer(Gravity.START);
                 return true;
             }
+            else if(mSeekCurPos.getVisibility() == View.VISIBLE) {
+                downViewPlaying(false);
+                return true;
+            }
             else if(itemFragment != null) { // 課金アイテム画面
                 findViewById(R.id.btnCloseItem).performClick();
                 return true;
