@@ -2266,6 +2266,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         findViewById(R.id.btnSortPlaylist).performClick();
                         return true;
                     }
+                    else { // 通常の再生リスト整理画面
+                        playlistFragment.onPlaylistItemClick(playlistFragment.getSelectedPlaylist());
+                        return true;
+                    }
                 }
                 else if(playlistFragment.isMultiSelecting()) { // 複数選択モード中
                     playlistFragment.finishMultipleSelection();
