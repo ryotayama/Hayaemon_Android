@@ -2275,6 +2275,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     playlistFragment.finishMultipleSelection();
                     return true;
                 }
+                else if(playlistFragment.isSorting()) { // 並べ替え中
+                    findViewById(R.id.textFinishSort).performClick();
+                    return true;
+                }
             }
             else if(mTabLayout.getSelectedTabPosition() == 1) { // ループ画面
                 mViewPager.setCurrentItem(0);
