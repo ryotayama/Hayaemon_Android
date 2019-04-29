@@ -2257,9 +2257,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             }
             else if(mTabLayout.getSelectedTabPosition() == 0) { // 再生リスト画面
-                if(findViewById(R.id.relativeLyrics).getVisibility() == View.VISIBLE) {
+                if(findViewById(R.id.relativeLyrics).getVisibility() == View.VISIBLE) { // 歌詞表示画面
                     findViewById(R.id.btnFinishLyrics).performClick();
                     return true;
+                }
+                else if(findViewById(R.id.relativePlaylists).getVisibility() == View.VISIBLE) { // 再生リスト整理画面
+                    if(playlistFragment.isSorting()) { // 並べ替え中
+                        findViewById(R.id.btnSortPlaylist).performClick();
+                        return true;
+                    }
                 }
                 else if(playlistFragment.isMultiSelecting()) { // 複数選択モード中
                     playlistFragment.finishMultipleSelection();
