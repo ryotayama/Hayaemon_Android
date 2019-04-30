@@ -3831,7 +3831,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         if(mSelectedPlaylist == mPlayingPlaylist) mPlays.add(false);
 
-        mSongsAdapter.notifyItemInserted(arSongs.size() - 1);
+        if(mSongsAdapter != null)
+            mSongsAdapter.notifyItemInserted(arSongs.size() - 1);
     }
 
     @SuppressWarnings("deprecation")
