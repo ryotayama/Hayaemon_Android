@@ -3503,7 +3503,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
                 if(params.assetFileDescriptor == null) return;
                 params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
-                MainActivity.sStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                MainActivity.sStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_PRESCAN | BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             } catch (Exception e) {
                 removeSong(mPlayingPlaylist, mPlaying);
                 if(mPlaying >= mPlaylists.get(mPlayingPlaylist).size())
@@ -3513,9 +3513,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 return;
             }
         }
-        else {
-            MainActivity.sStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
-        }
+        else
+            MainActivity.sStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_PRESCAN | BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
         if(MainActivity.sStream == 0) return;
         long byteLength = BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE);
         mActivity.setByteLength(byteLength);
