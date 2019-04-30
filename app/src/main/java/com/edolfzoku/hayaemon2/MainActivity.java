@@ -579,7 +579,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ArrayList<SongItem> arSongs = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist());
         if(playlistFragment.getPlaying() < 0 && arSongs.size() <= playlistFragment.getPlaying())
             return;
-        SongItem item = arSongs.get(playlistFragment.getPlaying());
+        int playing = playlistFragment.getPlaying();
+        if(playing < 0 || arSongs.size() <= playing) return;
+        SongItem item = arSongs.get(playing);
         Intent intent = new Intent(this, ForegroundService.class);
         intent.putExtra("strTitle", item.getTitle());
         intent.putExtra("strArtist", item.getArtist());
