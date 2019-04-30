@@ -667,7 +667,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     {
         if(nEffect < 0 || mEffectItems.size() <= nEffect) return;
         EffectItem item = mEffectItems.get(nEffect);
-        item.setSelected(!item.isSelected());
+        if(item.isSelected()) deselectEffect(nEffect);
+        else item.setSelected(true);
         mEffectsAdapter.notifyItemChanged(nEffect);
         if(!item.isSelected() && nEffect == EFFECTTYPE_REVERSE)
         {
