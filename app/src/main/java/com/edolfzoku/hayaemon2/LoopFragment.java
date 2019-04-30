@@ -250,6 +250,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
     void updateCurPos()
     {
+        if(mActivity == null) return;
+
         long lDelay = 0;
         long nPos = 0;
         int nScreenWidth = mWaveView.getWidth();
