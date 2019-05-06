@@ -26,6 +26,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
     private MainActivity mActivity = null;
     private Switch mSwitchElegant;
     private Switch mSwitchPurple;
+    private Switch mSwitchPinkCamper;
 
     public SettingFragment()
     {
@@ -59,6 +60,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
 
         mSwitchElegant = mActivity.findViewById(R.id.switchElegant);
         mSwitchPurple = mActivity.findViewById(R.id.switchPurple);
+        mSwitchPinkCamper = mActivity.findViewById(R.id.switchPinkCamper);
 
         Button btnCloseSetting = mActivity.findViewById(R.id.btnCloseSetting);
         btnCloseSetting.setOnClickListener(this);
@@ -82,7 +84,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
         SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Boolean bPurplePurchased = preferences.getBoolean("unipointer_p", false);
         Boolean bElegantPurchased = preferences.getBoolean("unipointer_e", false);
-        if(bPurplePurchased || bElegantPurchased) {
+        Boolean bPinkCamperPurchased = preferences.getBoolean("camperpointer_p", false);
+        if(bPurplePurchased || bElegantPurchased || bPinkCamperPurchased) {
             RelativeLayout relativePurchaseSetting = mActivity.findViewById(R.id.relativePurchaseSetting);
             relativePurchaseSetting.setVisibility(View.VISIBLE);
             ImageView imgPoint = mActivity.findViewById(R.id.imgPoint);
@@ -100,9 +103,33 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
                 mSwitchElegant.setChecked(nTag == 2);
                 mSwitchElegant.setOnCheckedChangeListener(this);
             }
-            if(!bPurplePurchased || !bElegantPurchased) {
-                View viewDivider = mActivity.findViewById(R.id.viewDivider);
-                viewDivider.setVisibility(View.GONE);
+            if(bPinkCamperPurchased) {
+                RelativeLayout relativePinkCamper = mActivity.findViewById(R.id.relativePinkCamper);
+                relativePinkCamper.setVisibility(View.VISIBLE);
+                mSwitchPinkCamper.setChecked(nTag == 3);
+                mSwitchPinkCamper.setOnCheckedChangeListener(this);
+            }
+            View viewDivider1 = mActivity.findViewById(R.id.viewDivider1);
+            View viewDivider2 = mActivity.findViewById(R.id.viewDivider2);
+            if(bPurplePurchased && bElegantPurchased && bPinkCamperPurchased) {
+                viewDivider1.setVisibility(View.VISIBLE);
+                viewDivider2.setVisibility(View.VISIBLE);
+            }
+            else if(bPurplePurchased && bElegantPurchased) {
+                viewDivider1.setVisibility(View.VISIBLE);
+                viewDivider2.setVisibility(View.GONE);
+            }
+            else if(bPurplePurchased && bPinkCamperPurchased) {
+                viewDivider1.setVisibility(View.VISIBLE);
+                viewDivider2.setVisibility(View.GONE);
+            }
+            else if(bElegantPurchased && bPinkCamperPurchased) {
+                viewDivider1.setVisibility(View.GONE);
+                viewDivider2.setVisibility(View.VISIBLE);
+            }
+            else {
+                viewDivider1.setVisibility(View.GONE);
+                viewDivider2.setVisibility(View.GONE);
             }
         }
     }
@@ -149,6 +176,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
             ImageView imgPoint = mActivity.controlFragment.getImgPoint();
             if(b) {
                 mSwitchElegant.setChecked(false);
+                mSwitchPinkCamper.setChecked(false);
                 imgPoint.setImageResource(R.drawable.control_pointer_uni_murasaki);
                 imgPoint.setTag(1);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -168,11 +196,32 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
             ImageView imgPoint = mActivity.controlFragment.getImgPoint();
             if(b) {
                 mSwitchPurple.setChecked(false);
+                mSwitchPinkCamper.setChecked(false);
                 imgPoint.setImageResource(R.drawable.control_pointer_uni_bafun);
                 imgPoint.setTag(2);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 preferences.edit().putInt("imgPointTag", 2).apply();
+            }
+            else {
+                imgPoint.setImageResource(R.drawable.ic_point);
+                imgPoint.setTag(0);
+                imgPoint.getLayoutParams().width = (int) (20 * mActivity.getDensity());
+                imgPoint.getLayoutParams().height = (int) (20 * mActivity.getDensity());
+                preferences.edit().putInt("imgPointTag", 0).apply();
+            }
+            imgPoint.requestLayout();
+        }
+        else if(compoundButton.getId() == R.id.switchPinkCamper) {
+            ImageView imgPoint = mActivity.controlFragment.getImgPoint();
+            if(b) {
+                mSwitchPurple.setChecked(false);
+                mSwitchElegant.setChecked(false);
+                imgPoint.setImageResource(R.drawable.control_pointer_camper_pk);
+                imgPoint.setTag(3);
+                imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                preferences.edit().putInt("imgPointTag", 3).apply();
             }
             else {
                 imgPoint.setImageResource(R.drawable.ic_point);

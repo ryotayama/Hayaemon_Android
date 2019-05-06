@@ -1895,6 +1895,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
             }
         }
+        else if(requestCode == 1004)
+        {
+            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
+
+            try {
+                JSONObject jo = new JSONObject(purchaseData);
+                jo.getString("productId");
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                ItemFragment itemFragment = (ItemFragment)fragmentManager.findFragmentById(R.id.relativeMain);
+                itemFragment.buyPinkCamperPointer();
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void hideAds()

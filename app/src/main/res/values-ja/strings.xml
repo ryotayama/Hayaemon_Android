@@ -149,6 +149,7 @@
     <string name="purchasedItem">課金済みのアイテム</string>
     <string name="pointerPurple">コントロールポインター - ムラサキウニ</string>
     <string name="pointerElegant">コントロールポインター - バフンウニ</string>
+    <string name="pointerCamper">コントロールポインター - キャンピングカー</string>
     <string name="speedWithColon">速度：</string>
     <string name="pitchWithColon">音程：</string>
     <string name="lockSpeed">速度をロック</string>
@@ -193,10 +194,13 @@
     <string name="loopMarker">マーカー間のループ</string>
     <string name="detail">詳細情報</string>
     <string name="seaUrchinPointer">【謹製】お布施ウニポインター</string>
+    <string name="camperPointer">【動く！】キャンピングカーポインター</string>
     <string name="purpleSeaUrchinPointer_Short">【むらさき】120円</string>
     <string name="purpleSeaUrchinPointer_Description">くりーむいろの　たんぱくで\nじょうひんな　おあじ</string>
     <string name="elegantSeaUrchinPointer_Short">【ばふん】240円</string>
+    <string name="pinkCamperPointer_Short">【ぴんく】360円</string>
     <string name="elegantSeaUrchinPointer_Desctiption">おれんじいろの　のうこうで\nぜいたくな　おあじ</string>
+    <string name="pinkCamperPointer_Desctiption">えごさーちで　ゆーざーさんの\nもとへ　かけつけます</string>
     <string name="purchase">購入する</string>
     <string name="purchased">購入済み</string>
     <string name="set">設定する</string>
@@ -253,6 +257,7 @@
     <string name="resetArtwork">アートワークをリセット</string>
     <string name="purpleSeaUrchinPointer">【謹製】お布施ウニポインター【むらさき】</string>
     <string name="elegantSeaUrchinPointer">【謹製】お布施ウニポインター【ばふん】</string>
+    <string name="pinkCamperPointer">【動く！】キャンピングカーポインター【ぴんく】</string>
     <string name="askDeleteSong">曲を削除しますが、よろしいでしょうか？</string>
     <string name="askEmptyPlaylist">再生リストを空にしますが、よろしいでしょうか？</string>
     <string name="askDeletePlaylist">再生リストを削除しますが、よろしいでしょうか？</string>

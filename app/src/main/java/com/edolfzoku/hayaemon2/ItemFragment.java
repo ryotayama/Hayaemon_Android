@@ -77,11 +77,24 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             btnElegantSet.setVisibility(View.VISIBLE);
         }
 
+        boolean bPinkCamperPurchased = preferences.getBoolean("camperpointer_p", false);
+        if(bPinkCamperPurchased)
+        {
+            Button btnPinkCamperPurchase = mActivity.findViewById(R.id.btnPinkCamperPurchase);
+            btnPinkCamperPurchase.setBackgroundResource(R.drawable.itempurchased);
+            btnPinkCamperPurchase.setTextColor(Color.argb(255, 148, 148, 148));
+            btnPinkCamperPurchase.setText(R.string.purchased);
+            Button btnPinkCamperSet = mActivity.findViewById(R.id.btnPinkCamperSet);
+            btnPinkCamperSet.setVisibility(View.VISIBLE);
+        }
+
         mActivity.findViewById(R.id.btnCloseItem).setOnClickListener(this);
         if(!bPurplePurchased) mActivity.findViewById(R.id.btnPurplePurchase).setOnClickListener(this);
         if(!bElegantPurchased) mActivity.findViewById(R.id.btnElegantPurchase).setOnClickListener(this);
+        if(!bPinkCamperPurchased) mActivity.findViewById(R.id.btnPinkCamperPurchase).setOnClickListener(this);
         mActivity.findViewById(R.id.btnPurpleSet).setOnClickListener(this);
         mActivity.findViewById(R.id.btnElegantSet).setOnClickListener(this);
+        mActivity.findViewById(R.id.btnPinkCamperSet).setOnClickListener(this);
     }
 
     private void close()
@@ -128,7 +141,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
                 if(response == 0) {
                     PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
                     if(pendingIntent != null)
-                        mActivity.startIntentSenderForResult(pendingIntent.getIntentSender(), 1003, new Intent(), 0, 0, 0);
+                            mActivity.startIntentSenderForResult(pendingIntent.getIntentSender(), 1003, new Intent(), 0, 0, 0);
                 }
                 else if(response == 7) {
                     buyElegantSeaUrchinPointer();
@@ -139,6 +152,28 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             }
         }
         else if(view.getId() == R.id.btnElegantSet) {
+            close();
+            mActivity.openSetting();
+        }
+        else if(view.getId() == R.id.btnPinkCamperPurchase)
+        {
+            try {
+                Bundle buyIntentBundle = mActivity.getService().getBuyIntent(3, mActivity.getPackageName(), "camperpointer_p", "inapp", "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkVvqgLyPSTyJKuyNw3Z0luaxCnOtbFwj65HGYmDS4KiyGaJNgFsLOc9wpmIQaQI+zrntxbufWXsT0gIh1/MRRmX2FgA0G6WDS0+w39ZsbgJRbXsxOzOOZaHbSo2NLOA29GXPo9FraFtNrOL9v4vLu7hxDPdfqoFNR80BUWwQqMBsiMNFqJ12sq1HzxHd2MIk/QooBZIB3EeM0QX5EYIsWcaKIAyzetuKjRGvO9Oi2a86dOBUfOFnHMMCvQ5+dldx5UkzmnhlbTm/KBWQCO3AqNy82NKxN9ND6GWVrlHuQGYX1FRiApMeXCmEvmwEyU2ArztpV8CfHyK2d0mM4bp0bwIDAQAB");
+                int response = buyIntentBundle.getInt("RESPONSE_CODE");
+                if(response == 0) {
+                    PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
+                    if(pendingIntent != null)
+                        mActivity.startIntentSenderForResult(pendingIntent.getIntentSender(), 1004, new Intent(), 0, 0, 0);
+                }
+                else if(response == 7) {
+                    buyPinkCamperPointer();
+                }
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else if(view.getId() == R.id.btnPinkCamperSet) {
             close();
             mActivity.openSetting();
         }
@@ -199,6 +234,37 @@ public class ItemFragment extends Fragment implements View.OnClickListener
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 preferences.edit().putInt("imgPointTag", 2).apply();
+            }
+        });
+        builder.setNegativeButton(getString(R.string.NotYet), null);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    public void buyPinkCamperPointer()
+    {
+        Button btnPinkCamperPurchase = mActivity.findViewById(R.id.btnPinkCamperPurchase);
+        btnPinkCamperPurchase.setBackgroundResource(R.drawable.itempurchased);
+        btnPinkCamperPurchase.setTextColor(Color.argb(255, 148, 148, 148));
+        btnPinkCamperPurchase.setText(R.string.purchased);
+        btnPinkCamperPurchase.setOnClickListener(null);
+        Button btnPinkCamperSet = mActivity.findViewById(R.id.btnPinkCamperSet);
+        btnPinkCamperSet.setVisibility(View.VISIBLE);
+        SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        preferences.edit().putBoolean("camperpointer_p", true).apply();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(R.string.pinkCamperPointer);
+        builder.setMessage(R.string.askApply);
+        builder.setPositiveButton(getString(R.string.Do), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                ImageView imgPoint = mActivity.findViewById(R.id.imgPoint);
+                imgPoint.setImageResource(R.drawable.control_pointer_camper_pk);
+                imgPoint.setTag(3);
+                imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                preferences.edit().putInt("imgPointTag", 3).apply();
             }
         });
         builder.setNegativeButton(getString(R.string.NotYet), null);

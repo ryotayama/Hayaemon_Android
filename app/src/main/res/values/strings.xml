@@ -149,6 +149,7 @@
     <string name="purchasedItem">Purchased items</string>
     <string name="pointerPurple">Control Pointer - Purple Sea Urchin</string>
     <string name="pointerElegant">Control Pointer - Elegant Sea Urchin</string>
+    <string name="pointerCamper">Control Pointer - Pink Camper</string>
     <string name="speedWithColon">Speed：</string>
     <string name="pitchWithColon">Pitch：</string>
     <string name="lockSpeed">Lock the speed</string>
@@ -193,10 +194,13 @@
     <string name="loopMarker">Loop between markers</string>
     <string name="detail">Details</string>
     <string name="seaUrchinPointer">Sea Urchin Pointer</string>
+    <string name="camperPointer">Camper Pointer</string>
     <string name="purpleSeaUrchinPointer_Short">&lt;Purple&gt;</string>
     <string name="purpleSeaUrchinPointer_Description">Elegant and pale taste with cream colored.</string>
     <string name="elegantSeaUrchinPointer_Short">&lt;Elegant&gt;</string>
+    <string name="pinkCamperPointer_Short">&lt;Pink&gt;</string>
     <string name="elegantSeaUrchinPointer_Desctiption">Deep and rich taste with orange colored.</string>
+    <string name="pinkCamperPointer_Desctiption">We will rush to the user in need by ego searching.</string>
     <string name="purchase">Purchase</string>
     <string name="purchased">Purchased</string>
     <string name="set">Set</string>
@@ -253,6 +257,7 @@
     <string name="resetArtwork">Reset the Artwork Image</string>
     <string name="purpleSeaUrchinPointer">Sea Urchin Pointer (Purple)</string>
     <string name="elegantSeaUrchinPointer">Sea Urchin Pointer (Elegant)</string>
+    <string name="pinkCamperPointer">Camper Pointer (Pink)</string>
     <string name="askDeleteSong">This app deletes the song, is it OK?</string>
     <string name="askEmptyPlaylist">This app empties the playlist, is it OK?</string>
     <string name="askDeletePlaylist">This app deletes the playlist, is it OK?</string>
