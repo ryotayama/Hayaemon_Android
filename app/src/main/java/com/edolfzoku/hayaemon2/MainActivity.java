@@ -1066,11 +1066,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         if(v.getId() == R.id.btnMenu)
         {
+            SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+            boolean bPinkCamperDisplayed = preferences.getBoolean("bPinkCamperDisplayed", false);
+
             findViewById(R.id.textPlaying).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
             findViewById(R.id.relativePlayingInMenu).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
             findViewById(R.id.relativeSave).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
             findViewById(R.id.relativeLock).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
             findViewById(R.id.dividerMenu).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
+            findViewById(R.id.textItemNew).setVisibility(bPinkCamperDisplayed ? View.GONE : View.VISIBLE);
             if(!isAdsVisible()) findViewById(R.id.relativeHideAds).setVisibility(View.GONE);
             if(sStream != 0) {
                 playlistFragment.selectPlaylist(playlistFragment.getPlayingPlaylist());
@@ -1792,6 +1796,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void openItem()
     {
+        SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        preferences.edit().putBoolean("bPinkCamperDisplayed", true).apply();
         FragmentManager fragmentManager = getSupportFragmentManager();
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
