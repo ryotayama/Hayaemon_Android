@@ -2739,6 +2739,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saver.setIncreaseSpeed(mActivity.effectFragment.getIncreaseSpeed());
         saver.setTimeOmDecreaseSpeed(mActivity.effectFragment.getTimeOfDecreaseSpeed());
         saver.setDecreaseSpeed(mActivity.effectFragment.getDecreaseSpeed());
+        saver.setReverbDry(mActivity.effectFragment.getReverbDry());
+        saver.setReverbWet(mActivity.effectFragment.getReverbWet());
+        saver.setReverbRoomSize(mActivity.effectFragment.getReverbRoomSize());
+        saver.setReverbDamp(mActivity.effectFragment.getReverbDamp());
+        saver.setReverbWidth(mActivity.effectFragment.getReverbWidth());
         if(mSelectedPlaylist == mPlayingPlaylist && mSelectedItem == mPlaying) {
             if(mActivity.loopFragment.getABButton().getVisibility() == View.VISIBLE) saver.setIsABLoop(true);
             else saver.setIsABLoop(false);
@@ -2818,6 +2823,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setIncreaseSpeed(mActivity.effectFragment.getIncreaseSpeed());
             saver.setTimeOmDecreaseSpeed(mActivity.effectFragment.getTimeOfDecreaseSpeed());
             saver.setDecreaseSpeed(mActivity.effectFragment.getDecreaseSpeed());
+            saver.setReverbDry(mActivity.effectFragment.getReverbDry());
+            saver.setReverbWet(mActivity.effectFragment.getReverbWet());
+            saver.setReverbRoomSize(mActivity.effectFragment.getReverbRoomSize());
+            saver.setReverbDamp(mActivity.effectFragment.getReverbDamp());
+            saver.setReverbWidth(mActivity.effectFragment.getReverbWidth());
             if(mActivity.loopFragment.getABButton().getVisibility() == View.VISIBLE) saver.setIsABLoop(true);
             else saver.setIsABLoop(false);
             saver.setIsLoopA(mActivity.isLoopA());
@@ -2891,6 +2901,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mActivity.effectFragment.setIncreaseSpeed(saver.getIncreaseSpeed());
         mActivity.effectFragment.setTimeOfDecreaseSpeed(saver.getTimeOmDecreaseSpeed());
         mActivity.effectFragment.setDecreaseSpeed(saver.getDecreaseSpeed());
+        mActivity.effectFragment.setReverbDry(saver.getReverbDry(), false);
+        mActivity.effectFragment.setReverbWet(saver.getReverbWet(), false);
+        mActivity.effectFragment.setReverbRoomSize(saver.getReverbRoomSize(), false);
+        mActivity.effectFragment.setReverbDamp(saver.getReverbDamp(), false);
+        mActivity.effectFragment.setReverbWidth(saver.getReverbWidth(), false);
         if(saver.isABLoop()) mActivity.loopFragment.getRadioGroupLoopMode().check(R.id.radioButtonABLoop);
         else mActivity.loopFragment.getRadioGroupLoopMode().check(R.id.radioButtonMarkerPlay);
         if(saver.isLoopA()) mActivity.loopFragment.setLoopA(saver.getLoopA(), false);

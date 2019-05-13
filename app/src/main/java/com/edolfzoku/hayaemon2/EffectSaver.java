@@ -71,6 +71,11 @@ class EffectSaver {
     private float mIncreaseSpeed = 0.1f;
     private float mTimeOmDecreaseSpeed = 1.0f;
     private float mDecreaseSpeed = 0.1f;
+    private float mReverbDry = 0.7f;
+    private float mReverbWet = 1.0f;
+    private float mReverbRoomSize = 0.85f;
+    private float mReverbDamp = 0.5f;
+    private float mReverbWidth = 0.9f;
     private boolean bABLoop = false;
     private boolean bLoop = false;
     private boolean bLoopA = false;
@@ -141,6 +146,11 @@ class EffectSaver {
     void setIncreaseSpeed(float mIncreaseSpeed) { this.mIncreaseSpeed = mIncreaseSpeed; }
     void setTimeOmDecreaseSpeed(float mTimeOmDecreaseSpeed) { this.mTimeOmDecreaseSpeed = mTimeOmDecreaseSpeed; }
     void setDecreaseSpeed(float mDecreaseSpeed) { this.mDecreaseSpeed = mDecreaseSpeed; }
+    void setReverbDry(float reverbDry) { mReverbDry = reverbDry; }
+    void setReverbWet(float reverbWet) { mReverbWet = reverbWet; }
+    void setReverbRoomSize(float reverbRoomSize) { mReverbRoomSize = reverbRoomSize; }
+    void setReverbDamp(float reverbDamp) { mReverbDamp = reverbDamp; }
+    void setReverbWidth(float reverbWidth) { mReverbWidth = reverbWidth; }
     void setIsABLoop(boolean bABLoop) { this.bABLoop = bABLoop; }
     void setIsLoopA(boolean bLoopA) { this.bLoopA = bLoopA; }
     void setLoopA(double dLoopA) { this.dLoopA = dLoopA; }
@@ -200,6 +210,11 @@ class EffectSaver {
     float getIncreaseSpeed() { return mIncreaseSpeed; }
     float getTimeOmDecreaseSpeed() { return mTimeOmDecreaseSpeed; }
     float getDecreaseSpeed() { return mDecreaseSpeed; }
+    float getReverbDry() { return mReverbDry; }
+    float getReverbWet() { return mReverbWet; }
+    float getReverbRoomSize() { return mReverbRoomSize; }
+    float getReverbDamp() { return mReverbDamp; }
+    float getReverbWidth() { return mReverbWidth; }
     boolean isABLoop() { return bABLoop; }
     boolean isLoopA() { return bLoopA; }
     double getLoopA() { return dLoopA; }
@@ -264,6 +279,11 @@ class EffectSaver {
         mIncreaseSpeed = saver.mIncreaseSpeed;
         mTimeOmDecreaseSpeed = saver.mTimeOmDecreaseSpeed;
         mDecreaseSpeed = saver.mDecreaseSpeed;
+        mReverbDry = saver.mReverbDry;
+        mReverbWet = saver.mReverbWet;
+        mReverbRoomSize = saver.mReverbRoomSize;
+        mReverbDamp = saver.mReverbDamp;
+        mReverbWidth = saver.mReverbWidth;
         bABLoop = saver.bABLoop;
         bLoop = saver.bLoop;
         bLoopA = saver.bLoopA;

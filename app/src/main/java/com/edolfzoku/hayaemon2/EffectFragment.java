@@ -21,6 +21,8 @@ package com.edolfzoku.hayaemon2;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,6 +41,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -90,6 +93,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private float mIncreaseSpeed = 0.1f;
     private float mTimeOfDecreaseSpeed = 1.0f;
     private float mDecreaseSpeed = 0.1f;
+    private float mReverbDry;
+    private float mReverbWet;
+    private float mReverbRoomSize;
+    private float mReverbDamp;
+    private float mReverbWidth;
     private static final int EFFECTTYPE_RANDOM = 1;
     private static final int EFFECTTYPE_VOCALCANCEL = 2;
     // private static final int EFFECTTYPE_MONORAL = 3;
@@ -116,29 +124,30 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     // private static final int EFFECTTYPE_REVERB_MEDIUMROOM = 24;
     // private static final int EFFECTTYPE_REVERB_LARGEROOM = 25;
     // private static final int EFFECTTYPE_REVERB_CHURCH = 26;
-    private static final int EFFECTTYPE_REVERB_CATHEDRAL = 27;
-    private static final int EFFECTTYPE_CHORUS = 28;
-    private static final int EFFECTTYPE_FLANGER = 29;
-    private static final int EFFECTTYPE_DISTORTION_STRONG = 30;
-    // private static final int EFFECTTYPE_DISTORTION_MIDDLE = 31;
-    private static final int EFFECTTYPE_DISTORTION_WEAK = 32;
-    static final int EFFECTTYPE_REVERSE = 33;
-    private static final int EFFECTTYPE_INCREASESPEED = 34;
-    private static final int EFFECTTYPE_DECREASESPEED = 35;
-    private static final int EFFECTTYPE_OLDRECORD = 36;
-    private static final int EFFECTTYPE_LOWBATTERY = 37;
-    private static final int EFFECTTYPE_NOSENSE_STRONG = 38;
-    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 39;
-    private static final int EFFECTTYPE_NOSENSE_WEAK = 40;
-    private static final int EFFECTTYPE_EARTRAINING = 41;
-    private static final int EFFECTTYPE_METRONOME = 42;
-    private static final int EFFECTTYPE_RECORDNOISE = 43;
-    private static final int EFFECTTYPE_ROAROFWAVES = 44;
-    private static final int EFFECTTYPE_RAIN = 45;
-    private static final int EFFECTTYPE_RIVER = 46;
-    private static final int EFFECTTYPE_WAR = 47;
-    private static final int EFFECTTYPE_FIRE = 48;
-    private static final int EFFECTTYPE_CONCERTHALL = 49;
+    // private static final int EFFECTTYPE_REVERB_CATHEDRAL = 27;
+    private static final int EFFECTTYPE_REVERB_CUSTOMIZE = 28;
+    private static final int EFFECTTYPE_CHORUS = 29;
+    private static final int EFFECTTYPE_FLANGER = 30;
+    private static final int EFFECTTYPE_DISTORTION_STRONG = 31;
+    // private static final int EFFECTTYPE_DISTORTION_MIDDLE = 32;
+    private static final int EFFECTTYPE_DISTORTION_WEAK = 33;
+    static final int EFFECTTYPE_REVERSE = 34;
+    private static final int EFFECTTYPE_INCREASESPEED = 35;
+    private static final int EFFECTTYPE_DECREASESPEED = 36;
+    private static final int EFFECTTYPE_OLDRECORD = 37;
+    private static final int EFFECTTYPE_LOWBATTERY = 38;
+    private static final int EFFECTTYPE_NOSENSE_STRONG = 39;
+    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 40;
+    private static final int EFFECTTYPE_NOSENSE_WEAK = 41;
+    private static final int EFFECTTYPE_EARTRAINING = 42;
+    private static final int EFFECTTYPE_METRONOME = 43;
+    private static final int EFFECTTYPE_RECORDNOISE = 44;
+    private static final int EFFECTTYPE_ROAROFWAVES = 45;
+    private static final int EFFECTTYPE_RAIN = 46;
+    private static final int EFFECTTYPE_RIVER = 47;
+    private static final int EFFECTTYPE_WAR = 48;
+    private static final int EFFECTTYPE_FIRE = 49;
+    private static final int EFFECTTYPE_CONCERTHALL = 50;
     private Timer mTimer;
     private int mSEStream;
     private int mSEStream2;
@@ -151,11 +160,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private boolean mContinueFlag = true;
     private final Handler mHandlerLongClick;
 
-    private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel;
+    private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth;
     private EditText mEditSpeedEffectDetail, mEditTimeEffectDetail;
     private RelativeLayout mRelativeEffectDetail, mRelativeEffect, mRelativeSliderEffectDatail, mRelativeRollerEffectDetail;
-    private SeekBar mSeekEffectDetail;
-    private ImageButton mBtnEffectMinus, mBtnEffectPlus;
+    private SeekBar mSeekEffectDetail, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth;
+    private ImageButton mBtnEffectMinus, mBtnEffectPlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus;
+    private ScrollView mScrollReverbCustomize;
 
     public void setPeak(float peak) { mPeak = peak; }
     public float getTimeOfIncreaseSpeed() { return mTimeOfIncreaseSpeed; }
@@ -182,6 +192,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_DECREASESPEED).getEffectName()))
             mEditSpeedEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%%", mDecreaseSpeed));
     }
+    public float getReverbDry() { return mReverbDry; }
+    public float getReverbWet() { return mReverbWet; }
+    public float getReverbRoomSize() { return mReverbRoomSize; }
+    public float getReverbDamp() { return mReverbDamp; }
+    public float getReverbWidth() { return mReverbWidth; }
 
     public boolean isSelectedItem(int nItem)
     {
@@ -320,25 +335,140 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mRelativeEffectDetail.setVisibility(View.GONE);
             mRelativeEffect.setVisibility(View.VISIBLE);
         }
-        else if (v.getId() == R.id.btnEffectMinus)
-            minusValue();
-        else if (v.getId() == R.id.btnEffectPlus)
-            plusValue();
+        else if (v.getId() == R.id.btnEffectMinus) minusValue();
+        else if (v.getId() == R.id.btnEffectPlus) plusValue();
+        else if(v.getId() == R.id.btnReverbDryMinus) minusReverbDry();
+        else if(v.getId() == R.id.btnReverbDryPlus) plusReverbDry();
+        else if(v.getId() == R.id.btnReverbWetMinus) minusReverbWet();
+        else if(v.getId() == R.id.btnReverbWetPlus) plusReverbWet();
+        else if(v.getId() == R.id.btnReverbRoomSizeMinus) minusReverbRoomSize();
+        else if(v.getId() == R.id.btnReverbRoomSizePlus) plusReverbRoomSize();
+        else if(v.getId() == R.id.btnReverbDampMinus) minusReverbDamp();
+        else if(v.getId() == R.id.btnReverbDampPlus) plusReverbDamp();
+        else if(v.getId() == R.id.btnReverbWidthMinus) minusReverbWidth();
+        else if(v.getId() == R.id.btnReverbWidthPlus) plusReverbWidth();
     }
 
     @Override
     public boolean onLongClick(View v)
     {
-        if (v.getId() == R.id.btnEffectMinus)
-        {
-            mContinueFlag = true;
+        mContinueFlag = true;
+        if (v.getId() == R.id.btnEffectMinus) {
             mHandlerLongClick.post(repeatMinusValue);
             return true;
         }
-        else if (v.getId() == R.id.btnEffectPlus)
-        {
-            mContinueFlag = true;
+        else if (v.getId() == R.id.btnEffectPlus) {
             mHandlerLongClick.post(repeatPlusValue);
+            return true;
+        }
+        else if (v.getId() == R.id.btnReverbDryMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusReverbDry();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnReverbDryPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusReverbDry();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnReverbWetMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusReverbWet();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnReverbWetPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusReverbWet();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnReverbRoomSizeMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusReverbRoomSize();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnReverbRoomSizePlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusReverbRoomSize();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnReverbDampMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusReverbDamp();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnReverbDampPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusReverbDamp();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnReverbWidthMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusReverbWidth();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnReverbWidthPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusReverbWidth();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
             return true;
         }
         return false;
@@ -540,8 +670,40 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mTextEffectLabel = mActivity.findViewById(R.id.textEffectLabel);
         mRelativeSliderEffectDatail = mActivity.findViewById(R.id.relativeSliderEffectDatail);
         mRelativeRollerEffectDetail = mActivity.findViewById(R.id.relativeRollerEffectDatail);
+        mScrollReverbCustomize = mActivity.findViewById(R.id.scrollReverbCustomize);
+        mSeekReverbDry = mActivity.findViewById(R.id.seekReverbDry);
+        mSeekReverbWet = mActivity.findViewById(R.id.seekReverbWet);
+        mSeekReverbRoomSize = mActivity.findViewById(R.id.seekReverbRoomSize);
+        mSeekReverbDamp = mActivity.findViewById(R.id.seekReverbDamp);
+        mSeekReverbWidth = mActivity.findViewById(R.id.seekReverbWidth);
+        mTextReverbDry = mActivity.findViewById(R.id.textReverbDry);
+        mTextReverbWet = mActivity.findViewById(R.id.textReverbWet);
+        mTextReverbRoomSize = mActivity.findViewById(R.id.textReverbRoomSize);
+        mTextReverbDamp = mActivity.findViewById(R.id.textReverbDamp);
+        mTextReverbWidth = mActivity.findViewById(R.id.textReverbWidth);
+        mBtnReverbDryMinus = mActivity.findViewById(R.id.btnReverbDryMinus);
+        mBtnReverbDryPlus = mActivity.findViewById(R.id.btnReverbDryPlus);
+        mBtnReverbWetMinus = mActivity.findViewById(R.id.btnReverbWetMinus);
+        mBtnReverbWetPlus = mActivity.findViewById(R.id.btnReverbWetPlus);
+        mBtnReverbRoomSizeMinus = mActivity.findViewById(R.id.btnReverbRoomSizeMinus);
+        mBtnReverbRoomSizePlus = mActivity.findViewById(R.id.btnReverbRoomSizePlus);
+        mBtnReverbDampMinus = mActivity.findViewById(R.id.btnReverbDampMinus);
+        mBtnReverbDampPlus = mActivity.findViewById(R.id.btnReverbDampPlus);
+        mBtnReverbWidthMinus = mActivity.findViewById(R.id.btnReverbWidthMinus);
+        mBtnReverbWidthPlus = mActivity.findViewById(R.id.btnReverbWidthPlus);
         RecyclerView recyclerEffects = mActivity.findViewById(R.id.recyclerEffects);
         Button mBtnFinith = mActivity.findViewById(R.id.btnFinish);
+
+        mSeekReverbDry.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekReverbWet.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekReverbRoomSize.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekReverbDamp.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekReverbWidth.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekReverbDry.setOnSeekBarChangeListener(this);
+        mSeekReverbWet.setOnSeekBarChangeListener(this);
+        mSeekReverbRoomSize.setOnSeekBarChangeListener(this);
+        mSeekReverbDamp.setOnSeekBarChangeListener(this);
+        mSeekReverbWidth.setOnSeekBarChangeListener(this);
 
         EffectItem item = new EffectItem(getString(R.string.off), false);
         mEffectItems.add(item);
@@ -599,6 +761,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.reverbCathedral), false);
         mEffectItems.add(item);
+        item = new EffectItem(getString(R.string.reverbCustomize), true);
+        mEffectItems.add(item);
         item = new EffectItem(getString(R.string.chorus), false);
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.flanger), false);
@@ -655,12 +819,48 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnEffectPlus.setOnClickListener(this);
         mBtnEffectPlus.setOnLongClickListener(this);
         mBtnEffectPlus.setOnTouchListener(this);
+        mBtnReverbDryMinus.setOnClickListener(this);
+        mBtnReverbDryMinus.setOnLongClickListener(this);
+        mBtnReverbDryMinus.setOnTouchListener(this);
+        mBtnReverbDryPlus.setOnClickListener(this);
+        mBtnReverbDryPlus.setOnLongClickListener(this);
+        mBtnReverbDryPlus.setOnTouchListener(this);
+        mBtnReverbWetMinus.setOnClickListener(this);
+        mBtnReverbWetMinus.setOnLongClickListener(this);
+        mBtnReverbWetMinus.setOnTouchListener(this);
+        mBtnReverbWetPlus.setOnClickListener(this);
+        mBtnReverbWetPlus.setOnLongClickListener(this);
+        mBtnReverbWetPlus.setOnTouchListener(this);
+        mBtnReverbRoomSizeMinus.setOnClickListener(this);
+        mBtnReverbRoomSizeMinus.setOnLongClickListener(this);
+        mBtnReverbRoomSizeMinus.setOnTouchListener(this);
+        mBtnReverbRoomSizePlus.setOnClickListener(this);
+        mBtnReverbRoomSizePlus.setOnLongClickListener(this);
+        mBtnReverbRoomSizePlus.setOnTouchListener(this);
+        mBtnReverbDampMinus.setOnClickListener(this);
+        mBtnReverbDampMinus.setOnLongClickListener(this);
+        mBtnReverbDampMinus.setOnTouchListener(this);
+        mBtnReverbDampPlus.setOnClickListener(this);
+        mBtnReverbDampPlus.setOnLongClickListener(this);
+        mBtnReverbDampPlus.setOnTouchListener(this);
+        mBtnReverbWidthMinus.setOnClickListener(this);
+        mBtnReverbWidthMinus.setOnLongClickListener(this);
+        mBtnReverbWidthMinus.setOnTouchListener(this);
+        mBtnReverbWidthPlus.setOnClickListener(this);
+        mBtnReverbWidthPlus.setOnLongClickListener(this);
+        mBtnReverbWidthPlus.setOnTouchListener(this);
 
         mEditTimeEffectDetail.setOnFocusChangeListener(this);
         mEditSpeedEffectDetail.setOnFocusChangeListener(this);
 
         mEffectItems.get(0).setSelected(true);
         mEffectsAdapter.notifyItemChanged(0);
+
+        setReverbDry(70, false);
+        setReverbWet(100, false);
+        setReverbRoomSize(85, false);
+        setReverbDamp(50, false);
+        setReverbWidth(90, false);
     }
 
     public void onEffectItemClick(int nEffect)
@@ -742,6 +942,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setIncreaseSpeed(0.1f);
         setTimeOfDecreaseSpeed(1.0f);
         setDecreaseSpeed(0.1f);
+        setReverbDry(70, false);
+        setReverbWet(100, false);
+        setReverbRoomSize(85, false);
+        setReverbDamp(50, false);
+        setReverbWidth(90, false);
     }
 
     public void onEffectDetailClick(int nEffect)
@@ -854,10 +1059,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if(nEffect == EFFECTTYPE_INCREASESPEED || nEffect == EFFECTTYPE_DECREASESPEED) {
             mRelativeSliderEffectDatail.setVisibility(View.GONE);
             mRelativeRollerEffectDetail.setVisibility(View.VISIBLE);
+            mScrollReverbCustomize.setVisibility(View.GONE);
+        }
+        else if(nEffect == EFFECTTYPE_REVERB_CUSTOMIZE) {
+            mRelativeSliderEffectDatail.setVisibility(View.GONE);
+            mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mScrollReverbCustomize.setVisibility(View.VISIBLE);
         }
         else {
             mRelativeSliderEffectDatail.setVisibility(View.VISIBLE);
             mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mScrollReverbCustomize.setVisibility(View.GONE);
             mSeekEffectDetail.setOnSeekBarChangeListener(this);
         }
 
@@ -873,102 +1085,249 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch)
     {
-        if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_PAN).getEffectName()))
-        {
-            float mPan = (progress - 100) / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress - 100));
-            setPan(mPan);
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_FREQUENCY).getEffectName()))
-        {
-            double dProgress = (double)(progress + 1) / 10.0;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%.1f", dProgress));
-            setFreq((float)dProgress);
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_METRONOME).getEffectName()))
-        {
-            mBpm = progress + 10;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", mBpm));
-            applyEffect();
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_RECORDNOISE).getEffectName()))
-        {
-            mVol1 = progress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
-            applyEffect();
-            if(mEffectItems.get(EFFECTTYPE_RECORDNOISE).isSelected())
-            {
-                int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
-                BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol1);
+        if(seekBar.getId() == R.id.seekEffectDetail) {
+            if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_PAN).getEffectName())) {
+                float mPan = (progress - 100) / 100.0f;
+                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress - 100));
+                setPan(mPan);
+            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_FREQUENCY).getEffectName())) {
+                double dProgress = (double) (progress + 1) / 10.0;
+                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%.1f", dProgress));
+                setFreq((float) dProgress);
+            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_METRONOME).getEffectName())) {
+                mBpm = progress + 10;
+                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", mBpm));
+                applyEffect();
+            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_RECORDNOISE).getEffectName())) {
+                mVol1 = progress / 100.0f;
+                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
+                applyEffect();
+                if (mEffectItems.get(EFFECTTYPE_RECORDNOISE).isSelected()) {
+                    int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
+                    BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol1);
+                }
+            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_ROAROFWAVES).getEffectName())) {
+                mVol2 = progress / 100.0f;
+                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
+                applyEffect();
+                if (mEffectItems.get(EFFECTTYPE_ROAROFWAVES).isSelected()) {
+                    int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
+                    BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol2);
+                }
+            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_RAIN).getEffectName())) {
+                mVol3 = progress / 100.0f;
+                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
+                applyEffect();
+                if (mEffectItems.get(EFFECTTYPE_RAIN).isSelected()) {
+                    int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
+                    BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol3);
+                }
+            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_RIVER).getEffectName())) {
+                mVol4 = progress / 100.0f;
+                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
+                applyEffect();
+                if (mEffectItems.get(EFFECTTYPE_RIVER).isSelected()) {
+                    int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
+                    BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol4);
+                }
+            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_WAR).getEffectName())) {
+                mVol5 = progress / 100.0f;
+                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
+                applyEffect();
+                if (mEffectItems.get(EFFECTTYPE_WAR).isSelected()) {
+                    int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
+                    BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol5);
+                }
+            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_FIRE).getEffectName())) {
+                mVol6 = progress / 100.0f;
+                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
+                applyEffect();
+                if (mEffectItems.get(EFFECTTYPE_FIRE).isSelected()) {
+                    int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
+                    BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol6);
+                }
+            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_CONCERTHALL).getEffectName())) {
+                mVol7 = progress / 100.0f;
+                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
+                applyEffect();
+                if (mEffectItems.get(EFFECTTYPE_CONCERTHALL).isSelected()) {
+                    int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
+                    BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol7);
+                }
             }
+            mActivity.playlistFragment.updateSavingEffect();
         }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_ROAROFWAVES).getEffectName()))
-        {
-            mVol2 = progress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
-            applyEffect();
-            if(mEffectItems.get(EFFECTTYPE_ROAROFWAVES).isSelected())
-            {
-                int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
-                BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol2);
-            }
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_RAIN).getEffectName()))
-        {
-            mVol3 = progress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
-            applyEffect();
-            if(mEffectItems.get(EFFECTTYPE_RAIN).isSelected())
-            {
-                int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
-                BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol3);
-            }
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_RIVER).getEffectName()))
-        {
-            mVol4 = progress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
-            applyEffect();
-            if(mEffectItems.get(EFFECTTYPE_RIVER).isSelected())
-            {
-                int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
-                BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol4);
-            }
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_WAR).getEffectName()))
-        {
-            mVol5 = progress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
-            applyEffect();
-            if(mEffectItems.get(EFFECTTYPE_WAR).isSelected())
-            {
-                int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
-                BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol5);
-            }
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_FIRE).getEffectName()))
-        {
-            mVol6 = progress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
-            applyEffect();
-            if(mEffectItems.get(EFFECTTYPE_FIRE).isSelected())
-            {
-                int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
-                BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol6);
-            }
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_CONCERTHALL).getEffectName()))
-        {
-            mVol7 = progress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
-            applyEffect();
-            if(mEffectItems.get(EFFECTTYPE_CONCERTHALL).isSelected())
-            {
-                int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
-                BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol7);
-            }
-        }
-        mActivity.playlistFragment.updateSavingEffect();
+        else if(seekBar.getId() == R.id.seekReverbDry) setReverbDry(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekReverbWet) setReverbWet(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekReverbRoomSize) setReverbRoomSize(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekReverbDamp) setReverbDamp(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekReverbWidth) setReverbWidth(progress, fromTouch);
+    }
+
+    private void updateReverb()
+    {
+        if(!mEffectItems.get(EFFECTTYPE_REVERB_CUSTOMIZE).isSelected() || MainActivity.sStream == 0)
+            return;
+        if(mFxReverb == 0) mFxReverb = BASS.BASS_ChannelSetFX(MainActivity.sStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
+        BASS_FX.BASS_BFX_FREEVERB reverb = new BASS_FX.BASS_BFX_FREEVERB();
+        reverb.fDryMix = mReverbDry;
+        reverb.fWetMix = mReverbWet;
+        reverb.fRoomSize = mReverbRoomSize;
+        reverb.fDamp = mReverbDamp;
+        reverb.fWidth = mReverbWidth;
+        reverb.lMode = 0;
+        reverb.lChannel = BASS_FX.BASS_BFX_CHANALL;
+        BASS.BASS_FXSetParameters(mFxReverb, reverb);
+    }
+
+    public void setReverbDry(int nValue, boolean bSave)
+    {
+        mReverbDry = nValue / 100.0f;
+        mTextReverbDry.setText(String.format(Locale.getDefault(), "%.2f", mReverbDry));
+        mSeekReverbDry.setProgress(nValue);
+        updateReverb();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setReverbDry(float fValue, boolean bSave)
+    {
+        mReverbDry = fValue;
+        mTextReverbDry.setText(String.format(Locale.getDefault(), "%.2f", mReverbDry));
+        mSeekReverbDry.setProgress((int)(fValue * 100.0f));
+        updateReverb();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setReverbWet(int nValue, boolean bSave)
+    {
+        mReverbWet = nValue / 100.0f;
+        mTextReverbWet.setText(String.format(Locale.getDefault(), "%.2f", mReverbWet));
+        mSeekReverbWet.setProgress(nValue);
+        updateReverb();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setReverbWet(float fValue, boolean bSave)
+    {
+        mReverbWet = fValue;
+        mTextReverbWet.setText(String.format(Locale.getDefault(), "%.2f", mReverbWet));
+        mSeekReverbWet.setProgress((int)(fValue * 100.0f));
+        updateReverb();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setReverbRoomSize(int nValue, boolean bSave)
+    {
+        mReverbRoomSize = nValue / 100.0f;
+        mTextReverbRoomSize.setText(String.format(Locale.getDefault(), "%.2f", mReverbRoomSize));
+        mSeekReverbRoomSize.setProgress(nValue);
+        updateReverb();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setReverbRoomSize(float fValue, boolean bSave)
+    {
+        mReverbRoomSize = fValue;
+        mTextReverbRoomSize.setText(String.format(Locale.getDefault(), "%.2f", mReverbRoomSize));
+        mSeekReverbRoomSize.setProgress((int)(fValue * 100.0f));
+        updateReverb();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setReverbDamp(int nValue, boolean bSave)
+    {
+        mReverbDamp = nValue / 100.0f;
+        mTextReverbDamp.setText(String.format(Locale.getDefault(), "%.2f", mReverbDamp));
+        mSeekReverbDamp.setProgress(nValue);
+        updateReverb();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setReverbDamp(float fValue, boolean bSave)
+    {
+        mReverbDamp = fValue;
+        mTextReverbDamp.setText(String.format(Locale.getDefault(), "%.2f", mReverbDamp));
+        mSeekReverbDamp.setProgress((int)(fValue * 100.0f));
+        updateReverb();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setReverbWidth(int nValue, boolean bSave)
+    {
+        mReverbWidth = nValue / 100.0f;
+        mTextReverbWidth.setText(String.format(Locale.getDefault(), "%.2f", mReverbWidth));
+        mSeekReverbWidth.setProgress(nValue);
+        updateReverb();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setReverbWidth(float fValue, boolean bSave)
+    {
+        mReverbWidth = fValue;
+        mTextReverbWidth.setText(String.format(Locale.getDefault(), "%.2f", mReverbWidth));
+        mSeekReverbWidth.setProgress((int)(fValue * 100.0f));
+        updateReverb();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    private void minusReverbDry() {
+        int nValue = mSeekReverbDry.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setReverbDry(nValue, true);
+    }
+
+    private void plusReverbDry() {
+        int nValue = mSeekReverbDry.getProgress() + 1;
+        if(nValue > mSeekReverbDry.getMax()) nValue = mSeekReverbDry.getMax();
+        setReverbDry(nValue, true);
+    }
+
+    private void minusReverbWet() {
+        int nValue = mSeekReverbWet.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setReverbWet(nValue, true);
+    }
+
+    private void plusReverbWet() {
+        int nValue = mSeekReverbWet.getProgress() + 1;
+        if(nValue > mSeekReverbWet.getMax()) nValue = mSeekReverbWet.getMax();
+        setReverbWet(nValue, true);
+    }
+
+    private void minusReverbRoomSize() {
+        int nValue = mSeekReverbRoomSize.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setReverbRoomSize(nValue, true);
+    }
+
+    private void plusReverbRoomSize() {
+        int nValue = mSeekReverbRoomSize.getProgress() + 1;
+        if(nValue > mSeekReverbRoomSize.getMax()) nValue = mSeekReverbRoomSize.getMax();
+        setReverbRoomSize(nValue, true);
+    }
+
+    private void minusReverbDamp() {
+        int nValue = mSeekReverbDamp.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setReverbDamp(nValue, true);
+    }
+
+    private void plusReverbDamp() {
+        int nValue = mSeekReverbDamp.getProgress() + 1;
+        if(nValue > mSeekReverbDamp.getMax()) nValue = mSeekReverbDamp.getMax();
+        setReverbDamp(nValue, true);
+    }
+
+    private void minusReverbWidth() {
+        int nValue = mSeekReverbWidth.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setReverbWidth(nValue, true);
+    }
+
+    private void plusReverbWidth() {
+        int nValue = mSeekReverbWidth.getProgress() + 1;
+        if(nValue > mSeekReverbWidth.getMax()) nValue = mSeekReverbWidth.getMax();
+        setReverbWidth(nValue, true);
     }
 
     private void setPan(float pan)
@@ -1049,9 +1408,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 for(int i = EFFECTTYPE_ECHO_STADIUM; i <= EFFECTTYPE_ECHO_MOUNTAIN; i++)
                     if(i != nSelect) deselectEffect(i);
             }
-            if(EFFECTTYPE_REVERB_BATHROOM <= nSelect && nSelect <= EFFECTTYPE_REVERB_CATHEDRAL)
+            if(EFFECTTYPE_REVERB_BATHROOM <= nSelect && nSelect <= EFFECTTYPE_REVERB_CUSTOMIZE)
             {
-                for(int i = EFFECTTYPE_REVERB_BATHROOM; i <= EFFECTTYPE_REVERB_CATHEDRAL; i++)
+                for(int i = EFFECTTYPE_REVERB_BATHROOM; i <= EFFECTTYPE_REVERB_CUSTOMIZE; i++)
                     if(i != nSelect) deselectEffect(i);
             }
             if(EFFECTTYPE_CHORUS <= nSelect && nSelect <= EFFECTTYPE_FLANGER)
@@ -1436,6 +1795,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 reverb.fRoomSize = (float) 0.9;
                 reverb.fDamp = (float) 0.5;
                 reverb.fWidth = (float) 1.0;
+                reverb.lMode = 0;
+                reverb.lChannel = BASS_FX.BASS_BFX_CHANALL;
+                BASS.BASS_FXSetParameters(mFxReverb, reverb);
+            }
+            else if(strEffect.equals(getString(R.string.reverbCustomize))) {
+                mFxReverb = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
+                reverb = new BASS_FX.BASS_BFX_FREEVERB();
+                reverb.fDryMix = mReverbDry;
+                reverb.fWetMix = mReverbWet;
+                reverb.fRoomSize = mReverbRoomSize;
+                reverb.fDamp = mReverbDamp;
+                reverb.fWidth = mReverbWidth;
                 reverb.lMode = 0;
                 reverb.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(mFxReverb, reverb);

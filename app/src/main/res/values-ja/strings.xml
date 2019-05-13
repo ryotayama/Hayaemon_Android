@@ -33,6 +33,12 @@
     <string name="reverbLargeRoom">リバーブ（広い部屋）</string>
     <string name="reverbChurch">リバーブ（教会）</string>
     <string name="reverbCathedral">リバーブ（大聖堂）</string>
+    <string name="reverbCustomize">リバーブ（カスタマイズ）</string>
+    <string name="dryMix">原音</string>
+    <string name="wetMix">残響音</string>
+    <string name="roomSize">部屋の大きさ</string>
+    <string name="damping">減衰</string>
+    <string name="stereoWidth">ステレオ度合い</string>
     <string name="chorus">コーラス</string>
     <string name="flanger">フランジャー</string>
     <string name="distortionStrong">ディストーション（強）</string>

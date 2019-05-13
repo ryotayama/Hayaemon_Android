@@ -207,6 +207,445 @@
 
         </RelativeLayout>
 
+        <ScrollView
+            android:id="@+id/scrollReverbCustomize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/viewSepEffect"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:background="#FFF"
+                >
+
+                <TextView
+                    android:id="@+id/textReverbDryLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dryMix"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_alignParentTop="true"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderReverbDry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textReverbDryLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekReverbDry"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:min="0"
+                        android:max="100"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toLeftOf="@id/textReverbDry"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textReverbDry"
+                        android:layout_width="32dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnReverbDryMinus"
+                        android:layout_toStartOf="@+id/btnReverbDryMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnReverbDryMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnReverbDryPlus"
+                        android:layout_toStartOf="@+id/btnReverbDryPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnReverbDryPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textReverbWetLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wetMix"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderReverbDry"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderReverbWet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textReverbWetLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekReverbWet"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:min="0"
+                        android:max="300"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toLeftOf="@id/textReverbWet"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textReverbWet"
+                        android:layout_width="32dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnReverbWetMinus"
+                        android:layout_toStartOf="@+id/btnReverbWetMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnReverbWetMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnReverbWetPlus"
+                        android:layout_toStartOf="@+id/btnReverbWetPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnReverbWetPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textReverbRoomSizeLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/roomSize"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderReverbWet"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderReverbRoomSize"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textReverbRoomSizeLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekReverbRoomSize"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:min="0"
+                        android:max="100"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toLeftOf="@id/textReverbRoomSize"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textReverbRoomSize"
+                        android:layout_width="32dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnReverbRoomSizeMinus"
+                        android:layout_toStartOf="@+id/btnReverbRoomSizeMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnReverbRoomSizeMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnReverbRoomSizePlus"
+                        android:layout_toStartOf="@+id/btnReverbRoomSizePlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnReverbRoomSizePlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textReverbDampLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/damping"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderReverbRoomSize"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderReverbDamp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textReverbDampLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekReverbDamp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:min="0"
+                        android:max="100"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toLeftOf="@id/textReverbDamp"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textReverbDamp"
+                        android:layout_width="32dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnReverbDampMinus"
+                        android:layout_toStartOf="@+id/btnReverbDampMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnReverbDampMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnReverbDampPlus"
+                        android:layout_toStartOf="@+id/btnReverbDampPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnReverbDampPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textReverbWidthLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stereoWidth"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderReverbDamp"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderReverbWidth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textReverbWidthLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekReverbWidth"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:min="0"
+                        android:max="100"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toLeftOf="@id/textReverbWidth"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textReverbWidth"
+                        android:layout_width="32dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnReverbWidthMinus"
+                        android:layout_toStartOf="@+id/btnReverbWidthMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnReverbWidthMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnReverbWidthPlus"
+                        android:layout_toStartOf="@+id/btnReverbWidthPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnReverbWidthPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </ScrollView>
+
     </RelativeLayout>
 
     <RelativeLayout

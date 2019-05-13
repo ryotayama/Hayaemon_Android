@@ -33,6 +33,12 @@
     <string name="reverbLargeRoom">Reverb (Large Room)</string>
     <string name="reverbChurch">Reverb (Church)</string>
     <string name="reverbCathedral">Reverb (Cathedral)</string>
+    <string name="reverbCustomize">Reverb (Customize)</string>
+    <string name="dryMix">Dry mix</string>
+    <string name="wetMix">Wet mix</string>
+    <string name="roomSize">Room size</string>
+    <string name="damping">Damping</string>
+    <string name="stereoWidth">Stereo width</string>
     <string name="chorus">Chorus</string>
     <string name="flanger">Flanger</string>
     <string name="distortionStrong">Distortion (Strong)</string>
