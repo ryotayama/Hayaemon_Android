@@ -347,6 +347,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(v.getId() == R.id.btnReverbDampPlus) plusReverbDamp();
         else if(v.getId() == R.id.btnReverbWidthMinus) minusReverbWidth();
         else if(v.getId() == R.id.btnReverbWidthPlus) plusReverbWidth();
+        else if(v.getId() == R.id.btnResetReverb) resetReverb();
     }
 
     @Override
@@ -693,6 +694,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnReverbWidthPlus = mActivity.findViewById(R.id.btnReverbWidthPlus);
         RecyclerView recyclerEffects = mActivity.findViewById(R.id.recyclerEffects);
         Button mBtnFinith = mActivity.findViewById(R.id.btnFinish);
+        Button btnResetReverb = mActivity.findViewById(R.id.btnResetReverb);
 
         mSeekReverbDry.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
         mSeekReverbWet.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
@@ -849,6 +851,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnReverbWidthPlus.setOnClickListener(this);
         mBtnReverbWidthPlus.setOnLongClickListener(this);
         mBtnReverbWidthPlus.setOnTouchListener(this);
+        btnResetReverb.setOnClickListener(this);
 
         mEditTimeEffectDetail.setOnFocusChangeListener(this);
         mEditSpeedEffectDetail.setOnFocusChangeListener(this);
@@ -947,6 +950,15 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setReverbRoomSize(85, false);
         setReverbDamp(50, false);
         setReverbWidth(90, false);
+    }
+
+    private void resetReverb()
+    {
+        setReverbDry(70, true);
+        setReverbWet(100, true);
+        setReverbRoomSize(85, true);
+        setReverbDamp(50, true);
+        setReverbWidth(90, true);
     }
 
     public void onEffectDetailClick(int nEffect)

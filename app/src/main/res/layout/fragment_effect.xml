@@ -642,6 +642,22 @@
 
                 </RelativeLayout>
 
+                <Button
+                    android:id="@+id/btnResetReverb"
+                    android:text="@string/reset"
+                    android:textSize="12sp"
+                    android:textColor="#007AFF"
+                    android:background="@drawable/resetbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="30dp"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/relativeSliderReverbWidth"
+                    />
+
             </RelativeLayout>
 
         </ScrollView>
