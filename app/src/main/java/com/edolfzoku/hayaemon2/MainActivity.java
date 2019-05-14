@@ -633,7 +633,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             textViewBlog.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
 
             TextView textViewArticle = layout.findViewById(R.id.textViewArticle);
-            String strArticle = "<a href=\"http://hayaemon.jp/blog/archives/6751\">→該当記事へ</a>";
+            String strArticle = "<a href=\"http://hayaemon.jp/blog/archives/6758\">→該当記事へ</a>";
             CharSequence blogChar2 = Html.fromHtml(strArticle);
             textViewArticle.setText(blogChar2);
             textViewArticle.setMovementMethod(mMethod);
