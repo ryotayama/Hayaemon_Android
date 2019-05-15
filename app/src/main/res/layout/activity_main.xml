@@ -201,6 +201,7 @@
                     android:layout_height="44dp"
                     android:src="@drawable/ic_playing_large_artwork"
                     android:scaleType="centerCrop"
+                    android:cropToPadding="true"
                     android:background="@drawable/frameborder"
                     android:layout_marginTop="8dp"
                     android:layout_marginLeft="8dp"
