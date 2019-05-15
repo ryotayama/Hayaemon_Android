@@ -2629,6 +2629,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 else if (fromPos > mPlaying && mPlaying >= toPos) mPlaying++;
 
                 mSongsAdapter.notifyItemMoved(fromPos, toPos);
+                int nMin, nMax;
+                if(fromPos < toPos) {
+                    nMin = fromPos;
+                    nMax = toPos;
+                }
+                else {
+                    nMin = toPos;
+                    nMax = fromPos;
+                }
+                for(int i = nMin; i <= nMax; i++) {
+                    mSongsAdapter.notifyItemChanged(i);
+                }
 
                 return true;
             }
@@ -2636,8 +2648,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void clearView(RecyclerView mRecyclerSongs, RecyclerView.ViewHolder viewHolder) {
                 super.clearView(mRecyclerSongs, viewHolder);
-
-                mSongsAdapter.notifyDataSetChanged();
 
                 saveFiles(true, true, true, true, false);
             }
