@@ -2949,7 +2949,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
                 if(params.assetFileDescriptor == null) return;
                 params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
-                _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             } catch (Exception e) {
                 e.printStackTrace();
                 return;
@@ -3518,7 +3518,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
                 if(params.assetFileDescriptor == null) return;
                 params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
-                MainActivity.sStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_PRESCAN | BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                MainActivity.sStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_PRESCAN | BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             } catch (Exception e) {
                 removeSong(mPlayingPlaylist, mPlaying);
                 if(mPlaying >= mPlaylists.get(mPlayingPlaylist).size())
@@ -3787,6 +3787,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         mPlaying = -1;
         BASS.BASS_ChannelStop(MainActivity.sStream);
+        BASS.BASS_StreamFree(MainActivity.sStream);
         MainActivity.sStream = 0;
         mActivity.loopFragment.stopTimer();
         mActivity.loopFragment.getTextCurValue().setText(getString(R.string.zeroHMS));
@@ -4105,7 +4106,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
                     if (params.assetFileDescriptor == null) return;
                     params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
-                    hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                    hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
                 } catch (Exception e) {
                     e.printStackTrace();
                     return;
