@@ -28,6 +28,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.NumberPicker;
 
 import java.util.Locale;
@@ -132,7 +133,20 @@ public class PitchFragmentDialog extends DialogFragment {
             }
         });
         builder.setView(view);
-        return builder.create();
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+        {
+            @Override
+            public void onShow(DialogInterface arg0)
+            {
+                if(alertDialog.getWindow() != null) {
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
+            }
+        });
+        return alertDialog;
     }
     @Override
     public void onCancel(DialogInterface dialog) {

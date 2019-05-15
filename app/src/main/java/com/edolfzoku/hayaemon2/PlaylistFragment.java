@@ -66,6 +66,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -295,6 +296,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         @Override
                         public void onShow(DialogInterface arg0)
                         {
+                            if(alertDialog.getWindow() != null) {
+                                WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                                lp.dimAmount = 0.4f;
+                                alertDialog.getWindow().setAttributes(lp);
+                            }
                             editText.requestFocus();
                             editText.setSelection(editText.getText().toString().length());
                             InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -344,6 +350,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 @Override
                 public void onShow(DialogInterface arg0)
                 {
+                    if(alertDialog.getWindow() != null) {
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
                     editText.requestFocus();
                     editText.setSelection(editText.getText().toString().length());
                     InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -405,6 +416,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                                 @Override
                                 public void onShow(DialogInterface arg0)
                                 {
+                                    if(alertDialog.getWindow() != null) {
+                                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                                        lp.dimAmount = 0.4f;
+                                        alertDialog.getWindow().setAttributes(lp);
+                                    }
                                     editURL.requestFocus();
                                     editURL.setSelection(editURL.getText().toString().length());
                                     InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -718,6 +734,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onShow(DialogInterface arg0)
             {
+                if(alertDialog.getWindow() != null) {
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
                 Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
                 positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
             }
@@ -1006,7 +1027,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             builder.setTitle(R.string.diskFullError);
             builder.setMessage(R.string.diskFullErrorDetail);
             builder.setPositiveButton("OK", null);
-            builder.show();
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+            {
+                @Override
+                public void onShow(DialogInterface arg0)
+                {
+                    if(alertDialog.getWindow() != null) {
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
+                }
+            });
+            alertDialog.show();
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
@@ -1039,18 +1073,31 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 mFinish = true;
             }
         });
-        AlertDialog alert = builder.show();
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+        {
+            @Override
+            public void onShow(DialogInterface arg0)
+            {
+                if(alertDialog.getWindow() != null) {
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
+            }
+        });
+        alertDialog.show();
 
         if(mDownloadTask != null && mDownloadTask.getStatus() == AsyncTask.Status.RUNNING)
             mDownloadTask.cancel(true);
         try
         {
-            mDownloadTask = new DownloadTask(this, new URL(strURL), strPathTo, alert);
+            mDownloadTask = new DownloadTask(this, new URL(strURL), strPathTo, alertDialog);
             mDownloadTask.execute(0);
         }
         catch (MalformedURLException e)
         {
-            if(alert.isShowing()) alert.dismiss();
+            if(alertDialog.isShowing()) alertDialog.dismiss();
         }
     }
 
@@ -1066,7 +1113,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             builder.setTitle(R.string.downloadError);
             builder.setMessage(R.string.downloadErrorDetail);
             builder.setPositiveButton("OK", null);
-            builder.show();
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+            {
+                @Override
+                public void onShow(DialogInterface arg0)
+                {
+                    if(alertDialog.getWindow() != null) {
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
+                }
+            });
+            alertDialog.show();
             return;
         }
 
@@ -1132,6 +1192,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onShow(DialogInterface arg0)
             {
+                if(alertDialog.getWindow() != null) {
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
                 editTitle.requestFocus();
                 editTitle.setSelection(editTitle.getText().toString().length());
                 InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -1154,7 +1219,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             builder.setTitle(R.string.diskFullError);
             builder.setMessage(R.string.diskFullErrorDetail);
             builder.setPositiveButton("OK", null);
-            builder.show();
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+            {
+                @Override
+                public void onShow(DialogInterface arg0)
+                {
+                    if(alertDialog.getWindow() != null) {
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
+                }
+            });
+            alertDialog.show();
             return;
         }
 
@@ -1346,6 +1424,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onShow(DialogInterface arg0)
             {
+                if(alertDialog.getWindow() != null) {
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
                 editTitle.requestFocus();
                 editTitle.setSelection(editTitle.getText().toString().length());
                 InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -1941,6 +2024,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     @Override
                     public void onShow(DialogInterface arg0)
                     {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
                         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
                         positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
                     }
@@ -2086,6 +2174,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onShow(DialogInterface arg0)
             {
+                if(alertDialog.getWindow() != null) {
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
                 editTitle.requestFocus();
                 editTitle.setSelection(editTitle.getText().toString().length());
                 InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -2130,6 +2223,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     @Override
                     public void onShow(DialogInterface arg0)
                     {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
                         editText.requestFocus();
                         editText.setSelection(editText.getText().toString().length());
                         InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -2200,6 +2298,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     @Override
                     public void onShow(DialogInterface arg0)
                     {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
                         editText.requestFocus();
                         editText.setSelection(editText.getText().toString().length());
                         InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -2246,6 +2349,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     @Override
                     public void onShow(DialogInterface arg0)
                     {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
                         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
                         positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
                     }
@@ -2294,6 +2402,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     @Override
                     public void onShow(DialogInterface arg0)
                     {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
                         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
                         positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
                     }
@@ -2411,6 +2524,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     @Override
                     public void onShow(DialogInterface arg0)
                     {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
                         editText.requestFocus();
                         editText.setSelection(editText.getText().toString().length());
                         InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -2481,6 +2599,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     @Override
                     public void onShow(DialogInterface arg0)
                     {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
                         editText.requestFocus();
                         editText.setSelection(editText.getText().toString().length());
                         InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -2530,6 +2653,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     @Override
                     public void onShow(DialogInterface arg0)
                     {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
                         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
                         positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
                     }
@@ -2578,6 +2706,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     @Override
                     public void onShow(DialogInterface arg0)
                     {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
                         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
                         positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
                     }
@@ -3094,11 +3227,24 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 mFinish = true;
             }
         });
-        AlertDialog alert = builder.show();
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+        {
+            @Override
+            public void onShow(DialogInterface arg0)
+            {
+                if(alertDialog.getWindow() != null) {
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
+            }
+        });
+        alertDialog.show();
 
         if(mSongSavingTask != null && mSongSavingTask.getStatus() == AsyncTask.Status.RUNNING)
             mSongSavingTask.cancel(true);
-        mSongSavingTask = new SongSavingTask(nPurpose, this, hTempStream, hEncode, strPathTo, alert, dEnd);
+        mSongSavingTask = new SongSavingTask(nPurpose, this, hTempStream, hEncode, strPathTo, alertDialog, dEnd);
         mSongSavingTask.execute(0);
     }
 
@@ -3219,6 +3365,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onShow(DialogInterface arg0)
             {
+                if(alertDialog.getWindow() != null) {
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
                 editTitle.requestFocus();
                 editTitle.setSelection(editTitle.getText().toString().length());
                 InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -3304,7 +3455,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         builder.setTitle(R.string.saveToGallery);
         builder.setMessage(R.string.saved);
         builder.setPositiveButton("OK", null);
-        builder.show();
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+        {
+            @Override
+            public void onShow(DialogInterface arg0)
+            {
+                if(alertDialog.getWindow() != null) {
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
+            }
+        });
+        alertDialog.show();
     }
 
     public void play()
@@ -3993,6 +4157,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onShow(DialogInterface arg0)
             {
+                if(alertDialog.getWindow() != null) {
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
                 editTitle.requestFocus();
                 editTitle.setSelection(editTitle.getText().toString().length());
                 InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);

@@ -37,6 +37,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -492,6 +493,11 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     @Override
                     public void onShow(DialogInterface arg0)
                     {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
                         editPreset.requestFocus();
                         editPreset.setSelection(editPreset.getText().toString().length());
                         InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -837,6 +843,11 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     @Override
                     public void onShow(DialogInterface arg0)
                     {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
                         editPreset.requestFocus();
                         editPreset.setSelection(editPreset.getText().toString().length());
                         InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -904,6 +915,11 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     @Override
                     public void onShow(DialogInterface arg0)
                     {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
                         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
                         positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
                     }
@@ -930,6 +946,11 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     @Override
                     public void onShow(DialogInterface arg0)
                     {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
                         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
                         positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
                     }

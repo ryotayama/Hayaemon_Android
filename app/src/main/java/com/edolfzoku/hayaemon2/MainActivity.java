@@ -73,6 +73,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.InputMethodManager;
@@ -361,6 +362,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mBtnArtworkInPlayingBar.setAnimation(false);
         mBtnArtworkInPlayingBar.setClickable(false);
+
+        mDrawerLayout.setScrimColor(Color.argb(102, 0, 0, 0));
     }
 
     @Override
@@ -644,6 +647,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             textView.setText(readChangeLog());
 
             final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+            {
+                @Override
+                public void onShow(DialogInterface arg0)
+                {
+                    if(alertDialog.getWindow() != null) {
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
+                }
+            });
             alertDialog.show();
             Button btnClose = layout.findViewById(R.id.btnClose);
             btnClose.setOnClickListener(new View.OnClickListener() {
@@ -888,7 +903,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 builder.setTitle(R.string.permitMicError);
                 builder.setMessage(R.string.permitMicErrorDetail);
                 builder.setPositiveButton("OK", null);
-                builder.show();
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
+                    }
+                });
+                alertDialog.show();
             }
         }
     }
@@ -1255,6 +1283,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void onShow(DialogInterface arg0)
                         {
+                            if(alertDialog.getWindow() != null) {
+                                WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                                lp.dimAmount = 0.4f;
+                                alertDialog.getWindow().setAttributes(lp);
+                            }
                             editURL.requestFocus();
                             editURL.setSelection(editURL.getText().toString().length());
                             InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -1325,7 +1358,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public void onClick(DialogInterface dialog, int id) {
                 }
             });
-            builder.show();
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+            {
+                @Override
+                public void onShow(DialogInterface arg0)
+                {
+                    if(alertDialog.getWindow() != null) {
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
+                }
+            });
+            alertDialog.show();
         }
         else if(v.getId() == R.id.btnSetting)
         {
@@ -1450,6 +1496,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void onShow(DialogInterface arg0)
                             {
+                                if(alertDialog.getWindow() != null) {
+                                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                                    lp.dimAmount = 0.4f;
+                                    alertDialog.getWindow().setAttributes(lp);
+                                }
                                 Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
                                 negativeButton.setTextColor(Color.argb(255, 255, 0, 0));
                             }

@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,6 +59,12 @@ class BottomMenu extends BottomSheetDialog {
         BottomSheetBehavior behavior = BottomSheetBehavior.from((View) mLinearLayoutParent.getParent());
         behavior.setPeekHeight(context.getResources().getDisplayMetrics().heightPixels - getStatusBarHeight() - (int) (16.0 * mActivity.getDensity()));
         setDialogBorder(this);
+
+        if(getWindow() != null) {
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.dimAmount = 0.4f;
+            getWindow().setAttributes(lp);
+        }
     }
 
     private int getStatusBarHeight(){
