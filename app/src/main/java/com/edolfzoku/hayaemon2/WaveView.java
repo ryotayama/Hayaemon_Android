@@ -199,12 +199,18 @@ public class WaveView extends View {
             if(nTotalWidth + nWidth > nMaxWidth)
                 nWidth = nMaxWidth - nTotalWidth;
             if(nWidth <= 0) break;
-            Bitmap bitmap = Bitmap.createBitmap(nWidth, getHeight(), Bitmap.Config.RGB_565);
-            Canvas canvas = new Canvas(bitmap);
-            canvas.drawColor(Color.WHITE);
-            mBitmaps.add(bitmap);
-            mCanvases.add(canvas);
-            nTotalWidth += nWidth;
+            try {
+                Bitmap bitmap = Bitmap.createBitmap(nWidth, getHeight(), Bitmap.Config.RGB_565);
+                Canvas canvas = new Canvas(bitmap);
+                canvas.drawColor(Color.WHITE);
+                mBitmaps.add(bitmap);
+                mCanvases.add(canvas);
+                nTotalWidth += nWidth;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                break;
+            }
         }
         mTask = new WaveViewTask(this, mTempStream, getWidth(), getHeight(), mZoom, mBitmaps, mCanvases);
         mTask.execute(0);
@@ -347,12 +353,19 @@ public class WaveView extends View {
             int nWidth = getMaxTextureSize();
             if(nTotalWidth + nWidth > nMaxWidth)
                 nWidth = nMaxWidth - nTotalWidth;
-            Bitmap bitmap = Bitmap.createBitmap(nWidth, getHeight(), Bitmap.Config.RGB_565);
-            Canvas canvas = new Canvas(bitmap);
-            canvas.drawColor(Color.WHITE);
-            mBitmaps.add(bitmap);
-            mCanvases.add(canvas);
-            nTotalWidth += nWidth;
+            if(nWidth <= 0) break;
+            try {
+                Bitmap bitmap = Bitmap.createBitmap(nWidth, getHeight(), Bitmap.Config.RGB_565);
+                Canvas canvas = new Canvas(bitmap);
+                canvas.drawColor(Color.WHITE);
+                mBitmaps.add(bitmap);
+                mCanvases.add(canvas);
+                nTotalWidth += nWidth;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                break;
+            }
         }
         mTask = new WaveViewTask(this, mTempStream, getWidth(), getHeight(), mZoom, mBitmaps, mCanvases);
         mTask.execute(0);
