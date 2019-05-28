@@ -2882,6 +2882,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saver.setIncreaseSpeed(mActivity.effectFragment.getIncreaseSpeed());
         saver.setTimeOmDecreaseSpeed(mActivity.effectFragment.getTimeOfDecreaseSpeed());
         saver.setDecreaseSpeed(mActivity.effectFragment.getDecreaseSpeed());
+        saver.setCompGain(mActivity.effectFragment.getCompGain());
+        saver.setCompThreshold(mActivity.effectFragment.getCompThreshold());
+        saver.setCompRatio(mActivity.effectFragment.getCompRatio());
+        saver.setCompAttack(mActivity.effectFragment.getCompRatio());
+        saver.setCompRelease(mActivity.effectFragment.getCompRelease());
         saver.setReverbDry(mActivity.effectFragment.getReverbDry());
         saver.setReverbWet(mActivity.effectFragment.getReverbWet());
         saver.setReverbRoomSize(mActivity.effectFragment.getReverbRoomSize());
@@ -2966,6 +2971,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setIncreaseSpeed(mActivity.effectFragment.getIncreaseSpeed());
             saver.setTimeOmDecreaseSpeed(mActivity.effectFragment.getTimeOfDecreaseSpeed());
             saver.setDecreaseSpeed(mActivity.effectFragment.getDecreaseSpeed());
+            saver.setCompGain(mActivity.effectFragment.getCompGain());
+            saver.setCompThreshold(mActivity.effectFragment.getCompThreshold());
+            saver.setCompRatio(mActivity.effectFragment.getCompRatio());
+            saver.setCompAttack(mActivity.effectFragment.getCompAttack());
+            saver.setCompRelease(mActivity.effectFragment.getCompRelease());
             saver.setReverbDry(mActivity.effectFragment.getReverbDry());
             saver.setReverbWet(mActivity.effectFragment.getReverbWet());
             saver.setReverbRoomSize(mActivity.effectFragment.getReverbRoomSize());
@@ -3044,6 +3054,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mActivity.effectFragment.setIncreaseSpeed(saver.getIncreaseSpeed());
         mActivity.effectFragment.setTimeOfDecreaseSpeed(saver.getTimeOmDecreaseSpeed());
         mActivity.effectFragment.setDecreaseSpeed(saver.getDecreaseSpeed());
+        mActivity.effectFragment.setCompGain(saver.getCompGain(), false);
+        mActivity.effectFragment.setCompThreshold(saver.getCompThreshold(), false);
+        mActivity.effectFragment.setCompRatio(saver.getCompRatio(), false);
+        mActivity.effectFragment.setCompAttack(saver.getCompAttack(), false);
+        mActivity.effectFragment.setCompRelease(saver.getCompRelease(), false);
         mActivity.effectFragment.setReverbDry(saver.getReverbDry(), false);
         mActivity.effectFragment.setReverbWet(saver.getReverbWet(), false);
         mActivity.effectFragment.setReverbRoomSize(saver.getReverbRoomSize(), false);

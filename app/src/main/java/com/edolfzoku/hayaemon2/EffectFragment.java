@@ -72,7 +72,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private int mDspDoubling = 0;
     private int mDspPan = 0;
     private int mDspNormalize = 0;
-    private int mFxCompressor = 0;
+    private int mFxComp = 0;
     private int mDspPhaseReversal = 0;
     private int mFxEcho = 0;
     private int mFxReverb = 0;
@@ -93,11 +93,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private float mIncreaseSpeed = 0.1f;
     private float mTimeOfDecreaseSpeed = 1.0f;
     private float mDecreaseSpeed = 0.1f;
-    private float mReverbDry;
-    private float mReverbWet;
-    private float mReverbRoomSize;
-    private float mReverbDamp;
-    private float mReverbWidth;
+    private float mReverbDry, mReverbWet, mReverbRoomSize, mReverbDamp, mReverbWidth;
+    private float mCompGain, mCompThreshold, mCompRatio, mCompAttack, mCompRelease;
     private static final int EFFECTTYPE_RANDOM = 1;
     private static final int EFFECTTYPE_VOCALCANCEL = 2;
     // private static final int EFFECTTYPE_MONORAL = 3;
@@ -109,45 +106,46 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static final int EFFECTTYPE_TRANSCRIBEBASS = 9;
     private static final int EFFECTTYPE_PAN = 10;
     // private static final int EFFECTTYPE_NORMALIZE = 11;
-    // private static final int EFFECTTYPE_COMPRESSOR = 12;
-    private static final int EFFECTTYPE_FREQUENCY = 13;
-    // private static final int EFFECTTYPE_PHASEREVERSAL = 14;
-    private static final int EFFECTTYPE_ECHO_STADIUM = 15;
-    // private static final int EFFECTTYPE_ECHO_HALL = 16;
-    // private static final int EFFECTTYPE_ECHO_LIVEHOUSE = 17;
-    // private static final int EFFECTTYPE_ECHO_ROOM = 18;
-    // private static final int EFFECTTYPE_ECHO_BATHROOM = 19;
-    // private static final int EFFECTTYPE_ECHO_VOCAL = 20;
-    private static final int EFFECTTYPE_ECHO_MOUNTAIN = 21;
-    private static final int EFFECTTYPE_REVERB_BATHROOM = 22;
-    // private static final int EFFECTTYPE_REVERB_SMALLROOM = 23;
-    // private static final int EFFECTTYPE_REVERB_MEDIUMROOM = 24;
-    // private static final int EFFECTTYPE_REVERB_LARGEROOM = 25;
-    // private static final int EFFECTTYPE_REVERB_CHURCH = 26;
-    // private static final int EFFECTTYPE_REVERB_CATHEDRAL = 27;
-    private static final int EFFECTTYPE_REVERB_CUSTOMIZE = 28;
-    private static final int EFFECTTYPE_CHORUS = 29;
-    private static final int EFFECTTYPE_FLANGER = 30;
-    private static final int EFFECTTYPE_DISTORTION_STRONG = 31;
-    // private static final int EFFECTTYPE_DISTORTION_MIDDLE = 32;
-    private static final int EFFECTTYPE_DISTORTION_WEAK = 33;
-    static final int EFFECTTYPE_REVERSE = 34;
-    private static final int EFFECTTYPE_INCREASESPEED = 35;
-    private static final int EFFECTTYPE_DECREASESPEED = 36;
-    private static final int EFFECTTYPE_OLDRECORD = 37;
-    private static final int EFFECTTYPE_LOWBATTERY = 38;
-    private static final int EFFECTTYPE_NOSENSE_STRONG = 39;
-    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 40;
-    private static final int EFFECTTYPE_NOSENSE_WEAK = 41;
-    private static final int EFFECTTYPE_EARTRAINING = 42;
-    private static final int EFFECTTYPE_METRONOME = 43;
-    private static final int EFFECTTYPE_RECORDNOISE = 44;
-    private static final int EFFECTTYPE_ROAROFWAVES = 45;
-    private static final int EFFECTTYPE_RAIN = 46;
-    private static final int EFFECTTYPE_RIVER = 47;
-    private static final int EFFECTTYPE_WAR = 48;
-    private static final int EFFECTTYPE_FIRE = 49;
-    private static final int EFFECTTYPE_CONCERTHALL = 50;
+    private static final int EFFECTTYPE_COMP = 12;
+    private static final int EFFECTTYPE_COMP_CUSTOMIZE = 13;
+    private static final int EFFECTTYPE_FREQUENCY = 14;
+    // private static final int EFFECTTYPE_PHASEREVERSAL = 15;
+    private static final int EFFECTTYPE_ECHO_STADIUM = 16;
+    // private static final int EFFECTTYPE_ECHO_HALL = 17;
+    // private static final int EFFECTTYPE_ECHO_LIVEHOUSE = 18;
+    // private static final int EFFECTTYPE_ECHO_ROOM = 19;
+    // private static final int EFFECTTYPE_ECHO_BATHROOM = 20;
+    // private static final int EFFECTTYPE_ECHO_VOCAL = 21;
+    private static final int EFFECTTYPE_ECHO_MOUNTAIN = 22;
+    private static final int EFFECTTYPE_REVERB_BATHROOM = 23;
+    // private static final int EFFECTTYPE_REVERB_SMALLROOM = 24;
+    // private static final int EFFECTTYPE_REVERB_MEDIUMROOM = 25;
+    // private static final int EFFECTTYPE_REVERB_LARGEROOM = 26;
+    // private static final int EFFECTTYPE_REVERB_CHURCH = 27;
+    // private static final int EFFECTTYPE_REVERB_CATHEDRAL = 28;
+    private static final int EFFECTTYPE_REVERB_CUSTOMIZE = 29;
+    private static final int EFFECTTYPE_CHORUS = 30;
+    private static final int EFFECTTYPE_FLANGER = 31;
+    private static final int EFFECTTYPE_DISTORTION_STRONG = 32;
+    // private static final int EFFECTTYPE_DISTORTION_MIDDLE = 33;
+    private static final int EFFECTTYPE_DISTORTION_WEAK = 34;
+    static final int EFFECTTYPE_REVERSE = 35;
+    private static final int EFFECTTYPE_INCREASESPEED = 36;
+    private static final int EFFECTTYPE_DECREASESPEED = 37;
+    private static final int EFFECTTYPE_OLDRECORD = 38;
+    private static final int EFFECTTYPE_LOWBATTERY = 39;
+    private static final int EFFECTTYPE_NOSENSE_STRONG = 40;
+    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 41;
+    private static final int EFFECTTYPE_NOSENSE_WEAK = 42;
+    private static final int EFFECTTYPE_EARTRAINING = 43;
+    private static final int EFFECTTYPE_METRONOME = 44;
+    private static final int EFFECTTYPE_RECORDNOISE = 45;
+    private static final int EFFECTTYPE_ROAROFWAVES = 46;
+    private static final int EFFECTTYPE_RAIN = 47;
+    private static final int EFFECTTYPE_RIVER = 48;
+    private static final int EFFECTTYPE_WAR = 49;
+    private static final int EFFECTTYPE_FIRE = 50;
+    private static final int EFFECTTYPE_CONCERTHALL = 51;
     private Timer mTimer;
     private int mSEStream;
     private int mSEStream2;
@@ -160,12 +158,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private boolean mContinueFlag = true;
     private final Handler mHandlerLongClick;
 
-    private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth;
+    private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth;
     private EditText mEditSpeedEffectDetail, mEditTimeEffectDetail;
     private RelativeLayout mRelativeEffectDetail, mRelativeEffect, mRelativeSliderEffectDatail, mRelativeRollerEffectDetail;
-    private SeekBar mSeekEffectDetail, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth;
-    private ImageButton mBtnEffectMinus, mBtnEffectPlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus;
-    private ScrollView mScrollReverbCustomize;
+    private SeekBar mSeekEffectDetail, mSeekCompGain, mSeekCompThreshold, mSeekCompRatio, mSeekCompAttack, mSeekCompRelease, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth;
+    private ImageButton mBtnEffectMinus, mBtnEffectPlus, mBtnCompGainMinus, mBtnCompGainPlus, mBtnCompThresholdMinus, mBtnCompThresholdPlus, mBtnCompRatioMinus, mBtnCompRatioPlus, mBtnCompAttackMinus, mBtnCompAttackPlus, mBtnCompReleaseMinus, mBtnCompReleasePlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus;
+    private ScrollView mScrollCompCustomize, mScrollReverbCustomize;
 
     public void setPeak(float peak) { mPeak = peak; }
     public float getTimeOfIncreaseSpeed() { return mTimeOfIncreaseSpeed; }
@@ -192,6 +190,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_DECREASESPEED).getEffectName()))
             mEditSpeedEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%%", mDecreaseSpeed));
     }
+    public float getCompGain() { return mCompGain; }
+    public float getCompThreshold() { return mCompThreshold; }
+    public float getCompRatio() { return mCompRatio; }
+    public float getCompAttack() { return mCompAttack; }
+    public float getCompRelease() { return mCompRelease; }
     public float getReverbDry() { return mReverbDry; }
     public float getReverbWet() { return mReverbWet; }
     public float getReverbRoomSize() { return mReverbRoomSize; }
@@ -337,6 +340,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
         else if (v.getId() == R.id.btnEffectMinus) minusValue();
         else if (v.getId() == R.id.btnEffectPlus) plusValue();
+        else if(v.getId() == R.id.btnCompGainMinus) minusCompGain();
+        else if(v.getId() == R.id.btnCompGainPlus) plusCompGain();
+        else if(v.getId() == R.id.btnCompThresholdMinus) minusCompThreshold();
+        else if(v.getId() == R.id.btnCompThresholdPlus) plusCompThreshold();
+        else if(v.getId() == R.id.btnCompRatioMinus) minusCompRatio();
+        else if(v.getId() == R.id.btnCompRatioPlus) plusCompRatio();
+        else if(v.getId() == R.id.btnCompAttackMinus) minusCompAttack();
+        else if(v.getId() == R.id.btnCompAttackPlus) plusCompAttack();
+        else if(v.getId() == R.id.btnCompReleaseMinus) minusCompRelease();
+        else if(v.getId() == R.id.btnCompReleasePlus) plusCompRelease();
+        else if(v.getId() == R.id.btnResetComp) resetComp();
         else if(v.getId() == R.id.btnReverbDryMinus) minusReverbDry();
         else if(v.getId() == R.id.btnReverbDryPlus) plusReverbDry();
         else if(v.getId() == R.id.btnReverbWetMinus) minusReverbWet();
@@ -360,6 +374,116 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
         else if (v.getId() == R.id.btnEffectPlus) {
             mHandlerLongClick.post(repeatPlusValue);
+            return true;
+        }
+        else if (v.getId() == R.id.btnCompGainMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusCompGain();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnCompGainPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusCompGain();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnCompThresholdMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusCompThreshold();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnCompThresholdPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusCompThreshold();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnCompRatioMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusCompRatio();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnCompRatioPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusCompRatio();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnCompAttackMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusCompAttack();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnCompAttackPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusCompAttack();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnCompReleaseMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusCompRelease();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnCompReleasePlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusCompRelease();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
             return true;
         }
         else if (v.getId() == R.id.btnReverbDryMinus) {
@@ -671,6 +795,27 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mTextEffectLabel = mActivity.findViewById(R.id.textEffectLabel);
         mRelativeSliderEffectDatail = mActivity.findViewById(R.id.relativeSliderEffectDatail);
         mRelativeRollerEffectDetail = mActivity.findViewById(R.id.relativeRollerEffectDatail);
+        mScrollCompCustomize = mActivity.findViewById(R.id.scrollCompCustomize);
+        mSeekCompGain = mActivity.findViewById(R.id.seekCompGain);
+        mSeekCompThreshold = mActivity.findViewById(R.id.seekCompThreshold);
+        mSeekCompRatio = mActivity.findViewById(R.id.seekCompRatio);
+        mSeekCompAttack = mActivity.findViewById(R.id.seekCompAttack);
+        mSeekCompRelease = mActivity.findViewById(R.id.seekCompRelease);
+        mTextCompGain = mActivity.findViewById(R.id.textCompGain);
+        mTextCompThreshold = mActivity.findViewById(R.id.textCompThreshold);
+        mTextCompRatio = mActivity.findViewById(R.id.textCompRatio);
+        mTextCompAttack = mActivity.findViewById(R.id.textCompAttack);
+        mTextCompRelease = mActivity.findViewById(R.id.textCompRelease);
+        mBtnCompGainMinus = mActivity.findViewById(R.id.btnCompGainMinus);
+        mBtnCompGainPlus = mActivity.findViewById(R.id.btnCompGainPlus);
+        mBtnCompThresholdMinus = mActivity.findViewById(R.id.btnCompThresholdMinus);
+        mBtnCompThresholdPlus = mActivity.findViewById(R.id.btnCompThresholdPlus);
+        mBtnCompRatioMinus = mActivity.findViewById(R.id.btnCompRatioMinus);
+        mBtnCompRatioPlus = mActivity.findViewById(R.id.btnCompRatioPlus);
+        mBtnCompAttackMinus = mActivity.findViewById(R.id.btnCompAttackMinus);
+        mBtnCompAttackPlus = mActivity.findViewById(R.id.btnCompAttackPlus);
+        mBtnCompReleaseMinus = mActivity.findViewById(R.id.btnCompReleaseMinus);
+        mBtnCompReleasePlus = mActivity.findViewById(R.id.btnCompReleasePlus);
         mScrollReverbCustomize = mActivity.findViewById(R.id.scrollReverbCustomize);
         mSeekReverbDry = mActivity.findViewById(R.id.seekReverbDry);
         mSeekReverbWet = mActivity.findViewById(R.id.seekReverbWet);
@@ -694,8 +839,19 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnReverbWidthPlus = mActivity.findViewById(R.id.btnReverbWidthPlus);
         RecyclerView recyclerEffects = mActivity.findViewById(R.id.recyclerEffects);
         Button mBtnFinith = mActivity.findViewById(R.id.btnFinish);
+        Button btnResetComp = mActivity.findViewById(R.id.btnResetComp);
         Button btnResetReverb = mActivity.findViewById(R.id.btnResetReverb);
 
+        mSeekCompGain.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekCompThreshold.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekCompRatio.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekCompAttack.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekCompRelease.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekCompGain.setOnSeekBarChangeListener(this);
+        mSeekCompThreshold.setOnSeekBarChangeListener(this);
+        mSeekCompRatio.setOnSeekBarChangeListener(this);
+        mSeekCompAttack.setOnSeekBarChangeListener(this);
+        mSeekCompRelease.setOnSeekBarChangeListener(this);
         mSeekReverbDry.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
         mSeekReverbWet.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
         mSeekReverbRoomSize.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
@@ -731,7 +887,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.normalize), false);
         mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.compressor), false);
+        item = new EffectItem(getString(R.string.comp), false);
+        mEffectItems.add(item);
+        item = new EffectItem(getString(R.string.compCustomize), true);
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.frequency), true);
         mEffectItems.add(item);
@@ -821,6 +979,37 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnEffectPlus.setOnClickListener(this);
         mBtnEffectPlus.setOnLongClickListener(this);
         mBtnEffectPlus.setOnTouchListener(this);
+        mBtnCompGainMinus.setOnClickListener(this);
+        mBtnCompGainMinus.setOnLongClickListener(this);
+        mBtnCompGainMinus.setOnTouchListener(this);
+        mBtnCompGainPlus.setOnClickListener(this);
+        mBtnCompGainPlus.setOnLongClickListener(this);
+        mBtnCompGainPlus.setOnTouchListener(this);
+        mBtnCompThresholdMinus.setOnClickListener(this);
+        mBtnCompThresholdMinus.setOnLongClickListener(this);
+        mBtnCompThresholdMinus.setOnTouchListener(this);
+        mBtnCompThresholdPlus.setOnClickListener(this);
+        mBtnCompThresholdPlus.setOnLongClickListener(this);
+        mBtnCompThresholdPlus.setOnTouchListener(this);
+        mBtnCompRatioMinus.setOnClickListener(this);
+        mBtnCompRatioMinus.setOnLongClickListener(this);
+        mBtnCompRatioMinus.setOnTouchListener(this);
+        mBtnCompRatioPlus.setOnClickListener(this);
+        mBtnCompRatioPlus.setOnLongClickListener(this);
+        mBtnCompRatioPlus.setOnTouchListener(this);
+        mBtnCompAttackMinus.setOnClickListener(this);
+        mBtnCompAttackMinus.setOnLongClickListener(this);
+        mBtnCompAttackMinus.setOnTouchListener(this);
+        mBtnCompAttackPlus.setOnClickListener(this);
+        mBtnCompAttackPlus.setOnLongClickListener(this);
+        mBtnCompAttackPlus.setOnTouchListener(this);
+        mBtnCompReleaseMinus.setOnClickListener(this);
+        mBtnCompReleaseMinus.setOnLongClickListener(this);
+        mBtnCompReleaseMinus.setOnTouchListener(this);
+        mBtnCompReleasePlus.setOnClickListener(this);
+        mBtnCompReleasePlus.setOnLongClickListener(this);
+        mBtnCompReleasePlus.setOnTouchListener(this);
+        btnResetComp.setOnClickListener(this);
         mBtnReverbDryMinus.setOnClickListener(this);
         mBtnReverbDryMinus.setOnLongClickListener(this);
         mBtnReverbDryMinus.setOnTouchListener(this);
@@ -859,6 +1048,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mEffectItems.get(0).setSelected(true);
         mEffectsAdapter.notifyItemChanged(0);
 
+        setCompGain(200, false);
+        setCompThreshold(4000, false);
+        setCompRatio(900, false);
+        setCompAttack(119, false);
+        setCompRelease(39999, false);
         setReverbDry(70, false);
         setReverbWet(100, false);
         setReverbRoomSize(85, false);
@@ -945,11 +1139,25 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setIncreaseSpeed(0.1f);
         setTimeOfDecreaseSpeed(1.0f);
         setDecreaseSpeed(0.1f);
+        setCompGain(200, false);
+        setCompThreshold(4000, false);
+        setCompRatio(900, false);
+        setCompAttack(119, false);
+        setCompRelease(39999, false);
         setReverbDry(70, false);
         setReverbWet(100, false);
         setReverbRoomSize(85, false);
         setReverbDamp(50, false);
         setReverbWidth(90, false);
+    }
+
+    private void resetComp()
+    {
+        setCompGain(200, true);
+        setCompThreshold(4000, true);
+        setCompRatio(900, true);
+        setCompAttack(119, true);
+        setCompRelease(39999, true);
     }
 
     private void resetReverb()
@@ -1071,16 +1279,25 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if(nEffect == EFFECTTYPE_INCREASESPEED || nEffect == EFFECTTYPE_DECREASESPEED) {
             mRelativeSliderEffectDatail.setVisibility(View.GONE);
             mRelativeRollerEffectDetail.setVisibility(View.VISIBLE);
+            mScrollCompCustomize.setVisibility(View.GONE);
+            mScrollReverbCustomize.setVisibility(View.GONE);
+        }
+        else if(nEffect == EFFECTTYPE_COMP_CUSTOMIZE) {
+            mRelativeSliderEffectDatail.setVisibility(View.GONE);
+            mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mScrollCompCustomize.setVisibility(View.VISIBLE);
             mScrollReverbCustomize.setVisibility(View.GONE);
         }
         else if(nEffect == EFFECTTYPE_REVERB_CUSTOMIZE) {
             mRelativeSliderEffectDatail.setVisibility(View.GONE);
             mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mScrollCompCustomize.setVisibility(View.GONE);
             mScrollReverbCustomize.setVisibility(View.VISIBLE);
         }
         else {
             mRelativeSliderEffectDatail.setVisibility(View.VISIBLE);
             mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mScrollCompCustomize.setVisibility(View.GONE);
             mScrollReverbCustomize.setVisibility(View.GONE);
             mSeekEffectDetail.setOnSeekBarChangeListener(this);
         }
@@ -1169,11 +1386,181 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             mActivity.playlistFragment.updateSavingEffect();
         }
+        else if(seekBar.getId() == R.id.seekCompGain) setCompGain(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekCompThreshold) setCompThreshold(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekCompRatio) setCompRatio(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekCompAttack) setCompAttack(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekCompRelease) setCompRelease(progress, fromTouch);
         else if(seekBar.getId() == R.id.seekReverbDry) setReverbDry(progress, fromTouch);
         else if(seekBar.getId() == R.id.seekReverbWet) setReverbWet(progress, fromTouch);
         else if(seekBar.getId() == R.id.seekReverbRoomSize) setReverbRoomSize(progress, fromTouch);
         else if(seekBar.getId() == R.id.seekReverbDamp) setReverbDamp(progress, fromTouch);
         else if(seekBar.getId() == R.id.seekReverbWidth) setReverbWidth(progress, fromTouch);
+    }
+
+    private void updateComp()
+    {
+        if(!mEffectItems.get(EFFECTTYPE_COMP_CUSTOMIZE).isSelected() || MainActivity.sStream == 0)
+            return;
+        if(mFxComp == 0) mFxComp = BASS.BASS_ChannelSetFX(MainActivity.sStream, BASS_FX.BASS_FX_BFX_COMPRESSOR2, 2);
+        BASS_FX.BASS_BFX_COMPRESSOR2 p = new BASS_FX.BASS_BFX_COMPRESSOR2();
+        p.fGain = mCompGain;
+        p.fThreshold = mCompThreshold;
+        p.fRatio = mCompRatio;
+        p.fAttack = mCompAttack;
+        p.fRelease = mCompRelease;
+        p.lChannel = BASS_FX.BASS_BFX_CHANALL;
+        BASS.BASS_FXSetParameters(mFxComp, p);
+    }
+
+    public void setCompGain(int nValue, boolean bSave)
+    {
+        mCompGain = nValue / 100.0f;
+        mTextCompGain.setText(String.format(Locale.getDefault(), "%.2f", mCompGain));
+        mSeekCompGain.setProgress(nValue);
+        updateComp();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setCompGain(float fValue, boolean bSave)
+    {
+        mCompGain = fValue;
+        mTextCompGain.setText(String.format(Locale.getDefault(), "%.2f", mCompGain));
+        mSeekCompGain.setProgress((int)(fValue * 100.0f));
+        updateComp();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setCompThreshold(int nValue, boolean bSave)
+    {
+        mCompThreshold = (nValue - 6000) / 100.0f;
+        mTextCompThreshold.setText(String.format(Locale.getDefault(), "%.2f", mCompThreshold));
+        mSeekCompThreshold.setProgress(nValue);
+        updateComp();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setCompThreshold(float fValue, boolean bSave)
+    {
+        mCompThreshold = fValue;
+        mTextCompThreshold.setText(String.format(Locale.getDefault(), "%.2f", mCompThreshold));
+        mSeekCompThreshold.setProgress((int)(fValue * 100.0f) + 6000);
+        updateComp();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setCompRatio(int nValue, boolean bSave)
+    {
+        mCompRatio = (nValue + 100) / 100.0f;
+        mTextCompRatio.setText(String.format(Locale.getDefault(), "%.2f", mCompRatio));
+        mSeekCompRatio.setProgress(nValue);
+        updateComp();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setCompRatio(float fValue, boolean bSave)
+    {
+        mCompRatio = fValue;
+        mTextCompRatio.setText(String.format(Locale.getDefault(), "%.2f", mCompRatio));
+        mSeekCompRatio.setProgress((int)(fValue * 100.0f) - 100);
+        updateComp();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setCompAttack(int nValue, boolean bSave)
+    {
+        mCompAttack = (nValue + 1) / 100.0f;
+        mTextCompAttack.setText(String.format(Locale.getDefault(), "%.2f", mCompAttack));
+        mSeekCompAttack.setProgress(nValue);
+        updateComp();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setCompAttack(float fValue, boolean bSave)
+    {
+        mCompAttack = fValue;
+        mTextCompAttack.setText(String.format(Locale.getDefault(), "%.2f", mCompAttack));
+        mSeekCompAttack.setProgress((int)(fValue * 100.0f) - 1);
+        updateComp();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setCompRelease(int nValue, boolean bSave)
+    {
+        mCompRelease = (nValue + 1) / 100.0f;
+        mTextCompRelease.setText(String.format(Locale.getDefault(), "%.2f", mCompRelease));
+        mSeekCompRelease.setProgress(nValue);
+        updateComp();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setCompRelease(float fValue, boolean bSave)
+    {
+        mCompRelease = fValue;
+        mTextCompRelease.setText(String.format(Locale.getDefault(), "%.2f", mCompRelease));
+        mSeekCompRelease.setProgress((int)(fValue * 100.0f) - 1);
+        updateComp();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    private void minusCompGain() {
+        int nValue = mSeekCompGain.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setCompGain(nValue, true);
+    }
+
+    private void plusCompGain() {
+        int nValue = mSeekCompGain.getProgress() + 1;
+        if(nValue > mSeekCompGain.getMax()) nValue = mSeekCompGain.getMax();
+        setCompGain(nValue, true);
+    }
+
+    private void minusCompThreshold() {
+        int nValue = mSeekCompThreshold.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setCompThreshold(nValue, true);
+    }
+
+    private void plusCompThreshold() {
+        int nValue = mSeekCompThreshold.getProgress() + 1;
+        if(nValue > mSeekCompThreshold.getMax()) nValue = mSeekCompThreshold.getMax();
+        setCompThreshold(nValue, true);
+    }
+
+    private void minusCompRatio() {
+        int nValue = mSeekCompRatio.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setCompRatio(nValue, true);
+    }
+
+    private void plusCompRatio() {
+        int nValue = mSeekCompRatio.getProgress() + 1;
+        if(nValue > mSeekCompRatio.getMax()) nValue = mSeekCompRatio.getMax();
+        setCompRatio(nValue, true);
+    }
+
+    private void minusCompAttack() {
+        int nValue = mSeekCompAttack.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setCompAttack(nValue, true);
+    }
+
+    private void plusCompAttack() {
+        int nValue = mSeekCompAttack.getProgress() + 1;
+        if(nValue > mSeekCompAttack.getMax()) nValue = mSeekCompAttack.getMax();
+        setCompAttack(nValue, true);
+    }
+
+    private void minusCompRelease() {
+        int nValue = mSeekCompRelease.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setCompRelease(nValue, true);
+    }
+
+    private void plusCompRelease() {
+        int nValue = mSeekCompRelease.getProgress() + 1;
+        if(nValue > mSeekCompRelease.getMax()) nValue = mSeekCompRelease.getMax();
+        setCompRelease(nValue, true);
     }
 
     private void updateReverb()
@@ -1415,6 +1802,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 if (nSelect != EFFECTTYPE_NOSENSE_MIDDLE) deselectEffect(EFFECTTYPE_NOSENSE_MIDDLE);
                 if (nSelect != EFFECTTYPE_NOSENSE_WEAK) deselectEffect(EFFECTTYPE_NOSENSE_WEAK);
             }
+            if(EFFECTTYPE_COMP <= nSelect && nSelect <= EFFECTTYPE_COMP_CUSTOMIZE)
+            {
+                for(int i = EFFECTTYPE_COMP; i <= EFFECTTYPE_COMP_CUSTOMIZE; i++)
+                    if(i != nSelect) deselectEffect(i);
+            }
             if(EFFECTTYPE_ECHO_STADIUM <= nSelect && nSelect <= EFFECTTYPE_ECHO_MOUNTAIN)
             {
                 for(int i = EFFECTTYPE_ECHO_STADIUM; i <= EFFECTTYPE_ECHO_MOUNTAIN; i++)
@@ -1525,10 +1917,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             BASS.BASS_ChannelRemoveDSP(sStream, mDspNormalize);
             mDspNormalize = 0;
         }
-        if(mFxCompressor != 0)
+        if(mFxComp != 0)
         {
-            BASS.BASS_ChannelRemoveFX(sStream, mFxCompressor);
-            mFxCompressor = 0;
+            BASS.BASS_ChannelRemoveFX(sStream, mFxComp);
+            mFxComp = 0;
         }
         if(mDspPhaseReversal != 0)
         {
@@ -1654,8 +2046,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 } else mPeak = song.getPeak();
                 mDspNormalize = BASS.BASS_ChannelSetDSP(sStream, normalizeDSP, this, 0);
             }
-            else if(strEffect.equals(getString(R.string.compressor))) {
-                mFxCompressor = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_COMPRESSOR2, 2);
+            else if(strEffect.equals(getString(R.string.comp))) {
+                mFxComp = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_COMPRESSOR2, 2);
                 BASS_FX.BASS_BFX_COMPRESSOR2 p = new BASS_FX.BASS_BFX_COMPRESSOR2();
                 p.fGain = 2.0f;
                 p.fThreshold = -20.0f;
@@ -1663,7 +2055,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 p.fAttack = 1.2f;
                 p.fRelease = 400.0f;
                 p.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxCompressor, p);
+                BASS.BASS_FXSetParameters(mFxComp, p);
+            }
+            else if(strEffect.equals(getString(R.string.compCustomize))) {
+                mFxComp = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_COMPRESSOR2, 2);
+                BASS_FX.BASS_BFX_COMPRESSOR2 p = new BASS_FX.BASS_BFX_COMPRESSOR2();
+                p.fGain = mCompGain;
+                p.fThreshold = mCompThreshold;
+                p.fRatio = mCompRatio;
+                p.fAttack = mCompAttack;
+                p.fRelease = mCompRelease;
+                p.lChannel = BASS_FX.BASS_BFX_CHANALL;
+                BASS.BASS_FXSetParameters(mFxComp, p);
             }
             else if(strEffect.equals(getString(R.string.frequency)))
                 BASS.BASS_ChannelSetAttribute(sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * mFreq);

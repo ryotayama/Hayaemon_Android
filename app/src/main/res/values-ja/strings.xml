@@ -17,7 +17,13 @@
     <string name="transcribeBassOctave">ベースの耳コピ（オクターブ上げ）</string>
     <string name="pan">パン（左右バランス）</string>
     <string name="normalize">ノーマライズ</string>
-    <string name="compressor">コンプレッサー</string>
+    <string name="comp">コンプレッサー</string>
+    <string name="compCustomize">コンプレッサー（カスタマイズ）</string>
+    <string name="gain">音量の増幅（dB）</string>
+    <string name="threshold">圧縮の開始音量（dB）</string>
+    <string name="ratio">圧縮率</string>
+    <string name="attack">開始反応時間（ミリ秒）</string>
+    <string name="release">終了反応時間（ミリ秒）</string>
     <string name="frequency">再生周波数</string>
     <string name="phaseReversal">位相反転</string>
     <string name="studiumEcho">スタジアムエコー</string>

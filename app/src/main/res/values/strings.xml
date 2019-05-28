@@ -17,7 +17,13 @@
     <string name="transcribeBassOctave">Transcribe Bass (Octave up)</string>
     <string name="pan">Pan</string>
     <string name="normalize">Normalize</string>
-    <string name="compressor">Compressor</string>
+    <string name="comp">Compressor</string>
+    <string name="compCustomize">Compressor (Customize)</string>
+    <string name="gain">Gain (dB)</string>
+    <string name="threshold">Threshold (dB)</string>
+    <string name="ratio">Ratio</string>
+    <string name="attack">Attack (ms)</string>
+    <string name="release">Release (ms)</string>
     <string name="frequency">Frequency</string>
     <string name="phaseReversal">Phase Reversal</string>
     <string name="studiumEcho">Stadium Echo</string>

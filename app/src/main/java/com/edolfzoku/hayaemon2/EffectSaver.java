@@ -76,6 +76,7 @@ class EffectSaver {
     private float mReverbRoomSize = 0.85f;
     private float mReverbDamp = 0.5f;
     private float mReverbWidth = 0.9f;
+    private float mCompGain = 2.0f, mCompThreshold = -20.0f, mCompRatio = 10.0f, mCompAttack = 1.2f, mCompRelease = 400.0f;
     private boolean bABLoop = false;
     private boolean bLoop = false;
     private boolean bLoopA = false;
@@ -146,6 +147,11 @@ class EffectSaver {
     void setIncreaseSpeed(float mIncreaseSpeed) { this.mIncreaseSpeed = mIncreaseSpeed; }
     void setTimeOmDecreaseSpeed(float mTimeOmDecreaseSpeed) { this.mTimeOmDecreaseSpeed = mTimeOmDecreaseSpeed; }
     void setDecreaseSpeed(float mDecreaseSpeed) { this.mDecreaseSpeed = mDecreaseSpeed; }
+    void setCompGain(float compGain) { mCompGain = compGain; }
+    void setCompThreshold(float compThreshold) { mCompThreshold = compThreshold; }
+    void setCompRatio(float compRatio) { mCompRatio = compRatio; }
+    void setCompAttack(float compAttack) { mCompAttack = compAttack; }
+    void setCompRelease(float compRelease) { mCompRelease = compRelease; }
     void setReverbDry(float reverbDry) { mReverbDry = reverbDry; }
     void setReverbWet(float reverbWet) { mReverbWet = reverbWet; }
     void setReverbRoomSize(float reverbRoomSize) { mReverbRoomSize = reverbRoomSize; }
@@ -210,6 +216,11 @@ class EffectSaver {
     float getIncreaseSpeed() { return mIncreaseSpeed; }
     float getTimeOmDecreaseSpeed() { return mTimeOmDecreaseSpeed; }
     float getDecreaseSpeed() { return mDecreaseSpeed; }
+    float getCompGain() { return mCompGain; }
+    float getCompThreshold() { return mCompThreshold; }
+    float getCompRatio() { return mCompRatio; }
+    float getCompAttack() { return mCompAttack; }
+    float getCompRelease() { return mCompRelease; }
     float getReverbDry() { return mReverbDry; }
     float getReverbWet() { return mReverbWet; }
     float getReverbRoomSize() { return mReverbRoomSize; }
@@ -279,6 +290,11 @@ class EffectSaver {
         mIncreaseSpeed = saver.mIncreaseSpeed;
         mTimeOmDecreaseSpeed = saver.mTimeOmDecreaseSpeed;
         mDecreaseSpeed = saver.mDecreaseSpeed;
+        mCompGain = saver.mCompGain;
+        mCompThreshold = saver.mCompThreshold;
+        mCompRatio = saver.mCompRatio;
+        mCompAttack = saver.mCompAttack;
+        mCompRelease = saver.mCompRelease;
         mReverbDry = saver.mReverbDry;
         mReverbWet = saver.mReverbWet;
         mReverbRoomSize = saver.mReverbRoomSize;
