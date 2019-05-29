@@ -57,6 +57,12 @@
     <string name="distortionStrong">ディストーション（強）</string>
     <string name="distortionMiddle">ディストーション（中）</string>
     <string name="distortionWeak">ディストーション（弱）</string>
+    <string name="distortionCustomize">ディストーション（カスタマイズ）</string>
+    <string name="distortionDrive">歪み具合</string>
+    <string name="distortionDry">原音</string>
+    <string name="distortionWet">歪み音</string>
+    <string name="distortionFeedback">フィードバック</string>
+    <string name="distortionVolume">音量</string>
     <string name="reverse">逆回転再生</string>
     <string name="increaseSpeed">だんだん速く</string>
     <string name="decreaseSpeed">だんだん遅く</string>

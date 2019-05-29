@@ -74,6 +74,7 @@ class EffectSaver {
     private float mCompGain = 2.0f, mCompThreshold = -20.0f, mCompRatio = 10.0f, mCompAttack = 1.2f, mCompRelease = 400.0f;
     private float mReverbDry = 0.7f, mReverbWet = 1.0f, mReverbRoomSize = 0.85f, mReverbDamp = 0.5f, mReverbWidth = 0.9f;
     private float mChorusDry = 1.0f, mChorusWet = 0.1f, mChorusFeedback = 0.5f, mChorusMinSweep = 1.0f, mChorusMaxSweep = 2.0f, mChorusRate = 10.0f;
+    private float mDistortionDrive = 0.2f, mDistortionDry = 0.95f, mDistortionWet = 0.05f, mDistortionFeedback = 0.1f, mDistortionVolume = 1.0f;
     private boolean bABLoop = false;
     private boolean bLoop = false;
     private boolean bLoopA = false;
@@ -160,6 +161,11 @@ class EffectSaver {
     void setChorusMinSweep(float chorusMinSweep) { mChorusMinSweep = chorusMinSweep; }
     void setChorusMaxSweep(float chorusMaxSweep) { mChorusMaxSweep = chorusMaxSweep; }
     void setChorusRate(float chorusRate) { mChorusRate = chorusRate; }
+    void setDistortionDrive(float distortionDrive) { mDistortionDrive = distortionDrive; }
+    void setDistortionDry(float distortionDry) { mDistortionDry = distortionDry; }
+    void setDistortionWet(float distortionWet) { mDistortionWet = distortionWet; }
+    void setDistortionFeedback(float distortionFeedback) { mDistortionFeedback = distortionFeedback; }
+    void setDistortionVolume(float distortionVolume) { mDistortionVolume = distortionVolume; }
     void setIsABLoop(boolean bABLoop) { this.bABLoop = bABLoop; }
     void setIsLoopA(boolean bLoopA) { this.bLoopA = bLoopA; }
     void setLoopA(double dLoopA) { this.dLoopA = dLoopA; }
@@ -235,6 +241,11 @@ class EffectSaver {
     float getChorusMinSweep() { return mChorusMinSweep; }
     float getChorusMaxSweep() { return mChorusMaxSweep; }
     float getChorusRate() { return mChorusRate; }
+    float getDistortionDrive() { return mDistortionDrive; }
+    float getDistortionDry() { return mDistortionDry; }
+    float getDistortionWet() { return mDistortionWet; }
+    float getDistortionFeedback() { return mDistortionFeedback; }
+    float getDistortionVolume() { return mDistortionVolume; }
     boolean isABLoop() { return bABLoop; }
     boolean isLoopA() { return bLoopA; }
     double getLoopA() { return dLoopA; }
@@ -315,6 +326,11 @@ class EffectSaver {
         mChorusMinSweep = saver.mChorusMinSweep;
         mChorusMaxSweep = saver.mChorusMaxSweep;
         mChorusRate = saver.mChorusRate;
+        mDistortionDrive = saver.mDistortionDrive;
+        mDistortionDry = saver.mDistortionDry;
+        mDistortionWet = saver.mDistortionWet;
+        mDistortionFeedback = saver.mDistortionFeedback;
+        mDistortionVolume = saver.mDistortionVolume;
         bABLoop = saver.bABLoop;
         bLoop = saver.bLoop;
         bLoopA = saver.bLoopA;

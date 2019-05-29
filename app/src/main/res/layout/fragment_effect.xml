@@ -1679,6 +1679,466 @@
 
         </ScrollView>
 
+        <ScrollView
+            android:id="@+id/scrollDistortionCustomize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/viewSepEffect"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:background="#FFF"
+                >
+
+                <TextView
+                    android:id="@+id/textDistortionDriveLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/distortionDrive"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_alignParentTop="true"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderDistortionDrive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textDistortionDriveLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekDistortionDrive"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="500"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textDistortionDrive"
+                        android:layout_toStartOf="@id/textDistortionDrive"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textDistortionDrive"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnDistortionDriveMinus"
+                        android:layout_toStartOf="@+id/btnDistortionDriveMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnDistortionDriveMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnDistortionDrivePlus"
+                        android:layout_toStartOf="@+id/btnDistortionDrivePlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnDistortionDrivePlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textDistortionDryLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/distortionDry"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderDistortionDrive"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderDistortionDry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textDistortionDryLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekDistortionDry"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="500"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textDistortionDry"
+                        android:layout_toStartOf="@id/textDistortionDry"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textDistortionDry"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnDistortionDryMinus"
+                        android:layout_toStartOf="@+id/btnDistortionDryMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnDistortionDryMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnDistortionDryPlus"
+                        android:layout_toStartOf="@+id/btnDistortionDryPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnDistortionDryPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textDistortionWetLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/distortionWet"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderDistortionDry"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderDistortionWet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textDistortionWetLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekDistortionWet"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="500"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textDistortionWet"
+                        android:layout_toStartOf="@id/textDistortionWet"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textDistortionWet"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnDistortionWetMinus"
+                        android:layout_toStartOf="@+id/btnDistortionWetMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnDistortionWetMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnDistortionWetPlus"
+                        android:layout_toStartOf="@+id/btnDistortionWetPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnDistortionWetPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textDistortionFeedbackLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/distortionFeedback"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderDistortionWet"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderDistortionFeedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textDistortionFeedbackLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekDistortionFeedback"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="100"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textDistortionFeedback"
+                        android:layout_toStartOf="@id/textDistortionFeedback"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textDistortionFeedback"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnDistortionFeedbackMinus"
+                        android:layout_toStartOf="@+id/btnDistortionFeedbackMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnDistortionFeedbackMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnDistortionFeedbackPlus"
+                        android:layout_toStartOf="@+id/btnDistortionFeedbackPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnDistortionFeedbackPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textDistortionVolumeLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/distortionVolume"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderDistortionFeedback"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderDistortionVolume"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textDistortionVolumeLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekDistortionVolume"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="200"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textDistortionVolume"
+                        android:layout_toStartOf="@id/textDistortionVolume"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textDistortionVolume"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnDistortionVolumeMinus"
+                        android:layout_toStartOf="@+id/btnDistortionVolumeMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnDistortionVolumeMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnDistortionVolumePlus"
+                        android:layout_toStartOf="@+id/btnDistortionVolumePlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnDistortionVolumePlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btnResetDistortion"
+                    android:text="@string/reset"
+                    android:textSize="12sp"
+                    android:textColor="#007AFF"
+                    android:background="@drawable/resetbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="30dp"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/relativeSliderDistortionVolume"
+                    />
+
+            </RelativeLayout>
+
+        </ScrollView>
+
     </RelativeLayout>
 
     <RelativeLayout

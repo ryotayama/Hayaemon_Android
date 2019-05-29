@@ -96,6 +96,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private float mCompGain, mCompThreshold, mCompRatio, mCompAttack, mCompRelease;
     private float mReverbDry, mReverbWet, mReverbRoomSize, mReverbDamp, mReverbWidth;
     private float mChorusDry, mChorusWet, mChorusFeedback, mChorusMinSweep, mChorusMaxSweep, mChorusRate;
+    private float mDistortionDrive, mDistortionDry, mDistortionWet, mDistortionFeedback, mDistortionVolume;
     private static final int EFFECTTYPE_RANDOM = 1;
     private static final int EFFECTTYPE_VOCALCANCEL = 2;
     // private static final int EFFECTTYPE_MONORAL = 3;
@@ -130,24 +131,25 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static final int EFFECTTYPE_CHORUS_CUSTOMIZE = 32;
     private static final int EFFECTTYPE_DISTORTION_STRONG = 33;
     // private static final int EFFECTTYPE_DISTORTION_MIDDLE = 34;
-    private static final int EFFECTTYPE_DISTORTION_WEAK = 35;
-    static final int EFFECTTYPE_REVERSE = 36;
-    private static final int EFFECTTYPE_INCREASESPEED = 37;
-    private static final int EFFECTTYPE_DECREASESPEED = 38;
-    private static final int EFFECTTYPE_OLDRECORD = 39;
-    private static final int EFFECTTYPE_LOWBATTERY = 40;
-    private static final int EFFECTTYPE_NOSENSE_STRONG = 41;
-    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 42;
-    private static final int EFFECTTYPE_NOSENSE_WEAK = 43;
-    private static final int EFFECTTYPE_EARTRAINING = 44;
-    private static final int EFFECTTYPE_METRONOME = 45;
-    private static final int EFFECTTYPE_RECORDNOISE = 46;
-    private static final int EFFECTTYPE_ROAROFWAVES = 47;
-    private static final int EFFECTTYPE_RAIN = 48;
-    private static final int EFFECTTYPE_RIVER = 49;
-    private static final int EFFECTTYPE_WAR = 50;
-    private static final int EFFECTTYPE_FIRE = 51;
-    private static final int EFFECTTYPE_CONCERTHALL = 52;
+    // private static final int EFFECTTYPE_DISTORTION_WEAK = 35;
+    private static final int EFFECTTYPE_DISTORTION_CUSTOMIZE = 36;
+    static final int EFFECTTYPE_REVERSE = 37;
+    private static final int EFFECTTYPE_INCREASESPEED = 38;
+    private static final int EFFECTTYPE_DECREASESPEED = 39;
+    private static final int EFFECTTYPE_OLDRECORD = 40;
+    private static final int EFFECTTYPE_LOWBATTERY = 41;
+    private static final int EFFECTTYPE_NOSENSE_STRONG = 42;
+    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 43;
+    private static final int EFFECTTYPE_NOSENSE_WEAK = 44;
+    private static final int EFFECTTYPE_EARTRAINING = 45;
+    private static final int EFFECTTYPE_METRONOME = 46;
+    private static final int EFFECTTYPE_RECORDNOISE = 47;
+    private static final int EFFECTTYPE_ROAROFWAVES = 48;
+    private static final int EFFECTTYPE_RAIN = 49;
+    private static final int EFFECTTYPE_RIVER = 50;
+    private static final int EFFECTTYPE_WAR = 51;
+    private static final int EFFECTTYPE_FIRE = 52;
+    private static final int EFFECTTYPE_CONCERTHALL = 53;
     private Timer mTimer;
     private int mSEStream;
     private int mSEStream2;
@@ -160,13 +162,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private boolean mContinueFlag = true;
     private final Handler mHandlerLongClick;
 
-    private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth, mTextChorusDry, mTextChorusWet, mTextChorusFeedback, mTextChorusMinSweep, mTextChorusMaxSweep, mTextChorusRate;
+    private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth, mTextChorusDry, mTextChorusWet, mTextChorusFeedback, mTextChorusMinSweep, mTextChorusMaxSweep, mTextChorusRate, mTextDistortionDrive, mTextDistortionDry, mTextDistortionWet, mTextDistortionFeedback, mTextDistortionVolume;
     private EditText mEditSpeedEffectDetail, mEditTimeEffectDetail;
     private RelativeLayout mRelativeEffectDetail, mRelativeEffect, mRelativeSliderEffectDatail, mRelativeRollerEffectDetail;
-    private SeekBar mSeekEffectDetail, mSeekCompGain, mSeekCompThreshold, mSeekCompRatio, mSeekCompAttack, mSeekCompRelease, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth, mSeekChorusDry, mSeekChorusWet, mSeekChorusFeedback, mSeekChorusMinSweep, mSeekChorusMaxSweep, mSeekChorusRate;
-    private ImageButton mBtnEffectMinus, mBtnEffectPlus, mBtnCompGainMinus, mBtnCompGainPlus, mBtnCompThresholdMinus, mBtnCompThresholdPlus, mBtnCompRatioMinus, mBtnCompRatioPlus, mBtnCompAttackMinus, mBtnCompAttackPlus, mBtnCompReleaseMinus, mBtnCompReleasePlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus, mBtnChorusDryMinus, mBtnChorusDryPlus, mBtnChorusWetMinus, mBtnChorusWetPlus, mBtnChorusFeedbackMinus, mBtnChorusFeedbackPlus, mBtnChorusMinSweepMinus, mBtnChorusMinSweepPlus, mBtnChorusMaxSweepMinus, mBtnChorusMaxSweepPlus, mBtnChorusRateMinus, mBtnChorusRatePlus;
+    private SeekBar mSeekEffectDetail, mSeekCompGain, mSeekCompThreshold, mSeekCompRatio, mSeekCompAttack, mSeekCompRelease, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth, mSeekChorusDry, mSeekChorusWet, mSeekChorusFeedback, mSeekChorusMinSweep, mSeekChorusMaxSweep, mSeekChorusRate, mSeekDistortionDrive, mSeekDistortionDry, mSeekDistortionWet, mSeekDistortionFeedback, mSeekDistortionVolume;
+    private ImageButton mBtnEffectMinus, mBtnEffectPlus, mBtnCompGainMinus, mBtnCompGainPlus, mBtnCompThresholdMinus, mBtnCompThresholdPlus, mBtnCompRatioMinus, mBtnCompRatioPlus, mBtnCompAttackMinus, mBtnCompAttackPlus, mBtnCompReleaseMinus, mBtnCompReleasePlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus, mBtnChorusDryMinus, mBtnChorusDryPlus, mBtnChorusWetMinus, mBtnChorusWetPlus, mBtnChorusFeedbackMinus, mBtnChorusFeedbackPlus, mBtnChorusMinSweepMinus, mBtnChorusMinSweepPlus, mBtnChorusMaxSweepMinus, mBtnChorusMaxSweepPlus, mBtnChorusRateMinus, mBtnChorusRatePlus, mBtnDistortionDriveMinus, mBtnDistortionDrivePlus, mBtnDistortionDryMinus, mBtnDistortionDryPlus, mBtnDistortionWetMinus, mBtnDistortionWetPlus, mBtnDistortionFeedbackMinus, mBtnDistortionFeedbackPlus, mBtnDistortionVolumeMinus, mBtnDistortionVolumePlus;
     private Button mBtnFinish;
-    private ScrollView mScrollCompCustomize, mScrollReverbCustomize, mScrollChorusCustomize;
+    private ScrollView mScrollCompCustomize, mScrollReverbCustomize, mScrollChorusCustomize, mScrollDistortionCustomize;
 
     public void setPeak(float peak) { mPeak = peak; }
     public float getTimeOfIncreaseSpeed() { return mTimeOfIncreaseSpeed; }
@@ -209,6 +211,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     public float getChorusMinSweep() { return mChorusMinSweep; }
     public float getChorusMaxSweep() { return mChorusMaxSweep; }
     public float getChorusRate() { return mChorusRate; }
+    public float getDistortionDrive() { return mDistortionDrive; }
+    public float getDistortionDry() { return mDistortionDry; }
+    public float getDistortionWet() { return mDistortionWet; }
+    public float getDistortionFeedback() { return mDistortionFeedback; }
+    public float getDistortionVolume() { return mDistortionVolume; }
 
     public boolean isSelectedItem(int nItem)
     {
@@ -384,6 +391,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(v.getId() == R.id.btnChorusRateMinus) minusChorusRate();
         else if(v.getId() == R.id.btnChorusRatePlus) plusChorusRate();
         else if(v.getId() == R.id.btnResetChorus) resetChorus();
+        else if(v.getId() == R.id.btnDistortionDriveMinus) minusDistortionDrive();
+        else if(v.getId() == R.id.btnDistortionDrivePlus) plusDistortionDrive();
+        else if(v.getId() == R.id.btnDistortionDryMinus) minusDistortionDry();
+        else if(v.getId() == R.id.btnDistortionDryPlus) plusDistortionDry();
+        else if(v.getId() == R.id.btnDistortionWetMinus) minusDistortionWet();
+        else if(v.getId() == R.id.btnDistortionWetPlus) plusDistortionWet();
+        else if(v.getId() == R.id.btnDistortionFeedbackMinus) minusDistortionFeedback();
+        else if(v.getId() == R.id.btnDistortionFeedbackPlus) plusDistortionFeedback();
+        else if(v.getId() == R.id.btnDistortionVolumeMinus) minusDistortionVolume();
+        else if(v.getId() == R.id.btnDistortionVolumePlus) plusDistortionVolume();
+        else if(v.getId() == R.id.btnResetDistortion) resetDistortion();
     }
 
     @Override
@@ -750,6 +768,116 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             });
             return true;
         }
+        else if (v.getId() == R.id.btnDistortionDriveMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusDistortionDrive();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnDistortionDrivePlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusDistortionDrive();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnDistortionDryMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusDistortionDry();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnDistortionDryPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusDistortionDry();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnDistortionWetMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusDistortionWet();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnDistortionWetPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusDistortionWet();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnDistortionFeedbackMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusDistortionFeedback();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnDistortionFeedbackPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusDistortionFeedback();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnDistortionVolumeMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusDistortionVolume();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnDistortionVolumePlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusDistortionVolume();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
         return false;
     }
 
@@ -1017,10 +1145,33 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnChorusMaxSweepPlus = mActivity.findViewById(R.id.btnChorusMaxSweepPlus);
         mBtnChorusRateMinus = mActivity.findViewById(R.id.btnChorusRateMinus);
         mBtnChorusRatePlus = mActivity.findViewById(R.id.btnChorusRatePlus);
+
+        mScrollDistortionCustomize = mActivity.findViewById(R.id.scrollDistortionCustomize);
+        mSeekDistortionDrive = mActivity.findViewById(R.id.seekDistortionDrive);
+        mSeekDistortionDry = mActivity.findViewById(R.id.seekDistortionDry);
+        mSeekDistortionWet = mActivity.findViewById(R.id.seekDistortionWet);
+        mSeekDistortionFeedback = mActivity.findViewById(R.id.seekDistortionFeedback);
+        mSeekDistortionVolume = mActivity.findViewById(R.id.seekDistortionVolume);
+        mTextDistortionDrive = mActivity.findViewById(R.id.textDistortionDrive);
+        mTextDistortionDry = mActivity.findViewById(R.id.textDistortionDry);
+        mTextDistortionWet = mActivity.findViewById(R.id.textDistortionWet);
+        mTextDistortionFeedback = mActivity.findViewById(R.id.textDistortionFeedback);
+        mTextDistortionVolume = mActivity.findViewById(R.id.textDistortionVolume);
+        mBtnDistortionDriveMinus = mActivity.findViewById(R.id.btnDistortionDriveMinus);
+        mBtnDistortionDrivePlus = mActivity.findViewById(R.id.btnDistortionDrivePlus);
+        mBtnDistortionDryMinus = mActivity.findViewById(R.id.btnDistortionDryMinus);
+        mBtnDistortionDryPlus = mActivity.findViewById(R.id.btnDistortionDryPlus);
+        mBtnDistortionWetMinus = mActivity.findViewById(R.id.btnDistortionWetMinus);
+        mBtnDistortionWetPlus = mActivity.findViewById(R.id.btnDistortionWetPlus);
+        mBtnDistortionFeedbackMinus = mActivity.findViewById(R.id.btnDistortionFeedbackMinus);
+        mBtnDistortionFeedbackPlus = mActivity.findViewById(R.id.btnDistortionFeedbackPlus);
+        mBtnDistortionVolumeMinus = mActivity.findViewById(R.id.btnDistortionVolumeMinus);
+        mBtnDistortionVolumePlus = mActivity.findViewById(R.id.btnDistortionVolumePlus);
         RecyclerView recyclerEffects = mActivity.findViewById(R.id.recyclerEffects);
         Button btnResetComp = mActivity.findViewById(R.id.btnResetComp);
         Button btnResetReverb = mActivity.findViewById(R.id.btnResetReverb);
         Button btnResetChorus = mActivity.findViewById(R.id.btnResetChorus);
+        Button btnResetDistortion = mActivity.findViewById(R.id.btnResetDistortion);
 
         mSeekCompGain.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
         mSeekCompThreshold.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
@@ -1054,6 +1205,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mSeekChorusMinSweep.setOnSeekBarChangeListener(this);
         mSeekChorusMaxSweep.setOnSeekBarChangeListener(this);
         mSeekChorusRate.setOnSeekBarChangeListener(this);
+        mSeekDistortionDrive.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekDistortionDry.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekDistortionWet.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekDistortionFeedback.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekDistortionVolume.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekDistortionDrive.setOnSeekBarChangeListener(this);
+        mSeekDistortionDry.setOnSeekBarChangeListener(this);
+        mSeekDistortionWet.setOnSeekBarChangeListener(this);
+        mSeekDistortionFeedback.setOnSeekBarChangeListener(this);
+        mSeekDistortionVolume.setOnSeekBarChangeListener(this);
 
         EffectItem item = new EffectItem(getString(R.string.off), false);
         mEffectItems.add(item);
@@ -1126,6 +1287,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         item = new EffectItem(getString(R.string.distortionMiddle), false);
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.distortionWeak), false);
+        mEffectItems.add(item);
+        item = new EffectItem(getString(R.string.distortionCustomize), true);
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.reverse), false);
         mEffectItems.add(item);
@@ -1272,6 +1435,37 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnChorusRatePlus.setOnLongClickListener(this);
         mBtnChorusRatePlus.setOnTouchListener(this);
         btnResetChorus.setOnClickListener(this);
+        mBtnDistortionDriveMinus.setOnClickListener(this);
+        mBtnDistortionDriveMinus.setOnLongClickListener(this);
+        mBtnDistortionDriveMinus.setOnTouchListener(this);
+        mBtnDistortionDrivePlus.setOnClickListener(this);
+        mBtnDistortionDrivePlus.setOnLongClickListener(this);
+        mBtnDistortionDrivePlus.setOnTouchListener(this);
+        mBtnDistortionDryMinus.setOnClickListener(this);
+        mBtnDistortionDryMinus.setOnLongClickListener(this);
+        mBtnDistortionDryMinus.setOnTouchListener(this);
+        mBtnDistortionDryPlus.setOnClickListener(this);
+        mBtnDistortionDryPlus.setOnLongClickListener(this);
+        mBtnDistortionDryPlus.setOnTouchListener(this);
+        mBtnDistortionWetMinus.setOnClickListener(this);
+        mBtnDistortionWetMinus.setOnLongClickListener(this);
+        mBtnDistortionWetMinus.setOnTouchListener(this);
+        mBtnDistortionWetPlus.setOnClickListener(this);
+        mBtnDistortionWetPlus.setOnLongClickListener(this);
+        mBtnDistortionWetPlus.setOnTouchListener(this);
+        mBtnDistortionFeedbackMinus.setOnClickListener(this);
+        mBtnDistortionFeedbackMinus.setOnLongClickListener(this);
+        mBtnDistortionFeedbackMinus.setOnTouchListener(this);
+        mBtnDistortionFeedbackPlus.setOnClickListener(this);
+        mBtnDistortionFeedbackPlus.setOnLongClickListener(this);
+        mBtnDistortionFeedbackPlus.setOnTouchListener(this);
+        mBtnDistortionVolumeMinus.setOnClickListener(this);
+        mBtnDistortionVolumeMinus.setOnLongClickListener(this);
+        mBtnDistortionVolumeMinus.setOnTouchListener(this);
+        mBtnDistortionVolumePlus.setOnClickListener(this);
+        mBtnDistortionVolumePlus.setOnLongClickListener(this);
+        mBtnDistortionVolumePlus.setOnTouchListener(this);
+        btnResetDistortion.setOnClickListener(this);
 
         mEditTimeEffectDetail.setOnFocusChangeListener(this);
         mEditSpeedEffectDetail.setOnFocusChangeListener(this);
@@ -1295,6 +1489,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setChorusMinSweep(100, false);
         setChorusMaxSweep(200, false);
         setChorusRate(1000, false);
+        setDistortionDrive(20, false);
+        setDistortionDry(95, false);
+        setDistortionWet(5, false);
+        setDistortionFeedback(10, false);
+        setDistortionVolume(100, false);
     }
 
     public void onEffectItemClick(int nEffect)
@@ -1392,6 +1591,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setChorusMinSweep(100, false);
         setChorusMaxSweep(200, false);
         setChorusRate(1000, false);
+        setDistortionDrive(20, false);
+        setDistortionDry(95, false);
+        setDistortionWet(5, false);
+        setDistortionFeedback(10, false);
+        setDistortionVolume(100, false);
     }
 
     private void resetComp()
@@ -1420,6 +1624,15 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setChorusMinSweep(100, true);
         setChorusMaxSweep(200, true);
         setChorusRate(1000, true);
+    }
+
+    private void resetDistortion()
+    {
+        setDistortionDrive(20, true);
+        setDistortionDry(95, true);
+        setDistortionWet(5, true);
+        setDistortionFeedback(10, true);
+        setDistortionVolume(100, true);
     }
 
     public void onEffectDetailClick(int nEffect)
@@ -1537,6 +1750,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mScrollCompCustomize.setVisibility(View.GONE);
             mScrollReverbCustomize.setVisibility(View.GONE);
             mScrollChorusCustomize.setVisibility(View.GONE);
+            mScrollDistortionCustomize.setVisibility(View.GONE);
         }
         else if(nEffect == EFFECTTYPE_COMP_CUSTOMIZE) {
             mRelativeSliderEffectDatail.setVisibility(View.GONE);
@@ -1544,6 +1758,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mScrollCompCustomize.setVisibility(View.VISIBLE);
             mScrollReverbCustomize.setVisibility(View.GONE);
             mScrollChorusCustomize.setVisibility(View.GONE);
+            mScrollDistortionCustomize.setVisibility(View.GONE);
         }
         else if(nEffect == EFFECTTYPE_REVERB_CUSTOMIZE) {
             mRelativeSliderEffectDatail.setVisibility(View.GONE);
@@ -1551,6 +1766,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mScrollCompCustomize.setVisibility(View.GONE);
             mScrollReverbCustomize.setVisibility(View.VISIBLE);
             mScrollChorusCustomize.setVisibility(View.GONE);
+            mScrollDistortionCustomize.setVisibility(View.GONE);
         }
         else if(nEffect == EFFECTTYPE_CHORUS_CUSTOMIZE) {
             mRelativeSliderEffectDatail.setVisibility(View.GONE);
@@ -1558,6 +1774,15 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mScrollCompCustomize.setVisibility(View.GONE);
             mScrollReverbCustomize.setVisibility(View.GONE);
             mScrollChorusCustomize.setVisibility(View.VISIBLE);
+            mScrollDistortionCustomize.setVisibility(View.GONE);
+        }
+        else if(nEffect == EFFECTTYPE_DISTORTION_CUSTOMIZE) {
+            mRelativeSliderEffectDatail.setVisibility(View.GONE);
+            mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mScrollCompCustomize.setVisibility(View.GONE);
+            mScrollReverbCustomize.setVisibility(View.GONE);
+            mScrollChorusCustomize.setVisibility(View.GONE);
+            mScrollDistortionCustomize.setVisibility(View.VISIBLE);
         }
         else {
             mRelativeSliderEffectDatail.setVisibility(View.VISIBLE);
@@ -1565,6 +1790,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mScrollCompCustomize.setVisibility(View.GONE);
             mScrollReverbCustomize.setVisibility(View.GONE);
             mScrollChorusCustomize.setVisibility(View.GONE);
+            mScrollDistortionCustomize.setVisibility(View.GONE);
             mSeekEffectDetail.setOnSeekBarChangeListener(this);
         }
 
@@ -1668,6 +1894,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(seekBar.getId() == R.id.seekChorusMinSweep) setChorusMinSweep(progress, fromTouch);
         else if(seekBar.getId() == R.id.seekChorusMaxSweep) setChorusMaxSweep(progress, fromTouch);
         else if(seekBar.getId() == R.id.seekChorusRate) setChorusRate(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekDistortionDrive) setDistortionDrive(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekDistortionDry) setDistortionDry(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekDistortionWet) setDistortionWet(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekDistortionFeedback) setDistortionFeedback(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekDistortionVolume) setDistortionVolume(progress, fromTouch);
     }
 
     private void updateComp()
@@ -2197,6 +2428,171 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setChorusRate(nValue, true);
     }
 
+    private void updateDistortion()
+    {
+        if(!mEffectItems.get(EFFECTTYPE_DISTORTION_CUSTOMIZE).isSelected() || MainActivity.sStream == 0)
+            return;
+        if(mFxDistortion == 0) mFxDistortion = BASS.BASS_ChannelSetFX(MainActivity.sStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
+        BASS_FX.BASS_BFX_DISTORTION distortion = new BASS_FX.BASS_BFX_DISTORTION();
+        distortion.fDrive = mDistortionDrive;
+        distortion.fDryMix = mDistortionDry;
+        distortion.fWetMix = mDistortionWet;
+        distortion.fFeedback = mDistortionFeedback;
+        distortion.fVolume = mDistortionVolume;
+        distortion.lChannel = BASS_FX.BASS_BFX_CHANALL;
+        BASS.BASS_FXSetParameters(mFxDistortion, distortion);
+    }
+
+    public void setDistortionDrive(int nValue, boolean bSave)
+    {
+        mDistortionDrive = nValue / 100.0f;
+        mTextDistortionDrive.setText(String.format(Locale.getDefault(), "%.2f", mDistortionDrive));
+        mSeekDistortionDrive.setProgress(nValue);
+        updateDistortion();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setDistortionDrive(float fValue, boolean bSave)
+    {
+        mDistortionDrive = fValue;
+        mTextDistortionDrive.setText(String.format(Locale.getDefault(), "%.2f", mDistortionDrive));
+        mSeekDistortionDrive.setProgress((int)(fValue * 100.0f));
+        updateDistortion();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setDistortionDry(int nValue, boolean bSave)
+    {
+        mDistortionDry = nValue / 100.0f;
+        mTextDistortionDry.setText(String.format(Locale.getDefault(), "%.2f", mDistortionDry));
+        mSeekDistortionDry.setProgress(nValue);
+        updateDistortion();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setDistortionDry(float fValue, boolean bSave)
+    {
+        mDistortionDry = fValue;
+        mTextDistortionDry.setText(String.format(Locale.getDefault(), "%.2f", mDistortionDry));
+        mSeekDistortionDry.setProgress((int)(fValue * 100.0f));
+        updateDistortion();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setDistortionWet(int nValue, boolean bSave)
+    {
+        mDistortionWet = nValue / 100.0f;
+        mTextDistortionWet.setText(String.format(Locale.getDefault(), "%.2f", mDistortionWet));
+        mSeekDistortionWet.setProgress(nValue);
+        updateDistortion();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setDistortionWet(float fValue, boolean bSave)
+    {
+        mDistortionWet = fValue;
+        mTextDistortionWet.setText(String.format(Locale.getDefault(), "%.2f", mDistortionWet));
+        mSeekDistortionWet.setProgress((int)(fValue * 100.0f));
+        updateDistortion();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setDistortionFeedback(int nValue, boolean bSave)
+    {
+        mDistortionFeedback = nValue / 100.0f;
+        mTextDistortionFeedback.setText(String.format(Locale.getDefault(), "%.2f", mDistortionFeedback));
+        mSeekDistortionFeedback.setProgress(nValue);
+        updateDistortion();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setDistortionFeedback(float fValue, boolean bSave)
+    {
+        mDistortionFeedback = fValue;
+        mTextDistortionFeedback.setText(String.format(Locale.getDefault(), "%.2f", mDistortionFeedback));
+        mSeekDistortionFeedback.setProgress((int)(fValue * 100.0f));
+        updateDistortion();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setDistortionVolume(int nValue, boolean bSave)
+    {
+        mDistortionVolume = nValue / 100.0f;
+        mTextDistortionVolume.setText(String.format(Locale.getDefault(), "%.2f", mDistortionVolume));
+        mSeekDistortionVolume.setProgress(nValue);
+        updateDistortion();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setDistortionVolume(float fValue, boolean bSave)
+    {
+        mDistortionVolume = fValue;
+        mTextDistortionVolume.setText(String.format(Locale.getDefault(), "%.2f", mDistortionVolume));
+        mSeekDistortionVolume.setProgress((int)(fValue * 100.0f));
+        updateDistortion();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    private void minusDistortionDrive() {
+        int nValue = mSeekDistortionDrive.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setDistortionDrive(nValue, true);
+    }
+
+    private void plusDistortionDrive() {
+        int nValue = mSeekDistortionDrive.getProgress() + 1;
+        if(nValue > mSeekDistortionDrive.getMax()) nValue = mSeekDistortionDrive.getMax();
+        setDistortionDrive(nValue, true);
+    }
+
+    private void minusDistortionDry() {
+        int nValue = mSeekDistortionDry.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setDistortionDry(nValue, true);
+    }
+
+    private void plusDistortionDry() {
+        int nValue = mSeekDistortionDry.getProgress() + 1;
+        if(nValue > mSeekDistortionDry.getMax()) nValue = mSeekDistortionDry.getMax();
+        setDistortionDry(nValue, true);
+    }
+
+    private void minusDistortionWet() {
+        int nValue = mSeekDistortionWet.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setDistortionWet(nValue, true);
+    }
+
+    private void plusDistortionWet() {
+        int nValue = mSeekDistortionWet.getProgress() + 1;
+        if(nValue > mSeekDistortionWet.getMax()) nValue = mSeekDistortionWet.getMax();
+        setDistortionWet(nValue, true);
+    }
+
+    private void minusDistortionFeedback() {
+        int nValue = mSeekDistortionFeedback.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setDistortionFeedback(nValue, true);
+    }
+
+    private void plusDistortionFeedback() {
+        int nValue = mSeekDistortionFeedback.getProgress() + 1;
+        if(nValue > mSeekDistortionFeedback.getMax()) nValue = mSeekDistortionFeedback.getMax();
+        setDistortionFeedback(nValue, true);
+    }
+
+    private void minusDistortionVolume() {
+        int nValue = mSeekDistortionVolume.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setDistortionVolume(nValue, true);
+    }
+
+    private void plusDistortionVolume() {
+        int nValue = mSeekDistortionVolume.getProgress() + 1;
+        if(nValue > mSeekDistortionVolume.getMax()) nValue = mSeekDistortionVolume.getMax();
+        setDistortionVolume(nValue, true);
+    }
+
     private void setPan(float pan)
     {
         setPan(pan, true);
@@ -2290,9 +2686,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 for(int i = EFFECTTYPE_CHORUS; i <= EFFECTTYPE_CHORUS_CUSTOMIZE; i++)
                     if(i != nSelect) deselectEffect(i);
             }
-            if((EFFECTTYPE_DISTORTION_STRONG <= nSelect && nSelect <= EFFECTTYPE_DISTORTION_WEAK) || nSelect == EFFECTTYPE_LOWBATTERY)
+            if((EFFECTTYPE_DISTORTION_STRONG <= nSelect && nSelect <= EFFECTTYPE_DISTORTION_CUSTOMIZE) || nSelect == EFFECTTYPE_LOWBATTERY)
             {
-                for(int i = EFFECTTYPE_DISTORTION_STRONG; i <= EFFECTTYPE_DISTORTION_WEAK; i++)
+                for(int i = EFFECTTYPE_DISTORTION_STRONG; i <= EFFECTTYPE_DISTORTION_CUSTOMIZE; i++)
                     if(i != nSelect) deselectEffect(i);
                 if(nSelect != EFFECTTYPE_LOWBATTERY) deselectEffect(EFFECTTYPE_LOWBATTERY);
             }
@@ -2760,6 +3156,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 distortion.fWetMix = (float) 0.01;
                 distortion.fFeedback = (float) 0.1;
                 distortion.fVolume = (float) 1.0;
+                distortion.lChannel = BASS_FX.BASS_BFX_CHANALL;
+                BASS.BASS_FXSetParameters(mFxDistortion, distortion);
+            }
+            else if(strEffect.equals(getString(R.string.distortionCustomize))) {
+                mFxDistortion = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
+                distortion = new BASS_FX.BASS_BFX_DISTORTION();
+                distortion.fDrive = mDistortionDrive;
+                distortion.fDryMix = mDistortionDry;
+                distortion.fWetMix = mDistortionWet;
+                distortion.fFeedback = mDistortionFeedback;
+                distortion.fVolume = mDistortionVolume;
                 distortion.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(mFxDistortion, distortion);
             }

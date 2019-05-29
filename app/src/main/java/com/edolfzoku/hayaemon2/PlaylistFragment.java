@@ -2898,6 +2898,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saver.setChorusMinSweep(mActivity.effectFragment.getChorusMinSweep());
         saver.setChorusMaxSweep(mActivity.effectFragment.getChorusMaxSweep());
         saver.setChorusRate(mActivity.effectFragment.getChorusRate());
+        saver.setDistortionDrive(mActivity.effectFragment.getDistortionDrive());
+        saver.setDistortionDry(mActivity.effectFragment.getDistortionDry());
+        saver.setDistortionWet(mActivity.effectFragment.getDistortionWet());
+        saver.setDistortionFeedback(mActivity.effectFragment.getDistortionFeedback());
+        saver.setDistortionVolume(mActivity.effectFragment.getDistortionVolume());
         if(mSelectedPlaylist == mPlayingPlaylist && mSelectedItem == mPlaying) {
             if(mActivity.loopFragment.getABButton().getVisibility() == View.VISIBLE) saver.setIsABLoop(true);
             else saver.setIsABLoop(false);
@@ -2993,6 +2998,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setChorusMinSweep(mActivity.effectFragment.getChorusMinSweep());
             saver.setChorusMaxSweep(mActivity.effectFragment.getChorusMaxSweep());
             saver.setChorusRate(mActivity.effectFragment.getChorusRate());
+            saver.setDistortionDrive(mActivity.effectFragment.getDistortionDrive());
+            saver.setDistortionDry(mActivity.effectFragment.getDistortionDry());
+            saver.setDistortionWet(mActivity.effectFragment.getDistortionWet());
+            saver.setDistortionFeedback(mActivity.effectFragment.getDistortionFeedback());
+            saver.setDistortionVolume(mActivity.effectFragment.getDistortionVolume());
             if(mActivity.loopFragment.getABButton().getVisibility() == View.VISIBLE) saver.setIsABLoop(true);
             else saver.setIsABLoop(false);
             saver.setIsLoopA(mActivity.isLoopA());
@@ -3082,6 +3092,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mActivity.effectFragment.setChorusMinSweep(saver.getChorusMinSweep(), false);
         mActivity.effectFragment.setChorusMaxSweep(saver.getChorusMaxSweep(), false);
         mActivity.effectFragment.setChorusRate(saver.getChorusRate(), false);
+        mActivity.effectFragment.setDistortionDrive(saver.getDistortionDrive(), false);
+        mActivity.effectFragment.setDistortionDry(saver.getDistortionDry(), false);
+        mActivity.effectFragment.setDistortionWet(saver.getDistortionWet(), false);
+        mActivity.effectFragment.setDistortionFeedback(saver.getDistortionFeedback(), false);
+        mActivity.effectFragment.setDistortionVolume(saver.getDistortionVolume(), false);
         if(saver.isABLoop()) mActivity.loopFragment.getRadioGroupLoopMode().check(R.id.radioButtonABLoop);
         else mActivity.loopFragment.getRadioGroupLoopMode().check(R.id.radioButtonMarkerPlay);
         if(saver.isLoopA()) mActivity.loopFragment.setLoopA(saver.getLoopA(), false);

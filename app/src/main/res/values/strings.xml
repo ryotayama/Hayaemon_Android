@@ -57,6 +57,12 @@
     <string name="distortionStrong">Distortion (Strong)</string>
     <string name="distortionMiddle">Distortion (Middle)</string>
     <string name="distortionWeak">Distortion (Weak)</string>
+    <string name="distortionCustomize">Distortion (Customize)</string>
+    <string name="distortionDrive">Drive</string>
+    <string name="distortionDry">Dry mix</string>
+    <string name="distortionWet">Wet mix</string>
+    <string name="distortionFeedback">Feedback</string>
+    <string name="distortionVolume">Volume</string>
     <string name="reverse">Reverse</string>
     <string name="increaseSpeed">Increase Speed</string>
     <string name="decreaseSpeed">Decrease Speed</string>
