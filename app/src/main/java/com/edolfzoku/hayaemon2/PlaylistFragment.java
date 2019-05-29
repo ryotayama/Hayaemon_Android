@@ -2892,6 +2892,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saver.setReverbRoomSize(mActivity.effectFragment.getReverbRoomSize());
         saver.setReverbDamp(mActivity.effectFragment.getReverbDamp());
         saver.setReverbWidth(mActivity.effectFragment.getReverbWidth());
+        saver.setChorusDry(mActivity.effectFragment.getChorusDry());
+        saver.setChorusWet(mActivity.effectFragment.getChorusWet());
+        saver.setChorusFeedback(mActivity.effectFragment.getChorusFeedback());
+        saver.setChorusMinSweep(mActivity.effectFragment.getChorusMinSweep());
+        saver.setChorusMaxSweep(mActivity.effectFragment.getChorusMaxSweep());
+        saver.setChorusRate(mActivity.effectFragment.getChorusRate());
         if(mSelectedPlaylist == mPlayingPlaylist && mSelectedItem == mPlaying) {
             if(mActivity.loopFragment.getABButton().getVisibility() == View.VISIBLE) saver.setIsABLoop(true);
             else saver.setIsABLoop(false);
@@ -2981,6 +2987,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setReverbRoomSize(mActivity.effectFragment.getReverbRoomSize());
             saver.setReverbDamp(mActivity.effectFragment.getReverbDamp());
             saver.setReverbWidth(mActivity.effectFragment.getReverbWidth());
+            saver.setChorusDry(mActivity.effectFragment.getChorusDry());
+            saver.setChorusWet(mActivity.effectFragment.getChorusWet());
+            saver.setChorusFeedback(mActivity.effectFragment.getChorusFeedback());
+            saver.setChorusMinSweep(mActivity.effectFragment.getChorusMinSweep());
+            saver.setChorusMaxSweep(mActivity.effectFragment.getChorusMaxSweep());
+            saver.setChorusRate(mActivity.effectFragment.getChorusRate());
             if(mActivity.loopFragment.getABButton().getVisibility() == View.VISIBLE) saver.setIsABLoop(true);
             else saver.setIsABLoop(false);
             saver.setIsLoopA(mActivity.isLoopA());
@@ -3064,6 +3076,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mActivity.effectFragment.setReverbRoomSize(saver.getReverbRoomSize(), false);
         mActivity.effectFragment.setReverbDamp(saver.getReverbDamp(), false);
         mActivity.effectFragment.setReverbWidth(saver.getReverbWidth(), false);
+        mActivity.effectFragment.setChorusDry(saver.getChorusDry(), false);
+        mActivity.effectFragment.setChorusWet(saver.getChorusWet(), false);
+        mActivity.effectFragment.setChorusFeedback(saver.getChorusFeedback(), false);
+        mActivity.effectFragment.setChorusMinSweep(saver.getChorusMinSweep(), false);
+        mActivity.effectFragment.setChorusMaxSweep(saver.getChorusMaxSweep(), false);
+        mActivity.effectFragment.setChorusRate(saver.getChorusRate(), false);
         if(saver.isABLoop()) mActivity.loopFragment.getRadioGroupLoopMode().check(R.id.radioButtonABLoop);
         else mActivity.loopFragment.getRadioGroupLoopMode().check(R.id.radioButtonMarkerPlay);
         if(saver.isLoopA()) mActivity.loopFragment.setLoopA(saver.getLoopA(), false);

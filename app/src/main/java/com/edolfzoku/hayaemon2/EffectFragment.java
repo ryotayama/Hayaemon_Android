@@ -93,8 +93,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private float mIncreaseSpeed = 0.1f;
     private float mTimeOfDecreaseSpeed = 1.0f;
     private float mDecreaseSpeed = 0.1f;
-    private float mReverbDry, mReverbWet, mReverbRoomSize, mReverbDamp, mReverbWidth;
     private float mCompGain, mCompThreshold, mCompRatio, mCompAttack, mCompRelease;
+    private float mReverbDry, mReverbWet, mReverbRoomSize, mReverbDamp, mReverbWidth;
+    private float mChorusDry, mChorusWet, mChorusFeedback, mChorusMinSweep, mChorusMaxSweep, mChorusRate;
     private static final int EFFECTTYPE_RANDOM = 1;
     private static final int EFFECTTYPE_VOCALCANCEL = 2;
     // private static final int EFFECTTYPE_MONORAL = 3;
@@ -126,26 +127,27 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static final int EFFECTTYPE_REVERB_CUSTOMIZE = 29;
     private static final int EFFECTTYPE_CHORUS = 30;
     private static final int EFFECTTYPE_FLANGER = 31;
-    private static final int EFFECTTYPE_DISTORTION_STRONG = 32;
-    // private static final int EFFECTTYPE_DISTORTION_MIDDLE = 33;
-    private static final int EFFECTTYPE_DISTORTION_WEAK = 34;
-    static final int EFFECTTYPE_REVERSE = 35;
-    private static final int EFFECTTYPE_INCREASESPEED = 36;
-    private static final int EFFECTTYPE_DECREASESPEED = 37;
-    private static final int EFFECTTYPE_OLDRECORD = 38;
-    private static final int EFFECTTYPE_LOWBATTERY = 39;
-    private static final int EFFECTTYPE_NOSENSE_STRONG = 40;
-    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 41;
-    private static final int EFFECTTYPE_NOSENSE_WEAK = 42;
-    private static final int EFFECTTYPE_EARTRAINING = 43;
-    private static final int EFFECTTYPE_METRONOME = 44;
-    private static final int EFFECTTYPE_RECORDNOISE = 45;
-    private static final int EFFECTTYPE_ROAROFWAVES = 46;
-    private static final int EFFECTTYPE_RAIN = 47;
-    private static final int EFFECTTYPE_RIVER = 48;
-    private static final int EFFECTTYPE_WAR = 49;
-    private static final int EFFECTTYPE_FIRE = 50;
-    private static final int EFFECTTYPE_CONCERTHALL = 51;
+    private static final int EFFECTTYPE_CHORUS_CUSTOMIZE = 32;
+    private static final int EFFECTTYPE_DISTORTION_STRONG = 33;
+    // private static final int EFFECTTYPE_DISTORTION_MIDDLE = 34;
+    private static final int EFFECTTYPE_DISTORTION_WEAK = 35;
+    static final int EFFECTTYPE_REVERSE = 36;
+    private static final int EFFECTTYPE_INCREASESPEED = 37;
+    private static final int EFFECTTYPE_DECREASESPEED = 38;
+    private static final int EFFECTTYPE_OLDRECORD = 39;
+    private static final int EFFECTTYPE_LOWBATTERY = 40;
+    private static final int EFFECTTYPE_NOSENSE_STRONG = 41;
+    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 42;
+    private static final int EFFECTTYPE_NOSENSE_WEAK = 43;
+    private static final int EFFECTTYPE_EARTRAINING = 44;
+    private static final int EFFECTTYPE_METRONOME = 45;
+    private static final int EFFECTTYPE_RECORDNOISE = 46;
+    private static final int EFFECTTYPE_ROAROFWAVES = 47;
+    private static final int EFFECTTYPE_RAIN = 48;
+    private static final int EFFECTTYPE_RIVER = 49;
+    private static final int EFFECTTYPE_WAR = 50;
+    private static final int EFFECTTYPE_FIRE = 51;
+    private static final int EFFECTTYPE_CONCERTHALL = 52;
     private Timer mTimer;
     private int mSEStream;
     private int mSEStream2;
@@ -158,12 +160,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private boolean mContinueFlag = true;
     private final Handler mHandlerLongClick;
 
-    private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth;
+    private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth, mTextChorusDry, mTextChorusWet, mTextChorusFeedback, mTextChorusMinSweep, mTextChorusMaxSweep, mTextChorusRate;
     private EditText mEditSpeedEffectDetail, mEditTimeEffectDetail;
     private RelativeLayout mRelativeEffectDetail, mRelativeEffect, mRelativeSliderEffectDatail, mRelativeRollerEffectDetail;
-    private SeekBar mSeekEffectDetail, mSeekCompGain, mSeekCompThreshold, mSeekCompRatio, mSeekCompAttack, mSeekCompRelease, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth;
-    private ImageButton mBtnEffectMinus, mBtnEffectPlus, mBtnCompGainMinus, mBtnCompGainPlus, mBtnCompThresholdMinus, mBtnCompThresholdPlus, mBtnCompRatioMinus, mBtnCompRatioPlus, mBtnCompAttackMinus, mBtnCompAttackPlus, mBtnCompReleaseMinus, mBtnCompReleasePlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus;
-    private ScrollView mScrollCompCustomize, mScrollReverbCustomize;
+    private SeekBar mSeekEffectDetail, mSeekCompGain, mSeekCompThreshold, mSeekCompRatio, mSeekCompAttack, mSeekCompRelease, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth, mSeekChorusDry, mSeekChorusWet, mSeekChorusFeedback, mSeekChorusMinSweep, mSeekChorusMaxSweep, mSeekChorusRate;
+    private ImageButton mBtnEffectMinus, mBtnEffectPlus, mBtnCompGainMinus, mBtnCompGainPlus, mBtnCompThresholdMinus, mBtnCompThresholdPlus, mBtnCompRatioMinus, mBtnCompRatioPlus, mBtnCompAttackMinus, mBtnCompAttackPlus, mBtnCompReleaseMinus, mBtnCompReleasePlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus, mBtnChorusDryMinus, mBtnChorusDryPlus, mBtnChorusWetMinus, mBtnChorusWetPlus, mBtnChorusFeedbackMinus, mBtnChorusFeedbackPlus, mBtnChorusMinSweepMinus, mBtnChorusMinSweepPlus, mBtnChorusMaxSweepMinus, mBtnChorusMaxSweepPlus, mBtnChorusRateMinus, mBtnChorusRatePlus;
+    private Button mBtnFinish;
+    private ScrollView mScrollCompCustomize, mScrollReverbCustomize, mScrollChorusCustomize;
 
     public void setPeak(float peak) { mPeak = peak; }
     public float getTimeOfIncreaseSpeed() { return mTimeOfIncreaseSpeed; }
@@ -200,6 +203,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     public float getReverbRoomSize() { return mReverbRoomSize; }
     public float getReverbDamp() { return mReverbDamp; }
     public float getReverbWidth() { return mReverbWidth; }
+    public float getChorusDry() { return mChorusDry; }
+    public float getChorusWet() { return mChorusWet; }
+    public float getChorusFeedback() { return mChorusFeedback; }
+    public float getChorusMinSweep() { return mChorusMinSweep; }
+    public float getChorusMaxSweep() { return mChorusMaxSweep; }
+    public float getChorusRate() { return mChorusRate; }
 
     public boolean isSelectedItem(int nItem)
     {
@@ -362,6 +371,19 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(v.getId() == R.id.btnReverbWidthMinus) minusReverbWidth();
         else if(v.getId() == R.id.btnReverbWidthPlus) plusReverbWidth();
         else if(v.getId() == R.id.btnResetReverb) resetReverb();
+        else if(v.getId() == R.id.btnChorusDryMinus) minusChorusDry();
+        else if(v.getId() == R.id.btnChorusDryPlus) plusChorusDry();
+        else if(v.getId() == R.id.btnChorusWetMinus) minusChorusWet();
+        else if(v.getId() == R.id.btnChorusWetPlus) plusChorusWet();
+        else if(v.getId() == R.id.btnChorusFeedbackMinus) minusChorusFeedback();
+        else if(v.getId() == R.id.btnChorusFeedbackPlus) plusChorusFeedback();
+        else if(v.getId() == R.id.btnChorusMinSweepMinus) minusChorusMinSweep();
+        else if(v.getId() == R.id.btnChorusMinSweepPlus) plusChorusMinSweep();
+        else if(v.getId() == R.id.btnChorusMaxSweepMinus) minusChorusMaxSweep();
+        else if(v.getId() == R.id.btnChorusMaxSweepPlus) plusChorusMaxSweep();
+        else if(v.getId() == R.id.btnChorusRateMinus) minusChorusRate();
+        else if(v.getId() == R.id.btnChorusRatePlus) plusChorusRate();
+        else if(v.getId() == R.id.btnResetChorus) resetChorus();
     }
 
     @Override
@@ -596,6 +618,138 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             });
             return true;
         }
+        else if (v.getId() == R.id.btnChorusDryMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusChorusDry();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnChorusDryPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusChorusDry();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnChorusWetMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusChorusWet();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnChorusWetPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusChorusWet();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnChorusFeedbackMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusChorusFeedback();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnChorusFeedbackPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusChorusFeedback();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnChorusMinSweepMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusChorusMinSweep();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnChorusMinSweepPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusChorusMinSweep();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnChorusMaxSweepMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusChorusMaxSweep();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnChorusMaxSweepPlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusChorusMaxSweep();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnChorusRateMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusChorusRate();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnChorusRatePlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusChorusRate();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
         return false;
     }
 
@@ -779,7 +933,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState)
+    public void onViewCreated(@NonNull final View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
 
@@ -795,6 +949,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mTextEffectLabel = mActivity.findViewById(R.id.textEffectLabel);
         mRelativeSliderEffectDatail = mActivity.findViewById(R.id.relativeSliderEffectDatail);
         mRelativeRollerEffectDetail = mActivity.findViewById(R.id.relativeRollerEffectDatail);
+        mBtnFinish = mActivity.findViewById(R.id.btnFinish);
         mScrollCompCustomize = mActivity.findViewById(R.id.scrollCompCustomize);
         mSeekCompGain = mActivity.findViewById(R.id.seekCompGain);
         mSeekCompThreshold = mActivity.findViewById(R.id.seekCompThreshold);
@@ -837,10 +992,35 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnReverbDampPlus = mActivity.findViewById(R.id.btnReverbDampPlus);
         mBtnReverbWidthMinus = mActivity.findViewById(R.id.btnReverbWidthMinus);
         mBtnReverbWidthPlus = mActivity.findViewById(R.id.btnReverbWidthPlus);
+        mScrollChorusCustomize = mActivity.findViewById(R.id.scrollChorusCustomize);
+        mSeekChorusDry = mActivity.findViewById(R.id.seekChorusDry);
+        mSeekChorusWet = mActivity.findViewById(R.id.seekChorusWet);
+        mSeekChorusFeedback = mActivity.findViewById(R.id.seekChorusFeedback);
+        mSeekChorusMinSweep = mActivity.findViewById(R.id.seekChorusMinSweep);
+        mSeekChorusMaxSweep = mActivity.findViewById(R.id.seekChorusMaxSweep);
+        mSeekChorusRate = mActivity.findViewById(R.id.seekChorusRate);
+        mTextChorusDry = mActivity.findViewById(R.id.textChorusDry);
+        mTextChorusWet = mActivity.findViewById(R.id.textChorusWet);
+        mTextChorusFeedback = mActivity.findViewById(R.id.textChorusFeedback);
+        mTextChorusMinSweep = mActivity.findViewById(R.id.textChorusMinSweep);
+        mTextChorusMaxSweep = mActivity.findViewById(R.id.textChorusMaxSweep);
+        mTextChorusRate = mActivity.findViewById(R.id.textChorusRate);
+        mBtnChorusDryMinus = mActivity.findViewById(R.id.btnChorusDryMinus);
+        mBtnChorusDryPlus = mActivity.findViewById(R.id.btnChorusDryPlus);
+        mBtnChorusWetMinus = mActivity.findViewById(R.id.btnChorusWetMinus);
+        mBtnChorusWetPlus = mActivity.findViewById(R.id.btnChorusWetPlus);
+        mBtnChorusFeedbackMinus = mActivity.findViewById(R.id.btnChorusFeedbackMinus);
+        mBtnChorusFeedbackPlus = mActivity.findViewById(R.id.btnChorusFeedbackPlus);
+        mBtnChorusMinSweepMinus = mActivity.findViewById(R.id.btnChorusMinSweepMinus);
+        mBtnChorusMinSweepPlus = mActivity.findViewById(R.id.btnChorusMinSweepPlus);
+        mBtnChorusMaxSweepMinus = mActivity.findViewById(R.id.btnChorusMaxSweepMinus);
+        mBtnChorusMaxSweepPlus = mActivity.findViewById(R.id.btnChorusMaxSweepPlus);
+        mBtnChorusRateMinus = mActivity.findViewById(R.id.btnChorusRateMinus);
+        mBtnChorusRatePlus = mActivity.findViewById(R.id.btnChorusRatePlus);
         RecyclerView recyclerEffects = mActivity.findViewById(R.id.recyclerEffects);
-        Button mBtnFinith = mActivity.findViewById(R.id.btnFinish);
         Button btnResetComp = mActivity.findViewById(R.id.btnResetComp);
         Button btnResetReverb = mActivity.findViewById(R.id.btnResetReverb);
+        Button btnResetChorus = mActivity.findViewById(R.id.btnResetChorus);
 
         mSeekCompGain.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
         mSeekCompThreshold.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
@@ -862,6 +1042,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mSeekReverbRoomSize.setOnSeekBarChangeListener(this);
         mSeekReverbDamp.setOnSeekBarChangeListener(this);
         mSeekReverbWidth.setOnSeekBarChangeListener(this);
+        mSeekChorusDry.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekChorusWet.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekChorusFeedback.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekChorusMinSweep.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekChorusMaxSweep.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekChorusRate.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekChorusDry.setOnSeekBarChangeListener(this);
+        mSeekChorusWet.setOnSeekBarChangeListener(this);
+        mSeekChorusFeedback.setOnSeekBarChangeListener(this);
+        mSeekChorusMinSweep.setOnSeekBarChangeListener(this);
+        mSeekChorusMaxSweep.setOnSeekBarChangeListener(this);
+        mSeekChorusRate.setOnSeekBarChangeListener(this);
 
         EffectItem item = new EffectItem(getString(R.string.off), false);
         mEffectItems.add(item);
@@ -927,6 +1119,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.flanger), false);
         mEffectItems.add(item);
+        item = new EffectItem(getString(R.string.chorusCustomize), true);
+        mEffectItems.add(item);
         item = new EffectItem(getString(R.string.distortionStrong), false);
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.distortionMiddle), false);
@@ -972,7 +1166,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         recyclerEffects.setLayoutManager(playlistsManager);
         recyclerEffects.setAdapter(mEffectsAdapter);
         ((DefaultItemAnimator) recyclerEffects.getItemAnimator()).setSupportsChangeAnimations(false);
-        mBtnFinith.setOnClickListener(this);
+        mBtnFinish.setOnClickListener(this);
         mBtnEffectMinus.setOnClickListener(this);
         mBtnEffectMinus.setOnLongClickListener(this);
         mBtnEffectMinus.setOnTouchListener(this);
@@ -1041,6 +1235,43 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnReverbWidthPlus.setOnLongClickListener(this);
         mBtnReverbWidthPlus.setOnTouchListener(this);
         btnResetReverb.setOnClickListener(this);
+        mBtnChorusDryMinus.setOnClickListener(this);
+        mBtnChorusDryMinus.setOnLongClickListener(this);
+        mBtnChorusDryMinus.setOnTouchListener(this);
+        mBtnChorusDryPlus.setOnClickListener(this);
+        mBtnChorusDryPlus.setOnLongClickListener(this);
+        mBtnChorusDryPlus.setOnTouchListener(this);
+        mBtnChorusWetMinus.setOnClickListener(this);
+        mBtnChorusWetMinus.setOnLongClickListener(this);
+        mBtnChorusWetMinus.setOnTouchListener(this);
+        mBtnChorusWetPlus.setOnClickListener(this);
+        mBtnChorusWetPlus.setOnLongClickListener(this);
+        mBtnChorusWetPlus.setOnTouchListener(this);
+        mBtnChorusFeedbackMinus.setOnClickListener(this);
+        mBtnChorusFeedbackMinus.setOnLongClickListener(this);
+        mBtnChorusFeedbackMinus.setOnTouchListener(this);
+        mBtnChorusFeedbackPlus.setOnClickListener(this);
+        mBtnChorusFeedbackPlus.setOnLongClickListener(this);
+        mBtnChorusFeedbackPlus.setOnTouchListener(this);
+        mBtnChorusMinSweepMinus.setOnClickListener(this);
+        mBtnChorusMinSweepMinus.setOnLongClickListener(this);
+        mBtnChorusMinSweepMinus.setOnTouchListener(this);
+        mBtnChorusMinSweepPlus.setOnClickListener(this);
+        mBtnChorusMinSweepPlus.setOnLongClickListener(this);
+        mBtnChorusMinSweepPlus.setOnTouchListener(this);
+        mBtnChorusMaxSweepMinus.setOnClickListener(this);
+        mBtnChorusMaxSweepMinus.setOnLongClickListener(this);
+        mBtnChorusMaxSweepMinus.setOnTouchListener(this);
+        mBtnChorusMaxSweepPlus.setOnClickListener(this);
+        mBtnChorusMaxSweepPlus.setOnLongClickListener(this);
+        mBtnChorusMaxSweepPlus.setOnTouchListener(this);
+        mBtnChorusRateMinus.setOnClickListener(this);
+        mBtnChorusRateMinus.setOnLongClickListener(this);
+        mBtnChorusRateMinus.setOnTouchListener(this);
+        mBtnChorusRatePlus.setOnClickListener(this);
+        mBtnChorusRatePlus.setOnLongClickListener(this);
+        mBtnChorusRatePlus.setOnTouchListener(this);
+        btnResetChorus.setOnClickListener(this);
 
         mEditTimeEffectDetail.setOnFocusChangeListener(this);
         mEditSpeedEffectDetail.setOnFocusChangeListener(this);
@@ -1058,6 +1289,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setReverbRoomSize(85, false);
         setReverbDamp(50, false);
         setReverbWidth(90, false);
+        setChorusDry(100, false);
+        setChorusWet(10, false);
+        setChorusFeedback(50, false);
+        setChorusMinSweep(100, false);
+        setChorusMaxSweep(200, false);
+        setChorusRate(1000, false);
     }
 
     public void onEffectItemClick(int nEffect)
@@ -1149,6 +1386,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setReverbRoomSize(85, false);
         setReverbDamp(50, false);
         setReverbWidth(90, false);
+        setChorusDry(100, false);
+        setChorusWet(10, false);
+        setChorusFeedback(50, false);
+        setChorusMinSweep(100, false);
+        setChorusMaxSweep(200, false);
+        setChorusRate(1000, false);
     }
 
     private void resetComp()
@@ -1167,6 +1410,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setReverbRoomSize(85, true);
         setReverbDamp(50, true);
         setReverbWidth(90, true);
+    }
+
+    private void resetChorus()
+    {
+        setChorusDry(100, true);
+        setChorusWet(10, true);
+        setChorusFeedback(50, true);
+        setChorusMinSweep(100, true);
+        setChorusMaxSweep(200, true);
+        setChorusRate(1000, true);
     }
 
     public void onEffectDetailClick(int nEffect)
@@ -1276,29 +1529,42 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnEffectPlus.setContentDescription(getString(R.string.plus));
         }
 
+        mTextEffectName.setWidth((int)(getResources().getDisplayMetrics().widthPixels - mBtnFinish.getMeasuredWidth() * 2 - 32 * mActivity.getDensity()));
+
         if(nEffect == EFFECTTYPE_INCREASESPEED || nEffect == EFFECTTYPE_DECREASESPEED) {
             mRelativeSliderEffectDatail.setVisibility(View.GONE);
             mRelativeRollerEffectDetail.setVisibility(View.VISIBLE);
             mScrollCompCustomize.setVisibility(View.GONE);
             mScrollReverbCustomize.setVisibility(View.GONE);
+            mScrollChorusCustomize.setVisibility(View.GONE);
         }
         else if(nEffect == EFFECTTYPE_COMP_CUSTOMIZE) {
             mRelativeSliderEffectDatail.setVisibility(View.GONE);
             mRelativeRollerEffectDetail.setVisibility(View.GONE);
             mScrollCompCustomize.setVisibility(View.VISIBLE);
             mScrollReverbCustomize.setVisibility(View.GONE);
+            mScrollChorusCustomize.setVisibility(View.GONE);
         }
         else if(nEffect == EFFECTTYPE_REVERB_CUSTOMIZE) {
             mRelativeSliderEffectDatail.setVisibility(View.GONE);
             mRelativeRollerEffectDetail.setVisibility(View.GONE);
             mScrollCompCustomize.setVisibility(View.GONE);
             mScrollReverbCustomize.setVisibility(View.VISIBLE);
+            mScrollChorusCustomize.setVisibility(View.GONE);
+        }
+        else if(nEffect == EFFECTTYPE_CHORUS_CUSTOMIZE) {
+            mRelativeSliderEffectDatail.setVisibility(View.GONE);
+            mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mScrollCompCustomize.setVisibility(View.GONE);
+            mScrollReverbCustomize.setVisibility(View.GONE);
+            mScrollChorusCustomize.setVisibility(View.VISIBLE);
         }
         else {
             mRelativeSliderEffectDatail.setVisibility(View.VISIBLE);
             mRelativeRollerEffectDetail.setVisibility(View.GONE);
             mScrollCompCustomize.setVisibility(View.GONE);
             mScrollReverbCustomize.setVisibility(View.GONE);
+            mScrollChorusCustomize.setVisibility(View.GONE);
             mSeekEffectDetail.setOnSeekBarChangeListener(this);
         }
 
@@ -1396,6 +1662,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(seekBar.getId() == R.id.seekReverbRoomSize) setReverbRoomSize(progress, fromTouch);
         else if(seekBar.getId() == R.id.seekReverbDamp) setReverbDamp(progress, fromTouch);
         else if(seekBar.getId() == R.id.seekReverbWidth) setReverbWidth(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekChorusDry) setChorusDry(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekChorusWet) setChorusWet(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekChorusFeedback) setChorusFeedback(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekChorusMinSweep) setChorusMinSweep(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekChorusMaxSweep) setChorusMaxSweep(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekChorusRate) setChorusRate(progress, fromTouch);
     }
 
     private void updateComp()
@@ -1729,6 +2001,202 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setReverbWidth(nValue, true);
     }
 
+    private void updateChorus()
+    {
+        if(!mEffectItems.get(EFFECTTYPE_CHORUS_CUSTOMIZE).isSelected() || MainActivity.sStream == 0)
+            return;
+        if(mFxChorus == 0) mFxChorus = BASS.BASS_ChannelSetFX(MainActivity.sStream, BASS_FX.BASS_FX_BFX_CHORUS, 2);
+        BASS_FX.BASS_BFX_CHORUS chorus = new BASS_FX.BASS_BFX_CHORUS();
+        chorus.fDryMix = mChorusDry;
+        chorus.fWetMix = mChorusWet;
+        chorus.fFeedback = mChorusFeedback;
+        chorus.fMinSweep = mChorusMinSweep;
+        chorus.fMaxSweep = mChorusMaxSweep;
+        chorus.fRate = mChorusRate;
+        chorus.lChannel = BASS_FX.BASS_BFX_CHANALL;
+        BASS.BASS_FXSetParameters(mFxChorus, chorus);
+    }
+
+    public void setChorusDry(int nValue, boolean bSave)
+    {
+        mChorusDry = nValue / 100.0f;
+        mTextChorusDry.setText(String.format(Locale.getDefault(), "%.2f", mChorusDry));
+        mSeekChorusDry.setProgress(nValue);
+        updateChorus();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setChorusDry(float fValue, boolean bSave)
+    {
+        mChorusDry = fValue;
+        mTextChorusDry.setText(String.format(Locale.getDefault(), "%.2f", mChorusDry));
+        mSeekChorusDry.setProgress((int)(fValue * 100.0f));
+        updateChorus();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setChorusWet(int nValue, boolean bSave)
+    {
+        mChorusWet = nValue / 100.0f;
+        mTextChorusWet.setText(String.format(Locale.getDefault(), "%.2f", mChorusWet));
+        mSeekChorusWet.setProgress(nValue);
+        updateChorus();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setChorusWet(float fValue, boolean bSave)
+    {
+        mChorusWet = fValue;
+        mTextChorusWet.setText(String.format(Locale.getDefault(), "%.2f", mChorusWet));
+        mSeekChorusWet.setProgress((int)(fValue * 100.0f));
+        updateChorus();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setChorusFeedback(int nValue, boolean bSave)
+    {
+        mChorusFeedback = nValue / 100.0f;
+        mTextChorusFeedback.setText(String.format(Locale.getDefault(), "%.2f", mChorusFeedback));
+        mSeekChorusFeedback.setProgress(nValue);
+        updateChorus();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setChorusFeedback(float fValue, boolean bSave)
+    {
+        mChorusFeedback = fValue;
+        mTextChorusFeedback.setText(String.format(Locale.getDefault(), "%.2f", mChorusFeedback));
+        mSeekChorusFeedback.setProgress((int)(fValue * 100.0f));
+        updateChorus();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setChorusMinSweep(int nValue, boolean bSave)
+    {
+        mChorusMinSweep = nValue / 100.0f;
+        mTextChorusMinSweep.setText(String.format(Locale.getDefault(), "%.2f", mChorusMinSweep));
+        mSeekChorusMinSweep.setProgress(nValue);
+        updateChorus();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setChorusMinSweep(float fValue, boolean bSave)
+    {
+        mChorusMinSweep = fValue;
+        mTextChorusMinSweep.setText(String.format(Locale.getDefault(), "%.2f", mChorusMinSweep));
+        mSeekChorusMinSweep.setProgress((int)(fValue * 100.0f));
+        updateChorus();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setChorusMaxSweep(int nValue, boolean bSave)
+    {
+        mChorusMaxSweep = nValue / 100.0f;
+        mTextChorusMaxSweep.setText(String.format(Locale.getDefault(), "%.2f", mChorusMaxSweep));
+        mSeekChorusMaxSweep.setProgress(nValue);
+        updateChorus();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setChorusMaxSweep(float fValue, boolean bSave)
+    {
+        mChorusMaxSweep = fValue;
+        mTextChorusMaxSweep.setText(String.format(Locale.getDefault(), "%.2f", mChorusMaxSweep));
+        mSeekChorusMaxSweep.setProgress((int)(fValue * 100.0f));
+        updateChorus();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setChorusRate(int nValue, boolean bSave)
+    {
+        mChorusRate = nValue / 100.0f;
+        mTextChorusRate.setText(String.format(Locale.getDefault(), "%.2f", mChorusRate));
+        mSeekChorusRate.setProgress(nValue);
+        updateChorus();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setChorusRate(float fValue, boolean bSave)
+    {
+        mChorusRate = fValue;
+        mTextChorusRate.setText(String.format(Locale.getDefault(), "%.2f", mChorusRate));
+        mSeekChorusRate.setProgress((int)(fValue * 100.0f));
+        updateChorus();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    private void minusChorusDry() {
+        int nValue = mSeekChorusDry.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setChorusDry(nValue, true);
+    }
+
+    private void plusChorusDry() {
+        int nValue = mSeekChorusDry.getProgress() + 1;
+        if(nValue > mSeekChorusDry.getMax()) nValue = mSeekChorusDry.getMax();
+        setChorusDry(nValue, true);
+    }
+
+    private void minusChorusWet() {
+        int nValue = mSeekChorusWet.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setChorusWet(nValue, true);
+    }
+
+    private void plusChorusWet() {
+        int nValue = mSeekChorusWet.getProgress() + 1;
+        if(nValue > mSeekChorusWet.getMax()) nValue = mSeekChorusWet.getMax();
+        setChorusWet(nValue, true);
+    }
+
+    private void minusChorusFeedback() {
+        int nValue = mSeekChorusFeedback.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setChorusFeedback(nValue, true);
+    }
+
+    private void plusChorusFeedback() {
+        int nValue = mSeekChorusFeedback.getProgress() + 1;
+        if(nValue > mSeekChorusFeedback.getMax()) nValue = mSeekChorusFeedback.getMax();
+        setChorusFeedback(nValue, true);
+    }
+
+    private void minusChorusMinSweep() {
+        int nValue = mSeekChorusMinSweep.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setChorusMinSweep(nValue, true);
+    }
+
+    private void plusChorusMinSweep() {
+        int nValue = mSeekChorusMinSweep.getProgress() + 1;
+        if(nValue > mSeekChorusMinSweep.getMax()) nValue = mSeekChorusMinSweep.getMax();
+        setChorusMinSweep(nValue, true);
+    }
+
+    private void minusChorusMaxSweep() {
+        int nValue = mSeekChorusMaxSweep.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setChorusMaxSweep(nValue, true);
+    }
+
+    private void plusChorusMaxSweep() {
+        int nValue = mSeekChorusMaxSweep.getProgress() + 1;
+        if(nValue > mSeekChorusMaxSweep.getMax()) nValue = mSeekChorusMaxSweep.getMax();
+        setChorusMaxSweep(nValue, true);
+    }
+
+    private void minusChorusRate() {
+        int nValue = mSeekChorusRate.getProgress() - 1;
+        if(nValue < 0) nValue = 0;
+        setChorusRate(nValue, true);
+    }
+
+    private void plusChorusRate() {
+        int nValue = mSeekChorusRate.getProgress() + 1;
+        if(nValue > mSeekChorusRate.getMax()) nValue = mSeekChorusRate.getMax();
+        setChorusRate(nValue, true);
+    }
+
     private void setPan(float pan)
     {
         setPan(pan, true);
@@ -1817,9 +2285,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 for(int i = EFFECTTYPE_REVERB_BATHROOM; i <= EFFECTTYPE_REVERB_CUSTOMIZE; i++)
                     if(i != nSelect) deselectEffect(i);
             }
-            if(EFFECTTYPE_CHORUS <= nSelect && nSelect <= EFFECTTYPE_FLANGER)
+            if(EFFECTTYPE_CHORUS <= nSelect && nSelect <= EFFECTTYPE_CHORUS_CUSTOMIZE)
             {
-                for(int i = EFFECTTYPE_CHORUS; i <= EFFECTTYPE_FLANGER; i++)
+                for(int i = EFFECTTYPE_CHORUS; i <= EFFECTTYPE_CHORUS_CUSTOMIZE; i++)
                     if(i != nSelect) deselectEffect(i);
             }
             if((EFFECTTYPE_DISTORTION_STRONG <= nSelect && nSelect <= EFFECTTYPE_DISTORTION_WEAK) || nSelect == EFFECTTYPE_LOWBATTERY)
@@ -2247,6 +2715,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 chorus.fMinSweep = (float) 1.0;
                 chorus.fMaxSweep = (float) 5.0;
                 chorus.fRate = (float) 1.0;
+                chorus.lChannel = BASS_FX.BASS_BFX_CHANALL;
+                BASS.BASS_FXSetParameters(mFxChorus, chorus);
+            }
+            else if(strEffect.equals(getString(R.string.chorusCustomize))) {
+                mFxChorus = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_CHORUS, 2);
+                chorus = new BASS_FX.BASS_BFX_CHORUS();
+                chorus.fDryMix = mChorusDry;
+                chorus.fWetMix = mChorusWet;
+                chorus.fFeedback = mChorusFeedback;
+                chorus.fMinSweep = mChorusMinSweep;
+                chorus.fMaxSweep = mChorusMaxSweep;
+                chorus.fRate = mChorusRate;
                 chorus.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(mFxChorus, chorus);
             }

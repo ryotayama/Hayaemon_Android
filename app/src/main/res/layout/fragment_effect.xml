@@ -26,7 +26,9 @@
                 android:textColor="#000000"
                 android:textSize="16dp"
                 android:textStyle="bold"
-                android:layout_margin="12dp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:gravity="center"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 />
@@ -38,6 +40,9 @@
                 android:text="@string/done"
                 android:textColor="#007AFF"
                 android:textSize="15dp"
+                android:minWidth="0dp"
+                android:padding="0dp"
+                android:layout_marginRight="16dp"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
@@ -688,7 +693,7 @@
                     android:id="@+id/textReverbDryLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/dryMix"
+                    android:text="@string/reverbDryMix"
                     android:textSize="13dp"
                     android:textColor="#000000"
                     android:layout_marginTop="16dp"
@@ -773,7 +778,7 @@
                     android:id="@+id/textReverbWetLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/wetMix"
+                    android:text="@string/reverbWetMix"
                     android:textSize="13dp"
                     android:textColor="#000000"
                     android:layout_marginTop="16dp"
@@ -858,7 +863,7 @@
                     android:id="@+id/textReverbRoomSizeLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/roomSize"
+                    android:text="@string/reverbRoomSize"
                     android:textSize="13dp"
                     android:textColor="#000000"
                     android:layout_marginTop="16dp"
@@ -943,7 +948,7 @@
                     android:id="@+id/textReverbDampLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/damping"
+                    android:text="@string/reverbDamping"
                     android:textSize="13dp"
                     android:textColor="#000000"
                     android:layout_marginTop="16dp"
@@ -1028,7 +1033,7 @@
                     android:id="@+id/textReverbWidthLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/stereoWidth"
+                    android:text="@string/reverbStereoWidth"
                     android:textSize="13dp"
                     android:textColor="#000000"
                     android:layout_marginTop="16dp"
@@ -1123,6 +1128,551 @@
                     android:layout_marginBottom="16dp"
                     android:layout_centerHorizontal="true"
                     android:layout_below="@+id/relativeSliderReverbWidth"
+                    />
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+        <ScrollView
+            android:id="@+id/scrollChorusCustomize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/viewSepEffect"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:background="#FFF"
+                >
+
+                <TextView
+                    android:id="@+id/textChorusDryLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chorusDryMix"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_alignParentTop="true"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderChorusDry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textChorusDryLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekChorusDry"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="100"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textChorusDry"
+                        android:layout_toStartOf="@id/textChorusDry"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textChorusDry"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnChorusDryMinus"
+                        android:layout_toStartOf="@+id/btnChorusDryMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnChorusDryMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnChorusDryPlus"
+                        android:layout_toStartOf="@+id/btnChorusDryPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnChorusDryPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textChorusWetLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chorusWetMix"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderChorusDry"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderChorusWet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textChorusWetLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekChorusWet"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="50"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textChorusWet"
+                        android:layout_toStartOf="@id/textChorusWet"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textChorusWet"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnChorusWetMinus"
+                        android:layout_toStartOf="@+id/btnChorusWetMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnChorusWetMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnChorusWetPlus"
+                        android:layout_toStartOf="@+id/btnChorusWetPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnChorusWetPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textChorusFeedbackLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chorusFeedback"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderChorusWet"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderChorusFeedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textChorusFeedbackLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekChorusFeedback"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="50"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textChorusFeedback"
+                        android:layout_toStartOf="@id/textChorusFeedback"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textChorusFeedback"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnChorusFeedbackMinus"
+                        android:layout_toStartOf="@+id/btnChorusFeedbackMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnChorusFeedbackMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnChorusFeedbackPlus"
+                        android:layout_toStartOf="@+id/btnChorusFeedbackPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnChorusFeedbackPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textChorusMinSweepLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chorusMinSweep"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderChorusFeedback"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderChorusMinSweep"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textChorusMinSweepLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekChorusMinSweep"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="10000"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textChorusMinSweep"
+                        android:layout_toStartOf="@id/textChorusMinSweep"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textChorusMinSweep"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnChorusMinSweepMinus"
+                        android:layout_toStartOf="@+id/btnChorusMinSweepMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnChorusMinSweepMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnChorusMinSweepPlus"
+                        android:layout_toStartOf="@+id/btnChorusMinSweepPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnChorusMinSweepPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textChorusMaxSweepLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chorusMaxSweep"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderChorusMinSweep"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderChorusMaxSweep"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textChorusMaxSweepLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekChorusMaxSweep"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="10000"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textChorusMaxSweep"
+                        android:layout_toStartOf="@id/textChorusMaxSweep"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textChorusMaxSweep"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnChorusMaxSweepMinus"
+                        android:layout_toStartOf="@+id/btnChorusMaxSweepMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnChorusMaxSweepMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnChorusMaxSweepPlus"
+                        android:layout_toStartOf="@+id/btnChorusMaxSweepPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnChorusMaxSweepPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textChorusRateLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chorusRate"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderChorusMaxSweep"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderChorusRate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textChorusRateLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekChorusRate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="10000"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textChorusRate"
+                        android:layout_toStartOf="@id/textChorusRate"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textChorusRate"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnChorusRateMinus"
+                        android:layout_toStartOf="@+id/btnChorusRateMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnChorusRateMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnChorusRatePlus"
+                        android:layout_toStartOf="@+id/btnChorusRatePlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnChorusRatePlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btnResetChorus"
+                    android:text="@string/reset"
+                    android:textSize="12sp"
+                    android:textColor="#007AFF"
+                    android:background="@drawable/resetbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="30dp"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/relativeSliderChorusRate"
                     />
 
             </RelativeLayout>

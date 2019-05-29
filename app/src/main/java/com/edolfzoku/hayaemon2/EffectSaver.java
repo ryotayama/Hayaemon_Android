@@ -71,12 +71,9 @@ class EffectSaver {
     private float mIncreaseSpeed = 0.1f;
     private float mTimeOmDecreaseSpeed = 1.0f;
     private float mDecreaseSpeed = 0.1f;
-    private float mReverbDry = 0.7f;
-    private float mReverbWet = 1.0f;
-    private float mReverbRoomSize = 0.85f;
-    private float mReverbDamp = 0.5f;
-    private float mReverbWidth = 0.9f;
     private float mCompGain = 2.0f, mCompThreshold = -20.0f, mCompRatio = 10.0f, mCompAttack = 1.2f, mCompRelease = 400.0f;
+    private float mReverbDry = 0.7f, mReverbWet = 1.0f, mReverbRoomSize = 0.85f, mReverbDamp = 0.5f, mReverbWidth = 0.9f;
+    private float mChorusDry = 1.0f, mChorusWet = 0.1f, mChorusFeedback = 0.5f, mChorusMinSweep = 1.0f, mChorusMaxSweep = 2.0f, mChorusRate = 10.0f;
     private boolean bABLoop = false;
     private boolean bLoop = false;
     private boolean bLoopA = false;
@@ -157,6 +154,12 @@ class EffectSaver {
     void setReverbRoomSize(float reverbRoomSize) { mReverbRoomSize = reverbRoomSize; }
     void setReverbDamp(float reverbDamp) { mReverbDamp = reverbDamp; }
     void setReverbWidth(float reverbWidth) { mReverbWidth = reverbWidth; }
+    void setChorusDry(float chorusDry) { mChorusDry = chorusDry; }
+    void setChorusWet(float chorusWet) { mChorusWet = chorusWet; }
+    void setChorusFeedback(float chorusFeedback) { mChorusFeedback = chorusFeedback; }
+    void setChorusMinSweep(float chorusMinSweep) { mChorusMinSweep = chorusMinSweep; }
+    void setChorusMaxSweep(float chorusMaxSweep) { mChorusMaxSweep = chorusMaxSweep; }
+    void setChorusRate(float chorusRate) { mChorusRate = chorusRate; }
     void setIsABLoop(boolean bABLoop) { this.bABLoop = bABLoop; }
     void setIsLoopA(boolean bLoopA) { this.bLoopA = bLoopA; }
     void setLoopA(double dLoopA) { this.dLoopA = dLoopA; }
@@ -226,6 +229,12 @@ class EffectSaver {
     float getReverbRoomSize() { return mReverbRoomSize; }
     float getReverbDamp() { return mReverbDamp; }
     float getReverbWidth() { return mReverbWidth; }
+    float getChorusDry() { return mChorusDry; }
+    float getChorusWet() { return mChorusWet; }
+    float getChorusFeedback() { return mChorusFeedback; }
+    float getChorusMinSweep() { return mChorusMinSweep; }
+    float getChorusMaxSweep() { return mChorusMaxSweep; }
+    float getChorusRate() { return mChorusRate; }
     boolean isABLoop() { return bABLoop; }
     boolean isLoopA() { return bLoopA; }
     double getLoopA() { return dLoopA; }
@@ -300,6 +309,12 @@ class EffectSaver {
         mReverbRoomSize = saver.mReverbRoomSize;
         mReverbDamp = saver.mReverbDamp;
         mReverbWidth = saver.mReverbWidth;
+        mChorusDry = saver.mChorusDry;
+        mChorusWet = saver.mChorusWet;
+        mChorusFeedback = saver.mChorusFeedback;
+        mChorusMinSweep = saver.mChorusMinSweep;
+        mChorusMaxSweep = saver.mChorusMaxSweep;
+        mChorusRate = saver.mChorusRate;
         bABLoop = saver.bABLoop;
         bLoop = saver.bLoop;
         bLoopA = saver.bLoopA;
