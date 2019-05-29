@@ -30,7 +30,7 @@
             android:button="@null"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/preset"
+            android:text="@string/template"
             android:textColor="@drawable/radio_text_color" />
 
         <RadioButton
@@ -2481,7 +2481,7 @@
                     android:id="@+id/btnAddEqualizer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/addPreset"
+                    android:text="@string/addTemplate"
                     android:layout_margin="2dp"
                     android:paddingLeft="48dp"
                     android:paddingRight="48dp"

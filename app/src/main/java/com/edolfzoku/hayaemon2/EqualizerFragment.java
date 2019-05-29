@@ -466,13 +466,13 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         switch(v.getId()) {
             case R.id.btnAddEqualizer:
                 AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-                builder.setTitle(R.string.addPreset);
+                builder.setTitle(R.string.addTemplate);
                 LinearLayout linearLayout = new LinearLayout(mActivity);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
                 final EditText editPreset = new EditText(mActivity);
-                editPreset.setHint(R.string.presetName);
+                editPreset.setHint(R.string.templateName);
                 editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
-                editPreset.setText(R.string.newPreset);
+                editPreset.setText(R.string.newTemplate);
                 linearLayout.addView(editPreset);
                 builder.setView(linearLayout);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -815,16 +815,16 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     public void showMenu(final int nItem) {
         final BottomMenu menu = new BottomMenu(mActivity);
         menu.setTitle(mEqualizerItems.get(nItem).getEqualizerName());
-        menu.addMenu(getString(R.string.changePresetName), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.changeTemplateName), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-                builder.setTitle(R.string.changePresetName);
+                builder.setTitle(R.string.changeTemplateName);
                 LinearLayout linearLayout = new LinearLayout(mActivity);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
                 final EditText editPreset = new EditText (mActivity);
-                editPreset.setHint(R.string.presetName);
+                editPreset.setHint(R.string.templateName);
                 editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
                 editPreset.setText(mEqualizerItems.get(nItem).getEqualizerName());
                 linearLayout.addView(editPreset);
@@ -857,7 +857,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 alertDialog.show();
             }
         });
-        menu.addMenu(getString(R.string.sortPreset), R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.sortTemplate), R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
@@ -902,7 +902,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(mEqualizerItems.get(nItem).getEqualizerName());
-                builder.setMessage(R.string.askDeletePreset);
+                builder.setMessage(R.string.askDeleteTemplate);
                 builder.setPositiveButton(R.string.decideNot, null);
                 builder.setNegativeButton(R.string.doDelete, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -927,13 +927,13 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 alertDialog.show();
             }
         });
-        menu.addDestructiveMenu(getString(R.string.initializePreset), R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
+        menu.addDestructiveMenu(getString(R.string.initializeTemplate), R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-                builder.setTitle(R.string.initializePreset);
-                builder.setMessage(R.string.askInitializePreset);
+                builder.setTitle(R.string.initializeTemplate);
+                builder.setMessage(R.string.askinitializeTemplate);
                 builder.setPositiveButton(R.string.decideNot, null);
                 builder.setNegativeButton(R.string.doInitialize, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
