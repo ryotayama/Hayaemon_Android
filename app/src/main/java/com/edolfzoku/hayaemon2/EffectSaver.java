@@ -72,6 +72,7 @@ class EffectSaver {
     private float mTimeOmDecreaseSpeed = 1.0f;
     private float mDecreaseSpeed = 0.1f;
     private float mCompGain = 2.0f, mCompThreshold = -20.0f, mCompRatio = 10.0f, mCompAttack = 1.2f, mCompRelease = 400.0f;
+    private float mEchoDry, mEchoWet, mEchoFeedback, mEchoDelay;
     private float mReverbDry = 0.7f, mReverbWet = 1.0f, mReverbRoomSize = 0.85f, mReverbDamp = 0.5f, mReverbWidth = 0.9f;
     private float mChorusDry = 1.0f, mChorusWet = 0.1f, mChorusFeedback = 0.5f, mChorusMinSweep = 1.0f, mChorusMaxSweep = 2.0f, mChorusRate = 10.0f;
     private float mDistortionDrive = 0.2f, mDistortionDry = 0.95f, mDistortionWet = 0.05f, mDistortionFeedback = 0.1f, mDistortionVolume = 1.0f;
@@ -150,6 +151,10 @@ class EffectSaver {
     void setCompRatio(float compRatio) { mCompRatio = compRatio; }
     void setCompAttack(float compAttack) { mCompAttack = compAttack; }
     void setCompRelease(float compRelease) { mCompRelease = compRelease; }
+    void setEchoDry(float echoDry) { mEchoDry = echoDry; }
+    void setEchoWet(float echoWet) { mEchoWet = echoWet; }
+    void setEchoFeedback(float echoFeedback) { mEchoFeedback = echoFeedback; }
+    void setEchoDelay(float echoDelay) { mEchoDelay = echoDelay; }
     void setReverbDry(float reverbDry) { mReverbDry = reverbDry; }
     void setReverbWet(float reverbWet) { mReverbWet = reverbWet; }
     void setReverbRoomSize(float reverbRoomSize) { mReverbRoomSize = reverbRoomSize; }
@@ -230,6 +235,10 @@ class EffectSaver {
     float getCompRatio() { return mCompRatio; }
     float getCompAttack() { return mCompAttack; }
     float getCompRelease() { return mCompRelease; }
+    float getEchoDry() { return mEchoDry; }
+    float getEchoWet() { return mEchoWet; }
+    float getEchoFeedback() { return mEchoFeedback; }
+    float getEchoDelay() { return mEchoDelay; }
     float getReverbDry() { return mReverbDry; }
     float getReverbWet() { return mReverbWet; }
     float getReverbRoomSize() { return mReverbRoomSize; }
@@ -315,6 +324,10 @@ class EffectSaver {
         mCompRatio = saver.mCompRatio;
         mCompAttack = saver.mCompAttack;
         mCompRelease = saver.mCompRelease;
+        mEchoDry = saver.mEchoDry;
+        mEchoWet = saver.mEchoWet;
+        mEchoFeedback = saver.mEchoFeedback;
+        mEchoDelay = saver.mEchoDelay;
         mReverbDry = saver.mReverbDry;
         mReverbWet = saver.mReverbWet;
         mReverbRoomSize = saver.mReverbRoomSize;

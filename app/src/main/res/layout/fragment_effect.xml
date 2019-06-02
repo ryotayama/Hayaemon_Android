@@ -675,6 +675,381 @@
         </ScrollView>
 
         <ScrollView
+            android:id="@+id/scrollEchoCustomize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/viewSepEffect"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:background="#FFF"
+                >
+
+                <TextView
+                    android:id="@+id/textEchoDryLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/echoDry"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_alignParentTop="true"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderEchoDry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textEchoDryLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekEchoDry"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="200"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textEchoDry"
+                        android:layout_toStartOf="@id/textEchoDry"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textEchoDry"
+                        android:layout_width="32dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnEchoDryMinus"
+                        android:layout_toStartOf="@+id/btnEchoDryMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnEchoDryMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnEchoDryPlus"
+                        android:layout_toStartOf="@+id/btnEchoDryPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnEchoDryPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textEchoWetLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/echoWet"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderEchoDry"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderEchoWet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textEchoWetLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekEchoWet"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="200"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textEchoWet"
+                        android:layout_toStartOf="@id/textEchoWet"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textEchoWet"
+                        android:layout_width="32dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnEchoWetMinus"
+                        android:layout_toStartOf="@+id/btnEchoWetMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnEchoWetMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnEchoWetPlus"
+                        android:layout_toStartOf="@+id/btnEchoWetPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnEchoWetPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textEchoFeedbackLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/echoFeedback"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderEchoWet"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderEchoFeedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textEchoFeedbackLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekEchoFeedback"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="100"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textEchoFeedback"
+                        android:layout_toStartOf="@id/textEchoFeedback"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textEchoFeedback"
+                        android:layout_width="32dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnEchoFeedbackMinus"
+                        android:layout_toStartOf="@+id/btnEchoFeedbackMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnEchoFeedbackMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnEchoFeedbackPlus"
+                        android:layout_toStartOf="@+id/btnEchoFeedbackPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnEchoFeedbackPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textEchoDelayLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/echoDelay"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeSliderEchoFeedback"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderEchoDelay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textEchoDelayLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekEchoDelay"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="200"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textEchoDelay"
+                        android:layout_toStartOf="@id/textEchoDelay"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textEchoDelay"
+                        android:layout_width="32dp"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnEchoDelayMinus"
+                        android:layout_toStartOf="@+id/btnEchoDelayMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnEchoDelayMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnEchoDelayPlus"
+                        android:layout_toStartOf="@+id/btnEchoDelayPlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnEchoDelayPlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btnResetEcho"
+                    android:text="@string/reset"
+                    android:textSize="12sp"
+                    android:textColor="#007AFF"
+                    android:background="@drawable/resetbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="30dp"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/relativeSliderEchoDelay"
+                    />
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+        <ScrollView
             android:id="@+id/scrollReverbCustomize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

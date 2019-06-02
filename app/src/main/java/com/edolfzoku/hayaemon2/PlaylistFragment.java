@@ -2887,6 +2887,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saver.setCompRatio(mActivity.effectFragment.getCompRatio());
         saver.setCompAttack(mActivity.effectFragment.getCompRatio());
         saver.setCompRelease(mActivity.effectFragment.getCompRelease());
+        saver.setEchoDry(mActivity.effectFragment.getEchoDry());
+        saver.setEchoWet(mActivity.effectFragment.getEchoWet());
+        saver.setEchoFeedback(mActivity.effectFragment.getEchoFeedback());
+        saver.setEchoDelay(mActivity.effectFragment.getEchoDelay());
         saver.setReverbDry(mActivity.effectFragment.getReverbDry());
         saver.setReverbWet(mActivity.effectFragment.getReverbWet());
         saver.setReverbRoomSize(mActivity.effectFragment.getReverbRoomSize());
@@ -2987,6 +2991,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setCompRatio(mActivity.effectFragment.getCompRatio());
             saver.setCompAttack(mActivity.effectFragment.getCompAttack());
             saver.setCompRelease(mActivity.effectFragment.getCompRelease());
+            saver.setEchoDry(mActivity.effectFragment.getEchoDry());
+            saver.setEchoWet(mActivity.effectFragment.getEchoWet());
+            saver.setEchoFeedback(mActivity.effectFragment.getEchoFeedback());
+            saver.setEchoDelay(mActivity.effectFragment.getEchoDelay());
             saver.setReverbDry(mActivity.effectFragment.getReverbDry());
             saver.setReverbWet(mActivity.effectFragment.getReverbWet());
             saver.setReverbRoomSize(mActivity.effectFragment.getReverbRoomSize());
@@ -3081,6 +3089,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mActivity.effectFragment.setCompRatio(saver.getCompRatio(), false);
         mActivity.effectFragment.setCompAttack(saver.getCompAttack(), false);
         mActivity.effectFragment.setCompRelease(saver.getCompRelease(), false);
+        mActivity.effectFragment.setEchoDry(saver.getEchoDry(), false);
+        mActivity.effectFragment.setEchoWet(saver.getEchoWet(), false);
+        mActivity.effectFragment.setEchoFeedback(saver.getEchoFeedback(), false);
+        mActivity.effectFragment.setEchoDelay(saver.getEchoDelay(), false);
         mActivity.effectFragment.setReverbDry(saver.getReverbDry(), false);
         mActivity.effectFragment.setReverbWet(saver.getReverbWet(), false);
         mActivity.effectFragment.setReverbRoomSize(saver.getReverbRoomSize(), false);

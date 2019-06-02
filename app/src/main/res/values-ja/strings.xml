@@ -33,6 +33,11 @@
     <string name="bathroomEcho">バスルームエコー</string>
     <string name="vocalEcho">ボーカルエコー</string>
     <string name="mountainEcho">やまびこエコー</string>
+    <string name="echoCustomize">エコー（カスタマイズ）</string>
+    <string name="echoDry">原音</string>
+    <string name="echoWet">反響音</string>
+    <string name="echoFeedback">フィードバック</string>
+    <string name="echoDelay">遅延時間（秒）</string>
     <string name="reverbBathroom">リバーブ（バスルーム）</string>
     <string name="reverbSmallRoom">リバーブ（狭い部屋）</string>
     <string name="reverbMediumRoom">リバーブ（普通の部屋）</string>

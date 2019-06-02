@@ -33,6 +33,11 @@
     <string name="bathroomEcho">Bathroom Echo</string>
     <string name="vocalEcho">Vocal Echo</string>
     <string name="mountainEcho">Moutain Echo</string>
+    <string name="echoCustomize">Echo (Customize)</string>
+    <string name="echoDry">Dry mix</string>
+    <string name="echoWet">Wet mix</string>
+    <string name="echoFeedback">Feedback</string>
+    <string name="echoDelay">Delay (sec.)</string>
     <string name="reverbBathroom">Reverb (Bathroom)</string>
     <string name="reverbSmallRoom">Reverb (Small Room)</string>
     <string name="reverbMediumRoom">Reverb (Medium Room)</string>
