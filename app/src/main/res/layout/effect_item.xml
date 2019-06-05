@@ -36,7 +36,7 @@
             android:contentDescription="@string/detail"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/infobutton"
+            android:src="@drawable/ic_button_info"
             android:background="@null"
             android:scaleType="centerInside"
             android:clickable="true"

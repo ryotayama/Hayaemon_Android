@@ -20,9 +20,12 @@ package com.edolfzoku.hayaemon2;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -95,6 +98,19 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
         }
         else {
             holder.getButtonEffectDetail().setVisibility(View.VISIBLE);
+            holder.getButtonEffectDetail().setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event)
+                {
+                    if(event.getAction() == MotionEvent.ACTION_DOWN)
+                        holder.getButtonEffectDetail().setColorFilter(new PorterDuffColorFilter(Color.parseColor("#ffcce4ff"), PorterDuff.Mode.SRC_IN));
+                    else if(event.getAction() == MotionEvent.ACTION_UP)
+                        holder.getButtonEffectDetail().setColorFilter(null);
+                    else if(event.getAction() == MotionEvent.ACTION_CANCEL)
+                        holder.getButtonEffectDetail().setColorFilter(null);
+                    return false;
+                }
+            });
             holder.getImgRight().setVisibility(View.VISIBLE);
             holder.getButtonEffectDetail().setOnClickListener(new View.OnClickListener() {
                 @Override
