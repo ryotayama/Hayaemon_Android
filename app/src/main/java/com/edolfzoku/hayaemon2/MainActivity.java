@@ -2364,7 +2364,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             }
             else if(mTabLayout.getSelectedTabPosition() == 3) { // イコライザ画面
-                mViewPager.setCurrentItem(0);
+                if(findViewById(R.id.scrollCustomEqualizer).getVisibility() == View.VISIBLE) { // カスタマイズ画面
+                    findViewById(R.id.btnBackCustomize).performClick();
+                }
+                else mViewPager.setCurrentItem(0);
                 return true;
             }
             else if(mTabLayout.getSelectedTabPosition() == 4) { // エフェクト画面

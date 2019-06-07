@@ -21,12 +21,15 @@ package com.edolfzoku.hayaemon2;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,16 +44,22 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
     static class ViewHolder extends RecyclerView.ViewHolder {
         private RelativeLayout mEqualizerItem;
         private TextView mTextEqualizer;
+        private ImageButton mBtnEqualizerDetail;
+        private ImageView mImgEqualizerRight;
         private ImageView mImgEqualizerMenu;
 
         RelativeLayout getEqualizerItem() { return mEqualizerItem; }
         TextView getTextEqualizer() { return mTextEqualizer; }
+        ImageButton getBtnEqualizerDetail() { return mBtnEqualizerDetail; }
+        ImageView getImgEqualizerRight() { return mImgEqualizerRight; }
         ImageView getImgEqualizerMenu() { return mImgEqualizerMenu; }
 
         ViewHolder(View view) {
             super(view);
             mEqualizerItem = view.findViewById(R.id.equalizerItem);
             mTextEqualizer = view.findViewById(R.id.textEqualizer);
+            mBtnEqualizerDetail = view.findViewById(R.id.btnEqualizerDetail);
+            mImgEqualizerRight = view.findViewById(R.id.imgEqualizerRight);
             mImgEqualizerMenu = view.findViewById(R.id.imgEqualizerMenu);
         }
     }
@@ -106,8 +115,31 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
             holder.getImgEqualizerMenu().setImageResource(R.drawable.ic_sort);
             RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.getImgEqualizerMenu().getLayoutParams();
             param.leftMargin = param.rightMargin = (int) (8 * mActivity.getDensity());
+            holder.getBtnEqualizerDetail().setVisibility(View.GONE);
+            holder.getImgEqualizerRight().setVisibility(View.GONE);
         }
         else {
+            holder.getBtnEqualizerDetail().setVisibility(View.VISIBLE);
+            holder.getImgEqualizerRight().setVisibility(View.VISIBLE);
+            holder.getBtnEqualizerDetail().setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event)
+                {
+                    if(event.getAction() == MotionEvent.ACTION_DOWN)
+                        holder.getBtnEqualizerDetail().setColorFilter(new PorterDuffColorFilter(Color.parseColor("#ffcce4ff"), PorterDuff.Mode.SRC_IN));
+                    else if(event.getAction() == MotionEvent.ACTION_UP)
+                        holder.getBtnEqualizerDetail().setColorFilter(null);
+                    else if(event.getAction() == MotionEvent.ACTION_CANCEL)
+                        holder.getBtnEqualizerDetail().setColorFilter(null);
+                    return false;
+                }
+            });
+            holder.getBtnEqualizerDetail().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mActivity.equalizerFragment.onEqualizerDetailClick(holder.getAdapterPosition());
+                }
+            });
             holder.getImgEqualizerMenu().setOnTouchListener(null);
             holder.getImgEqualizerMenu().setOnClickListener(new View.OnClickListener() {
                 @Override

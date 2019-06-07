@@ -139,7 +139,7 @@
     <string name="snap">Snap the pointer to integer</string>
     <string name="close">Close</string>
     <string name="done">Done</string>
-    <string name="back">&lt; Back</string>
+    <string name="back">Back</string>
     <string name="reset">Reset</string>
     <string name="percent">%</string>
     <string name="range">～</string>
@@ -199,6 +199,9 @@
     <string name="customize">Costomize</string>
     <string name="addTemplate">Add to template</string>
     <string name="newTemplate">New template</string>
+    <string name="newEqualizer">New equalizer</string>
+    <string name="save">Save</string>
+    <string name="saveAs">Save as</string>
     <string name="abLoop">AB Loop</string>
     <string name="markerPlay">Marker Play</string>
     <string name="zoomin">Zoom in the waveform</string>

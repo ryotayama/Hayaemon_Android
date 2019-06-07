@@ -22,6 +22,45 @@
         android:layout_centerVertical="true"
         />
 
+    <RelativeLayout
+        android:id="@+id/relativeEqualizerDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/imgEqualizerMenu"
+        android:layout_toStartOf="@+id/imgEqualizerMenu"
+        >
+
+        <ImageButton
+            android:id="@+id/btnEqualizerDetail"
+            android:contentDescription="@string/detail"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_button_info"
+            android:background="@null"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="2dp"
+            android:layout_alignParentTop="true"
+            />
+
+        <ImageView
+            android:id="@+id/imgEqualizerRight"
+            android:contentDescription="@null"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@null"
+            android:src="@drawable/ic_listright"
+            android:scaleType="centerInside"
+            android:layout_marginLeft="-8dp"
+            android:layout_marginStart="-8dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/btnEqualizerDetail"
+            android:layout_toEndOf="@+id/btnEqualizerDetail"
+            />
+
+    </RelativeLayout>
+
     <ImageView
         android:id="@+id/imgEqualizerMenu"
         android:contentDescription="@string/menu"

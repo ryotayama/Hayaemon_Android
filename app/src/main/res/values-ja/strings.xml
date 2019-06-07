@@ -139,7 +139,7 @@
     <string name="snap">ポインターを整数にスナップ</string>
     <string name="close">閉じる</string>
     <string name="done">完了</string>
-    <string name="back">&lt; 戻る</string>
+    <string name="back">戻る</string>
     <string name="reset">リセット</string>
     <string name="percent">%</string>
     <string name="range">～</string>
@@ -199,6 +199,9 @@
     <string name="customize">カスタマイズ</string>
     <string name="addTemplate">テンプレートとして追加</string>
     <string name="newTemplate">新規テンプレート</string>
+    <string name="newEqualizer">新規イコライザ</string>
+    <string name="save">保存</string>
+    <string name="saveAs">別名で保存</string>
     <string name="abLoop">ABループ</string>
     <string name="markerPlay">マーカー再生</string>
     <string name="zoomin">波形のズームイン</string>

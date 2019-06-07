@@ -6,45 +6,27 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp">
 
-    <RadioGroup
-        android:id="@+id/radioGroupEqualizer"
+    <Button
+        android:id="@+id/btnEqualizerOff"
+        android:text="@string/off"
+        android:textColor="@drawable/btn_text"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:checkedButton="@+id/radioButtonPreset"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
+        android:layout_marginLeft="44dp"
+        android:layout_marginRight="44dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:orientation="horizontal" >
+        android:stateListAnimator="@null"
+        android:background="@drawable/btn_border_background"
+        />
 
-        <RadioButton
-            android:id="@+id/radioButtonPreset"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/radio_left"
-            android:button="@null"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/template"
-            android:textColor="@drawable/radio_text_color" />
-
-        <RadioButton
-            android:id="@+id/radioButtonCustomize"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/radio_right"
-            android:button="@null"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/customize"
-            android:textColor="@drawable/radio_text_color" />
-
-    </RadioGroup>
+    <View
+        android:id="@+id/viewSepEqualizer"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#BFBFBF"
+        android:layout_below="@+id/btnEqualizerOff"
+        />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerEqualizers"
@@ -52,18 +34,115 @@
         android:layout_width="match_parent"
         android:divider="#BFBFBF"
         android:dividerHeight="1px"
+        android:paddingBottom="80dp"
         android:clipToPadding="false"
-        android:layout_below="@+id/radioGroupEqualizer"
+        android:layout_below="@+id/viewSepEqualizer"
+        />
+
+    <com.edolfzoku.hayaemon2.AnimationButton
+        android:id="@+id/btnAddEqualizerTemplate"
+        android:contentDescription="@string/addSong"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="@null"
+        android:src="@drawable/button_big_equalizer"
+        android:scaleType="centerInside"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_margin="8dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:visibility="visible"
+        />
+
+    <RelativeLayout
+        android:id="@+id/relativeTemplateHeader"
+        android:background="#F9F9F9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        >
+
+        <ImageView
+            android:id="@+id/imgBackEqualizer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_button_back"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            />
+
+        <Button
+            android:id="@+id/btnBackCustomize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:textColor="#007AFF"
+            android:textSize="15dp"
+            android:minWidth="0dp"
+            android:paddingLeft="32dp"
+            android:paddingStart="32dp"
+            android:paddingRight="8dp"
+            android:paddingEnd="8dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            />
+
+        <TextView
+            android:id="@+id/textTemplateName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            />
+
+        <Button
+            android:id="@+id/btnFinishCustomize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/done"
+            android:textColor="#007AFF"
+            android:textSize="15dp"
+            android:minWidth="0dp"
+            android:paddingLeft="8dp"
+            android:paddingStart="8dp"
+            android:paddingRight="16dp"
+            android:paddingEnd="16dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/viewSepEqualizerCustomize"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#BFBFBF"
+        android:layout_below="@id/relativeTemplateHeader"
+        android:visibility="invisible"
         />
 
     <ScrollView
         android:id="@+id/scrollCustomEqualizer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/radioGroupEqualizer"
+        android:layout_below="@+id/viewSepEqualizerCustomize"
         android:visibility="invisible"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
         >
 
         <LinearLayout
@@ -71,6 +150,21 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             >
+
+            <Button
+                android:id="@+id/btnEqualizerRandom"
+                android:text="@string/random"
+                android:textColor="@drawable/btn_text"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginLeft="44dp"
+                android:layout_marginRight="44dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/btn_border_background"
+                android:stateListAnimator="@null"
+                android:visibility="invisible"
+                />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -2474,21 +2568,39 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 >
 
                 <Button
-                    android:id="@+id/btnAddEqualizer"
+                    android:id="@+id/btnResetEqualizer"
+                    android:text="@string/reset"
+                    android:textSize="12sp"
+                    android:textColor="@drawable/btn_text"
+                    android:background="@drawable/resetbutton"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/addTemplate"
-                    android:layout_margin="2dp"
-                    android:paddingLeft="48dp"
-                    android:paddingRight="48dp"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:stateListAnimator="@null"
                     android:layout_centerHorizontal="true"
                     />
 
             </RelativeLayout>
+
+            <Button
+                android:id="@+id/btnEqualizerSaveAs"
+                android:text="@string/saveAs"
+                android:textColor="@drawable/btn_text"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginLeft="44dp"
+                android:layout_marginRight="44dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/btn_border_background"
+                android:stateListAnimator="@null"
+                android:visibility="visible"
+                />
 
         </LinearLayout>
 

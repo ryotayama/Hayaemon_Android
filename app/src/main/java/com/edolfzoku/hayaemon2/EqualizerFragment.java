@@ -38,12 +38,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -67,13 +70,19 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     private ArrayList<TextView> mTextValues;
     private ArrayList<SeekBar> mSeeks;
     private ArrayList<Integer> mHfxs;
-    private int mLastChecked = 0;
     private boolean mSorting = false;
     private boolean mContinue = true;
+    private boolean mAddTemplate;
     private final Handler mHandler;
     private int mLongClick = 0;
 
-    private TextView mTextFinishSortEqualizer;
+    private RelativeLayout mRelativeTemplateHeader;
+    private ScrollView mScrollView;
+    private TextView mTextTemplateName, mTextFinishSortEqualizer;
+    private View mViewSepEqualizer, mViewSepEqualizerCustomize;
+    private Button mBtnEqualizerOff, mBtnBackCustomize, mBtnFinishCustomize, mBtnEqualizerRandom, mBtnResetEqualizer, mBtnEqualizerSaveAs;
+    private AnimationButton mBtnAddEqualizerTemplate;
+    private ImageView mImgBackEqualizer;
 
     public ArrayList<SeekBar> getArSeek() { return mSeeks; }
     public float[] getArCenters() { return mCenters; }
@@ -137,23 +146,27 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
         mRecyclerEqualizers = mActivity.findViewById(R.id.recyclerEqualizers);
         mTextFinishSortEqualizer = mActivity.findViewById(R.id.textFinishSortEqualizer);
-        Button btnAddEqualizer = mActivity.findViewById(R.id.btnAddEqualizer);
-        final ScrollView scrollView = mActivity.findViewById(R.id.scrollCustomEqualizer);
-        final RadioGroup radioGroupEqualizer = mActivity.findViewById(R.id.radioGroupEqualizer);
+        mRelativeTemplateHeader = mActivity.findViewById(R.id.relativeTemplateHeader);
+        mTextTemplateName = mActivity.findViewById(R.id.textTemplateName);
+        mViewSepEqualizer = mActivity.findViewById(R.id.viewSepEqualizer);
+        mViewSepEqualizerCustomize = mActivity.findViewById(R.id.viewSepEqualizerCustomize);
+        mBtnEqualizerOff = mActivity.findViewById(R.id.btnEqualizerOff);
+        mBtnAddEqualizerTemplate = mActivity.findViewById(R.id.btnAddEqualizerTemplate);
+        mImgBackEqualizer = mActivity.findViewById(R.id.imgBackEqualizer);
+        mBtnBackCustomize = mActivity.findViewById(R.id.btnBackCustomize);
+        mBtnEqualizerRandom = mActivity.findViewById(R.id.btnEqualizerRandom);
+        mBtnFinishCustomize = mActivity.findViewById(R.id.btnFinishCustomize);
+        mBtnResetEqualizer = mActivity.findViewById(R.id.btnResetEqualizer);
+        mBtnEqualizerSaveAs = mActivity.findViewById(R.id.btnEqualizerSaveAs);
+        mScrollView = mActivity.findViewById(R.id.scrollCustomEqualizer);
 
-        radioGroupEqualizer.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int nItem) {
-                if(nItem == R.id.radioButtonPreset) {
-                    mRecyclerEqualizers.setVisibility(View.VISIBLE);
-                    scrollView.setVisibility(View.INVISIBLE);
-                }
-                else {
-                    scrollView.setVisibility(View.VISIBLE);
-                    mRecyclerEqualizers.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
+        mBtnEqualizerOff.setOnClickListener(this);
+        mBtnEqualizerRandom.setOnClickListener(this);
+        mBtnAddEqualizerTemplate.setOnClickListener(this);
+        mBtnBackCustomize.setOnClickListener(this);
+        mBtnFinishCustomize.setOnClickListener(this);
+        mBtnResetEqualizer.setOnClickListener(this);
+        mBtnEqualizerSaveAs.setOnClickListener(this);
 
         mCenters = new float[] {20000, 16000, 12500, 10000, 8000, 6300, 5000, 4000, 3150, 2500, 2000, 1600, 1250, 1000, 800, 630, 500, 400, 315, 250, 200, 160, 125, 100, 80, 63, 50, 40, 31.5f, 25, 20};
 
@@ -276,11 +289,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                                 TextView textView = mTextValues.get(j);
                                 textView.setText(String.valueOf(nLevel));
                             }
-
-                            for (int j = 0; j < mEqualizerItems.size(); j++) {
-                                mEqualizerItems.get(j).setSelected(false);
-                                mEqualizersAdapter.notifyItemChanged(j);
-                            }
                         }
 
                         public void onStartTrackingTouch(SeekBar seekBar) {
@@ -291,8 +299,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     }
             );
         }
-
-        btnAddEqualizer.setOnClickListener(this);
 
         mTextFinishSortEqualizer.setOnClickListener(this);
 
@@ -464,7 +470,162 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
-            case R.id.btnAddEqualizer:
+            case R.id.textFinishSortEqualizer:
+                mRecyclerEqualizers.setPadding(0, 0, 0, 0);
+                mBtnEqualizerOff.setVisibility(View.VISIBLE);
+                mViewSepEqualizer.setVisibility(View.VISIBLE);
+                mBtnAddEqualizerTemplate.setAlpha(1.0f);
+                mTextFinishSortEqualizer.setVisibility(View.GONE);
+                mSorting = false;
+                mEqualizersAdapter.notifyDataSetChanged();
+                mEqualizerTouchHelper.attachToRecyclerView(null);
+                break;
+
+            case R.id.btnEqualizerOff:
+                mBtnEqualizerOff.setSelected(true);
+                for(int i = 0; i < mEqualizerItems.size(); i++)
+                    mEqualizerItems.get(i).setSelected(false);
+                mEqualizersAdapter.notifyDataSetChanged();
+                resetEQ();
+                break;
+
+            case R.id.btnAddEqualizerTemplate:
+                mAddTemplate = true;
+                mTextTemplateName.setText(R.string.newEqualizer);
+
+                mBtnBackCustomize.setText(R.string.cancel);
+                mBtnFinishCustomize.setText(R.string.save);
+
+                mRelativeTemplateHeader.setVisibility(View.VISIBLE);
+                mViewSepEqualizerCustomize.setVisibility(View.VISIBLE);
+                mBtnEqualizerRandom.setVisibility(View.VISIBLE);
+                mScrollView.setVisibility(View.VISIBLE);
+                mImgBackEqualizer.setVisibility(View.INVISIBLE);
+                mBtnBackCustomize.setPadding((int)(16 * mActivity.getDensity()), mBtnBackCustomize.getPaddingTop(), mBtnBackCustomize.getPaddingRight(), mBtnBackCustomize.getPaddingBottom());
+                mBtnEqualizerOff.setVisibility(View.INVISIBLE);
+                mRecyclerEqualizers.setVisibility(View.INVISIBLE);
+                mBtnEqualizerSaveAs.setVisibility(View.GONE);
+                mBtnAddEqualizerTemplate.setAlpha(0.0f);
+                break;
+
+            case R.id.btnBackCustomize:
+            {
+                mRelativeTemplateHeader.setVisibility(View.INVISIBLE);
+                mViewSepEqualizerCustomize.setVisibility(View.INVISIBLE);
+                mBtnEqualizerRandom.setVisibility(View.INVISIBLE);
+                mScrollView.setVisibility(View.INVISIBLE);
+                mBtnEqualizerOff.setVisibility(View.VISIBLE);
+                mRecyclerEqualizers.setVisibility(View.VISIBLE);
+                mBtnAddEqualizerTemplate.setAlpha(1.0f);
+
+                EqualizerItem item = null;
+                int nItem = 0;
+                for (; nItem < mEqualizerItems.size(); nItem++) {
+                    item = mEqualizerItems.get(nItem);
+                    if (item.isSelected()) break;
+                }
+                if (nItem < mEqualizerItems.size()) setEQ(nItem);
+                else resetEQ();
+            }
+                break;
+
+            case R.id.btnFinishCustomize:
+                if(mAddTemplate) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                    builder.setTitle(R.string.addTemplate);
+                    LinearLayout linearLayout = new LinearLayout(mActivity);
+                    linearLayout.setOrientation(LinearLayout.VERTICAL);
+                    final EditText editPreset = new EditText(mActivity);
+                    editPreset.setHint(R.string.templateName);
+                    editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
+                    editPreset.setText(R.string.newTemplate);
+                    linearLayout.addView(editPreset);
+                    builder.setView(linearLayout);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            ArrayList<Integer> arPresets = new ArrayList<>();
+                            for (int i = 0; i < 32; i++) {
+                                arPresets.add(Integer.parseInt((String) mTextValues.get(i).getText()));
+                            }
+                            mEqualizerItems.add(new EqualizerItem(editPreset.getText().toString(), arPresets));
+                            mEqualizersAdapter.notifyItemInserted(mEqualizerItems.size() - 1);
+                            saveData();
+
+                            mRelativeTemplateHeader.setVisibility(View.INVISIBLE);
+                            mViewSepEqualizerCustomize.setVisibility(View.INVISIBLE);
+                            mBtnEqualizerRandom.setVisibility(View.INVISIBLE);
+                            mScrollView.setVisibility(View.INVISIBLE);
+                            mBtnEqualizerOff.setVisibility(View.VISIBLE);
+                            mRecyclerEqualizers.setVisibility(View.VISIBLE);
+                            mBtnAddEqualizerTemplate.setAlpha(1.0f);
+
+                            for(int i = 0; i < mEqualizerItems.size()-1; i++)
+                                mEqualizerItems.get(i).setSelected(false);
+                            mEqualizerItems.get(mEqualizerItems.size()-1).setSelected(true);
+                            mEqualizersAdapter.notifyDataSetChanged();
+                            mRecyclerEqualizers.scrollToPosition(mEqualizerItems.size()-1);
+                        }
+                    });
+                    builder.setNegativeButton(R.string.cancel, null);
+                    final AlertDialog alertDialog = builder.create();
+                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                    {
+                        @Override
+                        public void onShow(DialogInterface arg0)
+                        {
+                            if(alertDialog.getWindow() != null) {
+                                WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                                lp.dimAmount = 0.4f;
+                                alertDialog.getWindow().setAttributes(lp);
+                            }
+                            editPreset.requestFocus();
+                            editPreset.setSelection(editPreset.getText().toString().length());
+                            InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                            if (null != imm) imm.showSoftInput(editPreset, 0);
+                        }
+                    });
+                    alertDialog.show();
+                }
+                else {
+                    EqualizerItem item = null;
+                    int nItem = 0;
+                    for (; nItem < mEqualizerItems.size(); nItem++) {
+                        item = mEqualizerItems.get(nItem);
+                        if (item.isSelected()) break;
+                    }
+                    if (item != null) {
+                        ArrayList<Integer> arPresets = item.getArPresets();
+                        for (int i = 0; i < 32; i++) {
+                            arPresets.set(i, Integer.parseInt((String) mTextValues.get(i).getText()));
+                        }
+                        saveData();
+                    }
+                    mRelativeTemplateHeader.setVisibility(View.INVISIBLE);
+                    mViewSepEqualizerCustomize.setVisibility(View.INVISIBLE);
+                    mBtnEqualizerRandom.setVisibility(View.INVISIBLE);
+                    mScrollView.setVisibility(View.INVISIBLE);
+                    mBtnEqualizerOff.setVisibility(View.VISIBLE);
+                    mRecyclerEqualizers.setVisibility(View.VISIBLE);
+                    mBtnAddEqualizerTemplate.setAlpha(1.0f);
+                }
+                break;
+
+            case R.id.btnEqualizerRandom:
+                setEQRandom();
+                break;
+
+            case R.id.btnResetEqualizer:
+                EqualizerItem item = null;
+                int nItem = 0;
+                for (; nItem < mEqualizerItems.size(); nItem++) {
+                    item = mEqualizerItems.get(nItem);
+                    if (item.isSelected()) break;
+                }
+                if (nItem < mEqualizerItems.size()) setEQ(nItem);
+                else resetEQ();
+                break;
+
+            case R.id.btnEqualizerSaveAs:
                 AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.addTemplate);
                 LinearLayout linearLayout = new LinearLayout(mActivity);
@@ -484,6 +645,20 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                         mEqualizerItems.add(new EqualizerItem(editPreset.getText().toString(), arPresets));
                         mEqualizersAdapter.notifyItemInserted(mEqualizerItems.size() - 1);
                         saveData();
+
+                        mRelativeTemplateHeader.setVisibility(View.INVISIBLE);
+                        mViewSepEqualizerCustomize.setVisibility(View.INVISIBLE);
+                        mBtnEqualizerRandom.setVisibility(View.INVISIBLE);
+                        mScrollView.setVisibility(View.INVISIBLE);
+                        mBtnEqualizerOff.setVisibility(View.VISIBLE);
+                        mRecyclerEqualizers.setVisibility(View.VISIBLE);
+                        mBtnAddEqualizerTemplate.setAlpha(1.0f);
+
+                        for(int i = 0; i < mEqualizerItems.size()-1; i++)
+                            mEqualizerItems.get(i).setSelected(false);
+                        mEqualizerItems.get(mEqualizerItems.size()-1).setSelected(true);
+                        mEqualizersAdapter.notifyDataSetChanged();
+                        mRecyclerEqualizers.scrollToPosition(mEqualizerItems.size()-1);
                     }
                 });
                 builder.setNegativeButton(R.string.cancel, null);
@@ -505,14 +680,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     }
                 });
                 alertDialog.show();
-                break;
-
-            case R.id.textFinishSortEqualizer:
-                mRecyclerEqualizers.setPadding(0, 0, 0, 0);
-                mTextFinishSortEqualizer.setVisibility(View.GONE);
-                mSorting = false;
-                mEqualizersAdapter.notifyDataSetChanged();
-                mEqualizerTouchHelper.attachToRecyclerView(null);
                 break;
 
             default:
@@ -540,15 +707,43 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     {
         EqualizerItem itemSelected = mEqualizerItems.get(nEqualizer);
         boolean bSelected = !itemSelected.isSelected();
-        int nSelected = 0;
-        if(bSelected) nSelected = nEqualizer;
-        setEQ(nSelected);
+        mBtnEqualizerOff.setSelected(!bSelected);
+        int nSelected = -1;
+        if(bSelected) {
+            nSelected = nEqualizer;
+            setEQ(nSelected);
+        }
+        else resetEQ();
         for (int i = 0; i < mEqualizerItems.size(); i++) {
             EqualizerItem item = mEqualizerItems.get(i);
             if (i == nSelected) item.setSelected(true);
             else item.setSelected(false);
         }
         mEqualizersAdapter.notifyDataSetChanged();
+    }
+
+    public void onEqualizerDetailClick(int nEqualizer)
+    {
+        mAddTemplate = false;
+
+        if(!isSelectedItem(nEqualizer)) onEqualizerItemClick(nEqualizer);
+
+        EqualizerItem item = mEqualizerItems.get(nEqualizer);
+        mTextTemplateName.setText(item.getEqualizerName());
+
+        mBtnBackCustomize.setText(R.string.back);
+        mBtnFinishCustomize.setText(R.string.done);
+
+        mRelativeTemplateHeader.setVisibility(View.VISIBLE);
+        mViewSepEqualizerCustomize.setVisibility(View.VISIBLE);
+        mBtnEqualizerRandom.setVisibility(View.VISIBLE);
+        mScrollView.setVisibility(View.VISIBLE);
+        mImgBackEqualizer.setVisibility(View.VISIBLE);
+        mBtnBackCustomize.setPadding((int)(32 * mActivity.getDensity()), mBtnBackCustomize.getPaddingTop(), mBtnBackCustomize.getPaddingRight(), mBtnBackCustomize.getPaddingBottom());
+        mBtnEqualizerOff.setVisibility(View.INVISIBLE);
+        mRecyclerEqualizers.setVisibility(View.INVISIBLE);
+        mBtnEqualizerSaveAs.setVisibility(View.VISIBLE);
+        mBtnAddEqualizerTemplate.setAlpha(0.0f);
     }
 
     private void loadData()
@@ -558,9 +753,13 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         ArrayList<EqualizerItem> equalizerItems = gson.fromJson(preferences.getString("arEqualizerItems",""), new TypeToken<ArrayList<EqualizerItem>>(){}.getType());
         if(equalizerItems != null) setArEqualizerItems(equalizerItems);
         else resetPresets();
-        mEqualizerItems.get(0).setSelected(true);
-        for(int i = 1; i < mEqualizerItems.size(); i++)
+        mBtnEqualizerOff.setSelected(true);
+        for(int i = 0; i < mEqualizerItems.size(); i++)
             mEqualizerItems.get(i).setSelected(false);
+        if(mEqualizerItems.get(0).getEqualizerName().equals(getString(R.string.off)))
+            removeItem(0);
+        if(mEqualizerItems.get(0).getEqualizerName().equals(getString(R.string.random)))
+            removeItem(0);
     }
 
     private void saveData()
@@ -573,8 +772,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     private void resetPresets()
     {
         if(mEqualizerItems.size() > 0) mEqualizerItems.clear();
-        mEqualizerItems.add(new EqualizerItem(getString(R.string.off), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        mEqualizerItems.add(new EqualizerItem(getString(R.string.random), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
         mEqualizerItems.add(new EqualizerItem(getString(R.string.transcribeBass), new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
         mEqualizerItems.add(new EqualizerItem(getString(R.string.VocalBoost), new ArrayList<>(Arrays.asList(  0,-30,-20,-12, -7, -4, -3, -2, -1,  0,  0,  0,  0,  0, -1, -2, -3, -4, -7,-12,-20,-24,-27,-28,-29,-30,-30,-30,-30,-30,-30,-30))));
         mEqualizerItems.add(new EqualizerItem(getString(R.string.VocalReducer), new ArrayList<>(Arrays.asList(  0,  0, -5, -8,-10,-12,-13,-14,-14,-15,-15,-15,-15,-15,-14,-14,-13,-12,-11, -8, -5, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0))));
@@ -621,6 +818,9 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         mEqualizerItems.add(new EqualizerItem(getString(R.string.Acoustic), new ArrayList<>(Arrays.asList(  0, -2, -2, -2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -2, -3, -3, -3, -3, -3, -4, -4, -3, -2, -1, -1, -1,  0,  0,  0,  0,  0,  0))));
         saveData();
         mEqualizersAdapter.notifyDataSetChanged();
+
+        mBtnEqualizerOff.setSelected(true);
+        resetEQ();
     }
 
     public void setEQ()
@@ -660,10 +860,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
     public void setEQ(int row)
     {
-        if(mEqualizerItems.get(mLastChecked).getEqualizerName().equals(getString(R.string.transcribeBassOctave)))
-            mActivity.controlFragment.setPitch(0.0f);
-        mLastChecked = row;
-
         if(mEqualizerItems.get(row).getEqualizerName().equals(getString(R.string.random))) {
             setEQRandom();
             return;
@@ -743,6 +939,44 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 eq.fQ = 0.0f;
                 eq.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 eq.fGain = nLevel;
+                eq.fCenter = mCenters[i];
+                BASS.BASS_FXSetParameters(mHfxs.get(i), eq);
+            }
+
+            seekBar = mSeeks.get(i + 1);
+            seekBar.setProgress(nLevel + 30);
+            textView = mTextValues.get(i + 1);
+            textView.setText(String.valueOf(nLevel));
+        }
+        mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void resetEQ()
+    {
+        int nLevel = 0;
+        float fLevel = 1.0f;
+        if(MainActivity.sStream != 0)
+        {
+            BASS_FX.BASS_BFX_VOLUME vol = new BASS_FX.BASS_BFX_VOLUME();
+            vol.lChannel = 0;
+            vol.fVolume = fLevel;
+            BASS.BASS_FXSetParameters(MainActivity.sFxVol, vol);
+        }
+
+        SeekBar seekBar = mSeeks.get(0);
+        seekBar.setProgress(nLevel + 30);
+        TextView textView = mTextValues.get(0);
+        textView.setText(String.valueOf(nLevel));
+
+        for(int i = 0; i < 31; i++)
+        {
+            if(MainActivity.sStream != 0)
+            {
+                BASS_FX.BASS_BFX_PEAKEQ eq = new BASS_FX.BASS_BFX_PEAKEQ();
+                eq.fBandwidth = 0.7f;
+                eq.fQ = 0.0f;
+                eq.lChannel = BASS_FX.BASS_BFX_CHANALL;
+                eq.fGain = 0;
                 eq.fCenter = mCenters[i];
                 BASS.BASS_FXSetParameters(mHfxs.get(i), eq);
             }
@@ -862,6 +1096,9 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             public void onClick(View view) {
                 menu.dismiss();
                 mRecyclerEqualizers.setPadding(0, 0, 0, (int)(64 * mActivity.getDensity()));
+                mBtnEqualizerOff.setVisibility(View.GONE);
+                mViewSepEqualizer.setVisibility(View.GONE);
+                mBtnAddEqualizerTemplate.setAlpha(0.0f);
                 mTextFinishSortEqualizer.setVisibility(View.VISIBLE);
                 mSorting = true;
                 mEqualizersAdapter.notifyDataSetChanged();
@@ -964,6 +1201,10 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
     private void removeItem(int nItem)
     {
+        if(isSelectedItem(nItem)) {
+            mBtnEqualizerOff.setSelected(true);
+            resetEQ();
+        }
         mEqualizerItems.remove(nItem);
         mEqualizersAdapter.notifyItemRemoved(nItem);
         saveData();

@@ -13,7 +13,19 @@
         android:id="@+id/relativePitchRangeSettingTitle"
         android:background="#F9F9F9"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_button_back"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            />
 
         <Button
             android:id="@+id/btnReturnPitchRangeSetting"
@@ -21,15 +33,14 @@
             android:layout_height="wrap_content"
             android:text="@string/back"
             android:textColor="#007AFF"
-            android:textSize="19sp"
-            android:singleLine="true"
+            android:textSize="15dp"
+            android:minWidth="0dp"
+            android:paddingLeft="32dp"
+            android:paddingStart="32dp"
+            android:paddingRight="8dp"
+            android:paddingEnd="8dp"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:gravity="center_vertical|start"
-            android:layout_marginLeft="0dp"
-            android:layout_marginStart="0dp"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/textPitchRangeSettingTitle"
-            android:layout_toStartOf="@+id/textPitchRangeSettingTitle"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             />
@@ -40,10 +51,11 @@
             android:layout_height="wrap_content"
             android:text="@string/pitchRange"
             android:textColor="#000000"
-            android:textSize="19sp"
+            android:textSize="16dp"
             android:textStyle="bold"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:gravity="center"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             />
@@ -54,14 +66,14 @@
             android:layout_height="wrap_content"
             android:text="@string/done"
             android:textColor="#007AFF"
-            android:textSize="19sp"
+            android:textSize="15dp"
+            android:minWidth="0dp"
+            android:paddingLeft="8dp"
+            android:paddingStart="8dp"
+            android:paddingRight="16dp"
+            android:paddingEnd="16dp"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:gravity="center_vertical|end"
-            android:layout_marginRight="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/textPitchRangeSettingTitle"
-            android:layout_toEndOf="@+id/textPitchRangeSettingTitle"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             />
@@ -73,7 +85,7 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="#BFBFBF"
-        android:layout_below="@+id/relativePitchRangeSettingTitle"
+        android:layout_below="@id/relativePitchRangeSettingTitle"
         />
 
     <ScrollView
@@ -153,14 +165,14 @@
                 android:id="@+id/btnResetPitchRange"
                 android:text="@string/reset"
                 android:textSize="12sp"
-                android:textColor="#007AFF"
+                android:textColor="@drawable/btn_text"
                 android:background="@drawable/resetbutton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="30dp"
+                android:layout_height="30dp"
                 android:gravity="center"
                 android:layout_marginTop="8dp"
                 android:layout_centerHorizontal="true"
+                android:stateListAnimator="@null"
                 android:layout_below="@+id/linearPitchRangeSetting"
                 />
 
