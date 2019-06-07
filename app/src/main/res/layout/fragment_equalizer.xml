@@ -20,6 +20,18 @@
         android:background="@drawable/btn_border_background"
         />
 
+    <com.edolfzoku.hayaemon2.AnimationButton
+        android:id="@+id/btnEqualizerMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_button_more_blue"
+        android:background="@null"
+        android:layout_marginTop="1dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        />
+
     <View
         android:id="@+id/viewSepEqualizer"
         android:layout_width="match_parent"

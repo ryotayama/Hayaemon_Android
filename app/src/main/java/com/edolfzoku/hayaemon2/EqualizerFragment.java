@@ -81,7 +81,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     private TextView mTextTemplateName, mTextFinishSortEqualizer;
     private View mViewSepEqualizer, mViewSepEqualizerCustomize;
     private Button mBtnEqualizerOff, mBtnBackCustomize, mBtnFinishCustomize, mBtnEqualizerRandom, mBtnResetEqualizer, mBtnEqualizerSaveAs;
-    private AnimationButton mBtnAddEqualizerTemplate;
+    private AnimationButton mBtnEqualizerMenu, mBtnAddEqualizerTemplate;
     private ImageView mImgBackEqualizer;
 
     public ArrayList<SeekBar> getArSeek() { return mSeeks; }
@@ -151,6 +151,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         mViewSepEqualizer = mActivity.findViewById(R.id.viewSepEqualizer);
         mViewSepEqualizerCustomize = mActivity.findViewById(R.id.viewSepEqualizerCustomize);
         mBtnEqualizerOff = mActivity.findViewById(R.id.btnEqualizerOff);
+        mBtnEqualizerMenu = mActivity.findViewById(R.id.btnEqualizerMenu);
         mBtnAddEqualizerTemplate = mActivity.findViewById(R.id.btnAddEqualizerTemplate);
         mImgBackEqualizer = mActivity.findViewById(R.id.imgBackEqualizer);
         mBtnBackCustomize = mActivity.findViewById(R.id.btnBackCustomize);
@@ -162,6 +163,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
         mBtnEqualizerOff.setOnClickListener(this);
         mBtnEqualizerRandom.setOnClickListener(this);
+        mBtnEqualizerMenu.setOnClickListener(this);
         mBtnAddEqualizerTemplate.setOnClickListener(this);
         mBtnBackCustomize.setOnClickListener(this);
         mBtnFinishCustomize.setOnClickListener(this);
@@ -487,6 +489,10 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     mEqualizerItems.get(i).setSelected(false);
                 mEqualizersAdapter.notifyDataSetChanged();
                 resetEQ();
+                break;
+
+            case R.id.btnEqualizerMenu:
+                showEqualizerMenu();
                 break;
 
             case R.id.btnAddEqualizerTemplate:
@@ -1046,6 +1052,86 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         mHfxs = new ArrayList<>(hfxs);
     }
 
+    public void showEqualizerMenu() {
+        final BottomMenu menu = new BottomMenu(mActivity);
+        menu.setTitle(getString(R.string.equalizerTemplate));
+        menu.addMenu(getString(R.string.sortTemplate), R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                mRecyclerEqualizers.setPadding(0, 0, 0, (int)(64 * mActivity.getDensity()));
+                mBtnEqualizerOff.setVisibility(View.GONE);
+                mViewSepEqualizer.setVisibility(View.GONE);
+                mBtnAddEqualizerTemplate.setAlpha(0.0f);
+                mTextFinishSortEqualizer.setVisibility(View.VISIBLE);
+                mSorting = true;
+                mEqualizersAdapter.notifyDataSetChanged();
+
+                mEqualizerTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
+                    @Override
+                    public boolean onMove(RecyclerView mRecyclerEqualizers, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                        final int fromPos = viewHolder.getAdapterPosition();
+                        final int toPos = target.getAdapterPosition();
+
+                        EqualizerItem itemTemp = mEqualizerItems.get(fromPos);
+                        mEqualizerItems.remove(fromPos);
+                        mEqualizerItems.add(toPos, itemTemp);
+
+                        mEqualizersAdapter.notifyItemMoved(fromPos, toPos);
+
+                        return true;
+                    }
+
+                    @Override
+                    public void clearView(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder) {
+                        super.clearView(recyclerSongs, viewHolder);
+
+                        mEqualizersAdapter.notifyDataSetChanged();
+                        saveData();
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                    }
+                });
+                mEqualizerTouchHelper.attachToRecyclerView(mRecyclerEqualizers);
+            }
+        });
+        menu.addDestructiveMenu(getString(R.string.initializeTemplate), R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                builder.setTitle(R.string.initializeTemplate);
+                builder.setMessage(R.string.askinitializeTemplate);
+                builder.setPositiveButton(R.string.decideNot, null);
+                builder.setNegativeButton(R.string.doInitialize, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        resetPresets();
+                    }
+                });
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
+                        Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                    }
+                });
+                alertDialog.show();
+            }
+        });
+        menu.setCancelMenu();
+        menu.show();
+    }
+
     public void showMenu(final int nItem) {
         final BottomMenu menu = new BottomMenu(mActivity);
         menu.setTitle(mEqualizerItems.get(nItem).getEqualizerName());
@@ -1091,48 +1177,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 alertDialog.show();
             }
         });
-        menu.addMenu(getString(R.string.sortTemplate), R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                menu.dismiss();
-                mRecyclerEqualizers.setPadding(0, 0, 0, (int)(64 * mActivity.getDensity()));
-                mBtnEqualizerOff.setVisibility(View.GONE);
-                mViewSepEqualizer.setVisibility(View.GONE);
-                mBtnAddEqualizerTemplate.setAlpha(0.0f);
-                mTextFinishSortEqualizer.setVisibility(View.VISIBLE);
-                mSorting = true;
-                mEqualizersAdapter.notifyDataSetChanged();
-
-                mEqualizerTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
-                    @Override
-                    public boolean onMove(RecyclerView mRecyclerEqualizers, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                        final int fromPos = viewHolder.getAdapterPosition();
-                        final int toPos = target.getAdapterPosition();
-
-                        EqualizerItem itemTemp = mEqualizerItems.get(fromPos);
-                        mEqualizerItems.remove(fromPos);
-                        mEqualizerItems.add(toPos, itemTemp);
-
-                        mEqualizersAdapter.notifyItemMoved(fromPos, toPos);
-
-                        return true;
-                    }
-
-                    @Override
-                    public void clearView(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder) {
-                        super.clearView(recyclerSongs, viewHolder);
-
-                        mEqualizersAdapter.notifyDataSetChanged();
-                        saveData();
-                    }
-
-                    @Override
-                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                    }
-                });
-                mEqualizerTouchHelper.attachToRecyclerView(mRecyclerEqualizers);
-            }
-        });
         menu.addDestructiveMenu(getString(R.string.delete), R.drawable.ic_actionsheet_delete, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1144,37 +1188,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 builder.setNegativeButton(R.string.doDelete, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         removeItem(nItem);
-                    }
-                });
-                final AlertDialog alertDialog = builder.create();
-                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
-                {
-                    @Override
-                    public void onShow(DialogInterface arg0)
-                    {
-                        if(alertDialog.getWindow() != null) {
-                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
-                            lp.dimAmount = 0.4f;
-                            alertDialog.getWindow().setAttributes(lp);
-                        }
-                        Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
-                    }
-                });
-                alertDialog.show();
-            }
-        });
-        menu.addDestructiveMenu(getString(R.string.initializeTemplate), R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                menu.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-                builder.setTitle(R.string.initializeTemplate);
-                builder.setMessage(R.string.askinitializeTemplate);
-                builder.setPositiveButton(R.string.decideNot, null);
-                builder.setNegativeButton(R.string.doInitialize, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        resetPresets();
                     }
                 });
                 final AlertDialog alertDialog = builder.create();
