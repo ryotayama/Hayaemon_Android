@@ -1177,6 +1177,21 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 alertDialog.show();
             }
         });
+        menu.addMenu(getString(R.string.copy), R.drawable.ic_actionsheet_copy, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                EqualizerItem item = mEqualizerItems.get(nItem);
+                ArrayList<Integer> arPresets = new ArrayList<>();
+                for (int i = 0; i < 32; i++) {
+                    arPresets.add(item.getArPresets().get(i));
+                }
+                mEqualizerItems.add(nItem+1, new EqualizerItem(item.getEqualizerName(), arPresets));
+                mEqualizersAdapter.notifyItemInserted(nItem+1);
+                saveData();
+                mRecyclerEqualizers.scrollToPosition(nItem+1);
+            }
+        });
         menu.addDestructiveMenu(getString(R.string.delete), R.drawable.ic_actionsheet_delete, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
