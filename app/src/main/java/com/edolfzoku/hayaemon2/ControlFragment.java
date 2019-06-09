@@ -166,8 +166,10 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     {
         if(hasFocus)
         {
-            if(v.getId() == R.id.textSpeedValue)
+            if(v.getId() == R.id.textSpeedValue) {
+                mTextSpeedValue.clearFocus();
                 showSpeedDialog();
+            }
             else if(v.getId() == R.id.textPitchValue) {
                 mTextPitchValue.clearFocus();
                 showPitchDialog();
@@ -177,9 +179,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
 
     private void showSpeedDialog()
     {
-        SpeedFragmentDialog dialog = new SpeedFragmentDialog();
-        FragmentManager fm = getFragmentManager();
-        if(fm != null) dialog.show(fm, "span_setting_dialog");
+        SpeedFragmentDialog dialog = new SpeedFragmentDialog(mActivity);
+        dialog.show();
     }
 
     private void showPitchDialog()

@@ -26,8 +26,8 @@ import android.support.design.widget.BottomSheetDialog;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.NumberPicker;
-
 import java.util.Locale;
+
 class PitchFragmentDialog extends BottomSheetDialog {
     private MainActivity mActivity;
     private NumberPicker mIntNumberPicker;

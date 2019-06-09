@@ -18,11 +18,13 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -33,31 +35,17 @@ import android.widget.NumberPicker;
 
 import java.util.Locale;
 
-public class SpeedFragmentDialog extends DialogFragment {
-    private MainActivity mActivity = null;
+class SpeedFragmentDialog extends BottomSheetDialog {
+    private MainActivity mActivity;
     private NumberPicker mIntNumberPicker;
     private NumberPicker mDecimalNumberPicker;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    @SuppressLint("ClickableViewAccessibility")
+    SpeedFragmentDialog(@NonNull Context context) {
+        super(context);
+        mActivity = (MainActivity)context;
+        View view = getLayoutInflater().inflate(R.layout.dialog_speed, null);
 
-        if (context instanceof MainActivity) {
-            mActivity = (MainActivity) context;
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        mActivity = null;
-    }
-
-    @Override
-    public @NonNull Dialog onCreateDialog(Bundle savedInstanceState) {
-        LayoutInflater inflater = mActivity.getLayoutInflater();
-        View view = inflater.inflate(R.layout.speedpicker, (ViewGroup)mActivity.findViewById(R.id.layout_root), false);
         float fSpeed = mActivity.controlFragment.getSpeed() + 100;
         int nIntSpeed = (int)fSpeed;
         int nDecimalSpeed = (int)((fSpeed - (float)nIntSpeed) * 10.0f + 0.05f);
@@ -94,14 +82,9 @@ public class SpeedFragmentDialog extends DialogFragment {
                 mDecimalNumberPicker.setValue(i);
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle(R.string.adjustSpeed);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
+        mIntNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                LayoutInflater inflater = mActivity.getLayoutInflater();
-                inflater.inflate(R.layout.speedpicker, (ViewGroup)mActivity.findViewById(R.id.layout_root), false);
+            public void onValueChange(NumberPicker numberPicker, int i, int i1) {
                 String strSpeed = arInts[mIntNumberPicker.getValue()].trim() + "." + arDecimals[mDecimalNumberPicker.getValue()];
                 float fSpeed = Float.parseFloat(strSpeed);
                 fSpeed -= 100;
@@ -109,31 +92,29 @@ public class SpeedFragmentDialog extends DialogFragment {
                 mActivity.controlFragment.setSpeed(fSpeed);
             }
         });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        mDecimalNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+                String strSpeed = arInts[mIntNumberPicker.getValue()].trim() + "." + arDecimals[mDecimalNumberPicker.getValue()];
+                float fSpeed = Float.parseFloat(strSpeed);
+                fSpeed -= 100;
+
+                mActivity.controlFragment.setSpeed(fSpeed);
+            }
+        });
+
+        setContentView(view);
+        if(getWindow() != null) {
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.dimAmount = 0.0f;
+            getWindow().setAttributes(lp);
+        }
+
+        setOnCancelListener(new OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
                 mActivity.controlFragment.clearFocus();
             }
         });
-        builder.setView(view);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
-        {
-            @Override
-            public void onShow(DialogInterface arg0)
-            {
-                if(alertDialog.getWindow() != null) {
-                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
-                    lp.dimAmount = 0.4f;
-                    alertDialog.getWindow().setAttributes(lp);
-                }
-            }
-        });
-        return alertDialog;
-    }
-
-    @Override
-    public void onCancel(DialogInterface dialog) {
-        mActivity.controlFragment.clearFocus();
     }
 }
