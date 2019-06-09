@@ -420,6 +420,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(v.getId() == R.id.btnDistortionFeedbackPlus) plusDistortionFeedback();
         else if(v.getId() == R.id.btnDistortionVolumeMinus) minusDistortionVolume();
         else if(v.getId() == R.id.btnDistortionVolumePlus) plusDistortionVolume();
+        else if(v.getId() == R.id.btnDistortionRandom) setDistortionRandom();
         else if(v.getId() == R.id.btnResetDistortion) resetDistortion();
     }
 
@@ -1299,6 +1300,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         Button btnResetReverb = mActivity.findViewById(R.id.btnResetReverb);
         Button btnChorusRandom = mActivity.findViewById(R.id.btnChorusRandom);
         Button btnResetChorus = mActivity.findViewById(R.id.btnResetChorus);
+        Button btnDistortionRandom = mActivity.findViewById(R.id.btnDistortionRandom);
         Button btnResetDistortion = mActivity.findViewById(R.id.btnResetDistortion);
 
         mSeekCompGain.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
@@ -1631,6 +1633,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnDistortionVolumePlus.setOnClickListener(this);
         mBtnDistortionVolumePlus.setOnLongClickListener(this);
         mBtnDistortionVolumePlus.setOnTouchListener(this);
+        btnDistortionRandom.setOnClickListener(this);
         btnResetDistortion.setOnClickListener(this);
 
         mEditTimeEffectDetail.setOnFocusChangeListener(this);
@@ -1852,6 +1855,21 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setChorusMinSweep(100, true);
         setChorusMaxSweep(200, true);
         setChorusRate(1000, true);
+    }
+
+    private void setDistortionRandom()
+    {
+    	setDistortionDrive(getRandomValue(0, mSeekDistortionDrive.getMax()), true);
+    	int nDry = getRandomValue(50, 100);
+        setDistortionDry(nDry, true);
+        int nWet;
+        while(true) {
+            nWet = getRandomValue(10, 100);
+            if(nWet <= nDry) break;
+        }
+        setDistortionWet(nWet, true);
+        setDistortionFeedback(getRandomValue(0, mSeekDistortionFeedback.getMax()), true);
+        setDistortionVolume(getRandomValue(80, 120), true);
     }
 
     private void resetDistortion()
