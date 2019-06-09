@@ -382,6 +382,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(v.getId() == R.id.btnEchoFeedbackPlus) plusEchoFeedback();
         else if(v.getId() == R.id.btnEchoDelayMinus) minusEchoDelay();
         else if(v.getId() == R.id.btnEchoDelayPlus) plusEchoDelay();
+        else if(v.getId() == R.id.btnEchoRandom) setEchoRandom();
         else if(v.getId() == R.id.btnResetEcho) resetEcho();
         else if(v.getId() == R.id.btnReverbDryMinus) minusReverbDry();
         else if(v.getId() == R.id.btnReverbDryPlus) plusReverbDry();
@@ -1291,6 +1292,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnDistortionVolumePlus = mActivity.findViewById(R.id.btnDistortionVolumePlus);
         RecyclerView recyclerEffects = mActivity.findViewById(R.id.recyclerEffects);
         Button btnResetComp = mActivity.findViewById(R.id.btnResetComp);
+        Button btnEchoRandom = mActivity.findViewById(R.id.btnEchoRandom);
         Button btnResetEcho = mActivity.findViewById(R.id.btnResetEcho);
         Button btnReverbRandom = mActivity.findViewById(R.id.btnReverbRandom);
         Button btnResetReverb = mActivity.findViewById(R.id.btnResetReverb);
@@ -1525,6 +1527,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnEchoDelayPlus.setOnClickListener(this);
         mBtnEchoDelayPlus.setOnLongClickListener(this);
         mBtnEchoDelayPlus.setOnTouchListener(this);
+        btnEchoRandom.setOnClickListener(this);
         btnResetEcho.setOnClickListener(this);
         mBtnReverbDryMinus.setOnClickListener(this);
         mBtnReverbDryMinus.setOnLongClickListener(this);
@@ -1773,6 +1776,20 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setCompRatio(900, true);
         setCompAttack(119, true);
         setCompRelease(39999, true);
+    }
+
+    private void setEchoRandom()
+    {
+        int nDry = getRandomValue(50, 100);
+        setEchoDry(nDry, true);
+        int nWet;
+        while(true) {
+            nWet = getRandomValue(10, 100);
+            if(nWet <= nDry) break;
+        }
+        setEchoWet(nWet, true);
+        setEchoFeedback(getRandomValue(0, mSeekEchoFeedback.getMax()), true);
+        setEchoDelay(getRandomValue(0, 50), true);
     }
 
     private void resetEcho()
