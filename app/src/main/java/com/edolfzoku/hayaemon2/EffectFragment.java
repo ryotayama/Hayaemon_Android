@@ -373,6 +373,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(v.getId() == R.id.btnCompAttackPlus) plusCompAttack();
         else if(v.getId() == R.id.btnCompReleaseMinus) minusCompRelease();
         else if(v.getId() == R.id.btnCompReleasePlus) plusCompRelease();
+        else if(v.getId() == R.id.btnCompRandom) setCompRandom();
         else if(v.getId() == R.id.btnResetComp) resetComp();
         else if(v.getId() == R.id.btnEchoDryMinus) minusEchoDry();
         else if(v.getId() == R.id.btnEchoDryPlus) plusEchoDry();
@@ -1293,6 +1294,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnDistortionVolumeMinus = mActivity.findViewById(R.id.btnDistortionVolumeMinus);
         mBtnDistortionVolumePlus = mActivity.findViewById(R.id.btnDistortionVolumePlus);
         RecyclerView recyclerEffects = mActivity.findViewById(R.id.recyclerEffects);
+        Button btnCompRandom = mActivity.findViewById(R.id.btnCompRandom);
         Button btnResetComp = mActivity.findViewById(R.id.btnResetComp);
         Button btnEchoRandom = mActivity.findViewById(R.id.btnEchoRandom);
         Button btnResetEcho = mActivity.findViewById(R.id.btnResetEcho);
@@ -1506,6 +1508,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnCompReleasePlus.setOnClickListener(this);
         mBtnCompReleasePlus.setOnLongClickListener(this);
         mBtnCompReleasePlus.setOnTouchListener(this);
+        btnCompRandom.setOnClickListener(this);
         btnResetComp.setOnClickListener(this);
         mBtnEchoDryMinus.setOnClickListener(this);
         mBtnEchoDryMinus.setOnLongClickListener(this);
@@ -1773,6 +1776,15 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setDistortionWet(5, false);
         setDistortionFeedback(10, false);
         setDistortionVolume(100, false);
+    }
+
+    private void setCompRandom()
+    {
+        setCompGain(getRandomValue(0, mSeekCompGain.getMax()), true);
+        setCompThreshold(getRandomValue(0, mSeekCompThreshold.getMax()), true);
+        setCompRatio(getRandomValue(0, mSeekCompRatio.getMax()), true);
+        setCompAttack(getRandomValue(0, mSeekCompAttack.getMax()), true);
+        setCompRelease(getRandomValue(0, mSeekCompRelease.getMax()), true);
     }
 
     private void resetComp()

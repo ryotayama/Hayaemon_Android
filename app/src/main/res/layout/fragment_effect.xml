@@ -229,6 +229,21 @@
                 android:background="#FFF"
                 >
 
+                <Button
+                    android:id="@+id/btnCompRandom"
+                    android:text="@string/random"
+                    android:textColor="@drawable/btn_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="44dp"
+                    android:layout_marginRight="44dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/btn_border_background"
+                    android:stateListAnimator="@null"
+                    android:layout_alignParentTop="true"
+                    />
+
                 <TextView
                     android:id="@+id/textCompGainLabel"
                     android:layout_width="match_parent"
@@ -241,7 +256,7 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginRight="12dp"
                     android:layout_marginEnd="12dp"
-                    android:layout_alignParentTop="true"
+                    android:layout_below="@+id/btnCompRandom"
                     />
 
                 <RelativeLayout
