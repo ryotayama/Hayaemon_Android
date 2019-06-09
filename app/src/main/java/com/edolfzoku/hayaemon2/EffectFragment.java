@@ -408,6 +408,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(v.getId() == R.id.btnChorusMaxSweepPlus) plusChorusMaxSweep();
         else if(v.getId() == R.id.btnChorusRateMinus) minusChorusRate();
         else if(v.getId() == R.id.btnChorusRatePlus) plusChorusRate();
+        else if(v.getId() == R.id.btnChorusRandom) setChorusRandom();
         else if(v.getId() == R.id.btnResetChorus) resetChorus();
         else if(v.getId() == R.id.btnDistortionDriveMinus) minusDistortionDrive();
         else if(v.getId() == R.id.btnDistortionDrivePlus) plusDistortionDrive();
@@ -1296,6 +1297,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         Button btnResetEcho = mActivity.findViewById(R.id.btnResetEcho);
         Button btnReverbRandom = mActivity.findViewById(R.id.btnReverbRandom);
         Button btnResetReverb = mActivity.findViewById(R.id.btnResetReverb);
+        Button btnChorusRandom = mActivity.findViewById(R.id.btnChorusRandom);
         Button btnResetChorus = mActivity.findViewById(R.id.btnResetChorus);
         Button btnResetDistortion = mActivity.findViewById(R.id.btnResetDistortion);
 
@@ -1597,6 +1599,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnChorusRatePlus.setOnClickListener(this);
         mBtnChorusRatePlus.setOnLongClickListener(this);
         mBtnChorusRatePlus.setOnTouchListener(this);
+        btnChorusRandom.setOnClickListener(this);
         btnResetChorus.setOnClickListener(this);
         mBtnDistortionDriveMinus.setOnClickListener(this);
         mBtnDistortionDriveMinus.setOnLongClickListener(this);
@@ -1823,6 +1826,22 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setReverbRoomSize(85, true);
         setReverbDamp(50, true);
         setReverbWidth(90, true);
+    }
+
+    private void setChorusRandom()
+    {
+        setChorusDry(getRandomValue(50, 100), true);
+        setChorusWet(getRandomValue(10, 50), true);
+        setChorusFeedback(getRandomValue(0, mSeekChorusFeedback.getMax()), true);
+        int nMaxSweep = getRandomValue(0, mSeekChorusMaxSweep.getMax());
+        setChorusMaxSweep(nMaxSweep, true);
+        int nMinSweep;
+        while(true) {
+            nMinSweep = getRandomValue(0, mSeekChorusMinSweep.getMax());
+            if(nMinSweep <= nMaxSweep) break;
+        }
+        setChorusMinSweep(nMinSweep, true);
+        setChorusRate(getRandomValue(0, mSeekChorusRate.getMax()), true);
     }
 
     private void resetChorus()
