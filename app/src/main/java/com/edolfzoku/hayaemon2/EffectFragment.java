@@ -1895,6 +1895,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     public void onEffectDetailClick(int nEffect)
     {
+        EffectItem item = mEffectItems.get(nEffect);
+        if(!item.isSelected()) onEffectItemClick(nEffect);
+
         mTextEffectName.setText(mEffectItems.get(nEffect).getEffectName());
         mSeekEffectDetail.setOnSeekBarChangeListener(null);
         if(nEffect == EFFECTTYPE_PAN)
