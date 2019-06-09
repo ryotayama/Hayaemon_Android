@@ -18,46 +18,26 @@
  */
 package com.edolfzoku.hayaemon2;
 
-import android.app.Dialog;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
+import android.support.design.widget.BottomSheetDialog;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.NumberPicker;
 
 import java.util.Locale;
-
-public class PitchFragmentDialog extends DialogFragment {
-    private MainActivity mActivity = null;
+class PitchFragmentDialog extends BottomSheetDialog {
+    private MainActivity mActivity;
     private NumberPicker mIntNumberPicker;
     private NumberPicker mDecimalNumberPicker;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof MainActivity) {
-            mActivity = (MainActivity) context;
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        mActivity = null;
-    }
-
-    @Override
-    public @NonNull Dialog onCreateDialog(Bundle savedInstanceState) {
-        LayoutInflater inflater = mActivity.getLayoutInflater();
-        View view = inflater.inflate(R.layout.pitchpicker, (ViewGroup)mActivity.findViewById(R.id.layout_root), false);
+    @SuppressLint("ClickableViewAccessibility")
+    PitchFragmentDialog(@NonNull Context context) {
+        super(context);
+        mActivity = (MainActivity)context;
+        View view = getLayoutInflater().inflate(R.layout.dialog_pitch, null);
 
         float fPitch = mActivity.controlFragment.getPitch();
         int nIntPitch = (int)fPitch;
@@ -109,12 +89,9 @@ public class PitchFragmentDialog extends DialogFragment {
                 mDecimalNumberPicker.setValue(i);
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle(R.string.adjustPitch);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
+        mIntNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onValueChange(NumberPicker numberPicker, int i, int i1) {
                 String strInt = arInts[mIntNumberPicker.getValue()];
                 strInt = strInt.replace("♯", "");
                 strInt = strInt.replace("♭", "-");
@@ -125,31 +102,32 @@ public class PitchFragmentDialog extends DialogFragment {
                 mActivity.controlFragment.setPitch(fPitch);
             }
         });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-
+        mDecimalNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+                String strInt = arInts[mIntNumberPicker.getValue()];
+                strInt = strInt.replace("♯", "");
+                strInt = strInt.replace("♭", "-");
+                String strDecimal = arDecimals[mDecimalNumberPicker.getValue()];
+                String strPitch = strInt.trim() + "." + strDecimal;
+                float fPitch = Float.parseFloat(strPitch);
+
+                mActivity.controlFragment.setPitch(fPitch);
+            }
+        });
+
+        setContentView(view);
+        if(getWindow() != null) {
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.dimAmount = 0.0f;
+            getWindow().setAttributes(lp);
+        }
+
+        setOnCancelListener(new OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
                 mActivity.controlFragment.clearFocus();
             }
         });
-        builder.setView(view);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
-        {
-            @Override
-            public void onShow(DialogInterface arg0)
-            {
-                if(alertDialog.getWindow() != null) {
-                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
-                    lp.dimAmount = 0.4f;
-                    alertDialog.getWindow().setAttributes(lp);
-                }
-            }
-        });
-        return alertDialog;
-    }
-    @Override
-    public void onCancel(DialogInterface dialog) {
-        mActivity.controlFragment.clearFocus();
     }
 }
