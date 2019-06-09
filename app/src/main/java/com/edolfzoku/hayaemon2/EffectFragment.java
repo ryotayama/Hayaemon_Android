@@ -393,6 +393,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(v.getId() == R.id.btnReverbDampPlus) plusReverbDamp();
         else if(v.getId() == R.id.btnReverbWidthMinus) minusReverbWidth();
         else if(v.getId() == R.id.btnReverbWidthPlus) plusReverbWidth();
+        else if(v.getId() == R.id.btnReverbRandom) setReverbRandom();
         else if(v.getId() == R.id.btnResetReverb) resetReverb();
         else if(v.getId() == R.id.btnChorusDryMinus) minusChorusDry();
         else if(v.getId() == R.id.btnChorusDryPlus) plusChorusDry();
@@ -1291,6 +1292,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         RecyclerView recyclerEffects = mActivity.findViewById(R.id.recyclerEffects);
         Button btnResetComp = mActivity.findViewById(R.id.btnResetComp);
         Button btnResetEcho = mActivity.findViewById(R.id.btnResetEcho);
+        Button btnReverbRandom = mActivity.findViewById(R.id.btnReverbRandom);
         Button btnResetReverb = mActivity.findViewById(R.id.btnResetReverb);
         Button btnResetChorus = mActivity.findViewById(R.id.btnResetChorus);
         Button btnResetDistortion = mActivity.findViewById(R.id.btnResetDistortion);
@@ -1554,6 +1556,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnReverbWidthPlus.setOnClickListener(this);
         mBtnReverbWidthPlus.setOnLongClickListener(this);
         mBtnReverbWidthPlus.setOnTouchListener(this);
+        btnReverbRandom.setOnClickListener(this);
         btnResetReverb.setOnClickListener(this);
         mBtnChorusDryMinus.setOnClickListener(this);
         mBtnChorusDryMinus.setOnLongClickListener(this);
@@ -1778,6 +1781,22 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setEchoWet(30, true);
         setEchoFeedback(60, true);
         setEchoDelay(8, true);
+    }
+
+    private int getRandomValue(int nMin, int nMax)
+    {
+        Random random = new Random();
+        int nRandom = random.nextInt(nMax - nMin) + nMin;
+        return nRandom;
+    }
+
+    private void setReverbRandom()
+    {
+        setReverbDry(getRandomValue(0, mSeekReverbDry.getMax()), true);
+        setReverbWet(getRandomValue(0, mSeekReverbWet.getMax()), true);
+        setReverbRoomSize(getRandomValue(0, mSeekReverbRoomSize.getMax()), true);
+        setReverbDamp(getRandomValue(0, mSeekReverbDamp.getMax()), true);
+        setReverbWidth(getRandomValue(0, mSeekReverbWidth.getMax()), true);
     }
 
     private void resetReverb()
