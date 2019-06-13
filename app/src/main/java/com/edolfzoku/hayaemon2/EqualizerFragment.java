@@ -172,8 +172,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
         mCenters = new float[] {20000, 16000, 12500, 10000, 8000, 6300, 5000, 4000, 3150, 2500, 2000, 1600, 1250, 1000, 800, 630, 500, 400, 315, 250, 200, 160, 125, 100, 80, 63, 50, 40, 31.5f, 25, 20};
 
-        loadData();
-
         mRecyclerEqualizers.setHasFixedSize(false);
         final LinearLayoutManager equalizersManager = new LinearLayoutManager(mActivity);
         mRecyclerEqualizers.setLayoutManager(equalizersManager);
@@ -439,6 +437,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 }
             });
         }
+
+        loadData();
     }
 
     private final Runnable repeatMinusValue = new Runnable()
