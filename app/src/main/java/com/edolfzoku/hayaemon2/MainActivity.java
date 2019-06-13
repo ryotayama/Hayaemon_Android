@@ -100,6 +100,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.BufferedReader;
@@ -465,7 +466,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             i++;
         }
         try {
-            InputStream in = getContentResolver().openInputStream(uri);
+            InputStream in;
+            if(uri.getScheme() != null && uri.getScheme().equals("content"))
+                in = getContentResolver().openInputStream(uri);
+            else
+                in = new FileInputStream(uri.toString());
             FileOutputStream out = new FileOutputStream(file);
             byte[] buf = new byte[1024];
             int len;
@@ -475,6 +480,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             out.close();
         } catch (IOException e) {
+            e.printStackTrace();
             return null;
         }
         return Uri.parse(strPath);
