@@ -30,8 +30,10 @@ import java.util.Locale;
 
 class PitchFragmentDialog extends BottomSheetDialog {
     private MainActivity mActivity;
-    private NumberPicker mIntNumberPicker;
-    private NumberPicker mDecimalNumberPicker;
+    private NumberPicker mIntNumberPicker1;
+    private NumberPicker mIntNumberPicker2;
+    private NumberPicker mIntNumberPicker3;
+    private NumberPicker mDecNumberPicker;
 
     @SuppressLint("ClickableViewAccessibility")
     PitchFragmentDialog(@NonNull Context context) {
@@ -40,81 +42,93 @@ class PitchFragmentDialog extends BottomSheetDialog {
         View view = getLayoutInflater().inflate(R.layout.dialog_pitch, null);
 
         float fPitch = mActivity.controlFragment.getPitch();
-        int nIntPitch = (int)fPitch;
-        int nDecimalPitch;
-        if(fPitch >= 0.05) {
-            nDecimalPitch = (int) ((fPitch - (float) nIntPitch) * 10.0f + 0.05f);
+
+        String flag;
+        if(fPitch >= 0.0f) flag = "♯";
+        else flag = "♭";
+
+        String strTemp = String.format(Locale.getDefault(), "%s%04.1f", flag, fPitch >= 0.0f ? fPitch : -fPitch);
+        String strInt1 = strTemp.substring(0, 1);
+        String strInt2 = strTemp.substring(1, 2);
+        String strInt3 = strTemp.substring(2, 3);
+        String strDec = strTemp.substring(4, 5);
+
+        mIntNumberPicker1 = view.findViewById(R.id.intPitchPicker1);
+        mIntNumberPicker2 = view.findViewById(R.id.intPitchPicker2);
+        mIntNumberPicker3 = view.findViewById(R.id.intPitchPicker3);
+        mDecNumberPicker = view.findViewById(R.id.decPitchPicker);
+
+        final String[] arInts1 = {"♯", "♭"};
+        final String[] arInts2 = {"6", "5", "4", "3", "2", "1", "0"};
+        final String[] arInts3 = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
+        final String[] arDecs = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
+
+        mIntNumberPicker1.setDisplayedValues(arInts1);
+        mIntNumberPicker2.setDisplayedValues(arInts2);
+        mIntNumberPicker3.setDisplayedValues(arInts3);
+        mDecNumberPicker.setDisplayedValues(arDecs);
+
+        mIntNumberPicker1.setMaxValue(1);
+        mIntNumberPicker2.setMaxValue(6);
+        mIntNumberPicker3.setMaxValue(9);
+        mDecNumberPicker.setMaxValue(9);
+
+        mIntNumberPicker1.setWrapSelectorWheel(false);
+        mIntNumberPicker2.setWrapSelectorWheel(false);
+        mIntNumberPicker3.setWrapSelectorWheel(false);
+        mDecNumberPicker.setWrapSelectorWheel(false);
+
+        for(int i = 0; i < arInts1.length; i++) {
+            if(arInts1[i].equals(strInt1))
+                mIntNumberPicker1.setValue(i);
         }
-        else {
-            nDecimalPitch = (int) ((fPitch - (float) nIntPitch) * 10.0f - 0.05f);
+        for(int i = 0; i < arInts2.length; i++) {
+            if(arInts2[i].equals(strInt2))
+                mIntNumberPicker2.setValue(i);
         }
-        String strIntPitch;
-        String strDecimalPitch;
-        if(fPitch >= 0.05) {
-            if(nIntPitch < 10)
-                strIntPitch = String.format(Locale.getDefault(), "♯%d ", nIntPitch);
-            else
-                strIntPitch = String.format(Locale.getDefault(), "♯%d", nIntPitch);
-            strDecimalPitch = String.format(Locale.getDefault(), "%d", nDecimalPitch);
+        for(int i = 0; i < arInts3.length; i++) {
+            if(arInts3[i].equals(strInt3))
+                mIntNumberPicker3.setValue(i);
         }
-        else {
-            if(nIntPitch > -10)
-                strIntPitch = String.format(Locale.getDefault(), "♭%d ", nIntPitch * -1);
-            else
-                strIntPitch = String.format(Locale.getDefault(), "♭%d", nIntPitch * -1);
-            strDecimalPitch = String.format(Locale.getDefault(), "%d", nDecimalPitch * -1);
+        for(int i = 0; i < arDecs.length; i++) {
+            if(arDecs[i].equals(strDec))
+                mDecNumberPicker.setValue(i);
         }
 
-        mIntNumberPicker = view.findViewById(R.id.intPitchPicker);
-        final String[] arInts = {"♯60", "♯59", "♯58", "♯57", "♯56", "♯55", "♯54", "♯53", "♯52", "♯51", "♯50", "♯49", "♯48", "♯47", "♯46", "♯45", "♯44", "♯43", "♯42", "♯41", "♯40", "♯39", "♯38", "♯37", "♯36", "♯35", "♯34", "♯33", "♯32", "♯31", "♯30", "♯29", "♯28", "♯27", "♯26", "♯25", "♯24", "♯23", "♯22", "♯21", "♯20", "♯19", "♯18", "♯17", "♯16", "♯15", "♯14", "♯13", "♯12", "♯11", "♯10", "♯9 ", "♯8 ", "♯7 ", "♯6 ", "♯5 ", "♯4 ", "♯3 ", "♯2 ", "♯1 ", "♯0 ", "♭0 ", "♭1 ", "♭2 ", "♭3 ", "♭4 ", "♭5 ", "♭6 ", "♭7 ", "♭8 ", "♭9 ", "♭10", "♭11", "♭12", "♭13", "♭14", "♭15", "♭16", "♭17", "♭18", "♭19", "♭20", "♭21", "♭22", "♭23", "♭24", "♭25", "♭26", "♭27", "♭28", "♭29", "♭30", "♭31", "♭32", "♭33", "♭34", "♭35", "♭36", "♭37", "♭38", "♭39", "♭40", "♭41", "♭42", "♭43", "♭44", "♭45", "♭46", "♭47", "♭48", "♭49", "♭50", "♭51", "♭52", "♭53", "♭54", "♭55", "♭56", "♭57", "♭58", "♭59", "♭60"};
-        mIntNumberPicker.setDisplayedValues(arInts);
-        mIntNumberPicker.setMaxValue(121);
-        mIntNumberPicker.setMinValue(0);
-        mIntNumberPicker.setWrapSelectorWheel(false);
-        for(int i = 0; i < arInts.length; i++)
-        {
-            if(arInts[i].equals(strIntPitch))
-                mIntNumberPicker.setValue(i);
-        }
-
-        mDecimalNumberPicker = view.findViewById(R.id.decimalPitchPicker);
-        final String[] arDecimals = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
-        mDecimalNumberPicker.setDisplayedValues(arDecimals);
-        mDecimalNumberPicker.setMaxValue(9);
-        mDecimalNumberPicker.setMinValue(0);
-        mDecimalNumberPicker.setWrapSelectorWheel(false);
-        for(int i = 0; i < arDecimals.length; i++)
-        {
-            if(arDecimals[i].equals(strDecimalPitch))
-                mDecimalNumberPicker.setValue(i);
-        }
-
-        mIntNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        NumberPicker.OnValueChangeListener listener = new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int i, int i1) {
-                String strInt = arInts[mIntNumberPicker.getValue()];
-                strInt = strInt.replace("♯", "");
-                strInt = strInt.replace("♭", "-");
-                String strDecimal = arDecimals[mDecimalNumberPicker.getValue()];
-                String strPitch = strInt.trim() + "." + strDecimal;
+                String strInt1 = arInts1[mIntNumberPicker1.getValue()];
+                strInt1 = strInt1.replace("♯", "");
+                strInt1 = strInt1.replace("♭", "-");
+                String strInt2 = arInts2[mIntNumberPicker2.getValue()];
+                String strInt3 = arInts3[mIntNumberPicker3.getValue()];
+                String strDec = arDecs[mDecNumberPicker.getValue()];
+                String strPitch = strInt1.trim() + strInt2.trim() + strInt3.trim() + "." + strDec;
                 float fPitch = Float.parseFloat(strPitch);
+                if(fPitch > 60.0f) {
+                    fPitch = 60.0f;
+                    mIntNumberPicker1.setValue(0);
+                    mIntNumberPicker2.setValue(0);
+                    mIntNumberPicker3.setValue(10);
+                    mDecNumberPicker.setValue(10);
+                }
+                else if(fPitch < -60.0f) {
+                    fPitch = -60.0f;
+                    mIntNumberPicker1.setValue(1);
+                    mIntNumberPicker2.setValue(0);
+                    mIntNumberPicker3.setValue(10);
+                    mDecNumberPicker.setValue(10);
+                }
 
                 mActivity.controlFragment.setPitch(fPitch);
             }
-        });
-        mDecimalNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker numberPicker, int i, int i1) {
-                String strInt = arInts[mIntNumberPicker.getValue()];
-                strInt = strInt.replace("♯", "");
-                strInt = strInt.replace("♭", "-");
-                String strDecimal = arDecimals[mDecimalNumberPicker.getValue()];
-                String strPitch = strInt.trim() + "." + strDecimal;
-                float fPitch = Float.parseFloat(strPitch);
+        };
 
-                mActivity.controlFragment.setPitch(fPitch);
-            }
-        });
+        mIntNumberPicker1.setOnValueChangedListener(listener);
+        mIntNumberPicker2.setOnValueChangedListener(listener);
+        mIntNumberPicker3.setOnValueChangedListener(listener);
+        mDecNumberPicker.setOnValueChangedListener(listener);
 
         setContentView(view);
         if(getWindow() != null) {

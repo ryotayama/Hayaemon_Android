@@ -587,7 +587,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         final NumberPicker hourPicker = view.findViewById(R.id.abLoopHourPicker);
         final NumberPicker minutePicker = view.findViewById(R.id.abLoopMinutePicker);
         final NumberPicker secondPicker = view.findViewById(R.id.abLoopSecondPicker);
-        final NumberPicker decimalPicker = view.findViewById(R.id.abLoopDecimalPicker);
+        final NumberPicker decPicker = view.findViewById(R.id.abLoopDecPicker);
 
         double dValue;
         if(bAPos) dValue = mActivity.getLoopAPos();
@@ -629,14 +629,14 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 secondPicker.setValue(i);
         }
 
-        final String[] arDecimals = {"99", "98", "97", "96", "95", "94", "93", "92", "91", "90", "89", "88", "87", "86", "85", "84", "83", "82", "81", "80", "79", "78", "77", "76", "75", "74", "73", "72", "71", "70", "69", "68", "67", "66", "65", "64", "63", "62", "61", "60", "59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
-        decimalPicker.setDisplayedValues(arDecimals);
-        decimalPicker.setMinValue(0);
-        decimalPicker.setMaxValue(99);
-        for(int i = 0; i < arDecimals.length; i++)
+        final String[] arDecs = {"99", "98", "97", "96", "95", "94", "93", "92", "91", "90", "89", "88", "87", "86", "85", "84", "83", "82", "81", "80", "79", "78", "77", "76", "75", "74", "73", "72", "71", "70", "69", "68", "67", "66", "65", "64", "63", "62", "61", "60", "59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
+        decPicker.setDisplayedValues(arDecs);
+        decPicker.setMinValue(0);
+        decPicker.setMaxValue(99);
+        for(int i = 0; i < arDecs.length; i++)
         {
-            if(arDecimals[i].equals(strDec))
-                decimalPicker.setValue(i);
+            if(arDecs[i].equals(strDec))
+                decPicker.setValue(i);
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
@@ -652,7 +652,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 int nHour = Integer.parseInt(arInts[hourPicker.getValue()]);
                 int nMinute = Integer.parseInt(arInts[minutePicker.getValue()]);
                 int nSecond = Integer.parseInt(arInts[secondPicker.getValue()]);
-                double dDec = Double.parseDouble(arDecimals[decimalPicker.getValue()]);
+                double dDec = Double.parseDouble(arDecs[decPicker.getValue()]);
                 double dPos = nHour * 3600 + nMinute * 60 + nSecond + dDec / 100.0;
 
                 if(f_bAPos) setLoopA(dPos);
@@ -690,7 +690,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         final NumberPicker hourPicker = view.findViewById(R.id.abLoopHourPicker);
         final NumberPicker minutePicker = view.findViewById(R.id.abLoopMinutePicker);
         final NumberPicker secondPicker = view.findViewById(R.id.abLoopSecondPicker);
-        final NumberPicker decimalPicker = view.findViewById(R.id.abLoopDecimalPicker);
+        final NumberPicker decPicker = view.findViewById(R.id.abLoopDecPicker);
 
         String strCurPos = mTextCurValue.getText().toString();
         String strHour = strCurPos.substring(0, 2);
@@ -699,7 +699,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         String strDec = strCurPos.substring(9, 11);
 
         final String[] arInts = {"59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
-        final String[] arDecimals = {"99", "98", "97", "96", "95", "94", "93", "92", "91", "90", "89", "88", "87", "86", "85", "84", "83", "82", "81", "80", "79", "78", "77", "76", "75", "74", "73", "72", "71", "70", "69", "68", "67", "66", "65", "64", "63", "62", "61", "60", "59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
+        final String[] arDecs = {"99", "98", "97", "96", "95", "94", "93", "92", "91", "90", "89", "88", "87", "86", "85", "84", "83", "82", "81", "80", "79", "78", "77", "76", "75", "74", "73", "72", "71", "70", "69", "68", "67", "66", "65", "64", "63", "62", "61", "60", "59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
 
         hourPicker.setDisplayedValues(arInts);
         hourPicker.setMinValue(0);
@@ -710,7 +710,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 int nHour = Integer.parseInt(arInts[nNewValue]);
                 int nMinute = Integer.parseInt(arInts[minutePicker.getValue()]);
                 int nSecond = Integer.parseInt(arInts[secondPicker.getValue()]);
-                double dDec = Double.parseDouble(arDecimals[decimalPicker.getValue()]);
+                double dDec = Double.parseDouble(arDecs[decPicker.getValue()]);
                 double dPos = nHour * 3600 + nMinute * 60 + nSecond + dDec / 100.0;
                 setCurPos(dPos);
             }
@@ -729,7 +729,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 int nHour = Integer.parseInt(arInts[hourPicker.getValue()]);
                 int nMinute = Integer.parseInt(arInts[nNewValue]);
                 int nSecond = Integer.parseInt(arInts[secondPicker.getValue()]);
-                double dDec = Double.parseDouble(arDecimals[decimalPicker.getValue()]);
+                double dDec = Double.parseDouble(arDecs[decPicker.getValue()]);
                 double dPos = nHour * 3600 + nMinute * 60 + nSecond + dDec / 100.0;
                 setCurPos(dPos);
             }
@@ -748,7 +748,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 int nHour = Integer.parseInt(arInts[hourPicker.getValue()]);
                 int nMinute = Integer.parseInt(arInts[minutePicker.getValue()]);
                 int nSecond = Integer.parseInt(arInts[nNewValue]);
-                double dDec = Double.parseDouble(arDecimals[decimalPicker.getValue()]);
+                double dDec = Double.parseDouble(arDecs[decPicker.getValue()]);
                 double dPos = nHour * 3600 + nMinute * 60 + nSecond + dDec / 100.0;
                 setCurPos(dPos);
             }
@@ -759,24 +759,24 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 secondPicker.setValue(i);
         }
 
-        decimalPicker.setDisplayedValues(arDecimals);
-        decimalPicker.setMinValue(0);
-        decimalPicker.setMaxValue(99);
-        decimalPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        decPicker.setDisplayedValues(arDecs);
+        decPicker.setMinValue(0);
+        decPicker.setMaxValue(99);
+        decPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
                 int nHour = Integer.parseInt(arInts[hourPicker.getValue()]);
                 int nMinute = Integer.parseInt(arInts[minutePicker.getValue()]);
                 int nSecond = Integer.parseInt(arInts[secondPicker.getValue()]);
-                double dDec = Double.parseDouble(arDecimals[nNewValue]);
+                double dDec = Double.parseDouble(arDecs[nNewValue]);
                 double dPos = nHour * 3600 + nMinute * 60 + nSecond + dDec / 100.0;
                 setCurPos(dPos);
             }
         });
-        for(int i = 0; i < arDecimals.length; i++)
+        for(int i = 0; i < arDecs.length; i++)
         {
-            if(arDecimals[i].equals(strDec))
-                decimalPicker.setValue(i);
+            if(arDecs[i].equals(strDec))
+                decPicker.setValue(i);
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);

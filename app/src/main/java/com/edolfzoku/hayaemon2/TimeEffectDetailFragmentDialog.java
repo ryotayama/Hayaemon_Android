@@ -20,7 +20,7 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
 {
     private MainActivity mActivity = null;
     private NumberPicker mIntNumberPicker;
-    private NumberPicker mDecimalNumberPicker;
+    private NumberPicker mDecNumberPicker;
 
     @Override
     public void onAttach(Context context) {
@@ -48,27 +48,27 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
             fTime = mActivity.effectFragment.getTimeOfIncreaseSpeed();
         else fTime = mActivity.effectFragment.getTimeOfDecreaseSpeed();
         int nInt = (int)fTime;
-        int nDecimal = (int)((fTime - (float)nInt) * 10.0f + 0.05f);
+        int nDec = (int)((fTime - (float)nInt) * 10.0f + 0.05f);
         String strInt;
         if(nInt >= 10) strInt = String.format(Locale.getDefault(), "%d", nInt);
         else strInt = String.format(Locale.getDefault(), "%d ", nInt);
-        String strDecimal = String.format(Locale.getDefault(), "%d", nDecimal);
+        String strDec = String.format(Locale.getDefault(), "%d", nDec);
 
         mIntNumberPicker = view.findViewById(R.id.intTimeEffectDetailPicker);
         final String[] arInts = {"10", "9 ", "8 ", "7 ", "6 ", "5 ", "4 ", "3 ", "2 ", "1 ", "0 "};
-        final String[] arDecimals = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
+        final String[] arDecs = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
         mIntNumberPicker.setDisplayedValues(arInts);
         mIntNumberPicker.setMaxValue(10);
         mIntNumberPicker.setMinValue(0);
         mIntNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
-                String strTime = arInts[nNewValue].trim() + "." + arDecimals[mDecimalNumberPicker.getValue()];
+                String strTime = arInts[nNewValue].trim() + "." + arDecs[mDecNumberPicker.getValue()];
                 float fTime = Float.parseFloat(strTime);
                 if(fTime < 0.1f) {
                     fTime = 0.1f;
                     numberPicker.setValue(10);
-                    mDecimalNumberPicker.setValue(8);
+                    mDecNumberPicker.setValue(8);
                 }
 
                 TextView textEffectName = mActivity.findViewById(R.id.textEffectName);
@@ -83,14 +83,14 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
                 mIntNumberPicker.setValue(i);
         }
 
-        mDecimalNumberPicker = view.findViewById(R.id.decimalTimeEffectDetailPicker);
-        mDecimalNumberPicker.setDisplayedValues(arDecimals);
-        mDecimalNumberPicker.setMaxValue(9);
-        mDecimalNumberPicker.setMinValue(0);
-        mDecimalNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        mDecNumberPicker = view.findViewById(R.id.decTimeEffectDetailPicker);
+        mDecNumberPicker.setDisplayedValues(arDecs);
+        mDecNumberPicker.setMaxValue(9);
+        mDecNumberPicker.setMinValue(0);
+        mDecNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
-                String strTime = arInts[mIntNumberPicker.getValue()].trim() + "." + arDecimals[nNewValue];
+                String strTime = arInts[mIntNumberPicker.getValue()].trim() + "." + arDecs[nNewValue];
                 float fTime = Float.parseFloat(strTime);
                 if(fTime < 0.1f) {
                     fTime = 0.1f;
@@ -104,10 +104,10 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
                 else mActivity.effectFragment.setTimeOfDecreaseSpeed(fTime);
             }
         });
-        for(int i = 0; i < arDecimals.length; i++)
+        for(int i = 0; i < arDecs.length; i++)
         {
-            if(arDecimals[i].equals(strDecimal))
-                mDecimalNumberPicker.setValue(i);
+            if(arDecs[i].equals(strDec))
+                mDecNumberPicker.setValue(i);
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
