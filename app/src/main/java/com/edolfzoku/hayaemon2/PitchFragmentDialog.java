@@ -110,15 +110,15 @@ class PitchFragmentDialog extends BottomSheetDialog {
                     fPitch = 60.0f;
                     mIntNumberPicker1.setValue(0);
                     mIntNumberPicker2.setValue(0);
-                    mIntNumberPicker3.setValue(10);
-                    mDecNumberPicker.setValue(10);
+                    mIntNumberPicker3.setValue(9);
+                    mDecNumberPicker.setValue(9);
                 }
                 else if(fPitch < -60.0f) {
                     fPitch = -60.0f;
                     mIntNumberPicker1.setValue(1);
                     mIntNumberPicker2.setValue(0);
-                    mIntNumberPicker3.setValue(10);
-                    mDecNumberPicker.setValue(10);
+                    mIntNumberPicker3.setValue(9);
+                    mDecNumberPicker.setValue(9);
                 }
 
                 mActivity.controlFragment.setPitch(fPitch);

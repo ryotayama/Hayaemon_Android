@@ -5,16 +5,55 @@
     android:layout_alignParentBottom="true"
     >
     <LinearLayout
-        android:orientation="horizontal" android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <NumberPicker
-            android:id="@+id/intSpeedPicker"
+            android:id="@+id/intSpeedPicker1"
             android:background="#DDD"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             />
+        <NumberPicker
+            android:id="@+id/intSpeedPicker2"
+            android:background="#DDD"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+        <NumberPicker
+            android:id="@+id/intSpeedPicker3"
+            android:background="#DDD"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            >
+            <NumberPicker
+                android:id="@+id/intSpeedPicker4"
+                android:background="#DDD"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+            <TextView
+                android:text="."
+                android:textSize="18sp"
+                android:textColor="#000"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                />
+        </RelativeLayout>
         <NumberPicker
             android:id="@+id/decSpeedPicker"
             android:background="#DDD"
@@ -22,6 +61,5 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             />
-
     </LinearLayout>
 </RelativeLayout>
