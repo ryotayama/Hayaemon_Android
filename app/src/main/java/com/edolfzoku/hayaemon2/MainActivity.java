@@ -617,20 +617,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             final View layout = inflater.inflate(R.layout.updatelogdialog,
                     (ViewGroup)findViewById(R.id.layout_root));
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            TextView title = new TextView(this);
+            TextView textUpdatelogTitle = layout.findViewById(R.id.textUpdatelogTitle);
             try {
-                title.setText(String.format(Locale.getDefault(), "ハヤえもんAndroid版ver.%sに\nアップデートされました！", getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName));
+                textUpdatelogTitle.setText(String.format(Locale.getDefault(), "ハヤえもんAndroid版ver.%sに\nアップデートされました！", getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName));
             }
             catch(PackageManager.NameNotFoundException e) {
-                title.setText("ハヤえもんAndroid版が\nアップデートされました！");
+                textUpdatelogTitle.setText("ハヤえもんAndroid版が\nアップデートされました！");
             }
-            title.setGravity(Gravity.CENTER);
-            title.setTextSize(18);
-            LinearLayout.LayoutParams lp = new LinearLayout. LayoutParams(LinearLayout. LayoutParams. WRAP_CONTENT, LinearLayout. LayoutParams. WRAP_CONTENT);
-            title. setPadding(0,16,0,16);
-            title. setLayoutParams(lp);
-            builder.setCustomTitle(title);
-            title.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
             builder.setView(layout);
 
             TextView textViewBlog = layout.findViewById(R.id.textViewBlog);
@@ -659,6 +652,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public void onShow(DialogInterface arg0)
                 {
                     if(alertDialog.getWindow() != null) {
+                        alertDialog.getWindow().getDecorView().getBackground().setColorFilter(Color.parseColor("#00000000"), PorterDuff.Mode.SRC_IN);
                         WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
                         lp.dimAmount = 0.4f;
                         alertDialog.getWindow().setAttributes(lp);

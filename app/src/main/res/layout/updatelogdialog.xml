@@ -2,11 +2,38 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:background="@drawable/updatedialog"
+    >
+
+    <ImageView
+        android:id="@+id/imgIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/ic_launcher"
+        android:layout_marginTop="16dp"
+        />
 
     <TextView
+        android:id="@+id/textUpdatelogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ハヤえもんAndroid版が\nアップデートされました！"
+        android:textColor="#000"
+        android:textSize="17dp"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_below="@+id/imgIcon"
+        />
+
+    <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:textColor="#000"
         android:layout_marginTop="0dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
@@ -14,13 +41,14 @@
         android:padding="12dp"
         android:background="#f0f0f0"
         android:scrollbars="vertical"
+        android:layout_below="@+id/textUpdatelogTitle"
         android:layout_above="@+id/textViewBlog"
-        android:id="@+id/textView"
         />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#000"
         android:layout_marginTop="0dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="0dp"
@@ -34,6 +62,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#000"
         android:layout_marginTop="0dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="4dp"
@@ -46,6 +75,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#000"
         android:layout_marginTop="0dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="4dp"
@@ -61,6 +91,7 @@
     <Switch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#000"
         android:layout_marginTop="4dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
@@ -85,6 +116,7 @@
             android:layout_weight="1"
             style="?android:attr/borderlessButtonStyle"
             android:text="@string/close"
+            android:textColor="#007AFF"
             android:id="@+id/btnClose"
             />
 
@@ -94,6 +126,7 @@
             android:layout_weight="1"
             style="?android:attr/borderlessButtonStyle"
             android:text="シェア"
+            android:textColor="#007AFF"
             android:id="@+id/btnShare"
             />
 
