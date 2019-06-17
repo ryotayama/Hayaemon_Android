@@ -25,6 +25,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.NumberPicker;
 import java.util.Locale;
 
@@ -34,6 +35,11 @@ class PitchFragmentDialog extends BottomSheetDialog {
     private NumberPicker mIntNumberPicker2;
     private NumberPicker mIntNumberPicker3;
     private NumberPicker mDecNumberPicker;
+
+    private String[] arInts1 = {"♯", "♭"};
+    private String[] arInts2 = {"6", "5", "4", "3", "2", "1", "0"};
+    private String[] arInts3 = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
+    private String[] arDecs = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
 
     @SuppressLint("ClickableViewAccessibility")
     PitchFragmentDialog(@NonNull Context context) {
@@ -57,11 +63,10 @@ class PitchFragmentDialog extends BottomSheetDialog {
         mIntNumberPicker2 = view.findViewById(R.id.intPitchPicker2);
         mIntNumberPicker3 = view.findViewById(R.id.intPitchPicker3);
         mDecNumberPicker = view.findViewById(R.id.decPitchPicker);
-
-        final String[] arInts1 = {"♯", "♭"};
-        final String[] arInts2 = {"6", "5", "4", "3", "2", "1", "0"};
-        final String[] arInts3 = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
-        final String[] arDecs = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
+        Button btnSharp12 = view.findViewById(R.id.btnSharp12);
+        Button btnFlat12 = view.findViewById(R.id.btnFlat12);
+        Button btnResetDialogPitch = view.findViewById(R.id.btnResetDialogPitch);
+        Button btnDoneDialogPitch = view.findViewById(R.id.btnDoneDialogPitch);
 
         mIntNumberPicker1.setDisplayedValues(arInts1);
         mIntNumberPicker2.setDisplayedValues(arInts2);
@@ -94,6 +99,37 @@ class PitchFragmentDialog extends BottomSheetDialog {
             if(arDecs[i].equals(strDec))
                 mDecNumberPicker.setValue(i);
         }
+
+        btnSharp12.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float fPitch = mActivity.controlFragment.getPitch();
+                fPitch += 12.0f;
+                if(fPitch > 60.0f) fPitch = 60.0f;
+                setPitch(fPitch);
+            }
+        });
+        btnFlat12.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float fPitch = mActivity.controlFragment.getPitch();
+                fPitch -= 12.0f;
+                if(fPitch < -60.0f) fPitch = -60.0f;
+                setPitch(fPitch);
+            }
+        });
+        btnResetDialogPitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setPitch(0.0f);
+            }
+        });
+        btnDoneDialogPitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
 
         NumberPicker.OnValueChangeListener listener = new NumberPicker.OnValueChangeListener() {
             @Override
@@ -143,5 +179,35 @@ class PitchFragmentDialog extends BottomSheetDialog {
                 mActivity.controlFragment.clearFocus();
             }
         });
+    }
+
+    public void setPitch(float fPitch) {
+        String flag;
+        if(fPitch >= 0.0f) flag = "♯";
+        else flag = "♭";
+
+        String strTemp = String.format(Locale.getDefault(), "%s%04.1f", flag, fPitch >= 0.0f ? fPitch : -fPitch);
+        String strInt1 = strTemp.substring(0, 1);
+        String strInt2 = strTemp.substring(1, 2);
+        String strInt3 = strTemp.substring(2, 3);
+        String strDec = strTemp.substring(4, 5);
+
+        for(int i = 0; i < arInts1.length; i++) {
+            if(arInts1[i].equals(strInt1))
+                mIntNumberPicker1.setValue(i);
+        }
+        for(int i = 0; i < arInts2.length; i++) {
+            if(arInts2[i].equals(strInt2))
+                mIntNumberPicker2.setValue(i);
+        }
+        for(int i = 0; i < arInts3.length; i++) {
+            if(arInts3[i].equals(strInt3))
+                mIntNumberPicker3.setValue(i);
+        }
+        for(int i = 0; i < arDecs.length; i++) {
+            if(arDecs[i].equals(strDec))
+                mDecNumberPicker.setValue(i);
+        }
+        mActivity.controlFragment.setPitch(fPitch);
     }
 }
