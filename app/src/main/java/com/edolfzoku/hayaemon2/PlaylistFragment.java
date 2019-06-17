@@ -1902,22 +1902,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 menu.show();
             }
         });
-        menu.addMenu(getString(R.string.changeTitleAndArtist), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
-            @Override
-            public void onClick(View view)
-            {
-                menu.dismiss();
-                changeTitleAndArtist(nItem);
-            }
-        });
-        menu.addMenu(getString(R.string.showLyrics), R.drawable.ic_actionsheet_file_text, new View.OnClickListener() {
-            @Override
-            public void onClick(View view)
-            {
-                menu.dismiss();
-                showLyrics();
-            }
-        });
         ArrayList<EffectSaver> arEffectSavers = mEffects.get(mSelectedPlaylist);
         EffectSaver saver = arEffectSavers.get(nItem);
         if(saver.isSave())
@@ -1944,6 +1928,43 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 }
             });
         }
+        menu.addSeparator();
+        menu.addMenu(getString(R.string.changeArtwork), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                menu.dismiss();
+                if (Build.VERSION.SDK_INT < 19)
+                {
+                    final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, 3);
+                }
+                else
+                {
+                    final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, 3);
+                }
+            }
+        });
+        menu.addMenu(getString(R.string.changeTitleAndArtist), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                menu.dismiss();
+                changeTitleAndArtist(nItem);
+            }
+        });
+        menu.addMenu(getString(R.string.showLyrics), R.drawable.ic_actionsheet_file_text, new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                menu.dismiss();
+                showLyrics();
+            }
+        });
         menu.addSeparator();
         menu.addMenu(getString(R.string.copy), R.drawable.ic_actionsheet_copy, new View.OnClickListener() {
             @Override
