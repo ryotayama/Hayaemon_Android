@@ -31,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.NumberPicker;
 
 import java.util.Locale;
@@ -42,6 +43,12 @@ class SpeedFragmentDialog extends BottomSheetDialog {
     private NumberPicker mIntNumberPicker3;
     private NumberPicker mIntNumberPicker4;
     private NumberPicker mDecNumberPicker;
+
+    private String[] arInts1 = {"5", "4", "3", "2", "1", "0"};
+    private String[] arInts2 = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
+    private String[] arInts3 = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
+    private String[] arInts4 = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
+    private String[] arDecs = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
 
     @SuppressLint("ClickableViewAccessibility")
     SpeedFragmentDialog(@NonNull Context context) {
@@ -63,12 +70,10 @@ class SpeedFragmentDialog extends BottomSheetDialog {
         mIntNumberPicker3 = view.findViewById(R.id.intSpeedPicker3);
         mIntNumberPicker4 = view.findViewById(R.id.intSpeedPicker4);
         mDecNumberPicker = view.findViewById(R.id.decSpeedPicker);
-
-        final String[] arInts1 = {"5", "4", "3", "2", "1", "0"};
-        final String[] arInts2 = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
-        final String[] arInts3 = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
-        final String[] arInts4 = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
-        final String[] arDecs = {"9", "8", "7", "6", "5", "4", "3", "2", "1", "0"};
+        Button btnMinus10 = view.findViewById(R.id.btnMinus10);
+        Button btnPlus10 = view.findViewById(R.id.btnPlus10);
+        Button btnResetDialogSpeed = view.findViewById(R.id.btnResetDialogSpeed);
+        Button btnDoneDialogSpeed = view.findViewById(R.id.btnDoneDialogSpeed);
 
         mIntNumberPicker1.setDisplayedValues(arInts1);
         mIntNumberPicker2.setDisplayedValues(arInts2);
@@ -108,6 +113,37 @@ class SpeedFragmentDialog extends BottomSheetDialog {
             if(arDecs[i].equals(strDec))
                 mDecNumberPicker.setValue(i);
         }
+
+        btnMinus10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float fSpeed = mActivity.controlFragment.getSpeed() + 100;
+                fSpeed -= 10.0f;
+                if(fSpeed < 10.0f) fSpeed = 10.0f;
+                setSpeed(fSpeed);
+            }
+        });
+        btnPlus10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float fSpeed = mActivity.controlFragment.getSpeed() + 100;
+                fSpeed += 10.0f;
+                if(fSpeed > 5000.0f) fSpeed = 5000.0f;
+                setSpeed(fSpeed);
+            }
+        });
+        btnResetDialogSpeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setSpeed(100.0f);
+            }
+        });
+        btnDoneDialogSpeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
 
         NumberPicker.OnValueChangeListener listener = new NumberPicker.OnValueChangeListener() {
             @Override
@@ -160,5 +196,33 @@ class SpeedFragmentDialog extends BottomSheetDialog {
                 mActivity.controlFragment.clearFocus();
             }
         });
+    }
+
+    public void setSpeed(float fSpeed) {
+        String strTemp = String.format(Locale.getDefault(), "%06.1f", fSpeed >= 0.0f ? fSpeed : -fSpeed);
+        String strInt1 = strTemp.substring(0, 1);
+        String strInt2 = strTemp.substring(1, 2);
+        String strInt3 = strTemp.substring(2, 3);
+        String strInt4 = strTemp.substring(3, 4);
+        String strDec = strTemp.substring(5, 6);
+
+        for(int i = 0; i < arInts1.length; i++) {
+            if(arInts1[i].equals(strInt1))
+                mIntNumberPicker1.setValue(i);
+        }
+        for(int i = 0; i < arInts2.length; i++) {
+            if(arInts2[i].equals(strInt2))
+                mIntNumberPicker2.setValue(i);
+        }
+        for(int i = 0; i < arInts3.length; i++) {
+            if(arInts3[i].equals(strInt3))
+                mIntNumberPicker3.setValue(i);
+        }
+        for(int i = 0; i < arDecs.length; i++) {
+            if(arDecs[i].equals(strDec))
+                mDecNumberPicker.setValue(i);
+        }
+        fSpeed -= 100.0f;
+        mActivity.controlFragment.setSpeed(fSpeed);
     }
 }
