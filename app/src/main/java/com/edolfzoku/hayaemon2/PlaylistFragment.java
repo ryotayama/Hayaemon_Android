@@ -379,7 +379,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         }
                     });
                     if(Build.VERSION.SDK_INT >= 18) {
-                        menu.addMenu(getString(R.string.addFromGallery), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
+                        menu.addMenu(getString(R.string.addFromVideo), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 menu.dismiss();
@@ -4189,7 +4189,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle(R.string.addFromGallery);
+        builder.setTitle(R.string.addFromVideo);
         LinearLayout linearLayout = new LinearLayout(mActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         final EditText editTitle = new EditText (mActivity);

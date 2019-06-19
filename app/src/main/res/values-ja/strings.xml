@@ -279,7 +279,7 @@
     <string name="adjustSpeed">速度の調整</string>
     <string name="export">他のアプリにエクスポート</string>
     <string name="saveToGallery">ギャラリーに保存</string>
-    <string name="addFromGallery">ギャラリーから追加</string>
+    <string name="addFromVideo">動画から追加</string>
     <string name="chooseRewindButton">戻すボタン選択</string>
     <string name="chooseForwardButton">進めるボタン選択</string>
     <string name="adjustAPos">A位置の調整</string>

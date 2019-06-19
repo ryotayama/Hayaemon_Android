@@ -1245,7 +1245,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
             if(Build.VERSION.SDK_INT >= 18) {
-                menu.addMenu(getString(R.string.addFromGallery), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.addFromVideo), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
