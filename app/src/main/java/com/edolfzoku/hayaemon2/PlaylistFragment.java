@@ -1883,7 +1883,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     }
                 });
                 if(Build.VERSION.SDK_INT >= 18) {
-                    menu.addMenu(getString(R.string.saveToGallery), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
+                    menu.addMenu(getString(R.string.saveAsVideo), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             menu.dismiss();
@@ -3533,7 +3533,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         cr.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle(R.string.saveToGallery);
+        builder.setTitle(R.string.saveAsVideo);
         builder.setMessage(R.string.saved);
         builder.setPositiveButton("OK", null);
         final AlertDialog alertDialog = builder.create();

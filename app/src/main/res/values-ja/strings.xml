@@ -278,7 +278,7 @@
     <string name="saving">セーブ中</string>
     <string name="adjustSpeed">速度の調整</string>
     <string name="export">他のアプリにエクスポート</string>
-    <string name="saveToGallery">ギャラリーに保存</string>
+    <string name="saveAsVideo">動画として保存</string>
     <string name="addFromVideo">動画から追加</string>
     <string name="chooseRewindButton">戻すボタン選択</string>
     <string name="chooseForwardButton">進めるボタン選択</string>

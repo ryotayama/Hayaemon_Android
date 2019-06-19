@@ -278,7 +278,7 @@
     <string name="saving">Saving</string>
     <string name="adjustSpeed">Adjust Speed</string>
     <string name="export">Export</string>
-    <string name="saveToGallery">Save the Song to Gallery</string>
+    <string name="saveAsVideo">Save the song as video</string>
     <string name="addFromVideo">Add from video</string>
     <string name="chooseRewindButton">Please select the rewind button.</string>
     <string name="chooseForwardButton">Please select the forward button.</string>
