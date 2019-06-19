@@ -826,7 +826,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         final BottomMenu menu = new BottomMenu(mActivity);
         menu.setTitle(getString(R.string.selectedSongs));
-        menu.addMenu(getString(R.string.changeArtwork), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.changeArtwork), R.drawable.ic_actionsheet_image, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changeArtworkMultipleSelection();
@@ -1929,7 +1929,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             });
         }
         menu.addSeparator();
-        menu.addMenu(getString(R.string.changeArtwork), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.changeArtwork), R.drawable.ic_actionsheet_image, new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
@@ -2484,7 +2484,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             });
         if(arSongs.size() >= 1) menu.addSeparator();
         if(arSongs.size() >= 1) {
-            menu.addMenu(getString(R.string.changeArtwork), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.changeArtwork), R.drawable.ic_actionsheet_image, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     changeArtworkMultipleSelection();
