@@ -23,12 +23,20 @@
         tools:context="com.edolfzoku.hayaemon2.MainActivity"
         tools:showIn="@layout/activity_main">
 
+        <View
+            android:id="@+id/viewSep0"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#a0a0a0"
+            android:layout_alignParentTop="true"
+            />
         <LinearLayout
             android:id="@+id/linearControl"
             android:layout_width="match_parent"
             android:layout_height="49dp"
-            android:layout_alignParentTop="true"
-            android:orientation="horizontal">
+            android:layout_below="@+id/viewSep0"
+            android:orientation="horizontal"
+            >
             <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnMenu"
                 android:contentDescription="@string/menu"
