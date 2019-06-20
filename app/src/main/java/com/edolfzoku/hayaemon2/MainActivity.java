@@ -51,6 +51,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -365,6 +366,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnArtworkInPlayingBar.setClickable(false);
 
         mDrawerLayout.setScrimColor(Color.argb(102, 0, 0, 0));
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            MainActivity.setSystemBarTheme(this, false);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public static void setSystemBarTheme(final Activity pActivity, final boolean pIsDark) {
+        final int lFlags = pActivity.getWindow().getDecorView().getSystemUiVisibility();
+        pActivity.getWindow().getDecorView().setSystemUiVisibility(pIsDark ? (lFlags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (lFlags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
     }
 
     @Override
