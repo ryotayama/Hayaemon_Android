@@ -1498,7 +1498,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             final SongItem item = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist()).get(nPlaying);
             final BottomMenu menu = new BottomMenu(this);
             menu.setTitle(getString(R.string.changeArtwork));
-            menu.addMenu(getString(R.string.setFromGallery), R.drawable.ic_actionsheet_image, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.setImage), R.drawable.ic_actionsheet_image, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();

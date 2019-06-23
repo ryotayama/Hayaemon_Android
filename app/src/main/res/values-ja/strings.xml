@@ -310,7 +310,7 @@
     <string name="showLyrics">歌詞を表示</string>
     <string name="selectSongs">曲を選択</string>
     <string name="sortSongs">曲順の並べ替え</string>
-    <string name="setFromGallery">ギャラリーから設定</string>
+    <string name="setImage">画像を設定</string>
     <string name="URL">URL</string>
     <string name="artist">アーティスト名</string>
     <string name="fileName">ファイル名</string>
