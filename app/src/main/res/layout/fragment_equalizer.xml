@@ -163,20 +163,50 @@
             android:orientation="vertical"
             >
 
-            <Button
-                android:id="@+id/btnEqualizerRandom"
-                android:text="@string/random"
-                android:textColor="@drawable/btn_text"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginLeft="44dp"
-                android:layout_marginRight="44dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/btn_border_background"
-                android:stateListAnimator="@null"
-                android:visibility="invisible"
-                />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                >
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    >
+
+                    <Button
+                        android:id="@+id/btnEqualizerRandom"
+                        android:text="@string/random"
+                        android:textSize="12sp"
+                        android:textColor="@drawable/btn_text"
+                        android:background="@drawable/resetbutton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:stateListAnimator="@null"
+                        />
+
+                    <Button
+                        android:id="@+id/btnResetEqualizer"
+                        android:text="@string/reset"
+                        android:textSize="12sp"
+                        android:textColor="@drawable/btn_text"
+                        android:background="@drawable/resetbutton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:stateListAnimator="@null"
+                        android:layout_toRightOf="@+id/btnEqualizerRandom"
+                        android:layout_toEndOf="@+id/btnEqualizerRandom"
+                        />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -2573,28 +2603,6 @@
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                >
-
-                <Button
-                    android:id="@+id/btnResetEqualizer"
-                    android:text="@string/reset"
-                    android:textSize="12sp"
-                    android:textColor="@drawable/btn_text"
-                    android:background="@drawable/resetbutton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:gravity="center"
-                    android:stateListAnimator="@null"
-                    android:layout_centerHorizontal="true"
                     />
 
             </RelativeLayout>
