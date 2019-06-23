@@ -92,7 +92,7 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
         holder.getTextEqualizer().setText(name);
 
         if(mActivity.equalizerFragment.isSelectedItem(position))
-            holder.itemView.setBackgroundColor(Color.argb(255, 221, 221, 221));
+            holder.itemView.setBackgroundColor(Color.argb(255, 224, 239, 255));
         else
             holder.itemView.setBackgroundColor(Color.argb(255, 255, 255, 255));
         holder.getEqualizerItem().setOnClickListener(new View.OnClickListener() {
