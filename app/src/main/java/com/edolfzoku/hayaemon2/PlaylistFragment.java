@@ -3930,8 +3930,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 ID3v2 id3v2Tag;
                 if (mp3file.hasId3v2Tag()) {
                     id3v2Tag = mp3file.getId3v2Tag();
-                    return id3v2Tag.getLyrics();
+                    String strLyrics = id3v2Tag.getLyrics();
+                    if(file.getParent().equals(mActivity.getExternalCacheDir().toString()))
+                        file.deleteOnExit();
+                    ArrayList<String> arTempLyrics = mLyrics.get(nPlaylist);
+                    arTempLyrics.set(nSong, strLyrics);
+                    return strLyrics;
                 }
+                if(file.getParent().equals(mActivity.getExternalCacheDir().toString()))
+                    file.deleteOnExit();
             }
         }
         catch(Exception e) {
@@ -3941,9 +3948,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     @SuppressLint("NewApi")
-    private static String getFilePath(Context context, Uri uri) {
+    private String getFilePath(Context context, Uri uri) {
         String selection = null;
         String[] selectionArgs = null;
+        Uri tempUri = uri;
         // Uri is different in versions after KITKAT (Android 4.4), we need to
         if (Build.VERSION.SDK_INT >= 19 && DocumentsContract.isDocumentUri(context.getApplicationContext(), uri)) {
             if (isExternalStorageDocument(uri)) {
@@ -3952,18 +3960,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 return Environment.getExternalStorageDirectory() + "/" + split[1];
             } else if (isDownloadsDocument(uri)) {
                 final String id = DocumentsContract.getDocumentId(uri);
-                uri = ContentUris.withAppendedId(
+                tempUri = ContentUris.withAppendedId(
                         Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
             } else if (isMediaDocument(uri)) {
                 final String docId = DocumentsContract.getDocumentId(uri);
                 final String[] split = docId.split(":");
                 final String type = split[0];
                 if ("image".equals(type)) {
-                    uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                    tempUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
                 } else if ("video".equals(type)) {
-                    uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                    tempUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
                 } else if ("audio".equals(type)) {
-                    uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                    tempUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 }
                 selection = "_id=?";
                 selectionArgs = new String[]{
@@ -3971,14 +3979,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 };
             }
         }
-        if ("content".equalsIgnoreCase(uri.getScheme())) {
+        if ("content".equalsIgnoreCase(tempUri.getScheme())) {
             String[] projection = {
                     MediaStore.Images.Media.DATA
             };
             Cursor cursor;
             try {
                 cursor = context.getContentResolver()
-                        .query(uri, projection, selection, selectionArgs, null);
+                        .query(tempUri, projection, selection, selectionArgs, null);
                 if(cursor != null) {
                     int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                     if (cursor.moveToFirst()) {
@@ -3991,10 +3999,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
+        } else if ("file".equalsIgnoreCase(tempUri.getScheme())) {
+            return tempUri.getPath();
         }
-        return null;
+        return mActivity.copyTempFile(uri).toString();
     }
 
     private static boolean isExternalStorageDocument(Uri uri) {

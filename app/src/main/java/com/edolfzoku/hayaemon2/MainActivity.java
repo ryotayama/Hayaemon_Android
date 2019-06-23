@@ -496,6 +496,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return Uri.parse(strPath);
     }
 
+    public Uri copyTempFile(Uri uri)
+    {
+        int i = 0;
+        String strPath;
+        File file;
+        while(true) {
+            strPath = getExternalCacheDir() + "/copied" + String.format(Locale.getDefault(), "%d", i);
+            file = new File(strPath);
+            if(!file.exists()) break;
+            i++;
+        }
+        try {
+            InputStream in;
+            if(uri.getScheme() != null && uri.getScheme().equals("content"))
+                in = getContentResolver().openInputStream(uri);
+            else
+                in = new FileInputStream(uri.toString());
+            FileOutputStream out = new FileOutputStream(file);
+            byte[] buf = new byte[1024];
+            int len;
+            if(in != null) {
+                while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+                in.close();
+            }
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return Uri.parse(strPath);
+    }
+
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
