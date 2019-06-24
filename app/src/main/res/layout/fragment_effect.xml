@@ -712,20 +712,44 @@
                 android:background="#FFF"
                 >
 
-                <Button
-                    android:id="@+id/btnEchoRandom"
-                    android:text="@string/random"
-                    android:textColor="@drawable/btn_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="44dp"
-                    android:layout_marginRight="44dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/btn_border_background"
-                    android:stateListAnimator="@null"
+                <RelativeLayout
+                    android:id="@+id/relativeEchoTopButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:layout_alignParentTop="true"
-                    />
+                    android:layout_centerHorizontal="true"
+                    >
+
+                    <Button
+                        android:id="@+id/btnEchoRandom"
+                        android:text="@string/random"
+                        android:textSize="12sp"
+                        android:textColor="@drawable/btn_text"
+                        android:background="@drawable/resetbutton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:stateListAnimator="@null"
+                        />
+
+                    <Button
+                        android:id="@+id/btnResetEcho"
+                        android:text="@string/reset"
+                        android:textSize="12sp"
+                        android:textColor="@drawable/btn_text"
+                        android:background="@drawable/resetbutton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:stateListAnimator="@null"
+                        android:layout_toRightOf="@+id/btnEchoRandom"
+                        android:layout_toEndOf="@+id/btnEchoRandom"
+                        />
+
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/textEchoDryLabel"
@@ -739,7 +763,7 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginRight="12dp"
                     android:layout_marginEnd="12dp"
-                    android:layout_below="@+id/btnEchoRandom"
+                    android:layout_below="@+id/relativeEchoTopButton"
                     />
 
                 <RelativeLayout
@@ -1066,22 +1090,6 @@
                         />
 
                 </RelativeLayout>
-
-                <Button
-                    android:id="@+id/btnResetEcho"
-                    android:text="@string/reset"
-                    android:textSize="12sp"
-                    android:textColor="@drawable/btn_text"
-                    android:background="@drawable/resetbutton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_centerHorizontal="true"
-                    android:stateListAnimator="@null"
-                    android:layout_below="@+id/relativeSliderEchoDelay"
-                    />
 
             </RelativeLayout>
 
