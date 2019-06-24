@@ -229,20 +229,44 @@
                 android:background="#FFF"
                 >
 
-                <Button
-                    android:id="@+id/btnCompRandom"
-                    android:text="@string/random"
-                    android:textColor="@drawable/btn_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="44dp"
-                    android:layout_marginRight="44dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/btn_border_background"
-                    android:stateListAnimator="@null"
+                <RelativeLayout
+                    android:id="@+id/relativeCompTopButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:layout_alignParentTop="true"
-                    />
+                    android:layout_centerHorizontal="true"
+                    >
+
+                    <Button
+                        android:id="@+id/btnCompRandom"
+                        android:text="@string/random"
+                        android:textSize="12sp"
+                        android:textColor="@drawable/btn_text"
+                        android:background="@drawable/resetbutton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:stateListAnimator="@null"
+                        />
+
+                    <Button
+                        android:id="@+id/btnResetComp"
+                        android:text="@string/reset"
+                        android:textSize="12sp"
+                        android:textColor="@drawable/btn_text"
+                        android:background="@drawable/resetbutton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:stateListAnimator="@null"
+                        android:layout_toRightOf="@+id/btnCompRandom"
+                        android:layout_toEndOf="@+id/btnCompRandom"
+                        />
+
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/textCompGainLabel"
@@ -256,7 +280,7 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginRight="12dp"
                     android:layout_marginEnd="12dp"
-                    android:layout_below="@+id/btnCompRandom"
+                    android:layout_below="@+id/relativeCompTopButton"
                     />
 
                 <RelativeLayout
@@ -668,22 +692,6 @@
                         />
 
                 </RelativeLayout>
-
-                <Button
-                    android:id="@+id/btnResetComp"
-                    android:text="@string/reset"
-                    android:textSize="12sp"
-                    android:textColor="@drawable/btn_text"
-                    android:background="@drawable/resetbutton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_centerHorizontal="true"
-                    android:stateListAnimator="@null"
-                    android:layout_below="@+id/relativeSliderCompRelease"
-                    />
 
             </RelativeLayout>
 
