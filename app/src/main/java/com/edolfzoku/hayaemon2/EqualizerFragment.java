@@ -538,7 +538,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             case R.id.btnFinishCustomize:
                 if(mAddTemplate) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-                    builder.setTitle(R.string.addTemplate);
+                    builder.setTitle(R.string.saveTemplate);
                     LinearLayout linearLayout = new LinearLayout(mActivity);
                     linearLayout.setOrientation(LinearLayout.VERTICAL);
                     final EditText editPreset = new EditText(mActivity);
@@ -633,7 +633,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
             case R.id.btnEqualizerSaveAs:
                 AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-                builder.setTitle(R.string.addTemplate);
+                builder.setTitle(R.string.saveTemplate);
                 LinearLayout linearLayout = new LinearLayout(mActivity);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
                 final EditText editPreset = new EditText(mActivity);

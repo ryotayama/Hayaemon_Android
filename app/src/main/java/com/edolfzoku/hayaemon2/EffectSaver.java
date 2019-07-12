@@ -85,6 +85,7 @@ class EffectSaver {
     private ArrayList<Double> arMarkerTime = null;
     private boolean bLoopMarker = false;
     private int nMarker = 0;
+    private int mReverbSelected = -1;
 
     void setSave(boolean save) { mSave = save; }
     void setSpeed(float speed) { mSpeed = speed; }
@@ -179,6 +180,7 @@ class EffectSaver {
     void setArMarkerTime(ArrayList<Double> arMarkerTime) { this.arMarkerTime = new ArrayList<>(arMarkerTime); }
     void setIsLoopMarker(boolean bLoopMarker) { this.bLoopMarker = bLoopMarker; }
     void setMarker(int nMarker) { this.nMarker = nMarker; }
+    void setReverbSelected(int nSelected) { this.mReverbSelected = nSelected; }
 
     boolean isSave() { return mSave; }
     float getSpeed() { return mSpeed; }
@@ -263,6 +265,7 @@ class EffectSaver {
     ArrayList<Double> getArMarkerTime() { return arMarkerTime; }
     boolean isLoopMarker() { return bLoopMarker; }
     int getMarker() { return nMarker; }
+    int getReverbSelected() { return mReverbSelected; }
 
     EffectSaver() {
     }
@@ -356,5 +359,6 @@ class EffectSaver {
             arMarkerTime = new ArrayList<>(saver.arMarkerTime);
         bLoopMarker = saver.bLoopMarker;
         nMarker = saver.nMarker;
+        mReverbSelected = saver.mReverbSelected;
     }
 }

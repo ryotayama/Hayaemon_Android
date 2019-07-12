@@ -143,14 +143,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     private ImageButton mBtnLeft, mBtnAddPlaylist_small;
     private View mDevider2, mViewMultipleSelection;
 
-    public ArrayList<ArrayList<SongItem>> getArPlaylists() { return mPlaylists; }
-    public void setArPlaylists(ArrayList<ArrayList<SongItem>> arLists) { mPlaylists = arLists; }
-    public ArrayList<ArrayList<EffectSaver>> getArEffects() { return mEffects; }
-    public void setArEffects(ArrayList<ArrayList<EffectSaver>> mEffects) { this.mEffects = mEffects; }
-    public ArrayList<ArrayList<String>> getArLyrics() { return mLyrics; }
-    public void setArLyrics(ArrayList<ArrayList<String>> mLyrics) { this.mLyrics = mLyrics; }
-    public ArrayList<String> getArPlaylistNames() { return mPlaylistNames; }
-    public void setArPlaylistNames(ArrayList<String> arNames) { mPlaylistNames = arNames; }
+    public ArrayList<ArrayList<SongItem>> getPlaylists() { return mPlaylists; }
+    public void setPlaylists(ArrayList<ArrayList<SongItem>> arLists) { mPlaylists = arLists; }
+    public ArrayList<ArrayList<EffectSaver>> getEffects() { return mEffects; }
+    public void setEffects(ArrayList<ArrayList<EffectSaver>> mEffects) { this.mEffects = mEffects; }
+    public ArrayList<ArrayList<String>> getLyrics() { return mLyrics; }
+    public void setLyrics(ArrayList<ArrayList<String>> mLyrics) { this.mLyrics = mLyrics; }
+    public ArrayList<String> getPlaylistNames() { return mPlaylistNames; }
+    public void setPlaylistNames(ArrayList<String> arNames) { mPlaylistNames = arNames; }
     public int getSelectedPlaylist() { return mSelectedPlaylist; }
     public void setSelectedItem(int nSelected) { mSelectedItem = nSelected; }
     public int getSelectedItem() { return mSelectedItem; }
@@ -596,7 +596,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     public void onTouchMultipleSelectionItem(final int nItem)
     {
-        ArrayList<SongItem> arSongs = mActivity.playlistFragment.getArPlaylists().get(mActivity.playlistFragment.getSelectedPlaylist());
+        ArrayList<SongItem> arSongs = mActivity.playlistFragment.getPlaylists().get(mActivity.playlistFragment.getSelectedPlaylist());
         SongItem item = arSongs.get(nItem);
         item.setSelected(!item.isSelected());
         int nSelected = 0;
@@ -2939,6 +2939,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setIsLoopMarker(mActivity.loopFragment.getBtnLoopmarker().isSelected());
             saver.setMarker(mActivity.loopFragment.getMarker());
         }
+        saver.setReverbSelected(mActivity.effectFragment.getReverbSelected());
 
         saveFiles(false, true, false, false, false);
     }
@@ -3041,6 +3042,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setArMarkerTime(mActivity.loopFragment.getArMarkerTime());
             saver.setIsLoopMarker(mActivity.loopFragment.getBtnLoopmarker().isSelected());
             saver.setMarker(mActivity.loopFragment.getMarker());
+            saver.setReverbSelected(mActivity.effectFragment.getReverbSelected());
 
             saveFiles(false, true, false, false, false);
         }
@@ -3114,11 +3116,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mActivity.effectFragment.setEchoWet(saver.getEchoWet(), false);
         mActivity.effectFragment.setEchoFeedback(saver.getEchoFeedback(), false);
         mActivity.effectFragment.setEchoDelay(saver.getEchoDelay(), false);
-        mActivity.effectFragment.setReverbDry(saver.getReverbDry(), false);
-        mActivity.effectFragment.setReverbWet(saver.getReverbWet(), false);
-        mActivity.effectFragment.setReverbRoomSize(saver.getReverbRoomSize(), false);
-        mActivity.effectFragment.setReverbDamp(saver.getReverbDamp(), false);
-        mActivity.effectFragment.setReverbWidth(saver.getReverbWidth(), false);
+        mActivity.effectFragment.setReverb(saver.getReverbDry(), saver.getReverbWet(), saver.getReverbRoomSize(), saver.getReverbDamp(), saver.getReverbWidth(), false);
         mActivity.effectFragment.setChorusDry(saver.getChorusDry(), false);
         mActivity.effectFragment.setChorusWet(saver.getChorusWet(), false);
         mActivity.effectFragment.setChorusFeedback(saver.getChorusFeedback(), false);
@@ -3144,6 +3142,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             mActivity.loopFragment.getBtnLoopmarker().setAlpha(1.0f);
         }
         mActivity.loopFragment.setMarker(saver.getMarker());
+        mActivity.effectFragment.setReverbSelected(saver.getReverbSelected());
     }
 
     private void saveSong(int nPurpose, String strFileName)

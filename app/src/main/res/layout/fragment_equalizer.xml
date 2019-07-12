@@ -22,6 +22,7 @@
 
     <com.edolfzoku.hayaemon2.AnimationButton
         android:id="@+id/btnEqualizerMenu"
+        android:contentDescription="@string/templateMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_button_more_blue"
@@ -53,7 +54,7 @@
 
     <com.edolfzoku.hayaemon2.AnimationButton
         android:id="@+id/btnAddEqualizerTemplate"
-        android:contentDescription="@string/addSong"
+        android:contentDescription="@string/newEqualizer"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:background="@null"

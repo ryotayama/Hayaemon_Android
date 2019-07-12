@@ -279,10 +279,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     playlistFragment.getSongsAdapter().notifyDataSetChanged();
                 SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 Gson gson = new Gson();
-                preferences.edit().putString("arPlaylists", gson.toJson(playlistFragment.getArPlaylists())).apply();
-                preferences.edit().putString("arEffects", gson.toJson(playlistFragment.getArEffects())).apply();
-                preferences.edit().putString("arLyrics", gson.toJson(playlistFragment.getArLyrics())).apply();
-                preferences.edit().putString("arPlaylistNames", gson.toJson(playlistFragment.getArPlaylistNames())).apply();
+                preferences.edit().putString("arPlaylists", gson.toJson(playlistFragment.getPlaylists())).apply();
+                preferences.edit().putString("arEffects", gson.toJson(playlistFragment.getEffects())).apply();
+                preferences.edit().putString("arLyrics", gson.toJson(playlistFragment.getLyrics())).apply();
+                preferences.edit().putString("arPlaylistNames", gson.toJson(playlistFragment.getPlaylistNames())).apply();
             }
         }
 
@@ -625,9 +625,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void startNotification()
     {
-        if(playlistFragment.getPlayingPlaylist() < 0 && playlistFragment.getArPlaylists().size() <= playlistFragment.getPlayingPlaylist())
+        if(playlistFragment.getPlayingPlaylist() < 0 && playlistFragment.getPlaylists().size() <= playlistFragment.getPlayingPlaylist())
             return;
-        ArrayList<SongItem> arSongs = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist());
+        ArrayList<SongItem> arSongs = playlistFragment.getPlaylists().get(playlistFragment.getPlayingPlaylist());
         if(playlistFragment.getPlaying() < 0 && arSongs.size() <= playlistFragment.getPlaying())
             return;
         int playing = playlistFragment.getPlaying();
@@ -786,13 +786,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         List<String> arSongsPath = gson.fromJson(preferences.getString("arSongsPath",""), new TypeToken<List<String>>(){}.getType());
         if(arPlaylists != null && arPlaylistNames != null) {
             for(int i = 0; i < arPlaylists.size(); i++) {
-                playlistFragment.setArPlaylists(arPlaylists);
-                playlistFragment.setArPlaylistNames(arPlaylistNames);
+                playlistFragment.setPlaylists(arPlaylists);
+                playlistFragment.setPlaylistNames(arPlaylistNames);
             }
             if(arEffects != null && arPlaylists.size() == arEffects.size())
-                playlistFragment.setArEffects(arEffects);
+                playlistFragment.setEffects(arEffects);
             else {
-                arEffects = playlistFragment.getArEffects();
+                arEffects = playlistFragment.getEffects();
                 for(int i = 0; i < arPlaylists.size(); i++) {
                     ArrayList<EffectSaver> arEffectSavers = new ArrayList<>();
                     ArrayList<SongItem> arSongs = arPlaylists.get(i);
@@ -804,9 +804,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
             if(arLyrics != null && arPlaylists.size() == arLyrics.size())
-                playlistFragment.setArLyrics(arLyrics);
+                playlistFragment.setLyrics(arLyrics);
             else {
-                arLyrics = playlistFragment.getArLyrics();
+                arLyrics = playlistFragment.getLyrics();
                 for(int i = 0; i < arPlaylists.size(); i++) {
                     ArrayList<String> arTempLyrics = new ArrayList<>();
                     ArrayList<SongItem> arSongs = arPlaylists.get(i);
@@ -1150,7 +1150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 playlistFragment.selectPlaylist(playlistFragment.getPlayingPlaylist());
                 playlistFragment.setSelectedItem(playlistFragment.getPlaying());
 
-                SongItem item = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist()).get(playlistFragment.getPlaying());
+                SongItem item = playlistFragment.getPlaylists().get(playlistFragment.getPlayingPlaylist()).get(playlistFragment.getPlaying());
                 ImageView imgViewArtworkInMenu = findViewById(R.id.imgViewArtworkInMenu);
                 Bitmap bitmap = null;
                 if(item.getPathArtwork() != null && !item.getPathArtwork().equals("")) {
@@ -1186,7 +1186,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     textArtistInMenu.setText(item.getArtist());
                 }
 
-                ArrayList<EffectSaver> arEffectSavers = playlistFragment.getArEffects().get(playlistFragment.getPlayingPlaylist());
+                ArrayList<EffectSaver> arEffectSavers = playlistFragment.getEffects().get(playlistFragment.getPlayingPlaylist());
                 EffectSaver saver = arEffectSavers.get(playlistFragment.getPlaying());
                 ImageView imgLock = findViewById(R.id.imgLockInMenu);
                 TextView textLock = findViewById(R.id.textLock);
@@ -1255,7 +1255,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             mDrawerLayout.closeDrawer(Gravity.START);
 
-            ArrayList<EffectSaver> arEffectSavers = playlistFragment.getArEffects().get(playlistFragment.getPlayingPlaylist());
+            ArrayList<EffectSaver> arEffectSavers = playlistFragment.getEffects().get(playlistFragment.getPlayingPlaylist());
             EffectSaver saver = arEffectSavers.get(playlistFragment.getPlaying());
             if(saver.isSave()) {
                 saver.setSave(false);
@@ -1436,7 +1436,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             final BottomMenu menu = new BottomMenu(this);
             final int nPlaying = playlistFragment.getPlaying();
             playlistFragment.setSelectedItem(nPlaying);
-            SongItem item = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist()).get(nPlaying);
+            SongItem item = playlistFragment.getPlaylists().get(playlistFragment.getPlayingPlaylist()).get(nPlaying);
             menu.setTitle(item.getTitle());
             menu.addMenu(getString(R.string.saveExport), R.drawable.ic_actionsheet_save, new View.OnClickListener() {
                 @Override
@@ -1461,7 +1461,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mViewPager.setCurrentItem(0);
                 }
             });
-            ArrayList<EffectSaver> arEffectSavers = playlistFragment.getArEffects().get(playlistFragment.getSelectedPlaylist());
+            ArrayList<EffectSaver> arEffectSavers = playlistFragment.getEffects().get(playlistFragment.getSelectedPlaylist());
             final EffectSaver saver = arEffectSavers.get(nPlaying);
             if(saver.isSave())
             {
@@ -1495,7 +1495,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(v.getId() == R.id.btnArtworkInPlayingBar) {
             final int nPlaying = playlistFragment.getPlaying();
             playlistFragment.setSelectedItem(nPlaying);
-            final SongItem item = playlistFragment.getArPlaylists().get(playlistFragment.getPlayingPlaylist()).get(nPlaying);
+            final SongItem item = playlistFragment.getPlaylists().get(playlistFragment.getPlayingPlaylist()).get(nPlaying);
             final BottomMenu menu = new BottomMenu(this);
             menu.setTitle(getString(R.string.changeArtwork));
             menu.addMenu(getString(R.string.setImage), R.drawable.ic_actionsheet_image, new View.OnClickListener() {
@@ -2414,7 +2414,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             else if(mTabLayout.getSelectedTabPosition() == 4) { // エフェクト画面
                 if(findViewById(R.id.relativeEffectDetail).getVisibility() == View.VISIBLE) { // エフェクト詳細画面
-                    findViewById(R.id.btnFinish).performClick();
+                    findViewById(R.id.btnEffectBack).performClick();
                     return true;
                 }
                 else { // 通常のエフェクト画面

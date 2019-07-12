@@ -92,7 +92,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position)
     {
-        ArrayList<SongItem> arSongs = mActivity.playlistFragment.getArPlaylists ().get(mActivity.playlistFragment.getSelectedPlaylist());
+        ArrayList<SongItem> arSongs = mActivity.playlistFragment.getPlaylists ().get(mActivity.playlistFragment.getSelectedPlaylist());
         SongItem item = arSongs.get(position);
         if(item.getTime() == null) mActivity.playlistFragment.updateSongTime(item);
         final int nItem = Integer.parseInt(item.getNumber()) - 1;
@@ -216,7 +216,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
     @Override
     public int getItemCount()
     {
-        ArrayList<SongItem> arSongs = mActivity.playlistFragment.getArPlaylists ().get(mActivity.playlistFragment.getSelectedPlaylist());
+        ArrayList<SongItem> arSongs = mActivity.playlistFragment.getPlaylists ().get(mActivity.playlistFragment.getSelectedPlaylist());
         return arSongs.size();
     }
 }

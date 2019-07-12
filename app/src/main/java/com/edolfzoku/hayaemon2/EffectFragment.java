@@ -19,32 +19,44 @@
 package com.edolfzoku.hayaemon2;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
+import android.media.effect.Effect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_FX;
 
@@ -53,6 +65,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Timer;
@@ -64,7 +77,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 {
     private MainActivity mActivity = null;
     private EffectsAdapter mEffectsAdapter;
+    private EffectTemplatesAdapter mEffectTemplatesAdapter;
     private final ArrayList<EffectItem> mEffectItems;
+    private ArrayList<EffectTemplateItem> mReverbItems;
+    private ItemTouchHelper mEffectTemplateTouchHelper;
     private int mDspVocalCancel = 0;
     private int mDspMonoral = 0;
     private int mDspLeft = 0;
@@ -122,41 +138,37 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     // private static final int EFFECTTYPE_ECHO_VOCAL = 21;
     // private static final int EFFECTTYPE_ECHO_MOUNTAIN = 22;
     private static final int EFFECTTYPE_ECHO_CUSTOMIZE = 23;
-    private static final int EFFECTTYPE_REVERB_BATHROOM = 24;
-    // private static final int EFFECTTYPE_REVERB_SMALLROOM = 25;
-    // private static final int EFFECTTYPE_REVERB_MEDIUMROOM = 26;
-    // private static final int EFFECTTYPE_REVERB_LARGEROOM = 27;
-    // private static final int EFFECTTYPE_REVERB_CHURCH = 28;
-    // private static final int EFFECTTYPE_REVERB_CATHEDRAL = 29;
-    private static final int EFFECTTYPE_REVERB_CUSTOMIZE = 30;
-    private static final int EFFECTTYPE_CHORUS = 31;
-    private static final int EFFECTTYPE_FLANGER = 32;
-    private static final int EFFECTTYPE_CHORUS_CUSTOMIZE = 33;
-    private static final int EFFECTTYPE_DISTORTION_STRONG = 34;
-    // private static final int EFFECTTYPE_DISTORTION_MIDDLE = 35;
-    // private static final int EFFECTTYPE_DISTORTION_WEAK = 36;
-    private static final int EFFECTTYPE_DISTORTION_CUSTOMIZE = 37;
-    static final int EFFECTTYPE_REVERSE = 38;
-    private static final int EFFECTTYPE_INCREASESPEED = 39;
-    private static final int EFFECTTYPE_DECREASESPEED = 40;
-    private static final int EFFECTTYPE_OLDRECORD = 41;
-    private static final int EFFECTTYPE_LOWBATTERY = 42;
-    private static final int EFFECTTYPE_NOSENSE_STRONG = 43;
-    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 44;
-    private static final int EFFECTTYPE_NOSENSE_WEAK = 45;
-    private static final int EFFECTTYPE_EARTRAINING = 46;
-    private static final int EFFECTTYPE_METRONOME = 47;
-    private static final int EFFECTTYPE_RECORDNOISE = 48;
-    private static final int EFFECTTYPE_ROAROFWAVES = 49;
-    private static final int EFFECTTYPE_RAIN = 50;
-    private static final int EFFECTTYPE_RIVER = 51;
-    private static final int EFFECTTYPE_WAR = 52;
-    private static final int EFFECTTYPE_FIRE = 53;
-    private static final int EFFECTTYPE_CONCERTHALL = 54;
+    private static final int EFFECTTYPE_REVERB = 24;
+    private static final int EFFECTTYPE_CHORUS = 25;
+    private static final int EFFECTTYPE_FLANGER = 26;
+    private static final int EFFECTTYPE_CHORUS_CUSTOMIZE = 27;
+    private static final int EFFECTTYPE_DISTORTION_STRONG = 28;
+    // private static final int EFFECTTYPE_DISTORTION_MIDDLE = 29;
+    // private static final int EFFECTTYPE_DISTORTION_WEAK = 30;
+    private static final int EFFECTTYPE_DISTORTION_CUSTOMIZE = 31;
+    static final int EFFECTTYPE_REVERSE = 32;
+    private static final int EFFECTTYPE_INCREASESPEED = 33;
+    private static final int EFFECTTYPE_DECREASESPEED = 34;
+    private static final int EFFECTTYPE_OLDRECORD = 35;
+    private static final int EFFECTTYPE_LOWBATTERY = 36;
+    private static final int EFFECTTYPE_NOSENSE_STRONG = 37;
+    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 38;
+    private static final int EFFECTTYPE_NOSENSE_WEAK = 39;
+    private static final int EFFECTTYPE_EARTRAINING = 40;
+    private static final int EFFECTTYPE_METRONOME = 41;
+    private static final int EFFECTTYPE_RECORDNOISE = 42;
+    private static final int EFFECTTYPE_ROAROFWAVES = 43;
+    private static final int EFFECTTYPE_RAIN = 44;
+    private static final int EFFECTTYPE_RIVER = 45;
+    private static final int EFFECTTYPE_WAR = 46;
+    private static final int EFFECTTYPE_FIRE = 47;
+    private static final int EFFECTTYPE_CONCERTHALL = 48;
     private Timer mTimer;
     private int mSEStream;
     private int mSEStream2;
     private boolean mSE1PlayingFlag = false;
+    private boolean mSorting = false;
+    private boolean mAddTemplate;
     private int mSync = 0;
     private Handler mHandler;
     private float mAccel = 0.0f;
@@ -164,15 +176,21 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private float mVelo2 = 0.0f;
     private boolean mContinueFlag = true;
     private final Handler mHandlerLongClick;
+    private int mEffectDetail = -1, mReverbSelected = -1;
 
-    private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextEchoDry, mTextEchoWet, mTextEchoFeedback, mTextEchoDelay, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth, mTextChorusDry, mTextChorusWet, mTextChorusFeedback, mTextChorusMinSweep, mTextChorusMaxSweep, mTextChorusRate, mTextDistortionDrive, mTextDistortionDry, mTextDistortionWet, mTextDistortionFeedback, mTextDistortionVolume;
+    private RecyclerView mRecyclerEffects, mRecyclerEffectTemplates;
+    private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextEchoDry, mTextEchoWet, mTextEchoFeedback, mTextEchoDelay, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth, mTextChorusDry, mTextChorusWet, mTextChorusFeedback, mTextChorusMinSweep, mTextChorusMaxSweep, mTextChorusRate, mTextDistortionDrive, mTextDistortionDry, mTextDistortionWet, mTextDistortionFeedback, mTextDistortionVolume, mTextFinishSortEffect;
     private EditText mEditSpeedEffectDetail, mEditTimeEffectDetail;
-    private RelativeLayout mRelativeEffectDetail, mRelativeEffect, mRelativeSliderEffectDatail, mRelativeRollerEffectDetail;
+    private RelativeLayout mRelativeEffectDetail, mRelativeSliderEffectDatail, mRelativeRollerEffectDetail, mRelativeEffectTemplates, mRelativeEffectTitle;
     private SeekBar mSeekEffectDetail, mSeekCompGain, mSeekCompThreshold, mSeekCompRatio, mSeekCompAttack, mSeekCompRelease, mSeekEchoDry, mSeekEchoWet, mSeekEchoFeedback, mSeekEchoDelay, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth, mSeekChorusDry, mSeekChorusWet, mSeekChorusFeedback, mSeekChorusMinSweep, mSeekChorusMaxSweep, mSeekChorusRate, mSeekDistortionDrive, mSeekDistortionDry, mSeekDistortionWet, mSeekDistortionFeedback, mSeekDistortionVolume;
     private ImageButton mBtnEffectMinus, mBtnEffectPlus, mBtnCompGainMinus, mBtnCompGainPlus, mBtnCompThresholdMinus, mBtnCompThresholdPlus, mBtnCompRatioMinus, mBtnCompRatioPlus, mBtnCompAttackMinus, mBtnCompAttackPlus, mBtnCompReleaseMinus, mBtnCompReleasePlus, mBtnEchoDryMinus, mBtnEchoDryPlus, mBtnEchoWetMinus, mBtnEchoWetPlus, mBtnEchoFeedbackMinus, mBtnEchoFeedbackPlus, mBtnEchoDelayMinus, mBtnEchoDelayPlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus, mBtnChorusDryMinus, mBtnChorusDryPlus, mBtnChorusWetMinus, mBtnChorusWetPlus, mBtnChorusFeedbackMinus, mBtnChorusFeedbackPlus, mBtnChorusMinSweepMinus, mBtnChorusMinSweepPlus, mBtnChorusMaxSweepMinus, mBtnChorusMaxSweepPlus, mBtnChorusRateMinus, mBtnChorusRatePlus, mBtnDistortionDriveMinus, mBtnDistortionDrivePlus, mBtnDistortionDryMinus, mBtnDistortionDryPlus, mBtnDistortionWetMinus, mBtnDistortionWetPlus, mBtnDistortionFeedbackMinus, mBtnDistortionFeedbackPlus, mBtnDistortionVolumeMinus, mBtnDistortionVolumePlus;
-    private Button mBtnFinish;
+    private Button mBtnEffectBack, mBtnEffectFinish, mBtnEffectTemplateOff, mBtnReverbSaveAs;
+    private AnimationButton mBtnEffectTemplateMenu, mBtnAddEffectTemplate;
     private ScrollView mScrollCompCustomize, mScrollEchoCustomize, mScrollReverbCustomize, mScrollChorusCustomize, mScrollDistortionCustomize;
+    private View mViewSepEffect, mViewSepEffectTemplate;
+    private ImageView mImgEffectBack;
 
+    public ItemTouchHelper getEffectTemplateTouchHelper() { return mEffectTemplateTouchHelper; }
     public void setPeak(float peak) { mPeak = peak; }
     public float getTimeOfIncreaseSpeed() { return mTimeOfIncreaseSpeed; }
     public void setTimeOfIncreaseSpeed(float timeOfIncreaseSpeed) {
@@ -223,12 +241,27 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     public float getDistortionWet() { return mDistortionWet; }
     public float getDistortionFeedback() { return mDistortionFeedback; }
     public float getDistortionVolume() { return mDistortionVolume; }
+    private void setEffectTemplateItems(ArrayList<EffectTemplateItem> lists) {
+        mReverbItems = lists;
+        mEffectTemplatesAdapter.changeItems(mReverbItems);
+    }
 
+    public boolean isSorting() { return mSorting; }
     public boolean isSelectedItem(int nItem)
     {
         if(nItem >= mEffectItems.size()) return false;
         EffectItem item = mEffectItems.get(nItem);
         return item.isSelected();
+    }
+
+    public boolean isSelectedTemplateItem(int nItem)
+    {
+        if(mEffectDetail == EFFECTTYPE_REVERB) {
+            if (nItem >= mReverbItems.size()) return false;
+            EffectTemplateItem item = mReverbItems.get(nItem);
+            return item.isSelected();
+        }
+        return false;
     }
 
     public boolean isReverse()
@@ -325,10 +358,21 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         return mVol7;
     }
     public void setVol7(float vol7) { mVol7 = vol7; }
+    public int getReverbSelected() { return mReverbSelected; }
+    public void setReverbSelected(int nSelected) {
+        mReverbSelected = nSelected;
+        if(mRelativeEffectTemplates.getVisibility() == View.VISIBLE && mEffectDetail == EFFECTTYPE_REVERB) {
+            mBtnEffectTemplateOff.setSelected(nSelected == -1);
+            for(int i = 0; i < mReverbItems.size(); i++)
+                mReverbItems.get(i).setSelected(i == nSelected);
+            mEffectTemplatesAdapter.notifyDataSetChanged();
+        }
+    }
 
     public EffectFragment()
     {
         mEffectItems = new ArrayList<>();
+        mReverbItems = new ArrayList<>();
         mHandlerLongClick = new Handler();
     }
 
@@ -356,10 +400,155 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     @Override
     public void onClick(View v)
     {
-        if (v.getId() == R.id.btnFinish)
-        {
-            mRelativeEffectDetail.setVisibility(View.GONE);
-            mRelativeEffect.setVisibility(View.VISIBLE);
+        if (v.getId() == R.id.btnEffectBack) {
+            if(mScrollReverbCustomize.getVisibility() == View.VISIBLE) {
+                if(mReverbSelected != -1) {
+                    ArrayList<Float> arFloats = mReverbItems.get(mReverbSelected).getArPresets();
+                    setReverb(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), arFloats.get(4), true);
+                }
+                else resetReverb();
+                mBtnEffectFinish.setVisibility(View.GONE);
+                mRelativeEffectTemplates.setVisibility(View.VISIBLE);
+                mScrollReverbCustomize.setVisibility(View.INVISIBLE);
+                mBtnEffectBack.setText(R.string.back);
+                mImgEffectBack.setVisibility(View.VISIBLE);
+                mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+                mBtnAddEffectTemplate.setAlpha(1.0f);
+            }
+            else {
+                mRelativeEffectDetail.setVisibility(View.GONE);
+                mRecyclerEffects.setVisibility(View.VISIBLE);
+            }
+        }
+        else if(v.getId() == R.id.btnEffectFinish) {
+            if(mAddTemplate) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                builder.setTitle(R.string.saveTemplate);
+                LinearLayout linearLayout = new LinearLayout(mActivity);
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+                final EditText editPreset = new EditText(mActivity);
+                editPreset.setHint(R.string.templateName);
+                editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
+                editPreset.setText(R.string.newReverb);
+                linearLayout.addView(editPreset);
+                builder.setView(linearLayout);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ArrayList<Float> arPresets = new ArrayList<>();
+                        arPresets.add(Float.parseFloat((String)mTextReverbDry.getText()));
+                        arPresets.add(Float.parseFloat((String)mTextReverbWet.getText()));
+                        arPresets.add(Float.parseFloat((String)mTextReverbRoomSize.getText()));
+                        arPresets.add(Float.parseFloat((String)mTextReverbDamp.getText()));
+                        arPresets.add(Float.parseFloat((String)mTextReverbWidth.getText()));
+                        mReverbItems.add(new EffectTemplateItem(editPreset.getText().toString(), arPresets));
+                        mEffectTemplatesAdapter.notifyItemInserted(mReverbItems.size() - 1);
+                        saveData();
+
+                        mBtnEffectFinish.setVisibility(View.GONE);
+                        mRelativeEffectTemplates.setVisibility(View.VISIBLE);
+                        mScrollReverbCustomize.setVisibility(View.INVISIBLE);
+                        mBtnEffectBack.setText(R.string.back);
+                        mImgEffectBack.setVisibility(View.VISIBLE);
+                        mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+                        mBtnAddEffectTemplate.setAlpha(1.0f);
+
+                        mBtnEffectTemplateOff.setSelected(false);
+                        for(int i = 0; i < mReverbItems.size()-1; i++)
+                            mReverbItems.get(i).setSelected(false);
+                        mReverbItems.get(mReverbItems.size()-1).setSelected(true);
+                        mReverbSelected = mReverbItems.size()-1;
+
+                        mEffectItems.get(mEffectDetail).setSelected(true);
+                        checkDuplicate(mEffectDetail);
+                        mEffectsAdapter.notifyDataSetChanged();
+
+                        mEffectTemplatesAdapter.notifyDataSetChanged();
+                        mRecyclerEffectTemplates.scrollToPosition(mReverbItems.size()-1);
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, null);
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
+                        editPreset.requestFocus();
+                        editPreset.setSelection(editPreset.getText().toString().length());
+                        InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if (null != imm) imm.showSoftInput(editPreset, 0);
+                    }
+                });
+                alertDialog.show();
+            }
+            else {
+                EffectTemplateItem item = null;
+                int nItem = 0;
+                for (; nItem < mReverbItems.size(); nItem++) {
+                    item = mReverbItems.get(nItem);
+                    if (item.isSelected()) break;
+                }
+                if (item != null) {
+                    ArrayList<Float> arPresets = item.getArPresets();
+                    arPresets.set(0, Float.parseFloat((String)mTextReverbDry.getText()));
+                    arPresets.set(1, Float.parseFloat((String)mTextReverbWet.getText()));
+                    arPresets.set(2, Float.parseFloat((String)mTextReverbRoomSize.getText()));
+                    arPresets.set(3, Float.parseFloat((String)mTextReverbDamp.getText()));
+                    arPresets.set(4, Float.parseFloat((String)mTextReverbWidth.getText()));
+                    saveData();
+                }
+                mBtnEffectFinish.setVisibility(View.GONE);
+                mRelativeEffectTemplates.setVisibility(View.VISIBLE);
+                mScrollReverbCustomize.setVisibility(View.INVISIBLE);
+                mBtnAddEffectTemplate.setAlpha(1.0f);
+            }
+        }
+        else if(v.getId() == R.id.btnEffectTemplateMenu) showTemplateMenu();
+        else if(v.getId() == R.id.btnAddEffectTemplate) {
+            mAddTemplate = true;
+
+            mEffectItems.get(mEffectDetail).setSelected(true);
+            checkDuplicate(mEffectDetail);
+            if(mBtnEffectTemplateOff.isSelected())
+                setReverb(70, 100, 85, 50, 90, true);
+
+            mTextEffectName.setText(R.string.newReverb);
+
+            mBtnEffectBack.setText(R.string.cancel);
+            mBtnEffectFinish.setText(R.string.save);
+
+            mBtnEffectFinish.setVisibility(View.VISIBLE);
+            mRelativeEffectTemplates.setVisibility(View.INVISIBLE);
+            mScrollReverbCustomize.setVisibility(View.VISIBLE);
+            mImgEffectBack.setVisibility(View.INVISIBLE);
+            mBtnEffectBack.setPadding((int)(16 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+            mBtnReverbSaveAs.setVisibility(View.GONE);
+            mBtnAddEffectTemplate.setAlpha(0.0f);
+        }
+        else if(v.getId() == R.id.textFinishSortEffect) {
+            mRecyclerEffectTemplates.setPadding(0, 0, 0, 0);
+            mBtnEffectTemplateOff.setVisibility(View.VISIBLE);
+            mRelativeEffectTitle.setVisibility(View.VISIBLE);
+            mViewSepEffect.setVisibility(View.VISIBLE);
+            mViewSepEffectTemplate.setVisibility(View.VISIBLE);
+            mBtnAddEffectTemplate.setAlpha(1.0f);
+            mTextFinishSortEffect.setVisibility(View.INVISIBLE);
+            mSorting = false;
+            mEffectTemplatesAdapter.notifyDataSetChanged();
+            mEffectTemplateTouchHelper.attachToRecyclerView(null);
+        }
+        else if(v.getId() == R.id.btnEffectTemplateOff) {
+            mBtnEffectTemplateOff.setSelected(true);
+            if(mEffectDetail == EFFECTTYPE_REVERB) {
+                for(int i = 0; i < mReverbItems.size(); i++) mReverbItems.get(i).setSelected(false);
+                resetReverb();
+            }
+            mEffectTemplatesAdapter.notifyDataSetChanged();
         }
         else if (v.getId() == R.id.btnEffectMinus) minusValue();
         else if (v.getId() == R.id.btnEffectPlus) plusValue();
@@ -396,7 +585,76 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(v.getId() == R.id.btnReverbWidthMinus) minusReverbWidth();
         else if(v.getId() == R.id.btnReverbWidthPlus) plusReverbWidth();
         else if(v.getId() == R.id.btnReverbRandom) setReverbRandom();
-        else if(v.getId() == R.id.btnResetReverb) resetReverb();
+        else if(v.getId() == R.id.btnResetReverb) {
+            if(mReverbSelected != -1) {
+                ArrayList<Float> arFloats = mReverbItems.get(mReverbSelected).getArPresets();
+                setReverb(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), arFloats.get(4), true);
+            }
+            else resetReverb();
+        }
+        else if(v.getId() == R.id.btnReverbSaveAs) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setTitle(R.string.saveTemplate);
+            LinearLayout linearLayout = new LinearLayout(mActivity);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            final EditText editPreset = new EditText(mActivity);
+            editPreset.setHint(R.string.templateName);
+            editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
+            editPreset.setText(R.string.newReverb);
+            linearLayout.addView(editPreset);
+            builder.setView(linearLayout);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    ArrayList<Float> arPresets = new ArrayList<>();
+                    arPresets.add(Float.parseFloat((String)mTextReverbDry.getText()));
+                    arPresets.add(Float.parseFloat((String)mTextReverbWet.getText()));
+                    arPresets.add(Float.parseFloat((String)mTextReverbRoomSize.getText()));
+                    arPresets.add(Float.parseFloat((String)mTextReverbDamp.getText()));
+                    arPresets.add(Float.parseFloat((String)mTextReverbWidth.getText()));
+                    mReverbItems.add(new EffectTemplateItem(editPreset.getText().toString(), arPresets));
+                    mEffectTemplatesAdapter.notifyItemInserted(mReverbItems.size() - 1);
+                    saveData();
+
+                    mBtnEffectFinish.setVisibility(View.GONE);
+                    mRelativeEffectTemplates.setVisibility(View.VISIBLE);
+                    mScrollReverbCustomize.setVisibility(View.INVISIBLE);
+                    mImgEffectBack.setVisibility(View.VISIBLE);
+                    mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+                    mBtnAddEffectTemplate.setAlpha(1.0f);
+
+                    for(int i = 0; i < mReverbItems.size()-1; i++)
+                        mReverbItems.get(i).setSelected(false);
+                    mReverbItems.get(mReverbItems.size()-1).setSelected(true);
+                    mReverbSelected = mReverbItems.size()-1;
+
+                    mEffectItems.get(mEffectDetail).setSelected(true);
+                    checkDuplicate(mEffectDetail);
+                    mEffectsAdapter.notifyDataSetChanged();
+
+                    mEffectTemplatesAdapter.notifyDataSetChanged();
+                    mRecyclerEffectTemplates.scrollToPosition(mReverbItems.size()-1);
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, null);
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+            {
+                @Override
+                public void onShow(DialogInterface arg0)
+                {
+                    if(alertDialog.getWindow() != null) {
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
+                    editPreset.requestFocus();
+                    editPreset.setSelection(editPreset.getText().toString().length());
+                    InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (null != imm) imm.showSoftInput(editPreset, 0);
+                }
+            });
+            alertDialog.show();
+        }
         else if(v.getId() == R.id.btnChorusDryMinus) minusChorusDry();
         else if(v.getId() == R.id.btnChorusDryPlus) plusChorusDry();
         else if(v.getId() == R.id.btnChorusWetMinus) minusChorusWet();
@@ -1166,6 +1424,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     {
         super.onCreate(savedInstanceState);
         mEffectsAdapter = new EffectsAdapter(mActivity, mEffectItems);
+        mEffectTemplatesAdapter = new EffectTemplatesAdapter(mActivity, mReverbItems);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -1178,7 +1437,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mEditSpeedEffectDetail = mActivity.findViewById(R.id.editSpeedEffectDetail);
         mEditTimeEffectDetail = mActivity.findViewById(R.id.editTimeEffectDetail);
         mRelativeEffectDetail = mActivity.findViewById(R.id.relativeEffectDetail);
-        mRelativeEffect = mActivity.findViewById(R.id.relativeEffects);
+        mRelativeEffectTitle = mActivity.findViewById(R.id.relativeEffectTitle);
+        mRelativeEffectTemplates = mActivity.findViewById(R.id.relativeEffectTemplates);
         mSeekEffectDetail = mActivity.findViewById(R.id.seekEffectDetail);
         mTextEffectDetail = mActivity.findViewById(R.id.textEffectDetail);
         mBtnEffectMinus = mActivity.findViewById(R.id.btnEffectMinus);
@@ -1186,7 +1446,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mTextEffectLabel = mActivity.findViewById(R.id.textEffectLabel);
         mRelativeSliderEffectDatail = mActivity.findViewById(R.id.relativeSliderEffectDatail);
         mRelativeRollerEffectDetail = mActivity.findViewById(R.id.relativeRollerEffectDatail);
-        mBtnFinish = mActivity.findViewById(R.id.btnFinish);
+        mBtnEffectBack = mActivity.findViewById(R.id.btnEffectBack);
+        mBtnEffectFinish = mActivity.findViewById(R.id.btnEffectFinish);
+        mBtnEffectTemplateOff = mActivity.findViewById(R.id.btnEffectTemplateOff);
+        mBtnEffectTemplateMenu = mActivity.findViewById(R.id.btnEffectTemplateMenu);
+        mBtnAddEffectTemplate = mActivity.findViewById(R.id.btnAddEffectTemplate);
+        mViewSepEffect = mActivity.findViewById(R.id.viewSepEffect);
+        mViewSepEffectTemplate = mActivity.findViewById(R.id.viewSepEffectTemplate);
+        mTextFinishSortEffect = mActivity.findViewById(R.id.textFinishSortEffect);
+        mImgEffectBack = mActivity.findViewById(R.id.imgEffectBack);
+        mBtnReverbSaveAs = mActivity.findViewById(R.id.btnReverbSaveAs);
+
         mScrollCompCustomize = mActivity.findViewById(R.id.scrollCompCustomize);
         mSeekCompGain = mActivity.findViewById(R.id.seekCompGain);
         mSeekCompThreshold = mActivity.findViewById(R.id.seekCompThreshold);
@@ -1293,7 +1563,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnDistortionFeedbackPlus = mActivity.findViewById(R.id.btnDistortionFeedbackPlus);
         mBtnDistortionVolumeMinus = mActivity.findViewById(R.id.btnDistortionVolumeMinus);
         mBtnDistortionVolumePlus = mActivity.findViewById(R.id.btnDistortionVolumePlus);
-        RecyclerView recyclerEffects = mActivity.findViewById(R.id.recyclerEffects);
+        mRecyclerEffects = mActivity.findViewById(R.id.recyclerEffects);
+        mRecyclerEffectTemplates = mActivity.findViewById(R.id.recyclerEffectTemplates);
         Button btnCompRandom = mActivity.findViewById(R.id.btnCompRandom);
         Button btnResetComp = mActivity.findViewById(R.id.btnResetComp);
         Button btnEchoRandom = mActivity.findViewById(R.id.btnEchoRandom);
@@ -1404,19 +1675,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.echoCustomize), true);
         mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.reverbBathroom), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.reverbSmallRoom), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.reverbMediumRoom), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.reverbLargeRoom), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.reverbChurch), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.reverbCathedral), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.reverbCustomize), true);
+        item = new EffectItem(getString(R.string.reverb), true);
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.chorus), false);
         mEffectItems.add(item);
@@ -1466,12 +1725,25 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.concertHall), true);
         mEffectItems.add(item);
-        recyclerEffects.setHasFixedSize(false);
-        LinearLayoutManager playlistsManager = new LinearLayoutManager(mActivity);
-        recyclerEffects.setLayoutManager(playlistsManager);
-        recyclerEffects.setAdapter(mEffectsAdapter);
-        ((DefaultItemAnimator) recyclerEffects.getItemAnimator()).setSupportsChangeAnimations(false);
-        mBtnFinish.setOnClickListener(this);
+
+        loadData();
+
+        mRecyclerEffects.setHasFixedSize(false);
+        LinearLayoutManager effectManager = new LinearLayoutManager(mActivity);
+        mRecyclerEffects.setLayoutManager(effectManager);
+        mRecyclerEffects.setAdapter(mEffectsAdapter);
+        ((DefaultItemAnimator) mRecyclerEffects.getItemAnimator()).setSupportsChangeAnimations(false);
+        mRecyclerEffectTemplates.setHasFixedSize(false);
+        LinearLayoutManager effectTemplateManager = new LinearLayoutManager(mActivity);
+        mRecyclerEffectTemplates.setLayoutManager(effectTemplateManager);
+        mRecyclerEffectTemplates.setAdapter(mEffectTemplatesAdapter);
+        ((DefaultItemAnimator) mRecyclerEffectTemplates.getItemAnimator()).setSupportsChangeAnimations(false);
+        mBtnEffectTemplateMenu.setOnClickListener(this);
+        mBtnAddEffectTemplate.setOnClickListener(this);
+        mTextFinishSortEffect.setOnClickListener(this);
+        mBtnEffectBack.setOnClickListener(this);
+        mBtnEffectTemplateOff.setOnClickListener(this);
+        mBtnEffectFinish.setOnClickListener(this);
         mBtnEffectMinus.setOnClickListener(this);
         mBtnEffectMinus.setOnLongClickListener(this);
         mBtnEffectMinus.setOnTouchListener(this);
@@ -1568,6 +1840,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnReverbWidthPlus.setOnTouchListener(this);
         btnReverbRandom.setOnClickListener(this);
         btnResetReverb.setOnClickListener(this);
+        mBtnReverbSaveAs.setOnClickListener(this);
         mBtnChorusDryMinus.setOnClickListener(this);
         mBtnChorusDryMinus.setOnLongClickListener(this);
         mBtnChorusDryMinus.setOnTouchListener(this);
@@ -1654,11 +1927,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setEchoWet(30, false);
         setEchoFeedback(60, false);
         setEchoDelay(8, false);
-        setReverbDry(70, false);
-        setReverbWet(100, false);
-        setReverbRoomSize(85, false);
-        setReverbDamp(50, false);
-        setReverbWidth(90, false);
+        setReverb(70, 100, 85, 50, 90, false);
         setChorusDry(100, false);
         setChorusWet(10, false);
         setChorusFeedback(50, false);
@@ -1672,10 +1941,51 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setDistortionVolume(100, false);
     }
 
+    private void loadData()
+    {
+        SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        Gson gson = new Gson();
+        ArrayList<EffectTemplateItem> effectTemplateItems = gson.fromJson(preferences.getString("mReverbItems",""), new TypeToken<ArrayList<EffectTemplateItem>>(){}.getType());
+        if(effectTemplateItems != null) setEffectTemplateItems(effectTemplateItems);
+        else resetReverbs();
+        mBtnEffectTemplateOff.setSelected(true);
+        for(int i = 0; i < mReverbItems.size(); i++)
+            mReverbItems.get(i).setSelected(false);
+    }
+
+    private void saveData()
+    {
+        SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        Gson gson = new Gson();
+        preferences.edit().putString("mReverbItems", gson.toJson(mReverbItems)).apply();
+    }
+
+    private void resetReverbs()
+    {
+        if(mReverbItems.size() > 0) mReverbItems.clear();
+
+        mReverbItems.add(new EffectTemplateItem(getString(R.string.bathroom), new ArrayList<>(Arrays.asList(1.0f, 2.0f, 0.16f, 0.5f, 1.0f))));
+        mReverbItems.add(new EffectTemplateItem(getString(R.string.smallRoom), new ArrayList<>(Arrays.asList(0.95f, 0.99f, 0.3f, 0.5f, 1.0f))));
+        mReverbItems.add(new EffectTemplateItem(getString(R.string.mediumRoom), new ArrayList<>(Arrays.asList(0.95f, 0.99f, 0.75f, 0.5f, 0.7f))));
+        mReverbItems.add(new EffectTemplateItem(getString(R.string.largeRoom), new ArrayList<>(Arrays.asList(0.7f, 1.0f, 0.85f, 0.5f, 0.9f))));
+        mReverbItems.add(new EffectTemplateItem(getString(R.string.church), new ArrayList<>(Arrays.asList(0.4f, 1.0f, 0.9f, 0.5f, 1.0f))));
+        mReverbItems.add(new EffectTemplateItem(getString(R.string.cathedral), new ArrayList<>(Arrays.asList(0.0f, 1.0f, 0.9f, 0.5f, 1.0f))));
+
+        saveData();
+        mEffectTemplatesAdapter.notifyDataSetChanged();
+        resetReverb();
+    }
+
     public void onEffectItemClick(int nEffect)
     {
         if(nEffect < 0 || mEffectItems.size() <= nEffect) return;
         EffectItem item = mEffectItems.get(nEffect);
+
+        if(!item.isSelected() && nEffect == EFFECTTYPE_REVERB) {
+            onEffectDetailClick(nEffect);
+            return;
+        }
+
         if(item.isSelected()) deselectEffect(nEffect);
         else item.setSelected(true);
         mEffectsAdapter.notifyItemChanged(nEffect);
@@ -1723,6 +2033,45 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mActivity.playlistFragment.updateSavingEffect();
     }
 
+    public void onEffectTemplateItemClick(int nEffectTemplate)
+    {
+        boolean bAlreadySelected = false;
+        EffectTemplateItem item;
+        if(mEffectDetail == EFFECTTYPE_REVERB) {
+            item = mReverbItems.get(nEffectTemplate);
+            if(item.isSelected()) bAlreadySelected = true;
+            for(int i = 0; i < mReverbItems.size(); i++) {
+                if (i != nEffectTemplate) mReverbItems.get(i).setSelected(false);
+                else mReverbItems.get(i).setSelected(!bAlreadySelected);
+            }
+            if(bAlreadySelected) mReverbSelected = -1;
+            else mReverbSelected = nEffectTemplate;
+        }
+        else return;
+        mBtnEffectTemplateOff.setSelected(bAlreadySelected);
+        mEffectTemplatesAdapter.notifyDataSetChanged();
+
+        EffectItem effectItem = mEffectItems.get(mEffectDetail);
+        if(bAlreadySelected) deselectEffect(mEffectDetail);
+        else {
+            effectItem.setSelected(true);
+            checkDuplicate(mEffectDetail);
+        }
+        boolean bSelected = false;
+        for(int i = 0; i < mEffectItems.size(); i++) {
+            if(mEffectItems.get(i).isSelected()) bSelected = true;
+        }
+        if(!bSelected) mEffectItems.get(0).setSelected(true);
+        mActivity.playlistFragment.updateSavingEffect();
+        mEffectsAdapter.notifyItemChanged(mEffectDetail);
+
+        if(mReverbSelected == -1) resetReverb();
+        else {
+            ArrayList<Float> arFloats = mReverbItems.get(nEffectTemplate).getArPresets();
+            setReverb(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), arFloats.get(4), true);
+        }
+    }
+
     public void resetEffect()
     {
         EffectItem item = mEffectItems.get(0);
@@ -1760,11 +2109,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setEchoWet(30, false);
         setEchoFeedback(60, false);
         setEchoDelay(8, false);
-        setReverbDry(70, false);
-        setReverbWet(100, false);
-        setReverbRoomSize(85, false);
-        setReverbDamp(50, false);
-        setReverbWidth(90, false);
+        resetReverb();
         setChorusDry(100, false);
         setChorusWet(10, false);
         setChorusFeedback(50, false);
@@ -1821,26 +2166,37 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private int getRandomValue(int nMin, int nMax)
     {
         Random random = new Random();
-        int nRandom = random.nextInt(nMax - nMin) + nMin;
-        return nRandom;
+        return random.nextInt(nMax - nMin) + nMin;
     }
 
-    private void setReverbRandom()
-    {
-        setReverbDry(getRandomValue(0, mSeekReverbDry.getMax()), true);
-        setReverbWet(getRandomValue(0, mSeekReverbWet.getMax()), true);
-        setReverbRoomSize(getRandomValue(0, mSeekReverbRoomSize.getMax()), true);
-        setReverbDamp(getRandomValue(0, mSeekReverbDamp.getMax()), true);
-        setReverbWidth(getRandomValue(0, mSeekReverbWidth.getMax()), true);
+    private void setReverbRandom() {
+        setReverb(getRandomValue(0, mSeekReverbDry.getMax()),
+            getRandomValue(0, mSeekReverbWet.getMax()),
+            getRandomValue(0, mSeekReverbRoomSize.getMax()),
+            getRandomValue(0, mSeekReverbDamp.getMax()),
+            getRandomValue(0, mSeekReverbWidth.getMax()),
+            true
+        );
     }
 
-    private void resetReverb()
-    {
-        setReverbDry(70, true);
-        setReverbWet(100, true);
-        setReverbRoomSize(85, true);
-        setReverbDamp(50, true);
-        setReverbWidth(90, true);
+    private void resetReverb() {
+        mEffectItems.get(EFFECTTYPE_REVERB).setSelected(false);
+        boolean bSelected = false;
+        for(int i = 0; i < mEffectItems.size(); i++) {
+            if(mEffectItems.get(i).isSelected()) bSelected = true;
+        }
+        if(!bSelected) mEffectItems.get(0).setSelected(true);
+        mBtnEffectTemplateOff.setSelected(true);
+        for(int i = 0; i < mReverbItems.size(); i++) mReverbItems.get(i).setSelected(false);
+
+        mReverbSelected = -1;
+        mEffectsAdapter.notifyDataSetChanged();
+        mEffectTemplatesAdapter.notifyDataSetChanged();
+
+        BASS.BASS_ChannelRemoveFX(MainActivity.sStream, mFxReverb);
+        mFxReverb = 0;
+
+        setReverb(70, 100, 85, 50, 90, true);
     }
 
     private void setChorusRandom()
@@ -1895,14 +2251,21 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     public void onEffectDetailClick(int nEffect)
     {
+        mEffectDetail = nEffect;
         EffectItem item = mEffectItems.get(nEffect);
-        if(!item.isSelected()) onEffectItemClick(nEffect);
+        if(!item.isSelected()) {
+            if(mEffectDetail == EFFECTTYPE_REVERB) {
+                if(mReverbSelected != -1) onEffectItemClick(nEffect);
+            }
+            else onEffectItemClick(nEffect);
+        }
 
         mTextEffectName.setText(mEffectItems.get(nEffect).getEffectName());
         mSeekEffectDetail.setOnSeekBarChangeListener(null);
         if(nEffect == EFFECTTYPE_PAN)
         {
             mTextEffectLabel.setText(R.string.pan);
+            mTextEffectLabel.setVisibility(View.VISIBLE);
             int nPan = (int)(mPan * 100.0f);
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", nPan));
             // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、最大値に200を設定（本来は-100～100にしたい）
@@ -1912,6 +2275,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(nEffect == EFFECTTYPE_FREQUENCY)
         {
             mTextEffectLabel.setText(R.string.frequency);
+            mTextEffectLabel.setVisibility(View.VISIBLE);
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%.1f", mFreq));
             // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、最大値に39を設定（本来は1～40にしたい）
             mSeekEffectDetail.setMax(39);
@@ -1920,18 +2284,21 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(nEffect == EFFECTTYPE_INCREASESPEED)
         {
             mTextEffectLabel.setText(R.string.incSpeedTitle);
+            mTextEffectLabel.setVisibility(View.VISIBLE);
             mEditTimeEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%s", mTimeOfIncreaseSpeed, getString(R.string.sec)));
             mEditSpeedEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%%", mIncreaseSpeed));
         }
         else if(nEffect == EFFECTTYPE_DECREASESPEED)
         {
             mTextEffectLabel.setText(R.string.decSpeedTitle);
+            mTextEffectLabel.setVisibility(View.VISIBLE);
             mEditTimeEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%s", mTimeOfDecreaseSpeed, getString(R.string.sec)));
             mEditSpeedEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%%", mDecreaseSpeed));
         }
         else if(nEffect == EFFECTTYPE_METRONOME)
         {
             mTextEffectLabel.setText(R.string.BPM);
+            mTextEffectLabel.setVisibility(View.VISIBLE);
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", mBpm));
             mSeekEffectDetail.setProgress(0);
             // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、最大値に290を設定（本来は10～300にしたい）
@@ -1941,6 +2308,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(nEffect == EFFECTTYPE_RECORDNOISE)
         {
             mTextEffectLabel.setText(R.string.volume);
+            mTextEffectLabel.setVisibility(View.VISIBLE);
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", (int)(mVol1 * 100)));
             mSeekEffectDetail.setMax(100);
             mSeekEffectDetail.setProgress((int)(mVol1 * 100));
@@ -1948,6 +2316,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(nEffect == EFFECTTYPE_ROAROFWAVES)
         {
             mTextEffectLabel.setText(R.string.volume);
+            mTextEffectLabel.setVisibility(View.VISIBLE);
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", (int)(mVol2 * 100)));
             mSeekEffectDetail.setMax(100);
             mSeekEffectDetail.setProgress((int)(mVol2 * 100));
@@ -1955,6 +2324,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(nEffect == EFFECTTYPE_RAIN)
         {
             mTextEffectLabel.setText(R.string.volume);
+            mTextEffectLabel.setVisibility(View.VISIBLE);
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", (int)(mVol3 * 100)));
             mSeekEffectDetail.setMax(100);
             mSeekEffectDetail.setProgress((int)(mVol3 * 100));
@@ -1962,6 +2332,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(nEffect == EFFECTTYPE_RIVER)
         {
             mTextEffectLabel.setText(R.string.volume);
+            mTextEffectLabel.setVisibility(View.VISIBLE);
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", (int)(mVol4 * 100)));
             mSeekEffectDetail.setMax(100);
             mSeekEffectDetail.setProgress((int)(mVol4 * 100));
@@ -1969,6 +2340,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(nEffect == EFFECTTYPE_WAR)
         {
             mTextEffectLabel.setText(R.string.volume);
+            mTextEffectLabel.setVisibility(View.VISIBLE);
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", (int)(mVol5 * 100)));
             mSeekEffectDetail.setMax(100);
             mSeekEffectDetail.setProgress((int)(mVol5 * 100));
@@ -1976,6 +2348,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(nEffect == EFFECTTYPE_FIRE)
         {
             mTextEffectLabel.setText(R.string.volume);
+            mTextEffectLabel.setVisibility(View.VISIBLE);
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", (int)(mVol6 * 100)));
             mSeekEffectDetail.setMax(100);
             mSeekEffectDetail.setProgress((int)(mVol6 * 100));
@@ -1983,10 +2356,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(nEffect == EFFECTTYPE_CONCERTHALL)
         {
             mTextEffectLabel.setText(R.string.volume);
+            mTextEffectLabel.setVisibility(View.VISIBLE);
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", (int)(mVol7 * 100)));
             mSeekEffectDetail.setMax(100);
             mSeekEffectDetail.setProgress((int)(mVol7 * 100));
         }
+        else mTextEffectLabel.setVisibility(View.INVISIBLE);
 
         if(nEffect == EFFECTTYPE_PAN)
         {
@@ -2002,8 +2377,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnEffectPlus.setImageResource(R.drawable.plusbutton);
             mBtnEffectPlus.setContentDescription(getString(R.string.plus));
         }
-
-        mTextEffectName.setWidth((int)(getResources().getDisplayMetrics().widthPixels - mBtnFinish.getMeasuredWidth() * 2 - 32 * mActivity.getDensity()));
 
         if(nEffect == EFFECTTYPE_INCREASESPEED || nEffect == EFFECTTYPE_DECREASESPEED) {
             mRelativeSliderEffectDatail.setVisibility(View.GONE);
@@ -2032,14 +2405,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mScrollChorusCustomize.setVisibility(View.GONE);
             mScrollDistortionCustomize.setVisibility(View.GONE);
         }
-        else if(nEffect == EFFECTTYPE_REVERB_CUSTOMIZE) {
-            mRelativeSliderEffectDatail.setVisibility(View.GONE);
-            mRelativeRollerEffectDetail.setVisibility(View.GONE);
-            mScrollCompCustomize.setVisibility(View.GONE);
-            mScrollEchoCustomize.setVisibility(View.GONE);
-            mScrollReverbCustomize.setVisibility(View.VISIBLE);
-            mScrollChorusCustomize.setVisibility(View.GONE);
-            mScrollDistortionCustomize.setVisibility(View.GONE);
+        else if(nEffect == EFFECTTYPE_REVERB) {
+            for(int i = 0; i < mReverbItems.size(); i++) mReverbItems.get(i).setSelected(false);
+            if(mReverbSelected == -1) resetReverb();
+            else onEffectTemplateItemClick(mReverbSelected);
+            mEffectTemplatesAdapter.notifyDataSetChanged();
+            mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         }
         else if(nEffect == EFFECTTYPE_CHORUS_CUSTOMIZE) {
             mRelativeSliderEffectDatail.setVisibility(View.GONE);
@@ -2071,7 +2442,28 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
 
         mRelativeEffectDetail.setVisibility(View.VISIBLE);
-        mRelativeEffect.setVisibility(View.GONE);
+        mRecyclerEffects.setVisibility(View.INVISIBLE);
+    }
+
+    public void onEffectCustomizeClick(int nTemplate) {
+        mAddTemplate = false;
+
+        if(!isSelectedTemplateItem(nTemplate)) onEffectTemplateItemClick(nTemplate);
+
+        if(mEffectDetail == EFFECTTYPE_REVERB) {
+            EffectTemplateItem item = mReverbItems.get(nTemplate);
+            mTextEffectName.setText(item.getEffectTemplateName());
+
+            mBtnEffectBack.setText(R.string.back);
+            mBtnEffectFinish.setText(R.string.done);
+
+            mBtnEffectFinish.setVisibility(View.VISIBLE);
+            mRelativeEffectTemplates.setVisibility(View.INVISIBLE);
+            mScrollReverbCustomize.setVisibility(View.VISIBLE);
+            mImgEffectBack.setVisibility(View.VISIBLE);
+            mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+            mBtnReverbSaveAs.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -2163,11 +2555,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(seekBar.getId() == R.id.seekEchoWet) setEchoWet(progress, fromTouch);
         else if(seekBar.getId() == R.id.seekEchoFeedback) setEchoFeedback(progress, fromTouch);
         else if(seekBar.getId() == R.id.seekEchoDelay) setEchoDelay(progress, fromTouch);
-        else if(seekBar.getId() == R.id.seekReverbDry) setReverbDry(progress, fromTouch);
-        else if(seekBar.getId() == R.id.seekReverbWet) setReverbWet(progress, fromTouch);
-        else if(seekBar.getId() == R.id.seekReverbRoomSize) setReverbRoomSize(progress, fromTouch);
-        else if(seekBar.getId() == R.id.seekReverbDamp) setReverbDamp(progress, fromTouch);
-        else if(seekBar.getId() == R.id.seekReverbWidth) setReverbWidth(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekReverbDry)
+            setReverb(progress, mSeekReverbWet.getProgress(), mSeekReverbRoomSize.getProgress(), mSeekReverbDamp.getProgress(), mSeekReverbWidth.getProgress(), fromTouch);
+        else if(seekBar.getId() == R.id.seekReverbWet)
+            setReverb(mSeekReverbDry.getProgress(), progress, mSeekReverbRoomSize.getProgress(), mSeekReverbDamp.getProgress(), mSeekReverbWidth.getProgress(), fromTouch);
+        else if(seekBar.getId() == R.id.seekReverbRoomSize)
+            setReverb(mSeekReverbDry.getProgress(), mSeekReverbWet.getProgress(), progress, mSeekReverbDamp.getProgress(), mSeekReverbWidth.getProgress(), fromTouch);
+        else if(seekBar.getId() == R.id.seekReverbDamp)
+            setReverb(mSeekReverbDry.getProgress(), mSeekReverbWet.getProgress(), mSeekReverbRoomSize.getProgress(), progress, mSeekReverbWidth.getProgress(), fromTouch);
+        else if(seekBar.getId() == R.id.seekReverbWidth)
+            setReverb(mSeekReverbDry.getProgress(), mSeekReverbWet.getProgress(), mSeekReverbRoomSize.getProgress(), mSeekReverbDamp.getProgress(), progress, fromTouch);
         else if(seekBar.getId() == R.id.seekChorusDry) setChorusDry(progress, fromTouch);
         else if(seekBar.getId() == R.id.seekChorusWet) setChorusWet(progress, fromTouch);
         else if(seekBar.getId() == R.id.seekChorusFeedback) setChorusFeedback(progress, fromTouch);
@@ -2483,7 +2880,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     private void updateReverb()
     {
-        if(!mEffectItems.get(EFFECTTYPE_REVERB_CUSTOMIZE).isSelected() || MainActivity.sStream == 0)
+        if(!mEffectItems.get(EFFECTTYPE_REVERB).isSelected() || MainActivity.sStream == 0)
             return;
         if(mFxReverb == 0) mFxReverb = BASS.BASS_ChannelSetFX(MainActivity.sStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
         BASS_FX.BASS_BFX_FREEVERB reverb = new BASS_FX.BASS_BFX_FREEVERB();
@@ -2497,154 +2894,103 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         BASS.BASS_FXSetParameters(mFxReverb, reverb);
     }
 
-    public void setReverbDry(int nValue, boolean bSave)
-    {
-        mReverbDry = nValue / 100.0f;
+    public void setReverb(int nDry, int nWet, int nRoomSize, int nDamp, int nWidth, boolean bSave) {
+        if(nDry < 0) nDry = 0;
+        if(nWet < 0) nWet = 0;
+        if(nRoomSize < 0) nRoomSize = 0;
+        if(nDamp < 0) nDamp = 0;
+        if(nWidth < 0) nWidth = 0;
+
+        if(nDry > mSeekReverbDry.getMax()) nDry = mSeekReverbDry.getMax();
+        if(nWet > mSeekReverbWet.getMax()) nWet = mSeekReverbWet.getMax();
+        if(nRoomSize > mSeekReverbRoomSize.getMax()) nRoomSize = mSeekReverbRoomSize.getMax();
+        if(nDamp > mSeekReverbDamp.getMax()) nDamp = mSeekReverbDamp.getMax();
+        if(nWidth > mSeekReverbWidth.getMax()) nWidth = mSeekReverbWidth.getMax();
+
+        mReverbDry = nDry / 100.0f;
+        mReverbWet = nWet / 100.0f;
+        mReverbRoomSize = nRoomSize / 100.0f;
+        mReverbDamp = nDamp / 100.0f;
+        mReverbWidth = nWidth / 100.0f;
+
         mTextReverbDry.setText(String.format(Locale.getDefault(), "%.2f", mReverbDry));
-        mSeekReverbDry.setProgress(nValue);
+        mTextReverbWet.setText(String.format(Locale.getDefault(), "%.2f", mReverbWet));
+        mTextReverbRoomSize.setText(String.format(Locale.getDefault(), "%.2f", mReverbRoomSize));
+        mTextReverbDamp.setText(String.format(Locale.getDefault(), "%.2f", mReverbDamp));
+        mTextReverbWidth.setText(String.format(Locale.getDefault(), "%.2f", mReverbWidth));
+
+        mSeekReverbDry.setProgress(nDry);
+        mSeekReverbWet.setProgress(nWet);
+        mSeekReverbRoomSize.setProgress(nRoomSize);
+        mSeekReverbDamp.setProgress(nDamp);
+        mSeekReverbWidth.setProgress(nWidth);
+
         updateReverb();
         if(bSave) mActivity.playlistFragment.updateSavingEffect();
     }
 
-    public void setReverbDry(float fValue, boolean bSave)
+    public void setReverb(float fDry, float fWet, float fRoomSize, float fDamp, float fWidth, boolean bSave)
     {
-        mReverbDry = fValue;
+        mReverbDry = fDry;
+        mReverbWet = fWet;
+        mReverbRoomSize = fRoomSize;
+        mReverbDamp = fDamp;
+        mReverbWidth = fWidth;
+
         mTextReverbDry.setText(String.format(Locale.getDefault(), "%.2f", mReverbDry));
-        mSeekReverbDry.setProgress((int)(fValue * 100.0f));
-        updateReverb();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setReverbWet(int nValue, boolean bSave)
-    {
-        mReverbWet = nValue / 100.0f;
         mTextReverbWet.setText(String.format(Locale.getDefault(), "%.2f", mReverbWet));
-        mSeekReverbWet.setProgress(nValue);
-        updateReverb();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setReverbWet(float fValue, boolean bSave)
-    {
-        mReverbWet = fValue;
-        mTextReverbWet.setText(String.format(Locale.getDefault(), "%.2f", mReverbWet));
-        mSeekReverbWet.setProgress((int)(fValue * 100.0f));
-        updateReverb();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setReverbRoomSize(int nValue, boolean bSave)
-    {
-        mReverbRoomSize = nValue / 100.0f;
         mTextReverbRoomSize.setText(String.format(Locale.getDefault(), "%.2f", mReverbRoomSize));
-        mSeekReverbRoomSize.setProgress(nValue);
-        updateReverb();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setReverbRoomSize(float fValue, boolean bSave)
-    {
-        mReverbRoomSize = fValue;
-        mTextReverbRoomSize.setText(String.format(Locale.getDefault(), "%.2f", mReverbRoomSize));
-        mSeekReverbRoomSize.setProgress((int)(fValue * 100.0f));
-        updateReverb();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setReverbDamp(int nValue, boolean bSave)
-    {
-        mReverbDamp = nValue / 100.0f;
         mTextReverbDamp.setText(String.format(Locale.getDefault(), "%.2f", mReverbDamp));
-        mSeekReverbDamp.setProgress(nValue);
-        updateReverb();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setReverbDamp(float fValue, boolean bSave)
-    {
-        mReverbDamp = fValue;
-        mTextReverbDamp.setText(String.format(Locale.getDefault(), "%.2f", mReverbDamp));
-        mSeekReverbDamp.setProgress((int)(fValue * 100.0f));
-        updateReverb();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setReverbWidth(int nValue, boolean bSave)
-    {
-        mReverbWidth = nValue / 100.0f;
         mTextReverbWidth.setText(String.format(Locale.getDefault(), "%.2f", mReverbWidth));
-        mSeekReverbWidth.setProgress(nValue);
-        updateReverb();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
 
-    public void setReverbWidth(float fValue, boolean bSave)
-    {
-        mReverbWidth = fValue;
-        mTextReverbWidth.setText(String.format(Locale.getDefault(), "%.2f", mReverbWidth));
-        mSeekReverbWidth.setProgress((int)(fValue * 100.0f));
+        mSeekReverbDry.setProgress((int)(fDry * 100.0f));
+        mSeekReverbWet.setProgress((int)(fWet * 100.0f));
+        mSeekReverbRoomSize.setProgress((int)(fRoomSize * 100.0f));
+        mSeekReverbDamp.setProgress((int)(fDamp * 100.0f));
+        mSeekReverbWidth.setProgress((int)(fWidth * 100.0f));
+
         updateReverb();
         if(bSave) mActivity.playlistFragment.updateSavingEffect();
     }
 
     private void minusReverbDry() {
-        int nValue = mSeekReverbDry.getProgress() - 1;
-        if(nValue < 0) nValue = 0;
-        setReverbDry(nValue, true);
+        setReverb(mSeekReverbDry.getProgress()-1, mSeekReverbWet.getProgress(), mSeekReverbRoomSize.getProgress(), mSeekReverbDamp.getProgress(), mSeekReverbWidth.getProgress(), true);
     }
 
     private void plusReverbDry() {
-        int nValue = mSeekReverbDry.getProgress() + 1;
-        if(nValue > mSeekReverbDry.getMax()) nValue = mSeekReverbDry.getMax();
-        setReverbDry(nValue, true);
+        setReverb(mSeekReverbDry.getProgress()+1, mSeekReverbWet.getProgress(), mSeekReverbRoomSize.getProgress(), mSeekReverbDamp.getProgress(), mSeekReverbWidth.getProgress(), true);
     }
 
     private void minusReverbWet() {
-        int nValue = mSeekReverbWet.getProgress() - 1;
-        if(nValue < 0) nValue = 0;
-        setReverbWet(nValue, true);
+        setReverb(mSeekReverbDry.getProgress(), mSeekReverbWet.getProgress()-1, mSeekReverbRoomSize.getProgress(), mSeekReverbDamp.getProgress(), mSeekReverbWidth.getProgress(), true);
     }
 
     private void plusReverbWet() {
-        int nValue = mSeekReverbWet.getProgress() + 1;
-        if(nValue > mSeekReverbWet.getMax()) nValue = mSeekReverbWet.getMax();
-        setReverbWet(nValue, true);
+        setReverb(mSeekReverbDry.getProgress(), mSeekReverbWet.getProgress()+1, mSeekReverbRoomSize.getProgress(), mSeekReverbDamp.getProgress(), mSeekReverbWidth.getProgress(), true);
     }
 
     private void minusReverbRoomSize() {
-        int nValue = mSeekReverbRoomSize.getProgress() - 1;
-        if(nValue < 0) nValue = 0;
-        setReverbRoomSize(nValue, true);
+        setReverb(mSeekReverbDry.getProgress(), mSeekReverbWet.getProgress(), mSeekReverbRoomSize.getProgress()-1, mSeekReverbDamp.getProgress(), mSeekReverbWidth.getProgress(), true);
     }
 
     private void plusReverbRoomSize() {
-        int nValue = mSeekReverbRoomSize.getProgress() + 1;
-        if(nValue > mSeekReverbRoomSize.getMax()) nValue = mSeekReverbRoomSize.getMax();
-        setReverbRoomSize(nValue, true);
+        setReverb(mSeekReverbDry.getProgress(), mSeekReverbWet.getProgress(), mSeekReverbRoomSize.getProgress()+1, mSeekReverbDamp.getProgress(), mSeekReverbWidth.getProgress(), true);
     }
 
     private void minusReverbDamp() {
-        int nValue = mSeekReverbDamp.getProgress() - 1;
-        if(nValue < 0) nValue = 0;
-        setReverbDamp(nValue, true);
+        setReverb(mSeekReverbDry.getProgress(), mSeekReverbWet.getProgress(), mSeekReverbRoomSize.getProgress(), mSeekReverbDamp.getProgress()-1, mSeekReverbWidth.getProgress(), true);
     }
 
     private void plusReverbDamp() {
-        int nValue = mSeekReverbDamp.getProgress() + 1;
-        if(nValue > mSeekReverbDamp.getMax()) nValue = mSeekReverbDamp.getMax();
-        setReverbDamp(nValue, true);
+        setReverb(mSeekReverbDry.getProgress(), mSeekReverbWet.getProgress(), mSeekReverbRoomSize.getProgress(), mSeekReverbDamp.getProgress()+1, mSeekReverbWidth.getProgress(), true);
     }
 
     private void minusReverbWidth() {
-        int nValue = mSeekReverbWidth.getProgress() - 1;
-        if(nValue < 0) nValue = 0;
-        setReverbWidth(nValue, true);
+        setReverb(mSeekReverbDry.getProgress(), mSeekReverbWet.getProgress(), mSeekReverbRoomSize.getProgress(), mSeekReverbDamp.getProgress(), mSeekReverbWidth.getProgress()-1, true);
     }
 
     private void plusReverbWidth() {
-        int nValue = mSeekReverbWidth.getProgress() + 1;
-        if(nValue > mSeekReverbWidth.getMax()) nValue = mSeekReverbWidth.getMax();
-        setReverbWidth(nValue, true);
+        setReverb(mSeekReverbDry.getProgress(), mSeekReverbWet.getProgress(), mSeekReverbRoomSize.getProgress(), mSeekReverbDamp.getProgress(), mSeekReverbWidth.getProgress()+1, true);
     }
 
     private void updateChorus()
@@ -3091,11 +3437,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 for(int i = EFFECTTYPE_ECHO_STADIUM; i <= EFFECTTYPE_ECHO_CUSTOMIZE; i++)
                     if(i != nSelect) deselectEffect(i);
             }
-            if(EFFECTTYPE_REVERB_BATHROOM <= nSelect && nSelect <= EFFECTTYPE_REVERB_CUSTOMIZE)
-            {
-                for(int i = EFFECTTYPE_REVERB_BATHROOM; i <= EFFECTTYPE_REVERB_CUSTOMIZE; i++)
-                    if(i != nSelect) deselectEffect(i);
-            }
             if(EFFECTTYPE_CHORUS <= nSelect && nSelect <= EFFECTTYPE_CHORUS_CUSTOMIZE)
             {
                 for(int i = EFFECTTYPE_CHORUS; i <= EFFECTTYPE_CHORUS_CUSTOMIZE; i++)
@@ -3141,13 +3482,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mActivity.equalizerFragment.setEQ(0);
             mActivity.controlFragment.setPitch(0.0f);
         }
+        if(nEffect == EFFECTTYPE_REVERB) mReverbSelected = -1;
     }
 
     public void applyEffect()
     {
         int nPlayingPlaylist = mActivity.playlistFragment.getPlayingPlaylist();
-        if(nPlayingPlaylist < 0 || nPlayingPlaylist >= mActivity.playlistFragment.getArPlaylists().size()) return;
-        ArrayList<SongItem> arSongs = mActivity.playlistFragment.getArPlaylists().get(nPlayingPlaylist);
+        if(nPlayingPlaylist < 0 || nPlayingPlaylist >= mActivity.playlistFragment.getPlaylists().size()) return;
+        ArrayList<SongItem> arSongs = mActivity.playlistFragment.getPlaylists().get(nPlayingPlaylist);
         int nPlaying = mActivity.playlistFragment.getPlaying();
         if(nPlaying < 0 || nPlaying >= arSongs.size()) return;
         SongItem song = arSongs.get(nPlaying);
@@ -3439,79 +3781,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 echo.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(mFxEcho, echo);
             }
-            else if(strEffect.equals(getString(R.string.reverbBathroom))) {
-                mFxReverb = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
-                reverb = new BASS_FX.BASS_BFX_FREEVERB();
-                reverb.fDryMix = (float) 1.0;
-                reverb.fWetMix = (float) 2.0;
-                reverb.fRoomSize = (float) 0.16;
-                reverb.fDamp = (float) 0.5;
-                reverb.fWidth = (float) 1.0;
-                reverb.lMode = 0;
-                reverb.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxReverb, reverb);
-            }
-            else if(strEffect.equals(getString(R.string.reverbSmallRoom))) {
-                mFxReverb = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
-                reverb = new BASS_FX.BASS_BFX_FREEVERB();
-                reverb.fDryMix = (float) 0.95;
-                reverb.fWetMix = (float) 0.995;
-                reverb.fRoomSize = (float) 0.3;
-                reverb.fDamp = (float) 0.5;
-                reverb.fWidth = (float) 1.0;
-                reverb.lMode = 0;
-                reverb.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxReverb, reverb);
-            }
-            else if(strEffect.equals(getString(R.string.reverbMediumRoom))) {
-                mFxReverb = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
-                reverb = new BASS_FX.BASS_BFX_FREEVERB();
-                reverb.fDryMix = (float) 0.95;
-                reverb.fWetMix = (float) 0.995;
-                reverb.fRoomSize = (float) 0.75;
-                reverb.fDamp = (float) 0.5;
-                reverb.fWidth = (float) 0.7;
-                reverb.lMode = 0;
-                reverb.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxReverb, reverb);
-            }
-            else if(strEffect.equals(getString(R.string.reverbLargeRoom))) {
-                mFxReverb = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
-                reverb = new BASS_FX.BASS_BFX_FREEVERB();
-                reverb.fDryMix = (float) 0.7;
-                reverb.fWetMix = (float) 1.0;
-                reverb.fRoomSize = (float) 0.85;
-                reverb.fDamp = (float) 0.5;
-                reverb.fWidth = (float) 0.9;
-                reverb.lMode = 0;
-                reverb.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxReverb, reverb);
-            }
-            else if(strEffect.equals(getString(R.string.reverbChurch))) {
-                mFxReverb = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
-                reverb = new BASS_FX.BASS_BFX_FREEVERB();
-                reverb.fDryMix = (float) 0.4;
-                reverb.fWetMix = (float) 1.0;
-                reverb.fRoomSize = (float) 0.9;
-                reverb.fDamp = (float) 0.5;
-                reverb.fWidth = (float) 1.0;
-                reverb.lMode = 0;
-                reverb.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxReverb, reverb);
-            }
-            else if(strEffect.equals(getString(R.string.reverbCathedral))) {
-                mFxReverb = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
-                reverb = new BASS_FX.BASS_BFX_FREEVERB();
-                reverb.fDryMix = (float) 0.0;
-                reverb.fWetMix = (float) 1.0;
-                reverb.fRoomSize = (float) 0.9;
-                reverb.fDamp = (float) 0.5;
-                reverb.fWidth = (float) 1.0;
-                reverb.lMode = 0;
-                reverb.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxReverb, reverb);
-            }
-            else if(strEffect.equals(getString(R.string.reverbCustomize))) {
+            else if(strEffect.equals(getString(R.string.reverb))) {
                 mFxReverb = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
                 reverb = new BASS_FX.BASS_BFX_FREEVERB();
                 reverb.fDryMix = mReverbDry;
@@ -4560,5 +4830,246 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     {
         mEditTimeEffectDetail.clearFocus();
         mEditSpeedEffectDetail.clearFocus();
+    }
+
+    public void showTemplateMenu() {
+        final BottomMenu menu = new BottomMenu(mActivity);
+        menu.setTitle(getString(R.string.reverbTemplate));
+        menu.addMenu(getString(R.string.sortTemplate), R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                mRecyclerEffectTemplates.setPadding(0, 0, 0, (int)(64 * mActivity.getDensity()));
+                mBtnEffectTemplateOff.setVisibility(View.GONE);
+
+                mRelativeEffectTitle.setVisibility(View.GONE);
+                mViewSepEffect.setVisibility(View.GONE);
+                mViewSepEffectTemplate.setVisibility(View.GONE);
+                mBtnAddEffectTemplate.setAlpha(0.0f);
+                mTextFinishSortEffect.setVisibility(View.VISIBLE);
+                mSorting = true;
+                mEffectTemplatesAdapter.notifyDataSetChanged();
+
+                mEffectTemplateTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
+                    @Override
+                    public boolean onMove(RecyclerView mRecyclerEqualizers, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                        final int fromPos = viewHolder.getAdapterPosition();
+                        final int toPos = target.getAdapterPosition();
+
+                        EffectTemplateItem itemTemp = mReverbItems.get(fromPos);
+                        mReverbItems.remove(fromPos);
+                        mReverbItems.add(toPos, itemTemp);
+
+                        mEffectTemplatesAdapter.notifyItemMoved(fromPos, toPos);
+
+                        if(fromPos == mReverbSelected) mReverbSelected = toPos;
+                        else if(fromPos < mReverbSelected && mReverbSelected <= toPos) mReverbSelected--;
+                        else if(fromPos > mReverbSelected && mReverbSelected >= toPos) mReverbSelected++;
+
+                        for(int i = 0; i < mActivity.playlistFragment.getPlaylists().size(); i++) {
+
+                            ArrayList<SongItem> arSongs = mActivity.playlistFragment.getPlaylists().get(i);
+                            ArrayList<EffectSaver> arEffects = mActivity.playlistFragment.getEffects().get(i);
+                            for(int j = 0; j < arSongs.size(); j++) {
+                                EffectSaver saver = arEffects.get(j);
+                                if(saver.isSave()) {
+                                    if(fromPos == saver.getReverbSelected()) saver.setReverbSelected(toPos);
+                                    else if(fromPos < saver.getReverbSelected() && saver.getReverbSelected() <= toPos) saver.setReverbSelected(saver.getReverbSelected()-1);
+                                    else if(fromPos > saver.getReverbSelected() && saver.getReverbSelected() >= toPos) saver.setReverbSelected(saver.getReverbSelected()+1);
+                                }
+                            }
+                        }
+
+                        return true;
+                    }
+
+                    @Override
+                    public void clearView(RecyclerView recyclerSongs, RecyclerView.ViewHolder viewHolder) {
+                        super.clearView(recyclerSongs, viewHolder);
+
+                        mEffectTemplatesAdapter.notifyDataSetChanged();
+                        saveData();
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                    }
+                });
+                mEffectTemplateTouchHelper.attachToRecyclerView(mRecyclerEffectTemplates);
+            }
+        });
+        menu.addDestructiveMenu(getString(R.string.initializeTemplate), R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                builder.setTitle(R.string.initializeTemplate);
+                builder.setMessage(R.string.askinitializeTemplate);
+                builder.setPositiveButton(R.string.decideNot, null);
+                builder.setNegativeButton(R.string.doInitialize, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        resetReverbs();
+                    }
+                });
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
+                        Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                    }
+                });
+                alertDialog.show();
+            }
+        });
+        menu.setCancelMenu();
+        menu.show();
+    }
+
+    public void showMenu(final int nItem) {
+        final BottomMenu menu = new BottomMenu(mActivity);
+        if(mEffectDetail == EFFECTTYPE_REVERB)
+            menu.setTitle(mReverbItems.get(nItem).getEffectTemplateName());
+        menu.addMenu(getString(R.string.changeTemplateName), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                builder.setTitle(R.string.changeTemplateName);
+                LinearLayout linearLayout = new LinearLayout(mActivity);
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+                final EditText editPreset = new EditText (mActivity);
+                editPreset.setHint(R.string.templateName);
+                editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
+                if(mEffectDetail == EFFECTTYPE_REVERB)
+                    editPreset.setText(mReverbItems.get(nItem).getEffectTemplateName());
+                linearLayout.addView(editPreset);
+                builder.setView(linearLayout);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        mReverbItems.get(nItem).setEffectTemplateName(editPreset.getText().toString());
+                        mEffectTemplatesAdapter.notifyItemChanged(nItem);
+                        saveData();
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, null);
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
+                        editPreset.requestFocus();
+                        editPreset.setSelection(editPreset.getText().toString().length());
+                        InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if (null != imm) imm.showSoftInput(editPreset, 0);
+                    }
+                });
+                alertDialog.show();
+            }
+        });
+        menu.addMenu(getString(R.string.copy), R.drawable.ic_actionsheet_copy, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                EffectTemplateItem item = mReverbItems.get(nItem);
+                ArrayList<Integer> arPresets = new ArrayList<>();
+                mReverbItems.add(nItem+1, new EffectTemplateItem(item.getEffectTemplateName(), new ArrayList<>(Arrays.asList(item.getArPresets().get(0), item.getArPresets().get(1), item.getArPresets().get(2), item.getArPresets().get(3), item.getArPresets().get(4)))));
+                mEffectTemplatesAdapter.notifyItemInserted(nItem+1);
+
+                if(nItem < mReverbSelected) mReverbSelected++;
+
+                for(int i = 0; i < mActivity.playlistFragment.getPlaylists().size(); i++) {
+
+                    ArrayList<SongItem> arSongs = mActivity.playlistFragment.getPlaylists().get(i);
+                    ArrayList<EffectSaver> arEffects = mActivity.playlistFragment.getEffects().get(i);
+                    for(int j = 0; j < arSongs.size(); j++) {
+                        EffectSaver saver = arEffects.get(j);
+                        if(saver.isSave()) {
+                            if(nItem < saver.getReverbSelected()) saver.setReverbSelected(saver.getReverbSelected()+1);
+                        }
+                    }
+                }
+
+                saveData();
+                mRecyclerEffectTemplates.scrollToPosition(nItem+1);
+            }
+        });
+        menu.addDestructiveMenu(getString(R.string.delete), R.drawable.ic_actionsheet_delete, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                builder.setTitle(mReverbItems.get(nItem).getEffectTemplateName());
+                builder.setMessage(R.string.askDeleteTemplate);
+                builder.setPositiveButton(R.string.decideNot, null);
+                builder.setNegativeButton(R.string.doDelete, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        removeReverbItem(nItem);
+                    }
+                });
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface arg0)
+                    {
+                        if(alertDialog.getWindow() != null) {
+                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                            lp.dimAmount = 0.4f;
+                            alertDialog.getWindow().setAttributes(lp);
+                        }
+                        Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                    }
+                });
+                alertDialog.show();
+            }
+        });
+        menu.setCancelMenu();
+        menu.show();
+    }
+
+    private void removeReverbItem(int nItem)
+    {
+        mReverbItems.remove(nItem);
+        mEffectTemplatesAdapter.notifyItemRemoved(nItem);
+
+        if(nItem == mReverbSelected) resetReverb();
+        else if(nItem < mReverbSelected) mReverbSelected--;
+
+        for(int i = 0; i < mActivity.playlistFragment.getPlaylists().size(); i++) {
+
+            ArrayList<SongItem> arSongs = mActivity.playlistFragment.getPlaylists().get(i);
+            ArrayList<EffectSaver> arEffects = mActivity.playlistFragment.getEffects().get(i);
+            for(int j = 0; j < arSongs.size(); j++) {
+                EffectSaver saver = arEffects.get(j);
+                if(saver.isSave()) {
+                    if(nItem == saver.getReverbSelected()) {
+                        saver.setReverbSelected(-1);
+                        saver.setReverbDry(1.0f);
+                        saver.setReverbWet(0.0f);
+                        saver.setReverbRoomSize(0.0f);
+                        saver.setReverbDamp(0.0f);
+                        saver.setReverbWidth(0.0f);
+                    }
+                    else if(nItem < saver.getReverbSelected())
+                        saver.setReverbSelected(saver.getReverbSelected()-1);
+                }
+            }
+        }
+        saveData();
     }
 }

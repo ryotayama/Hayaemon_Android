@@ -19,6 +19,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/imgEffectBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_button_back"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                />
+
+            <Button
+                android:id="@+id/btnEffectBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/back"
+                android:textColor="#007AFF"
+                android:textSize="15dp"
+                android:minWidth="0dp"
+                android:paddingLeft="32dp"
+                android:paddingStart="32dp"
+                android:paddingRight="8dp"
+                android:paddingEnd="8dp"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                />
+
             <TextView
                 android:id="@+id/textEffectName"
                 android:layout_width="wrap_content"
@@ -34,19 +64,22 @@
                 />
 
             <Button
-                android:id="@+id/btnFinish"
+                android:id="@+id/btnEffectFinish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/done"
                 android:textColor="#007AFF"
                 android:textSize="15dp"
                 android:minWidth="0dp"
-                android:padding="0dp"
-                android:layout_marginRight="16dp"
+                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
+                android:paddingRight="16dp"
+                android:paddingEnd="16dp"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
+                android:visibility="gone"
                 />
 
         </RelativeLayout>
@@ -72,6 +105,7 @@
             android:layout_marginRight="12dp"
             android:layout_marginEnd="12dp"
             android:layout_below="@id/viewSepEffect"
+            android:visibility="invisible"
             />
 
         <RelativeLayout
@@ -81,6 +115,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_below="@id/textEffectLabel"
+            android:visibility="invisible"
             >
 
             <SeekBar
@@ -148,7 +183,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
-            android:visibility="gone"
+            android:visibility="invisible"
             android:layout_below="@id/textEffectLabel"
             >
 
@@ -214,11 +249,84 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/relativeEffectTemplates"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/viewSepEffect"
+            android:visibility="invisible"
+            >
+
+            <Button
+                android:id="@+id/btnEffectTemplateOff"
+                android:text="@string/off"
+                android:textColor="@drawable/btn_text"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginLeft="44dp"
+                android:layout_marginRight="44dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:stateListAnimator="@null"
+                android:background="@drawable/btn_border_background"
+                />
+
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnEffectTemplateMenu"
+                android:contentDescription="@string/templateMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_button_more_blue"
+                android:background="@null"
+                android:layout_marginTop="1dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                />
+
+            <View
+                android:id="@+id/viewSepEffectTemplate"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#BFBFBF"
+                android:layout_below="@+id/btnEffectTemplateOff"
+                />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerEffectTemplates"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:divider="#BFBFBF"
+                android:dividerHeight="1px"
+                android:paddingBottom="80dp"
+                android:clipToPadding="false"
+                android:layout_below="@+id/viewSepEffectTemplate"
+                />
+
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnAddEffectTemplate"
+                android:contentDescription="@string/newReverb"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@null"
+                android:src="@drawable/button_big_add"
+                android:scaleType="centerInside"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_margin="8dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                />
+
+        </RelativeLayout>
+
         <ScrollView
             android:id="@+id/scrollCompCustomize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/viewSepEffect"
+            android:visibility="invisible"
             >
 
             <RelativeLayout
@@ -703,6 +811,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/viewSepEffect"
+            android:visibility="invisible"
             >
 
             <RelativeLayout
@@ -1102,6 +1211,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/viewSepEffect"
+            android:visibility="invisible"
             >
 
             <RelativeLayout
@@ -1577,6 +1687,22 @@
 
                 </RelativeLayout>
 
+                <Button
+                    android:id="@+id/btnReverbSaveAs"
+                    android:text="@string/saveAs"
+                    android:textColor="@drawable/btn_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="44dp"
+                    android:layout_marginRight="44dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/btn_border_background"
+                    android:stateListAnimator="@null"
+                    android:visibility="visible"
+                    android:layout_below="@+id/relativeSliderReverbWidth"
+                    />
+
             </RelativeLayout>
 
         </ScrollView>
@@ -1586,6 +1712,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/viewSepEffect"
+            android:visibility="invisible"
             >
 
             <RelativeLayout
@@ -2155,6 +2282,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/viewSepEffect"
+            android:visibility="invisible"
             >
 
             <RelativeLayout
@@ -2636,22 +2764,27 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/relativeEffects"
-        android:layout_width="match_parent"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerEffects"
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:divider="#BFBFBF"
+        android:dividerHeight="1px"
+        android:clipToPadding="false"
         android:visibility="visible"
-        >
+        />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerEffects"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:divider="#BFBFBF"
-            android:dividerHeight="1px"
-            android:clipToPadding="false"
-            />
-
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/textFinishSortEffect"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:text="@string/finishSort"
+        android:textColor="#FFFFFF"
+        android:textSize="22dp"
+        android:background="#007AFF"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:visibility="invisible"
+        />
 
 </RelativeLayout>

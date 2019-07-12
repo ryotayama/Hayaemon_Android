@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/effectTemplateItem"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    >
+
+    <TextView
+        android:id="@+id/textEffectTemplate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="13dp"
+        android:textColor="#000000"
+        android:singleLine="true"
+        android:layout_marginLeft="14dp"
+        android:layout_marginStart="14dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/imgEffectTemplateMenu"
+        android:layout_toStartOf="@+id/imgEffectTemplateMenu"
+        android:layout_centerVertical="true"
+        />
+
+    <RelativeLayout
+        android:id="@+id/relativeEffectTemplateDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/imgEffectTemplateMenu"
+        android:layout_toStartOf="@+id/imgEffectTemplateMenu"
+        >
+
+        <ImageButton
+            android:id="@+id/btnEffectTemplateDetail"
+            android:contentDescription="@string/detail"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_button_info"
+            android:background="@null"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="2dp"
+            android:layout_alignParentTop="true"
+            />
+
+        <ImageView
+            android:id="@+id/imgEffectTemplateRight"
+            android:contentDescription="@null"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@null"
+            android:src="@drawable/ic_listright"
+            android:scaleType="centerInside"
+            android:layout_marginLeft="-8dp"
+            android:layout_marginStart="-8dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/btnEffectTemplateDetail"
+            android:layout_toEndOf="@+id/btnEffectTemplateDetail"
+            />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imgEffectTemplateMenu"
+        android:contentDescription="@string/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_button_more"
+        android:background="@null"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#BFBFBF"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>

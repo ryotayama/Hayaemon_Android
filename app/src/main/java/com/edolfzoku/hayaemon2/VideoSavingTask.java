@@ -87,7 +87,7 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
             encoder.finish();
             NIOUtils.closeQuietly(out);
 
-            ArrayList<SongItem> arSongs = mPlaylistFragment.getArPlaylists().get(mPlaylistFragment.getSelectedPlaylist());
+            ArrayList<SongItem> arSongs = mPlaylistFragment.getPlaylists().get(mPlaylistFragment.getSelectedPlaylist());
             SongItem item = arSongs.get(mPlaylistFragment.getSelectedItem());
             String strTitle = item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_");
             mMP4Path = Environment.getExternalStorageDirectory() + "/" + strTitle + ".mp4";
