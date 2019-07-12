@@ -210,7 +210,7 @@
     <string name="newTemplate">New template</string>
     <string name="newEqualizer">New equalizer</string>
     <string name="equalizerTemplate">Equalizer template</string>
-    <string name="templateMenu">テンプレート全体に関わるメニュー</string>
+    <string name="templateMenu">Menu related to the entire template</string>
     <string name="save">Save</string>
     <string name="saveAs">Save as</string>
     <string name="abLoop">AB Loop</string>
