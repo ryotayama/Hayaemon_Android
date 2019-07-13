@@ -2940,6 +2940,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setMarker(mActivity.loopFragment.getMarker());
         }
         saver.setReverbSelected(mActivity.effectFragment.getReverbSelected());
+        saver.setEchoSelected(mActivity.effectFragment.getEchoSelected());
 
         saveFiles(false, true, false, false, false);
     }
@@ -3043,6 +3044,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setIsLoopMarker(mActivity.loopFragment.getBtnLoopmarker().isSelected());
             saver.setMarker(mActivity.loopFragment.getMarker());
             saver.setReverbSelected(mActivity.effectFragment.getReverbSelected());
+            saver.setEchoSelected(mActivity.effectFragment.getEchoSelected());
 
             saveFiles(false, true, false, false, false);
         }
@@ -3112,10 +3114,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mActivity.effectFragment.setCompRatio(saver.getCompRatio(), false);
         mActivity.effectFragment.setCompAttack(saver.getCompAttack(), false);
         mActivity.effectFragment.setCompRelease(saver.getCompRelease(), false);
-        mActivity.effectFragment.setEchoDry(saver.getEchoDry(), false);
-        mActivity.effectFragment.setEchoWet(saver.getEchoWet(), false);
-        mActivity.effectFragment.setEchoFeedback(saver.getEchoFeedback(), false);
-        mActivity.effectFragment.setEchoDelay(saver.getEchoDelay(), false);
+        mActivity.effectFragment.setEcho(saver.getEchoDry(), saver.getEchoWet(), saver.getEchoFeedback(), saver.getEchoDelay(), false);
         mActivity.effectFragment.setReverb(saver.getReverbDry(), saver.getReverbWet(), saver.getReverbRoomSize(), saver.getReverbDamp(), saver.getReverbWidth(), false);
         mActivity.effectFragment.setChorusDry(saver.getChorusDry(), false);
         mActivity.effectFragment.setChorusWet(saver.getChorusWet(), false);
@@ -3143,6 +3142,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
         mActivity.loopFragment.setMarker(saver.getMarker());
         mActivity.effectFragment.setReverbSelected(saver.getReverbSelected());
+        mActivity.effectFragment.setEchoSelected(saver.getEchoSelected());
     }
 
     private void saveSong(int nPurpose, String strFileName)

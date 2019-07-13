@@ -80,6 +80,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private EffectTemplatesAdapter mEffectTemplatesAdapter;
     private final ArrayList<EffectItem> mEffectItems;
     private ArrayList<EffectTemplateItem> mReverbItems;
+    private ArrayList<EffectTemplateItem> mEchoItems;
     private ItemTouchHelper mEffectTemplateTouchHelper;
     private int mDspVocalCancel = 0;
     private int mDspMonoral = 0;
@@ -130,39 +131,32 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static final int EFFECTTYPE_COMP_CUSTOMIZE = 13;
     private static final int EFFECTTYPE_FREQUENCY = 14;
     // private static final int EFFECTTYPE_PHASEREVERSAL = 15;
-    private static final int EFFECTTYPE_ECHO_STADIUM = 16;
-    // private static final int EFFECTTYPE_ECHO_HALL = 17;
-    // private static final int EFFECTTYPE_ECHO_LIVEHOUSE = 18;
-    // private static final int EFFECTTYPE_ECHO_ROOM = 19;
-    // private static final int EFFECTTYPE_ECHO_BATHROOM = 20;
-    // private static final int EFFECTTYPE_ECHO_VOCAL = 21;
-    // private static final int EFFECTTYPE_ECHO_MOUNTAIN = 22;
-    private static final int EFFECTTYPE_ECHO_CUSTOMIZE = 23;
-    private static final int EFFECTTYPE_REVERB = 24;
-    private static final int EFFECTTYPE_CHORUS = 25;
-    private static final int EFFECTTYPE_FLANGER = 26;
-    private static final int EFFECTTYPE_CHORUS_CUSTOMIZE = 27;
-    private static final int EFFECTTYPE_DISTORTION_STRONG = 28;
-    // private static final int EFFECTTYPE_DISTORTION_MIDDLE = 29;
-    // private static final int EFFECTTYPE_DISTORTION_WEAK = 30;
-    private static final int EFFECTTYPE_DISTORTION_CUSTOMIZE = 31;
-    static final int EFFECTTYPE_REVERSE = 32;
-    private static final int EFFECTTYPE_INCREASESPEED = 33;
-    private static final int EFFECTTYPE_DECREASESPEED = 34;
-    private static final int EFFECTTYPE_OLDRECORD = 35;
-    private static final int EFFECTTYPE_LOWBATTERY = 36;
-    private static final int EFFECTTYPE_NOSENSE_STRONG = 37;
-    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 38;
-    private static final int EFFECTTYPE_NOSENSE_WEAK = 39;
-    private static final int EFFECTTYPE_EARTRAINING = 40;
-    private static final int EFFECTTYPE_METRONOME = 41;
-    private static final int EFFECTTYPE_RECORDNOISE = 42;
-    private static final int EFFECTTYPE_ROAROFWAVES = 43;
-    private static final int EFFECTTYPE_RAIN = 44;
-    private static final int EFFECTTYPE_RIVER = 45;
-    private static final int EFFECTTYPE_WAR = 46;
-    private static final int EFFECTTYPE_FIRE = 47;
-    private static final int EFFECTTYPE_CONCERTHALL = 48;
+    private static final int EFFECTTYPE_ECHO = 16;
+    private static final int EFFECTTYPE_REVERB = 17;
+    private static final int EFFECTTYPE_CHORUS = 18;
+    private static final int EFFECTTYPE_FLANGER = 19;
+    private static final int EFFECTTYPE_CHORUS_CUSTOMIZE = 20;
+    private static final int EFFECTTYPE_DISTORTION_STRONG = 21;
+    // private static final int EFFECTTYPE_DISTORTION_MIDDLE = 22;
+    // private static final int EFFECTTYPE_DISTORTION_WEAK = 23;
+    private static final int EFFECTTYPE_DISTORTION_CUSTOMIZE = 24;
+    static final int EFFECTTYPE_REVERSE = 25;
+    private static final int EFFECTTYPE_INCREASESPEED = 26;
+    private static final int EFFECTTYPE_DECREASESPEED = 27;
+    private static final int EFFECTTYPE_OLDRECORD = 28;
+    private static final int EFFECTTYPE_LOWBATTERY = 29;
+    private static final int EFFECTTYPE_NOSENSE_STRONG = 30;
+    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 31;
+    private static final int EFFECTTYPE_NOSENSE_WEAK = 32;
+    private static final int EFFECTTYPE_EARTRAINING = 33;
+    private static final int EFFECTTYPE_METRONOME = 34;
+    private static final int EFFECTTYPE_RECORDNOISE = 35;
+    private static final int EFFECTTYPE_ROAROFWAVES = 36;
+    private static final int EFFECTTYPE_RAIN = 37;
+    private static final int EFFECTTYPE_RIVER = 38;
+    private static final int EFFECTTYPE_WAR = 39;
+    private static final int EFFECTTYPE_FIRE = 40;
+    private static final int EFFECTTYPE_CONCERTHALL = 41;
     private Timer mTimer;
     private int mSEStream;
     private int mSEStream2;
@@ -176,7 +170,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private float mVelo2 = 0.0f;
     private boolean mContinueFlag = true;
     private final Handler mHandlerLongClick;
-    private int mEffectDetail = -1, mReverbSelected = -1;
+    private int mEffectDetail = -1, mReverbSelected = -1, mEchoSelected = -1;
 
     private RecyclerView mRecyclerEffects, mRecyclerEffectTemplates;
     private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextEchoDry, mTextEchoWet, mTextEchoFeedback, mTextEchoDelay, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth, mTextChorusDry, mTextChorusWet, mTextChorusFeedback, mTextChorusMinSweep, mTextChorusMaxSweep, mTextChorusRate, mTextDistortionDrive, mTextDistortionDry, mTextDistortionWet, mTextDistortionFeedback, mTextDistortionVolume, mTextFinishSortEffect;
@@ -184,7 +178,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private RelativeLayout mRelativeEffectDetail, mRelativeSliderEffectDatail, mRelativeRollerEffectDetail, mRelativeEffectTemplates, mRelativeEffectTitle;
     private SeekBar mSeekEffectDetail, mSeekCompGain, mSeekCompThreshold, mSeekCompRatio, mSeekCompAttack, mSeekCompRelease, mSeekEchoDry, mSeekEchoWet, mSeekEchoFeedback, mSeekEchoDelay, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth, mSeekChorusDry, mSeekChorusWet, mSeekChorusFeedback, mSeekChorusMinSweep, mSeekChorusMaxSweep, mSeekChorusRate, mSeekDistortionDrive, mSeekDistortionDry, mSeekDistortionWet, mSeekDistortionFeedback, mSeekDistortionVolume;
     private ImageButton mBtnEffectMinus, mBtnEffectPlus, mBtnCompGainMinus, mBtnCompGainPlus, mBtnCompThresholdMinus, mBtnCompThresholdPlus, mBtnCompRatioMinus, mBtnCompRatioPlus, mBtnCompAttackMinus, mBtnCompAttackPlus, mBtnCompReleaseMinus, mBtnCompReleasePlus, mBtnEchoDryMinus, mBtnEchoDryPlus, mBtnEchoWetMinus, mBtnEchoWetPlus, mBtnEchoFeedbackMinus, mBtnEchoFeedbackPlus, mBtnEchoDelayMinus, mBtnEchoDelayPlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus, mBtnChorusDryMinus, mBtnChorusDryPlus, mBtnChorusWetMinus, mBtnChorusWetPlus, mBtnChorusFeedbackMinus, mBtnChorusFeedbackPlus, mBtnChorusMinSweepMinus, mBtnChorusMinSweepPlus, mBtnChorusMaxSweepMinus, mBtnChorusMaxSweepPlus, mBtnChorusRateMinus, mBtnChorusRatePlus, mBtnDistortionDriveMinus, mBtnDistortionDrivePlus, mBtnDistortionDryMinus, mBtnDistortionDryPlus, mBtnDistortionWetMinus, mBtnDistortionWetPlus, mBtnDistortionFeedbackMinus, mBtnDistortionFeedbackPlus, mBtnDistortionVolumeMinus, mBtnDistortionVolumePlus;
-    private Button mBtnEffectBack, mBtnEffectFinish, mBtnEffectTemplateOff, mBtnReverbSaveAs;
+    private Button mBtnEffectBack, mBtnEffectFinish, mBtnEffectTemplateOff, mBtnReverbSaveAs, mBtnEchoSaveAs;
     private AnimationButton mBtnEffectTemplateMenu, mBtnAddEffectTemplate;
     private ScrollView mScrollCompCustomize, mScrollEchoCustomize, mScrollReverbCustomize, mScrollChorusCustomize, mScrollDistortionCustomize;
     private View mViewSepEffect, mViewSepEffectTemplate;
@@ -241,9 +235,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     public float getDistortionWet() { return mDistortionWet; }
     public float getDistortionFeedback() { return mDistortionFeedback; }
     public float getDistortionVolume() { return mDistortionVolume; }
-    private void setEffectTemplateItems(ArrayList<EffectTemplateItem> lists) {
+    private void setReverbItems(ArrayList<EffectTemplateItem> lists) {
         mReverbItems = lists;
         mEffectTemplatesAdapter.changeItems(mReverbItems);
+    }
+    private void setEchoItems(ArrayList<EffectTemplateItem> lists) {
+        mEchoItems = lists;
+        mEffectTemplatesAdapter.changeItems(mEchoItems);
     }
 
     public boolean isSorting() { return mSorting; }
@@ -259,6 +257,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if(mEffectDetail == EFFECTTYPE_REVERB) {
             if (nItem >= mReverbItems.size()) return false;
             EffectTemplateItem item = mReverbItems.get(nItem);
+            return item.isSelected();
+        }
+        else if(mEffectDetail == EFFECTTYPE_ECHO) {
+            if (nItem >= mEchoItems.size()) return false;
+            EffectTemplateItem item = mEchoItems.get(nItem);
             return item.isSelected();
         }
         return false;
@@ -368,11 +371,22 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mEffectTemplatesAdapter.notifyDataSetChanged();
         }
     }
+    public int getEchoSelected() { return mEchoSelected; }
+    public void setEchoSelected(int nSelected) {
+        mEchoSelected = nSelected;
+        if(mRelativeEffectTemplates.getVisibility() == View.VISIBLE && mEffectDetail == EFFECTTYPE_ECHO) {
+            mBtnEffectTemplateOff.setSelected(nSelected == -1);
+            for(int i = 0; i < mEchoItems.size(); i++)
+                mEchoItems.get(i).setSelected(i == nSelected);
+            mEffectTemplatesAdapter.notifyDataSetChanged();
+        }
+    }
 
     public EffectFragment()
     {
         mEffectItems = new ArrayList<>();
         mReverbItems = new ArrayList<>();
+        mEchoItems = new ArrayList<>();
         mHandlerLongClick = new Handler();
     }
 
@@ -415,6 +429,20 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
                 mBtnAddEffectTemplate.setAlpha(1.0f);
             }
+            else if(mScrollEchoCustomize.getVisibility() == View.VISIBLE) {
+                if(mEchoSelected != -1) {
+                    ArrayList<Float> arFloats = mEchoItems.get(mEchoSelected).getArPresets();
+                    setEcho(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), true);
+                }
+                else resetEcho();
+                mBtnEffectFinish.setVisibility(View.GONE);
+                mRelativeEffectTemplates.setVisibility(View.VISIBLE);
+                mScrollEchoCustomize.setVisibility(View.INVISIBLE);
+                mBtnEffectBack.setText(R.string.back);
+                mImgEffectBack.setVisibility(View.VISIBLE);
+                mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+                mBtnAddEffectTemplate.setAlpha(1.0f);
+            }
             else {
                 mRelativeEffectDetail.setVisibility(View.GONE);
                 mRecyclerEffects.setVisibility(View.VISIBLE);
@@ -429,41 +457,60 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 final EditText editPreset = new EditText(mActivity);
                 editPreset.setHint(R.string.templateName);
                 editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
-                editPreset.setText(R.string.newReverb);
+                if(mEffectDetail == EFFECTTYPE_REVERB) editPreset.setText(R.string.newReverb);
+                else if(mEffectDetail == EFFECTTYPE_ECHO) editPreset.setText(R.string.newEcho);
                 linearLayout.addView(editPreset);
                 builder.setView(linearLayout);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         ArrayList<Float> arPresets = new ArrayList<>();
-                        arPresets.add(Float.parseFloat((String)mTextReverbDry.getText()));
-                        arPresets.add(Float.parseFloat((String)mTextReverbWet.getText()));
-                        arPresets.add(Float.parseFloat((String)mTextReverbRoomSize.getText()));
-                        arPresets.add(Float.parseFloat((String)mTextReverbDamp.getText()));
-                        arPresets.add(Float.parseFloat((String)mTextReverbWidth.getText()));
-                        mReverbItems.add(new EffectTemplateItem(editPreset.getText().toString(), arPresets));
-                        mEffectTemplatesAdapter.notifyItemInserted(mReverbItems.size() - 1);
+                        if(mEffectDetail == EFFECTTYPE_REVERB) {
+                            arPresets.add(Float.parseFloat((String) mTextReverbDry.getText()));
+                            arPresets.add(Float.parseFloat((String) mTextReverbWet.getText()));
+                            arPresets.add(Float.parseFloat((String) mTextReverbRoomSize.getText()));
+                            arPresets.add(Float.parseFloat((String) mTextReverbDamp.getText()));
+                            arPresets.add(Float.parseFloat((String) mTextReverbWidth.getText()));
+                            mReverbItems.add(new EffectTemplateItem(editPreset.getText().toString(), arPresets));
+                            mEffectTemplatesAdapter.notifyItemInserted(mReverbItems.size() - 1);
+                            mScrollReverbCustomize.setVisibility(View.INVISIBLE);
+                            for(int i = 0; i < mReverbItems.size()-1; i++)
+                                mReverbItems.get(i).setSelected(false);
+                            mReverbItems.get(mReverbItems.size()-1).setSelected(true);
+                            mReverbSelected = mReverbItems.size()-1;
+                        }
+                        else if(mEffectDetail == EFFECTTYPE_ECHO) {
+                            arPresets.add(Float.parseFloat((String) mTextEchoDry.getText()));
+                            arPresets.add(Float.parseFloat((String) mTextEchoWet.getText()));
+                            arPresets.add(Float.parseFloat((String) mTextEchoFeedback.getText()));
+                            arPresets.add(Float.parseFloat((String) mTextEchoDelay.getText()));
+                            mEchoItems.add(new EffectTemplateItem(editPreset.getText().toString(), arPresets));
+                            mEffectTemplatesAdapter.notifyItemInserted(mEchoItems.size() - 1);
+                            mScrollEchoCustomize.setVisibility(View.INVISIBLE);
+                            for(int i = 0; i < mEchoItems.size()-1; i++)
+                                mEchoItems.get(i).setSelected(false);
+                            mEchoItems.get(mEchoItems.size()-1).setSelected(true);
+                            mEchoSelected = mEchoItems.size()-1;
+                        }
                         saveData();
 
                         mBtnEffectFinish.setVisibility(View.GONE);
                         mRelativeEffectTemplates.setVisibility(View.VISIBLE);
-                        mScrollReverbCustomize.setVisibility(View.INVISIBLE);
                         mBtnEffectBack.setText(R.string.back);
                         mImgEffectBack.setVisibility(View.VISIBLE);
                         mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
                         mBtnAddEffectTemplate.setAlpha(1.0f);
 
                         mBtnEffectTemplateOff.setSelected(false);
-                        for(int i = 0; i < mReverbItems.size()-1; i++)
-                            mReverbItems.get(i).setSelected(false);
-                        mReverbItems.get(mReverbItems.size()-1).setSelected(true);
-                        mReverbSelected = mReverbItems.size()-1;
 
                         mEffectItems.get(mEffectDetail).setSelected(true);
                         checkDuplicate(mEffectDetail);
                         mEffectsAdapter.notifyDataSetChanged();
 
                         mEffectTemplatesAdapter.notifyDataSetChanged();
-                        mRecyclerEffectTemplates.scrollToPosition(mReverbItems.size()-1);
+                        if(mEffectDetail == EFFECTTYPE_REVERB)
+                            mRecyclerEffectTemplates.scrollToPosition(mReverbItems.size()-1);
+                        else if(mEffectDetail == EFFECTTYPE_ECHO)
+                            mRecyclerEffectTemplates.scrollToPosition(mEchoItems.size()-1);
                     }
                 });
                 builder.setNegativeButton(R.string.cancel, null);
@@ -489,22 +536,39 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             else {
                 EffectTemplateItem item = null;
                 int nItem = 0;
-                for (; nItem < mReverbItems.size(); nItem++) {
-                    item = mReverbItems.get(nItem);
-                    if (item.isSelected()) break;
+                if(mEffectDetail == EFFECTTYPE_REVERB) {
+                    for (; nItem < mReverbItems.size(); nItem++) {
+                        item = mReverbItems.get(nItem);
+                        if (item.isSelected()) break;
+                    }
+                    if (item != null) {
+                        ArrayList<Float> arPresets = item.getArPresets();
+                        arPresets.set(0, Float.parseFloat((String) mTextReverbDry.getText()));
+                        arPresets.set(1, Float.parseFloat((String) mTextReverbWet.getText()));
+                        arPresets.set(2, Float.parseFloat((String) mTextReverbRoomSize.getText()));
+                        arPresets.set(3, Float.parseFloat((String) mTextReverbDamp.getText()));
+                        arPresets.set(4, Float.parseFloat((String) mTextReverbWidth.getText()));
+                        saveData();
+                    }
+                    mScrollReverbCustomize.setVisibility(View.INVISIBLE);
                 }
-                if (item != null) {
-                    ArrayList<Float> arPresets = item.getArPresets();
-                    arPresets.set(0, Float.parseFloat((String)mTextReverbDry.getText()));
-                    arPresets.set(1, Float.parseFloat((String)mTextReverbWet.getText()));
-                    arPresets.set(2, Float.parseFloat((String)mTextReverbRoomSize.getText()));
-                    arPresets.set(3, Float.parseFloat((String)mTextReverbDamp.getText()));
-                    arPresets.set(4, Float.parseFloat((String)mTextReverbWidth.getText()));
-                    saveData();
+                else if(mEffectDetail == EFFECTTYPE_ECHO) {
+                    for (; nItem < mEchoItems.size(); nItem++) {
+                        item = mEchoItems.get(nItem);
+                        if (item.isSelected()) break;
+                    }
+                    if (item != null) {
+                        ArrayList<Float> arPresets = item.getArPresets();
+                        arPresets.set(0, Float.parseFloat((String) mTextEchoDry.getText()));
+                        arPresets.set(1, Float.parseFloat((String) mTextEchoWet.getText()));
+                        arPresets.set(2, Float.parseFloat((String) mTextEchoFeedback.getText()));
+                        arPresets.set(3, Float.parseFloat((String) mTextEchoDelay.getText()));
+                        saveData();
+                    }
+                    mScrollEchoCustomize.setVisibility(View.INVISIBLE);
                 }
                 mBtnEffectFinish.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.VISIBLE);
-                mScrollReverbCustomize.setVisibility(View.INVISIBLE);
                 mBtnAddEffectTemplate.setAlpha(1.0f);
             }
         }
@@ -514,20 +578,31 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
             mEffectItems.get(mEffectDetail).setSelected(true);
             checkDuplicate(mEffectDetail);
-            if(mBtnEffectTemplateOff.isSelected())
-                setReverb(70, 100, 85, 50, 90, true);
+            if(mBtnEffectTemplateOff.isSelected()) {
+                if(mEffectDetail == EFFECTTYPE_REVERB)
+                    setReverb(70, 100, 85, 50, 90, true);
+                else if(mEffectDetail == EFFECTTYPE_ECHO)
+                    setEcho(100, 30, 60, 8, true);
+            }
 
-            mTextEffectName.setText(R.string.newReverb);
+            if(mEffectDetail == EFFECTTYPE_REVERB) {
+                mTextEffectName.setText(R.string.newReverb);
+                mScrollReverbCustomize.setVisibility(View.VISIBLE);
+                mBtnReverbSaveAs.setVisibility(View.GONE);
+            }
+            else if(mEffectDetail == EFFECTTYPE_ECHO) {
+                mTextEffectName.setText(R.string.newEcho);
+                mScrollEchoCustomize.setVisibility(View.VISIBLE);
+                mBtnEchoSaveAs.setVisibility(View.GONE);
+            }
 
             mBtnEffectBack.setText(R.string.cancel);
             mBtnEffectFinish.setText(R.string.save);
 
             mBtnEffectFinish.setVisibility(View.VISIBLE);
             mRelativeEffectTemplates.setVisibility(View.INVISIBLE);
-            mScrollReverbCustomize.setVisibility(View.VISIBLE);
             mImgEffectBack.setVisibility(View.INVISIBLE);
             mBtnEffectBack.setPadding((int)(16 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
-            mBtnReverbSaveAs.setVisibility(View.GONE);
             mBtnAddEffectTemplate.setAlpha(0.0f);
         }
         else if(v.getId() == R.id.textFinishSortEffect) {
@@ -547,6 +622,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             if(mEffectDetail == EFFECTTYPE_REVERB) {
                 for(int i = 0; i < mReverbItems.size(); i++) mReverbItems.get(i).setSelected(false);
                 resetReverb();
+            }
+            else if(mEffectDetail == EFFECTTYPE_ECHO) {
+                for(int i = 0; i < mEchoItems.size(); i++) mEchoItems.get(i).setSelected(false);
+                resetEcho();
             }
             mEffectTemplatesAdapter.notifyDataSetChanged();
         }
@@ -573,7 +652,75 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(v.getId() == R.id.btnEchoDelayMinus) minusEchoDelay();
         else if(v.getId() == R.id.btnEchoDelayPlus) plusEchoDelay();
         else if(v.getId() == R.id.btnEchoRandom) setEchoRandom();
-        else if(v.getId() == R.id.btnResetEcho) resetEcho();
+        else if(v.getId() == R.id.btnResetEcho) {
+            if(mEchoSelected != -1) {
+                ArrayList<Float> arFloats = mEchoItems.get(mEchoSelected).getArPresets();
+                setEcho(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), true);
+            }
+            else resetEcho();
+        }
+        else if(v.getId() == R.id.btnEchoSaveAs) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setTitle(R.string.saveTemplate);
+            LinearLayout linearLayout = new LinearLayout(mActivity);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            final EditText editPreset = new EditText(mActivity);
+            editPreset.setHint(R.string.templateName);
+            editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
+            editPreset.setText(R.string.newEcho);
+            linearLayout.addView(editPreset);
+            builder.setView(linearLayout);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    ArrayList<Float> arPresets = new ArrayList<>();
+                    arPresets.add(Float.parseFloat((String)mTextEchoDry.getText()));
+                    arPresets.add(Float.parseFloat((String)mTextEchoWet.getText()));
+                    arPresets.add(Float.parseFloat((String)mTextEchoFeedback.getText()));
+                    arPresets.add(Float.parseFloat((String)mTextEchoDelay.getText()));
+                    mEchoItems.add(new EffectTemplateItem(editPreset.getText().toString(), arPresets));
+                    mEffectTemplatesAdapter.notifyItemInserted(mEchoItems.size() - 1);
+                    saveData();
+
+                    mBtnEffectFinish.setVisibility(View.GONE);
+                    mRelativeEffectTemplates.setVisibility(View.VISIBLE);
+                    mScrollEchoCustomize.setVisibility(View.INVISIBLE);
+                    mImgEffectBack.setVisibility(View.VISIBLE);
+                    mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+                    mBtnAddEffectTemplate.setAlpha(1.0f);
+
+                    for(int i = 0; i < mEchoItems.size()-1; i++)
+                        mEchoItems.get(i).setSelected(false);
+                    mEchoItems.get(mEchoItems.size()-1).setSelected(true);
+                    mEchoSelected = mEchoItems.size()-1;
+
+                    mEffectItems.get(mEffectDetail).setSelected(true);
+                    checkDuplicate(mEffectDetail);
+                    mEffectsAdapter.notifyDataSetChanged();
+
+                    mEffectTemplatesAdapter.notifyDataSetChanged();
+                    mRecyclerEffectTemplates.scrollToPosition(mEchoItems.size()-1);
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, null);
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+            {
+                @Override
+                public void onShow(DialogInterface arg0)
+                {
+                    if(alertDialog.getWindow() != null) {
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
+                    editPreset.requestFocus();
+                    editPreset.setSelection(editPreset.getText().toString().length());
+                    InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (null != imm) imm.showSoftInput(editPreset, 0);
+                }
+            });
+            alertDialog.show();
+        }
         else if(v.getId() == R.id.btnReverbDryMinus) minusReverbDry();
         else if(v.getId() == R.id.btnReverbDryPlus) plusReverbDry();
         else if(v.getId() == R.id.btnReverbWetMinus) minusReverbWet();
@@ -1456,6 +1603,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mTextFinishSortEffect = mActivity.findViewById(R.id.textFinishSortEffect);
         mImgEffectBack = mActivity.findViewById(R.id.imgEffectBack);
         mBtnReverbSaveAs = mActivity.findViewById(R.id.btnReverbSaveAs);
+        mBtnEchoSaveAs = mActivity.findViewById(R.id.btnEchoSaveAs);
 
         mScrollCompCustomize = mActivity.findViewById(R.id.scrollCompCustomize);
         mSeekCompGain = mActivity.findViewById(R.id.seekCompGain);
@@ -1659,21 +1807,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.phaseReversal), false);
         mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.studiumEcho), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.hallEcho), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.livehouseEcho), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.roomEcho), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.bathroomEcho), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.vocalEcho), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.mountainEcho), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.echoCustomize), true);
+        item = new EffectItem(getString(R.string.echo), true);
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.reverb), true);
         mEffectItems.add(item);
@@ -1808,6 +1942,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnEchoDelayPlus.setOnTouchListener(this);
         btnEchoRandom.setOnClickListener(this);
         btnResetEcho.setOnClickListener(this);
+        mBtnEchoSaveAs.setOnClickListener(this);
         mBtnReverbDryMinus.setOnClickListener(this);
         mBtnReverbDryMinus.setOnLongClickListener(this);
         mBtnReverbDryMinus.setOnTouchListener(this);
@@ -1923,10 +2058,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setCompRatio(900, false);
         setCompAttack(119, false);
         setCompRelease(39999, false);
-        setEchoDry(100, false);
-        setEchoWet(30, false);
-        setEchoFeedback(60, false);
-        setEchoDelay(8, false);
+        setEcho(100, 30, 60, 8, false);
         setReverb(70, 100, 85, 50, 90, false);
         setChorusDry(100, false);
         setChorusWet(10, false);
@@ -1945,12 +2077,19 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     {
         SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
-        ArrayList<EffectTemplateItem> effectTemplateItems = gson.fromJson(preferences.getString("mReverbItems",""), new TypeToken<ArrayList<EffectTemplateItem>>(){}.getType());
-        if(effectTemplateItems != null) setEffectTemplateItems(effectTemplateItems);
+        ArrayList<EffectTemplateItem> reverbItems = gson.fromJson(preferences.getString("mReverbItems",""), new TypeToken<ArrayList<EffectTemplateItem>>(){}.getType());
+        ArrayList<EffectTemplateItem> echoItems = gson.fromJson(preferences.getString("mEchoItems",""), new TypeToken<ArrayList<EffectTemplateItem>>(){}.getType());
+
+        if(reverbItems != null) setReverbItems(reverbItems);
         else resetReverbs();
+        if(echoItems != null) setEchoItems(echoItems);
+        else resetEchos();
+
         mBtnEffectTemplateOff.setSelected(true);
         for(int i = 0; i < mReverbItems.size(); i++)
             mReverbItems.get(i).setSelected(false);
+        for(int i = 0; i < mEchoItems.size(); i++)
+            mEchoItems.get(i).setSelected(false);
     }
 
     private void saveData()
@@ -1976,14 +2115,33 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         resetReverb();
     }
 
+    private void resetEchos()
+    {
+        if(mEchoItems.size() > 0) mEchoItems.clear();
+
+        mEchoItems.add(new EffectTemplateItem(getString(R.string.studium), new ArrayList<>(Arrays.asList(0.95f, 0.1f, 0.55f, 0.4f))));
+        mEchoItems.add(new EffectTemplateItem(getString(R.string.hall), new ArrayList<>(Arrays.asList(0.95f, 0.1f, 0.5f, 0.3f))));
+        mEchoItems.add(new EffectTemplateItem(getString(R.string.livehouse), new ArrayList<>(Arrays.asList(1.0f, 0.125f, 0.3f, 0.2f))));
+        mEchoItems.add(new EffectTemplateItem(getString(R.string.room), new ArrayList<>(Arrays.asList(1.0f, 0.15f, 0.5f, 0.1f))));
+        mEchoItems.add(new EffectTemplateItem(getString(R.string.bathroom), new ArrayList<>(Arrays.asList(1.0f, 0.3f, 0.6f, 0.08f))));
+        mEchoItems.add(new EffectTemplateItem(getString(R.string.vocal), new ArrayList<>(Arrays.asList(1.0f, 0.15f, 0.4f, 0.35f))));
+        mEchoItems.add(new EffectTemplateItem(getString(R.string.mountain), new ArrayList<>(Arrays.asList(1.0f, 0.2f, 0.0f, 1.0f))));
+
+        saveData();
+        mEffectTemplatesAdapter.notifyDataSetChanged();
+        resetEcho();
+    }
+
     public void onEffectItemClick(int nEffect)
     {
         if(nEffect < 0 || mEffectItems.size() <= nEffect) return;
         EffectItem item = mEffectItems.get(nEffect);
 
-        if(!item.isSelected() && nEffect == EFFECTTYPE_REVERB) {
-            onEffectDetailClick(nEffect);
-            return;
+        if(!item.isSelected()) {
+            if(nEffect == EFFECTTYPE_REVERB || nEffect == EFFECTTYPE_ECHO) {
+                onEffectDetailClick(nEffect);
+                return;
+            }
         }
 
         if(item.isSelected()) deselectEffect(nEffect);
@@ -2047,8 +2205,19 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             if(bAlreadySelected) mReverbSelected = -1;
             else mReverbSelected = nEffectTemplate;
         }
+        else if(mEffectDetail == EFFECTTYPE_ECHO) {
+            item = mEchoItems.get(nEffectTemplate);
+            if(item.isSelected()) bAlreadySelected = true;
+            for(int i = 0; i < mEchoItems.size(); i++) {
+                if (i != nEffectTemplate) mEchoItems.get(i).setSelected(false);
+                else mEchoItems.get(i).setSelected(!bAlreadySelected);
+            }
+            if(bAlreadySelected) mEchoSelected = -1;
+            else mEchoSelected = nEffectTemplate;
+        }
         else return;
         mBtnEffectTemplateOff.setSelected(bAlreadySelected);
+
         mEffectTemplatesAdapter.notifyDataSetChanged();
 
         EffectItem effectItem = mEffectItems.get(mEffectDetail);
@@ -2065,10 +2234,19 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mActivity.playlistFragment.updateSavingEffect();
         mEffectsAdapter.notifyItemChanged(mEffectDetail);
 
-        if(mReverbSelected == -1) resetReverb();
-        else {
-            ArrayList<Float> arFloats = mReverbItems.get(nEffectTemplate).getArPresets();
-            setReverb(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), arFloats.get(4), true);
+        if(mEffectDetail == EFFECTTYPE_REVERB) {
+            if (mReverbSelected == -1) resetReverb();
+            else {
+                ArrayList<Float> arFloats = mReverbItems.get(nEffectTemplate).getArPresets();
+                setReverb(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), arFloats.get(4), true);
+            }
+        }
+        else if(mEffectDetail == EFFECTTYPE_ECHO) {
+            if (mEchoSelected == -1) resetEcho();
+            else {
+                ArrayList<Float> arFloats = mEchoItems.get(nEffectTemplate).getArPresets();
+                setEcho(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), true);
+            }
         }
     }
 
@@ -2105,10 +2283,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setCompRatio(900, false);
         setCompAttack(119, false);
         setCompRelease(39999, false);
-        setEchoDry(100, false);
-        setEchoWet(30, false);
-        setEchoFeedback(60, false);
-        setEchoDelay(8, false);
+        resetEcho();
         resetReverb();
         setChorusDry(100, false);
         setChorusWet(10, false);
@@ -2144,23 +2319,34 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private void setEchoRandom()
     {
         int nDry = getRandomValue(50, 100);
-        setEchoDry(nDry, true);
         int nWet;
         while(true) {
             nWet = getRandomValue(10, 100);
             if(nWet <= nDry) break;
         }
-        setEchoWet(nWet, true);
-        setEchoFeedback(getRandomValue(0, mSeekEchoFeedback.getMax()), true);
-        setEchoDelay(getRandomValue(0, 50), true);
+        setEcho(nDry, nWet, getRandomValue(0, mSeekEchoFeedback.getMax()),
+                getRandomValue(0, mSeekReverbWidth.getMax()), true);
     }
 
     private void resetEcho()
     {
-        setEchoDry(100, true);
-        setEchoWet(30, true);
-        setEchoFeedback(60, true);
-        setEchoDelay(8, true);
+        mEffectItems.get(EFFECTTYPE_ECHO).setSelected(false);
+        boolean bSelected = false;
+        for(int i = 0; i < mEffectItems.size(); i++) {
+            if(mEffectItems.get(i).isSelected()) bSelected = true;
+        }
+        if(!bSelected) mEffectItems.get(0).setSelected(true);
+        mBtnEffectTemplateOff.setSelected(true);
+        for(int i = 0; i < mEchoItems.size(); i++) mEchoItems.get(i).setSelected(false);
+
+        mEchoSelected = -1;
+        mEffectsAdapter.notifyDataSetChanged();
+        mEffectTemplatesAdapter.notifyDataSetChanged();
+
+        BASS.BASS_ChannelRemoveFX(MainActivity.sStream, mFxEcho);
+        mFxEcho = 0;
+
+        setEcho(100, 30, 60, 8, true);
     }
 
     private int getRandomValue(int nMin, int nMax)
@@ -2256,6 +2442,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if(!item.isSelected()) {
             if(mEffectDetail == EFFECTTYPE_REVERB) {
                 if(mReverbSelected != -1) onEffectItemClick(nEffect);
+            }
+            else if(mEffectDetail == EFFECTTYPE_ECHO) {
+                if(mEchoSelected != -1) onEffectItemClick(nEffect);
             }
             else onEffectItemClick(nEffect);
         }
@@ -2396,16 +2585,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mScrollChorusCustomize.setVisibility(View.GONE);
             mScrollDistortionCustomize.setVisibility(View.GONE);
         }
-        else if(nEffect == EFFECTTYPE_ECHO_CUSTOMIZE) {
-            mRelativeSliderEffectDatail.setVisibility(View.GONE);
-            mRelativeRollerEffectDetail.setVisibility(View.GONE);
-            mScrollCompCustomize.setVisibility(View.GONE);
-            mScrollEchoCustomize.setVisibility(View.VISIBLE);
-            mScrollReverbCustomize.setVisibility(View.GONE);
-            mScrollChorusCustomize.setVisibility(View.GONE);
-            mScrollDistortionCustomize.setVisibility(View.GONE);
+        else if(nEffect == EFFECTTYPE_ECHO) {
+            mEffectTemplatesAdapter.changeItems(mEchoItems);
+            mBtnAddEffectTemplate.setContentDescription(getString(R.string.newEcho));
+            for(int i = 0; i < mEchoItems.size(); i++) mEchoItems.get(i).setSelected(false);
+            if(mEchoSelected == -1) resetEcho();
+            else onEffectTemplateItemClick(mEchoSelected);
+            mEffectTemplatesAdapter.notifyDataSetChanged();
+            mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         }
         else if(nEffect == EFFECTTYPE_REVERB) {
+            mEffectTemplatesAdapter.changeItems(mReverbItems);
+            mBtnAddEffectTemplate.setContentDescription(getString(R.string.newReverb));
             for(int i = 0; i < mReverbItems.size(); i++) mReverbItems.get(i).setSelected(false);
             if(mReverbSelected == -1) resetReverb();
             else onEffectTemplateItemClick(mReverbSelected);
@@ -2463,6 +2654,20 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mImgEffectBack.setVisibility(View.VISIBLE);
             mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
             mBtnReverbSaveAs.setVisibility(View.VISIBLE);
+        }
+        else if(mEffectDetail == EFFECTTYPE_ECHO) {
+            EffectTemplateItem item = mEchoItems.get(nTemplate);
+            mTextEffectName.setText(item.getEffectTemplateName());
+
+            mBtnEffectBack.setText(R.string.back);
+            mBtnEffectFinish.setText(R.string.done);
+
+            mBtnEffectFinish.setVisibility(View.VISIBLE);
+            mRelativeEffectTemplates.setVisibility(View.INVISIBLE);
+            mScrollEchoCustomize.setVisibility(View.VISIBLE);
+            mImgEffectBack.setVisibility(View.VISIBLE);
+            mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+            mBtnEchoSaveAs.setVisibility(View.VISIBLE);
         }
     }
 
@@ -2551,10 +2756,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(seekBar.getId() == R.id.seekCompRatio) setCompRatio(progress, fromTouch);
         else if(seekBar.getId() == R.id.seekCompAttack) setCompAttack(progress, fromTouch);
         else if(seekBar.getId() == R.id.seekCompRelease) setCompRelease(progress, fromTouch);
-        else if(seekBar.getId() == R.id.seekEchoDry) setEchoDry(progress, fromTouch);
-        else if(seekBar.getId() == R.id.seekEchoWet) setEchoWet(progress, fromTouch);
-        else if(seekBar.getId() == R.id.seekEchoFeedback) setEchoFeedback(progress, fromTouch);
-        else if(seekBar.getId() == R.id.seekEchoDelay) setEchoDelay(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekEchoDry)
+            setEcho(progress, mSeekEchoWet.getProgress(), mSeekEchoFeedback.getProgress(), mSeekEchoDelay.getProgress(), fromTouch);
+        else if(seekBar.getId() == R.id.seekEchoWet)
+            setEcho(mSeekEchoDry.getProgress(), progress, mSeekEchoFeedback.getProgress(), mSeekEchoDelay.getProgress(), fromTouch);
+        else if(seekBar.getId() == R.id.seekEchoFeedback)
+            setEcho(mSeekEchoDry.getProgress(), mSeekEchoWet.getProgress(), progress, mSeekEchoDelay.getProgress(), fromTouch);
+        else if(seekBar.getId() == R.id.seekEchoDelay)
+            setEcho(mSeekEchoDry.getProgress(), mSeekEchoWet.getProgress(), mSeekEchoFeedback.getProgress(), progress, fromTouch);
         else if(seekBar.getId() == R.id.seekReverbDry)
             setReverb(progress, mSeekReverbWet.getProgress(), mSeekReverbRoomSize.getProgress(), mSeekReverbDamp.getProgress(), mSeekReverbWidth.getProgress(), fromTouch);
         else if(seekBar.getId() == R.id.seekReverbWet)
@@ -2745,7 +2954,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     private void updateEcho()
     {
-        if(!mEffectItems.get(EFFECTTYPE_ECHO_CUSTOMIZE).isSelected() || MainActivity.sStream == 0)
+        if(!mEffectItems.get(EFFECTTYPE_ECHO).isSelected() || MainActivity.sStream == 0)
             return;
         if(mFxEcho == 0) mFxEcho = BASS.BASS_ChannelSetFX(MainActivity.sStream, BASS_FX.BASS_FX_BFX_ECHO4, 2);
         BASS_FX.BASS_BFX_ECHO4 echo = new BASS_FX.BASS_BFX_ECHO4();
@@ -2758,124 +2967,87 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         BASS.BASS_FXSetParameters(mFxEcho, echo);
     }
 
-    public void setEchoDry(int nValue, boolean bSave)
-    {
-        mEchoDry = nValue / 100.0f;
+    public void setEcho(int nDry, int nWet, int nFeedback, int nDelay, boolean bSave) {
+        if(nDry < 0) nDry = 0;
+        if(nWet < 0) nWet = 0;
+        if(nFeedback < 0) nFeedback = 0;
+        if(nDelay < 0) nDelay = 0;
+
+        if(nDry > mSeekEchoDry.getMax()) nDry = mSeekEchoDry.getMax();
+        if(nWet > mSeekEchoWet.getMax()) nWet = mSeekEchoWet.getMax();
+        if(nFeedback > mSeekEchoFeedback.getMax()) nFeedback = mSeekEchoFeedback.getMax();
+        if(nDelay > mSeekEchoDelay.getMax()) nDelay = mSeekEchoDelay.getMax();
+
+        mEchoDry = nDry / 100.0f;
+        mEchoWet = nWet / 100.0f;
+        mEchoFeedback = nFeedback / 100.0f;
+        mEchoDelay = nDelay / 100.0f;
+
         mTextEchoDry.setText(String.format(Locale.getDefault(), "%.2f", mEchoDry));
-        mSeekEchoDry.setProgress(nValue);
+        mTextEchoWet.setText(String.format(Locale.getDefault(), "%.2f", mEchoWet));
+        mTextEchoFeedback.setText(String.format(Locale.getDefault(), "%.2f", mEchoFeedback));
+        mTextEchoDelay.setText(String.format(Locale.getDefault(), "%.2f", mEchoDelay));
+
+        mSeekEchoDry.setProgress(nDry);
+        mSeekEchoWet.setProgress(nWet);
+        mSeekEchoFeedback.setProgress(nFeedback);
+        mSeekEchoDelay.setProgress(nDelay);
+
         updateEcho();
         if(bSave) mActivity.playlistFragment.updateSavingEffect();
     }
 
-    public void setEchoDry(float fValue, boolean bSave)
+    public void setEcho(float fDry, float fWet, float fFeedback, float fDelay, boolean bSave)
     {
-        mEchoDry = fValue;
+        mEchoDry = fDry;
+        mEchoWet = fWet;
+        mEchoFeedback = fFeedback;
+        mEchoDelay = fDelay;
+
         mTextEchoDry.setText(String.format(Locale.getDefault(), "%.2f", mEchoDry));
-        mSeekEchoDry.setProgress((int)(fValue * 100.0f));
-        updateEcho();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setEchoWet(int nValue, boolean bSave)
-    {
-        mEchoWet = nValue / 100.0f;
         mTextEchoWet.setText(String.format(Locale.getDefault(), "%.2f", mEchoWet));
-        mSeekEchoWet.setProgress(nValue);
-        updateEcho();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setEchoWet(float fValue, boolean bSave)
-    {
-        mEchoWet = fValue;
-        mTextEchoWet.setText(String.format(Locale.getDefault(), "%.2f", mEchoWet));
-        mSeekEchoWet.setProgress((int)(fValue * 100.0f));
-        updateEcho();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setEchoFeedback(int nValue, boolean bSave)
-    {
-        mEchoFeedback = nValue / 100.0f;
         mTextEchoFeedback.setText(String.format(Locale.getDefault(), "%.2f", mEchoFeedback));
-        mSeekEchoFeedback.setProgress(nValue);
-        updateEcho();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setEchoFeedback(float fValue, boolean bSave)
-    {
-        mEchoFeedback = fValue;
-        mTextEchoFeedback.setText(String.format(Locale.getDefault(), "%.2f", mEchoFeedback));
-        mSeekEchoFeedback.setProgress((int)(fValue * 100.0f));
-        updateEcho();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setEchoDelay(int nValue, boolean bSave)
-    {
-        mEchoDelay = nValue / 100.0f;
         mTextEchoDelay.setText(String.format(Locale.getDefault(), "%.2f", mEchoDelay));
-        mSeekEchoDelay.setProgress(nValue);
-        updateEcho();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
 
-    public void setEchoDelay(float fValue, boolean bSave)
-    {
-        mEchoDelay = fValue;
-        mTextEchoDelay.setText(String.format(Locale.getDefault(), "%.2f", mEchoDelay));
-        mSeekEchoDelay.setProgress((int)(fValue * 100.0f));
+        mSeekEchoDry.setProgress((int)(fDry * 100.0f));
+        mSeekEchoWet.setProgress((int)(fWet * 100.0f));
+        mSeekEchoFeedback.setProgress((int)(fFeedback * 100.0f));
+        mSeekEchoDelay.setProgress((int)(fDelay * 100.0f));
+
         updateEcho();
         if(bSave) mActivity.playlistFragment.updateSavingEffect();
     }
 
     private void minusEchoDry() {
-        int nValue = mSeekEchoDry.getProgress() - 1;
-        if(nValue < 0) nValue = 0;
-        setEchoDry(nValue, true);
+        setEcho(mSeekEchoDry.getProgress()-1, mSeekEchoWet.getProgress(), mSeekEchoFeedback.getProgress(), mSeekEchoDelay.getProgress(), true);
     }
 
     private void plusEchoDry() {
-        int nValue = mSeekEchoDry.getProgress() + 1;
-        if(nValue > mSeekEchoDry.getMax()) nValue = mSeekEchoDry.getMax();
-        setEchoDry(nValue, true);
+        setEcho(mSeekEchoDry.getProgress()+1, mSeekEchoWet.getProgress(), mSeekEchoFeedback.getProgress(), mSeekEchoDelay.getProgress(), true);
     }
 
     private void minusEchoWet() {
-        int nValue = mSeekEchoWet.getProgress() - 1;
-        if(nValue < 0) nValue = 0;
-        setEchoWet(nValue, true);
+        setEcho(mSeekEchoDry.getProgress(), mSeekEchoWet.getProgress()-1, mSeekEchoFeedback.getProgress(), mSeekEchoDelay.getProgress(), true);
     }
 
     private void plusEchoWet() {
-        int nValue = mSeekEchoWet.getProgress() + 1;
-        if(nValue > mSeekEchoWet.getMax()) nValue = mSeekEchoWet.getMax();
-        setEchoWet(nValue, true);
+        setEcho(mSeekEchoDry.getProgress(), mSeekEchoWet.getProgress()+1, mSeekEchoFeedback.getProgress(), mSeekEchoDelay.getProgress(), true);
     }
 
     private void minusEchoFeedback() {
-        int nValue = mSeekEchoFeedback.getProgress() - 1;
-        if(nValue < 0) nValue = 0;
-        setEchoFeedback(nValue, true);
+        setEcho(mSeekEchoDry.getProgress(), mSeekEchoWet.getProgress(), mSeekEchoFeedback.getProgress()-1, mSeekEchoDelay.getProgress(), true);
     }
 
     private void plusEchoFeedback() {
-        int nValue = mSeekEchoFeedback.getProgress() + 1;
-        if(nValue > mSeekEchoFeedback.getMax()) nValue = mSeekEchoFeedback.getMax();
-        setEchoFeedback(nValue, true);
+        setEcho(mSeekEchoDry.getProgress(), mSeekEchoWet.getProgress(), mSeekEchoFeedback.getProgress()+1, mSeekEchoDelay.getProgress(), true);
     }
 
     private void minusEchoDelay() {
-        int nValue = mSeekEchoDelay.getProgress() - 1;
-        if(nValue < 0) nValue = 0;
-        setEchoDelay(nValue, true);
+        setEcho(mSeekEchoDry.getProgress(), mSeekEchoWet.getProgress(), mSeekEchoFeedback.getProgress(), mSeekEchoDelay.getProgress()-1, true);
     }
 
     private void plusEchoDelay() {
-        int nValue = mSeekEchoDelay.getProgress() + 1;
-        if(nValue > mSeekEchoDelay.getMax()) nValue = mSeekEchoDelay.getMax();
-        setEchoDelay(nValue, true);
+        setEcho(mSeekEchoDry.getProgress(), mSeekEchoWet.getProgress(), mSeekEchoFeedback.getProgress(), mSeekEchoDelay.getProgress()+1, true);
     }
 
     private void updateReverb()
@@ -3432,11 +3604,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 for(int i = EFFECTTYPE_COMP; i <= EFFECTTYPE_COMP_CUSTOMIZE; i++)
                     if(i != nSelect) deselectEffect(i);
             }
-            if(EFFECTTYPE_ECHO_STADIUM <= nSelect && nSelect <= EFFECTTYPE_ECHO_CUSTOMIZE)
-            {
-                for(int i = EFFECTTYPE_ECHO_STADIUM; i <= EFFECTTYPE_ECHO_CUSTOMIZE; i++)
-                    if(i != nSelect) deselectEffect(i);
-            }
             if(EFFECTTYPE_CHORUS <= nSelect && nSelect <= EFFECTTYPE_CHORUS_CUSTOMIZE)
             {
                 for(int i = EFFECTTYPE_CHORUS; i <= EFFECTTYPE_CHORUS_CUSTOMIZE; i++)
@@ -3483,6 +3650,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mActivity.controlFragment.setPitch(0.0f);
         }
         if(nEffect == EFFECTTYPE_REVERB) mReverbSelected = -1;
+        if(nEffect == EFFECTTYPE_ECHO) mEchoSelected = -1;
     }
 
     public void applyEffect()
@@ -3693,84 +3861,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 BASS.BASS_ChannelSetAttribute(sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * mFreq);
             else if(strEffect.equals(getString(R.string.phaseReversal)))
                 mDspPhaseReversal = BASS.BASS_ChannelSetDSP(sStream, phaseReversalDSP, null, 0);
-            else if(strEffect.equals(getString(R.string.studiumEcho))) {
-                mFxEcho = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_ECHO4, 2);
-                echo = new BASS_FX.BASS_BFX_ECHO4();
-                echo.fDryMix = 0.95f;
-                echo.fWetMix = 0.1f;
-                echo.fFeedback = 0.55f;
-                echo.fDelay = 0.4f;
-                echo.bStereo = TRUE;
-                echo.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxEcho, echo);
-            }
-            else if(strEffect.equals(getString(R.string.hallEcho))) {
-                mFxEcho = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_ECHO4, 2);
-                echo = new BASS_FX.BASS_BFX_ECHO4();
-                echo.fDryMix = 0.95f;
-                echo.fWetMix = 0.1f;
-                echo.fFeedback = 0.5f;
-                echo.fDelay = 0.3f;
-                echo.bStereo = TRUE;
-                echo.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxEcho, echo);
-            }
-            else if(strEffect.equals(getString(R.string.livehouseEcho))) {
-                mFxEcho = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_ECHO4, 2);
-                echo = new BASS_FX.BASS_BFX_ECHO4();
-                echo.fDryMix = 1.0f;
-                echo.fWetMix = 0.125f;
-                echo.fFeedback = 0.3f;
-                echo.fDelay = 0.2f;
-                echo.bStereo = TRUE;
-                echo.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxEcho, echo);
-            }
-            else if(strEffect.equals(getString(R.string.roomEcho))) {
-                mFxEcho = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_ECHO4, 2);
-                echo = new BASS_FX.BASS_BFX_ECHO4();
-                echo.fDryMix = 1.0f;
-                echo.fWetMix = 0.15f;
-                echo.fFeedback = 0.5f;
-                echo.fDelay = 0.1f;
-                echo.bStereo = TRUE;
-                echo.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxEcho, echo);
-            }
-            else if(strEffect.equals(getString(R.string.bathroomEcho))) {
-                mFxEcho = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_ECHO4, 2);
-                echo = new BASS_FX.BASS_BFX_ECHO4();
-                echo.fDryMix = 1.0f;
-                echo.fWetMix = 0.3f;
-                echo.fFeedback = 0.6f;
-                echo.fDelay = 0.075f;
-                echo.bStereo = TRUE;
-                echo.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxEcho, echo);
-            }
-            else if(strEffect.equals(getString(R.string.vocalEcho))) {
-                mFxEcho = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_ECHO4, 2);
-                echo = new BASS_FX.BASS_BFX_ECHO4();
-                echo.fDryMix = 1.0f;
-                echo.fWetMix = 0.15f;
-                echo.fFeedback = 0.4f;
-                echo.fDelay = 0.35f;
-                echo.bStereo = TRUE;
-                echo.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxEcho, echo);
-            }
-            else if(strEffect.equals(getString(R.string.mountainEcho))) {
-                mFxEcho = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_ECHO4, 2);
-                echo = new BASS_FX.BASS_BFX_ECHO4();
-                echo.fDryMix = 1.0f;
-                echo.fWetMix = 0.2f;
-                echo.fFeedback = 0.0f;
-                echo.fDelay = 1.0f;
-                echo.bStereo = TRUE;
-                echo.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxEcho, echo);
-            }
-            else if(strEffect.equals(getString(R.string.echoCustomize))) {
+            else if(strEffect.equals(getString(R.string.echo))) {
                 mFxEcho = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_ECHO4, 2);
                 echo = new BASS_FX.BASS_BFX_ECHO4();
                 echo.fDryMix = mEchoDry;
@@ -4834,7 +4925,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     public void showTemplateMenu() {
         final BottomMenu menu = new BottomMenu(mActivity);
-        menu.setTitle(getString(R.string.reverbTemplate));
+        if(mEffectDetail == EFFECTTYPE_REVERB) menu.setTitle(getString(R.string.reverbTemplate));
+        else if(mEffectDetail == EFFECTTYPE_ECHO) menu.setTitle(getString(R.string.echoTemplate));
         menu.addMenu(getString(R.string.sortTemplate), R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -4937,6 +5029,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         final BottomMenu menu = new BottomMenu(mActivity);
         if(mEffectDetail == EFFECTTYPE_REVERB)
             menu.setTitle(mReverbItems.get(nItem).getEffectTemplateName());
+        else if(mEffectDetail == EFFECTTYPE_ECHO)
+            menu.setTitle(mEchoItems.get(nItem).getEffectTemplateName());
         menu.addMenu(getString(R.string.changeTemplateName), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -4950,11 +5044,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
                 if(mEffectDetail == EFFECTTYPE_REVERB)
                     editPreset.setText(mReverbItems.get(nItem).getEffectTemplateName());
+                else if(mEffectDetail == EFFECTTYPE_ECHO)
+                    editPreset.setText(mEchoItems.get(nItem).getEffectTemplateName());
                 linearLayout.addView(editPreset);
                 builder.setView(linearLayout);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mReverbItems.get(nItem).setEffectTemplateName(editPreset.getText().toString());
+                        if(mEffectDetail == EFFECTTYPE_REVERB)
+                            mReverbItems.get(nItem).setEffectTemplateName(editPreset.getText().toString());
+                        else if(mEffectDetail == EFFECTTYPE_ECHO)
+                            mEchoItems.get(nItem).setEffectTemplateName(editPreset.getText().toString());
                         mEffectTemplatesAdapter.notifyItemChanged(nItem);
                         saveData();
                     }
@@ -4984,12 +5083,24 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                EffectTemplateItem item = mReverbItems.get(nItem);
-                ArrayList<Integer> arPresets = new ArrayList<>();
-                mReverbItems.add(nItem+1, new EffectTemplateItem(item.getEffectTemplateName(), new ArrayList<>(Arrays.asList(item.getArPresets().get(0), item.getArPresets().get(1), item.getArPresets().get(2), item.getArPresets().get(3), item.getArPresets().get(4)))));
+                EffectTemplateItem item = null;
+                if(mEffectDetail == EFFECTTYPE_REVERB) {
+                    item = mReverbItems.get(nItem);
+                    mReverbItems.add(nItem+1, new EffectTemplateItem(item.getEffectTemplateName(), new ArrayList<>(Arrays.asList(item.getArPresets().get(0), item.getArPresets().get(1), item.getArPresets().get(2), item.getArPresets().get(3), item.getArPresets().get(4)))));
+                }
+                else if(mEffectDetail == EFFECTTYPE_ECHO) {
+                    item = mEchoItems.get(nItem);
+                    mEchoItems.add(nItem+1, new EffectTemplateItem(item.getEffectTemplateName(), new ArrayList<>(Arrays.asList(item.getArPresets().get(0), item.getArPresets().get(1), item.getArPresets().get(2), item.getArPresets().get(3)))));
+                }
+                else return;
                 mEffectTemplatesAdapter.notifyItemInserted(nItem+1);
 
-                if(nItem < mReverbSelected) mReverbSelected++;
+                if(mEffectDetail == EFFECTTYPE_REVERB) {
+                    if (nItem < mReverbSelected) mReverbSelected++;
+                }
+                else if(mEffectDetail == EFFECTTYPE_ECHO) {
+                    if (nItem < mEchoSelected) mEchoSelected++;
+                }
 
                 for(int i = 0; i < mActivity.playlistFragment.getPlaylists().size(); i++) {
 
@@ -4998,7 +5109,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     for(int j = 0; j < arSongs.size(); j++) {
                         EffectSaver saver = arEffects.get(j);
                         if(saver.isSave()) {
-                            if(nItem < saver.getReverbSelected()) saver.setReverbSelected(saver.getReverbSelected()+1);
+                            if(mEffectDetail == EFFECTTYPE_REVERB) {
+                                if (nItem < saver.getReverbSelected())
+                                    saver.setReverbSelected(saver.getReverbSelected() + 1);
+                            }
+                            else if(mEffectDetail == EFFECTTYPE_ECHO) {
+                                if (nItem < saver.getEchoSelected())
+                                    saver.setEchoSelected(saver.getEchoSelected() + 1);
+                            }
                         }
                     }
                 }
@@ -5012,12 +5130,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             public void onClick(View view) {
                 menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-                builder.setTitle(mReverbItems.get(nItem).getEffectTemplateName());
+                if(mEffectDetail == EFFECTTYPE_REVERB)
+                    builder.setTitle(mReverbItems.get(nItem).getEffectTemplateName());
+                else if(mEffectDetail == EFFECTTYPE_ECHO)
+                    builder.setTitle(mEchoItems.get(nItem).getEffectTemplateName());
                 builder.setMessage(R.string.askDeleteTemplate);
                 builder.setPositiveButton(R.string.decideNot, null);
                 builder.setNegativeButton(R.string.doDelete, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        removeReverbItem(nItem);
+                        if(mEffectDetail == EFFECTTYPE_REVERB) removeReverbItem(nItem);
+                        else if(mEffectDetail == EFFECTTYPE_ECHO) removeEchoItem(nItem);
                     }
                 });
                 final AlertDialog alertDialog = builder.create();
@@ -5067,6 +5189,36 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     }
                     else if(nItem < saver.getReverbSelected())
                         saver.setReverbSelected(saver.getReverbSelected()-1);
+                }
+            }
+        }
+        saveData();
+    }
+
+    private void removeEchoItem(int nItem)
+    {
+        mEchoItems.remove(nItem);
+        mEffectTemplatesAdapter.notifyItemRemoved(nItem);
+
+        if(nItem == mEchoSelected) resetEcho();
+        else if(nItem < mEchoSelected) mEchoSelected--;
+
+        for(int i = 0; i < mActivity.playlistFragment.getPlaylists().size(); i++) {
+
+            ArrayList<SongItem> arSongs = mActivity.playlistFragment.getPlaylists().get(i);
+            ArrayList<EffectSaver> arEffects = mActivity.playlistFragment.getEffects().get(i);
+            for(int j = 0; j < arSongs.size(); j++) {
+                EffectSaver saver = arEffects.get(j);
+                if(saver.isSave()) {
+                    if(nItem == saver.getEchoSelected()) {
+                        saver.setEchoSelected(-1);
+                        saver.setEchoDry(1.0f);
+                        saver.setEchoWet(0.0f);
+                        saver.setEchoFeedback(0.0f);
+                        saver.setEchoDelay(0.0f);
+                    }
+                    else if(nItem < saver.getEchoSelected())
+                        saver.setEchoSelected(saver.getEchoSelected()-1);
                 }
             }
         }
