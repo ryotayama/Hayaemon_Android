@@ -55,7 +55,8 @@
     <string name="reverbStereoWidth">ステレオ度合い</string>
     <string name="chorus">コーラス</string>
     <string name="flanger">フランジャー</string>
-    <string name="chorusCustomize">コーラス／フランジャー（カスタマイズ）</string>
+    <string name="newChorus">新規コーラス</string>
+    <string name="chorusTemplate">コーラステンプレート</string>
     <string name="chorusDryMix">原音</string>
     <string name="chorusWetMix">コーラス音</string>
     <string name="chorusFeedback">フィードバック</string>

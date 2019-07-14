@@ -2941,6 +2941,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
         saver.setReverbSelected(mActivity.effectFragment.getReverbSelected());
         saver.setEchoSelected(mActivity.effectFragment.getEchoSelected());
+        saver.setChorusSelected(mActivity.effectFragment.getChorusSelected());
 
         saveFiles(false, true, false, false, false);
     }
@@ -3045,6 +3046,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setMarker(mActivity.loopFragment.getMarker());
             saver.setReverbSelected(mActivity.effectFragment.getReverbSelected());
             saver.setEchoSelected(mActivity.effectFragment.getEchoSelected());
+            saver.setChorusSelected(mActivity.effectFragment.getChorusSelected());
 
             saveFiles(false, true, false, false, false);
         }
@@ -3116,12 +3118,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mActivity.effectFragment.setCompRelease(saver.getCompRelease(), false);
         mActivity.effectFragment.setEcho(saver.getEchoDry(), saver.getEchoWet(), saver.getEchoFeedback(), saver.getEchoDelay(), false);
         mActivity.effectFragment.setReverb(saver.getReverbDry(), saver.getReverbWet(), saver.getReverbRoomSize(), saver.getReverbDamp(), saver.getReverbWidth(), false);
-        mActivity.effectFragment.setChorusDry(saver.getChorusDry(), false);
-        mActivity.effectFragment.setChorusWet(saver.getChorusWet(), false);
-        mActivity.effectFragment.setChorusFeedback(saver.getChorusFeedback(), false);
-        mActivity.effectFragment.setChorusMinSweep(saver.getChorusMinSweep(), false);
-        mActivity.effectFragment.setChorusMaxSweep(saver.getChorusMaxSweep(), false);
-        mActivity.effectFragment.setChorusRate(saver.getChorusRate(), false);
+        mActivity.effectFragment.setChorus(saver.getChorusDry(), saver.getChorusWet(), saver.getChorusFeedback(), saver.getChorusMinSweep(), saver.getChorusMaxSweep(), saver.getChorusRate(), false);
         mActivity.effectFragment.setDistortionDrive(saver.getDistortionDrive(), false);
         mActivity.effectFragment.setDistortionDry(saver.getDistortionDry(), false);
         mActivity.effectFragment.setDistortionWet(saver.getDistortionWet(), false);
@@ -3143,6 +3140,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mActivity.loopFragment.setMarker(saver.getMarker());
         mActivity.effectFragment.setReverbSelected(saver.getReverbSelected());
         mActivity.effectFragment.setEchoSelected(saver.getEchoSelected());
+        mActivity.effectFragment.setChorusSelected(saver.getChorusSelected());
     }
 
     private void saveSong(int nPurpose, String strFileName)
