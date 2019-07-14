@@ -18,7 +18,8 @@
     <string name="pan">パン（左右バランス）</string>
     <string name="normalize">ノーマライズ</string>
     <string name="comp">コンプレッサー</string>
-    <string name="compCustomize">コンプレッサー（カスタマイズ）</string>
+    <string name="newComp">新規コンプレッサー</string>
+    <string name="compTemplate">コンプレッサーテンプレート</string>
     <string name="gain">音量の増幅（dB）</string>
     <string name="threshold">圧縮の開始音量（dB）</string>
     <string name="ratio">圧縮率</string>

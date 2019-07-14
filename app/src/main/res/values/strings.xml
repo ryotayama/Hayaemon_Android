@@ -18,7 +18,8 @@
     <string name="pan">Pan</string>
     <string name="normalize">Normalize</string>
     <string name="comp">Compressor</string>
-    <string name="compCustomize">Compressor (Customize)</string>
+    <string name="newComp">New compressor</string>
+    <string name="compTemplate">Compressor template</string>
     <string name="gain">Gain (dB)</string>
     <string name="threshold">Threshold (dB)</string>
     <string name="ratio">Ratio</string>

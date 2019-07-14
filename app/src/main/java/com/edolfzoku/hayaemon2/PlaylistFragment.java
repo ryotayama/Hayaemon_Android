@@ -2943,6 +2943,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saver.setEchoSelected(mActivity.effectFragment.getEchoSelected());
         saver.setChorusSelected(mActivity.effectFragment.getChorusSelected());
         saver.setDistortionSelected(mActivity.effectFragment.getDistortionSelected());
+        saver.setCompSelected(mActivity.effectFragment.getCompSelected());
 
         saveFiles(false, true, false, false, false);
     }
@@ -3049,6 +3050,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setEchoSelected(mActivity.effectFragment.getEchoSelected());
             saver.setChorusSelected(mActivity.effectFragment.getChorusSelected());
             saver.setDistortionSelected(mActivity.effectFragment.getDistortionSelected());
+            saver.setCompSelected(mActivity.effectFragment.getCompSelected());
 
             saveFiles(false, true, false, false, false);
         }
@@ -3113,11 +3115,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mActivity.effectFragment.setIncreaseSpeed(saver.getIncreaseSpeed());
         mActivity.effectFragment.setTimeOfDecreaseSpeed(saver.getTimeOmDecreaseSpeed());
         mActivity.effectFragment.setDecreaseSpeed(saver.getDecreaseSpeed());
-        mActivity.effectFragment.setCompGain(saver.getCompGain(), false);
-        mActivity.effectFragment.setCompThreshold(saver.getCompThreshold(), false);
-        mActivity.effectFragment.setCompRatio(saver.getCompRatio(), false);
-        mActivity.effectFragment.setCompAttack(saver.getCompAttack(), false);
-        mActivity.effectFragment.setCompRelease(saver.getCompRelease(), false);
+        mActivity.effectFragment.setComp(saver.getCompGain(), saver.getCompThreshold(), saver.getCompRatio(), saver.getCompAttack(), saver.getCompRelease(), false);
         mActivity.effectFragment.setEcho(saver.getEchoDry(), saver.getEchoWet(), saver.getEchoFeedback(), saver.getEchoDelay(), false);
         mActivity.effectFragment.setReverb(saver.getReverbDry(), saver.getReverbWet(), saver.getReverbRoomSize(), saver.getReverbDamp(), saver.getReverbWidth(), false);
         mActivity.effectFragment.setChorus(saver.getChorusDry(), saver.getChorusWet(), saver.getChorusFeedback(), saver.getChorusMinSweep(), saver.getChorusMaxSweep(), saver.getChorusRate(), false);
@@ -3140,6 +3138,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mActivity.effectFragment.setEchoSelected(saver.getEchoSelected());
         mActivity.effectFragment.setChorusSelected(saver.getChorusSelected());
         mActivity.effectFragment.setDistortionSelected(saver.getDistortionSelected());
+        mActivity.effectFragment.setCompSelected(saver.getCompSelected());
     }
 
     private void saveSong(int nPurpose, String strFileName)
