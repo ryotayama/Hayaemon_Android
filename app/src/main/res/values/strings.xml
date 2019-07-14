@@ -63,10 +63,12 @@
     <string name="chorusMinSweep">Minimum sweep</string>
     <string name="chorusMaxSweep">Maximum sweep</string>
     <string name="chorusRate">Rate</string>
-    <string name="distortionStrong">Distortion (Strong)</string>
-    <string name="distortionMiddle">Distortion (Middle)</string>
-    <string name="distortionWeak">Distortion (Weak)</string>
-    <string name="distortionCustomize">Distortion (Customize)</string>
+    <string name="distortion">Distortion</string>
+    <string name="newDistortion">New distortion</string>
+    <string name="distortionTemplate">Distortion template</string>
+    <string name="strong">Strong</string>
+    <string name="middle">Middle</string>
+    <string name="weak">Weak</string>
     <string name="distortionDrive">Drive</string>
     <string name="distortionDry">Dry mix</string>
     <string name="distortionWet">Wet mix</string>

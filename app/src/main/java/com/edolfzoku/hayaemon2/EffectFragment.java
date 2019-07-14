@@ -82,6 +82,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private ArrayList<EffectTemplateItem> mReverbItems;
     private ArrayList<EffectTemplateItem> mEchoItems;
     private ArrayList<EffectTemplateItem> mChorusItems;
+    private ArrayList<EffectTemplateItem> mDistortionItems;
     private ItemTouchHelper mEffectTemplateTouchHelper;
     private int mDspVocalCancel = 0;
     private int mDspMonoral = 0;
@@ -135,27 +136,24 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static final int EFFECTTYPE_ECHO = 16;
     private static final int EFFECTTYPE_REVERB = 17;
     private static final int EFFECTTYPE_CHORUS = 18;
-    private static final int EFFECTTYPE_DISTORTION_STRONG = 19;
-    // private static final int EFFECTTYPE_DISTORTION_MIDDLE = 20;
-    // private static final int EFFECTTYPE_DISTORTION_WEAK = 21;
-    private static final int EFFECTTYPE_DISTORTION_CUSTOMIZE = 22;
-    static final int EFFECTTYPE_REVERSE = 23;
-    private static final int EFFECTTYPE_INCREASESPEED = 24;
-    private static final int EFFECTTYPE_DECREASESPEED = 25;
-    private static final int EFFECTTYPE_OLDRECORD = 26;
-    private static final int EFFECTTYPE_LOWBATTERY = 27;
-    private static final int EFFECTTYPE_NOSENSE_STRONG = 28;
-    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 29;
-    private static final int EFFECTTYPE_NOSENSE_WEAK = 30;
-    private static final int EFFECTTYPE_EARTRAINING = 31;
-    private static final int EFFECTTYPE_METRONOME = 32;
-    private static final int EFFECTTYPE_RECORDNOISE = 33;
-    private static final int EFFECTTYPE_ROAROFWAVES = 34;
-    private static final int EFFECTTYPE_RAIN = 35;
-    private static final int EFFECTTYPE_RIVER = 36;
-    private static final int EFFECTTYPE_WAR = 37;
-    private static final int EFFECTTYPE_FIRE = 38;
-    private static final int EFFECTTYPE_CONCERTHALL = 39;
+    private static final int EFFECTTYPE_DISTORTION = 19;
+    static final int EFFECTTYPE_REVERSE = 20;
+    private static final int EFFECTTYPE_INCREASESPEED = 21;
+    private static final int EFFECTTYPE_DECREASESPEED = 22;
+    private static final int EFFECTTYPE_OLDRECORD = 23;
+    private static final int EFFECTTYPE_LOWBATTERY = 24;
+    private static final int EFFECTTYPE_NOSENSE_STRONG = 25;
+    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 26;
+    private static final int EFFECTTYPE_NOSENSE_WEAK = 27;
+    private static final int EFFECTTYPE_EARTRAINING = 28;
+    private static final int EFFECTTYPE_METRONOME = 29;
+    private static final int EFFECTTYPE_RECORDNOISE = 30;
+    private static final int EFFECTTYPE_ROAROFWAVES = 31;
+    private static final int EFFECTTYPE_RAIN = 32;
+    private static final int EFFECTTYPE_RIVER = 33;
+    private static final int EFFECTTYPE_WAR = 34;
+    private static final int EFFECTTYPE_FIRE = 35;
+    private static final int EFFECTTYPE_CONCERTHALL = 36;
     private Timer mTimer;
     private int mSEStream;
     private int mSEStream2;
@@ -169,7 +167,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private float mVelo2 = 0.0f;
     private boolean mContinueFlag = true;
     private final Handler mHandlerLongClick;
-    private int mEffectDetail = -1, mReverbSelected = -1, mEchoSelected = -1, mChorusSelected = -1;
+    private int mEffectDetail = -1, mReverbSelected = -1, mEchoSelected = -1, mChorusSelected = -1, mDistortionSelected = -1;
 
     private RecyclerView mRecyclerEffects, mRecyclerEffectTemplates;
     private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextEchoDry, mTextEchoWet, mTextEchoFeedback, mTextEchoDelay, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth, mTextChorusDry, mTextChorusWet, mTextChorusFeedback, mTextChorusMinSweep, mTextChorusMaxSweep, mTextChorusRate, mTextDistortionDrive, mTextDistortionDry, mTextDistortionWet, mTextDistortionFeedback, mTextDistortionVolume, mTextFinishSortEffect;
@@ -177,7 +175,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private RelativeLayout mRelativeEffectDetail, mRelativeSliderEffectDatail, mRelativeRollerEffectDetail, mRelativeEffectTemplates, mRelativeEffectTitle;
     private SeekBar mSeekEffectDetail, mSeekCompGain, mSeekCompThreshold, mSeekCompRatio, mSeekCompAttack, mSeekCompRelease, mSeekEchoDry, mSeekEchoWet, mSeekEchoFeedback, mSeekEchoDelay, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth, mSeekChorusDry, mSeekChorusWet, mSeekChorusFeedback, mSeekChorusMinSweep, mSeekChorusMaxSweep, mSeekChorusRate, mSeekDistortionDrive, mSeekDistortionDry, mSeekDistortionWet, mSeekDistortionFeedback, mSeekDistortionVolume;
     private ImageButton mBtnEffectMinus, mBtnEffectPlus, mBtnCompGainMinus, mBtnCompGainPlus, mBtnCompThresholdMinus, mBtnCompThresholdPlus, mBtnCompRatioMinus, mBtnCompRatioPlus, mBtnCompAttackMinus, mBtnCompAttackPlus, mBtnCompReleaseMinus, mBtnCompReleasePlus, mBtnEchoDryMinus, mBtnEchoDryPlus, mBtnEchoWetMinus, mBtnEchoWetPlus, mBtnEchoFeedbackMinus, mBtnEchoFeedbackPlus, mBtnEchoDelayMinus, mBtnEchoDelayPlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus, mBtnChorusDryMinus, mBtnChorusDryPlus, mBtnChorusWetMinus, mBtnChorusWetPlus, mBtnChorusFeedbackMinus, mBtnChorusFeedbackPlus, mBtnChorusMinSweepMinus, mBtnChorusMinSweepPlus, mBtnChorusMaxSweepMinus, mBtnChorusMaxSweepPlus, mBtnChorusRateMinus, mBtnChorusRatePlus, mBtnDistortionDriveMinus, mBtnDistortionDrivePlus, mBtnDistortionDryMinus, mBtnDistortionDryPlus, mBtnDistortionWetMinus, mBtnDistortionWetPlus, mBtnDistortionFeedbackMinus, mBtnDistortionFeedbackPlus, mBtnDistortionVolumeMinus, mBtnDistortionVolumePlus;
-    private Button mBtnEffectBack, mBtnEffectFinish, mBtnEffectTemplateOff, mBtnReverbSaveAs, mBtnEchoSaveAs, mBtnChorusSaveAs;
+    private Button mBtnEffectBack, mBtnEffectFinish, mBtnEffectTemplateOff, mBtnReverbSaveAs, mBtnEchoSaveAs, mBtnChorusSaveAs, mBtnDistortionSaveAs;
     private AnimationButton mBtnEffectTemplateMenu, mBtnAddEffectTemplate;
     private ScrollView mScrollCompCustomize, mScrollEchoCustomize, mScrollReverbCustomize, mScrollChorusCustomize, mScrollDistortionCustomize;
     private View mViewSepEffect, mViewSepEffectTemplate;
@@ -246,6 +244,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mChorusItems = lists;
         mEffectTemplatesAdapter.changeItems(mChorusItems);
     }
+    private void setDistortionItems(ArrayList<EffectTemplateItem> lists) {
+        mDistortionItems = lists;
+        mEffectTemplatesAdapter.changeItems(mDistortionItems);
+    }
 
     public boolean isSorting() { return mSorting; }
     public boolean isSelectedItem(int nItem)
@@ -270,6 +272,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(mEffectDetail == EFFECTTYPE_CHORUS) {
             if (nItem >= mChorusItems.size()) return false;
             EffectTemplateItem item = mChorusItems.get(nItem);
+            return item.isSelected();
+        }
+        else if(mEffectDetail == EFFECTTYPE_DISTORTION) {
+            if (nItem >= mDistortionItems.size()) return false;
+            EffectTemplateItem item = mDistortionItems.get(nItem);
             return item.isSelected();
         }
         return false;
@@ -399,6 +406,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mEffectTemplatesAdapter.notifyDataSetChanged();
         }
     }
+    public int getDistortionSelected() { return mDistortionSelected; }
+    public void setDistortionSelected(int nSelected) {
+        mDistortionSelected = nSelected;
+        if(mRelativeEffectTemplates.getVisibility() == View.VISIBLE && mEffectDetail == EFFECTTYPE_DISTORTION) {
+            mBtnEffectTemplateOff.setSelected(nSelected == -1);
+            for(int i = 0; i < mDistortionItems.size(); i++)
+                mDistortionItems.get(i).setSelected(i == nSelected);
+            mEffectTemplatesAdapter.notifyDataSetChanged();
+        }
+    }
 
     public EffectFragment()
     {
@@ -406,6 +423,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mReverbItems = new ArrayList<>();
         mEchoItems = new ArrayList<>();
         mChorusItems = new ArrayList<>();
+        mDistortionItems = new ArrayList<>();
         mHandlerLongClick = new Handler();
     }
 
@@ -479,6 +497,21 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
                 mBtnAddEffectTemplate.setAlpha(1.0f);
             }
+            else if(mScrollDistortionCustomize.getVisibility() == View.VISIBLE) {
+                if(mDistortionSelected != -1) {
+                    ArrayList<Float> arFloats = mDistortionItems.get(mDistortionSelected).getArPresets();
+                    setDistortion(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), arFloats.get(4), true);
+                }
+                else resetChorus();
+                mBtnEffectFinish.setVisibility(View.GONE);
+                mRelativeEffectTemplates.setVisibility(View.VISIBLE);
+                mScrollDistortionCustomize.setVisibility(View.INVISIBLE);
+                mTextEffectName.setText(mEffectItems.get(mEffectDetail).getEffectName());
+                mBtnEffectBack.setText(R.string.back);
+                mImgEffectBack.setVisibility(View.VISIBLE);
+                mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+                mBtnAddEffectTemplate.setAlpha(1.0f);
+            }
             else {
                 mRelativeEffectDetail.setVisibility(View.GONE);
                 mRecyclerEffects.setVisibility(View.VISIBLE);
@@ -496,6 +529,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 if(mEffectDetail == EFFECTTYPE_REVERB) editPreset.setText(R.string.newReverb);
                 else if(mEffectDetail == EFFECTTYPE_ECHO) editPreset.setText(R.string.newEcho);
                 else if(mEffectDetail == EFFECTTYPE_CHORUS) editPreset.setText(R.string.newChorus);
+                else if(mEffectDetail == EFFECTTYPE_DISTORTION) editPreset.setText(R.string.newDistortion);
                 linearLayout.addView(editPreset);
                 builder.setView(linearLayout);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -543,6 +577,20 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                             mChorusItems.get(mChorusItems.size()-1).setSelected(true);
                             mChorusSelected = mChorusItems.size()-1;
                         }
+                        else if(mEffectDetail == EFFECTTYPE_DISTORTION) {
+                            arPresets.add(Float.parseFloat((String) mTextDistortionDrive.getText()));
+                            arPresets.add(Float.parseFloat((String) mTextDistortionDry.getText()));
+                            arPresets.add(Float.parseFloat((String) mTextDistortionWet.getText()));
+                            arPresets.add(Float.parseFloat((String) mTextDistortionFeedback.getText()));
+                            arPresets.add(Float.parseFloat((String) mTextDistortionVolume.getText()));
+                            mDistortionItems.add(new EffectTemplateItem(editPreset.getText().toString(), arPresets));
+                            mEffectTemplatesAdapter.notifyItemInserted(mDistortionItems.size() - 1);
+                            mScrollDistortionCustomize.setVisibility(View.INVISIBLE);
+                            for(int i = 0; i < mDistortionItems.size()-1; i++)
+                                mDistortionItems.get(i).setSelected(false);
+                            mDistortionItems.get(mDistortionItems.size()-1).setSelected(true);
+                            mDistortionSelected = mDistortionItems.size()-1;
+                        }
                         saveData();
 
                         mBtnEffectFinish.setVisibility(View.GONE);
@@ -566,6 +614,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                             mRecyclerEffectTemplates.scrollToPosition(mEchoItems.size()-1);
                         else if(mEffectDetail == EFFECTTYPE_CHORUS)
                             mRecyclerEffectTemplates.scrollToPosition(mChorusItems.size()-1);
+                        else if(mEffectDetail == EFFECTTYPE_DISTORTION)
+                            mRecyclerEffectTemplates.scrollToPosition(mDistortionItems.size()-1);
                     }
                 });
                 builder.setNegativeButton(R.string.cancel, null);
@@ -639,6 +689,22 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     }
                     mScrollChorusCustomize.setVisibility(View.INVISIBLE);
                 }
+                else if(mEffectDetail == EFFECTTYPE_DISTORTION) {
+                    for (; nItem < mDistortionItems.size(); nItem++) {
+                        item = mDistortionItems.get(nItem);
+                        if (item.isSelected()) break;
+                    }
+                    if (item != null) {
+                        ArrayList<Float> arPresets = item.getArPresets();
+                        arPresets.set(0, Float.parseFloat((String) mTextDistortionDrive.getText()));
+                        arPresets.set(1, Float.parseFloat((String) mTextDistortionDry.getText()));
+                        arPresets.set(2, Float.parseFloat((String) mTextDistortionWet.getText()));
+                        arPresets.set(3, Float.parseFloat((String) mTextDistortionFeedback.getText()));
+                        arPresets.set(4, Float.parseFloat((String) mTextDistortionVolume.getText()));
+                        saveData();
+                    }
+                    mScrollDistortionCustomize.setVisibility(View.INVISIBLE);
+                }
                 mBtnEffectFinish.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.VISIBLE);
                 mBtnAddEffectTemplate.setAlpha(1.0f);
@@ -657,6 +723,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     setEcho(100, 30, 60, 8, true);
                 else if(mEffectDetail == EFFECTTYPE_CHORUS)
                     setChorus(100, 10, 50, 100, 200, 1000, true);
+                else if(mEffectDetail == EFFECTTYPE_DISTORTION)
+                    setDistortion(20, 95, 5, 10, 100, true);
             }
 
             if(mEffectDetail == EFFECTTYPE_REVERB) {
@@ -673,6 +741,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mTextEffectName.setText(R.string.newChorus);
                 mScrollChorusCustomize.setVisibility(View.VISIBLE);
                 mBtnChorusSaveAs.setVisibility(View.GONE);
+            }
+            else if(mEffectDetail == EFFECTTYPE_DISTORTION) {
+                mTextEffectName.setText(R.string.newDistortion);
+                mScrollDistortionCustomize.setVisibility(View.VISIBLE);
+                mBtnDistortionSaveAs.setVisibility(View.GONE);
             }
 
             mBtnEffectBack.setText(R.string.cancel);
@@ -709,6 +782,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             else if(mEffectDetail == EFFECTTYPE_CHORUS) {
                 for(int i = 0; i < mChorusItems.size(); i++) mChorusItems.get(i).setSelected(false);
                 resetChorus();
+            }
+            else if(mEffectDetail == EFFECTTYPE_DISTORTION) {
+                for(int i = 0; i < mDistortionItems.size(); i++) mDistortionItems.get(i).setSelected(false);
+                resetDistortion();
             }
             mEffectTemplatesAdapter.notifyDataSetChanged();
         }
@@ -899,12 +976,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(v.getId() == R.id.btnChorusRateMinus) minusChorusRate();
         else if(v.getId() == R.id.btnChorusRatePlus) plusChorusRate();
         else if(v.getId() == R.id.btnChorusRandom) setChorusRandom();
-        else if(v.getId() == R.id.btnResetEcho) {
-            if(mEchoSelected != -1) {
-                ArrayList<Float> arFloats = mEchoItems.get(mEchoSelected).getArPresets();
-                setEcho(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), true);
+        else if(v.getId() == R.id.btnResetChorus) {
+            if(mChorusSelected != -1) {
+                ArrayList<Float> arFloats = mChorusItems.get(mChorusSelected).getArPresets();
+                setChorus(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), arFloats.get(4), arFloats.get(5), true);
             }
-            else resetEcho();
+            else resetChorus();
         }
         else if(v.getId() == R.id.btnChorusSaveAs) {
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
@@ -981,7 +1058,76 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if(v.getId() == R.id.btnDistortionVolumeMinus) minusDistortionVolume();
         else if(v.getId() == R.id.btnDistortionVolumePlus) plusDistortionVolume();
         else if(v.getId() == R.id.btnDistortionRandom) setDistortionRandom();
-        else if(v.getId() == R.id.btnResetDistortion) resetDistortion();
+        else if(v.getId() == R.id.btnResetDistortion) {
+            if(mDistortionSelected != -1) {
+                ArrayList<Float> arFloats = mDistortionItems.get(mDistortionSelected).getArPresets();
+                setDistortion(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), arFloats.get(4), true);
+            }
+            else resetDistortion();
+        }
+        else if(v.getId() == R.id.btnDistortionSaveAs) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setTitle(R.string.saveTemplate);
+            LinearLayout linearLayout = new LinearLayout(mActivity);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            final EditText editPreset = new EditText(mActivity);
+            editPreset.setHint(R.string.templateName);
+            editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
+            editPreset.setText(R.string.newDistortion);
+            linearLayout.addView(editPreset);
+            builder.setView(linearLayout);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    ArrayList<Float> arPresets = new ArrayList<>();
+                    arPresets.add(Float.parseFloat((String)mTextDistortionDrive.getText()));
+                    arPresets.add(Float.parseFloat((String)mTextDistortionDry.getText()));
+                    arPresets.add(Float.parseFloat((String)mTextDistortionWet.getText()));
+                    arPresets.add(Float.parseFloat((String)mTextDistortionFeedback.getText()));
+                    arPresets.add(Float.parseFloat((String)mTextDistortionVolume.getText()));
+                    mDistortionItems.add(new EffectTemplateItem(editPreset.getText().toString(), arPresets));
+                    mEffectTemplatesAdapter.notifyItemInserted(mDistortionItems.size() - 1);
+                    saveData();
+
+                    mBtnEffectFinish.setVisibility(View.GONE);
+                    mRelativeEffectTemplates.setVisibility(View.VISIBLE);
+                    mScrollDistortionCustomize.setVisibility(View.INVISIBLE);
+                    mImgEffectBack.setVisibility(View.VISIBLE);
+                    mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+                    mBtnAddEffectTemplate.setAlpha(1.0f);
+
+                    for(int i = 0; i < mDistortionItems.size()-1; i++)
+                        mDistortionItems.get(i).setSelected(false);
+                    mDistortionItems.get(mDistortionItems.size()-1).setSelected(true);
+                    mDistortionSelected = mDistortionItems.size()-1;
+
+                    mEffectItems.get(mEffectDetail).setSelected(true);
+                    checkDuplicate(mEffectDetail);
+                    mEffectsAdapter.notifyDataSetChanged();
+
+                    mEffectTemplatesAdapter.notifyDataSetChanged();
+                    mRecyclerEffectTemplates.scrollToPosition(mDistortionItems.size()-1);
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, null);
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+            {
+                @Override
+                public void onShow(DialogInterface arg0)
+                {
+                    if(alertDialog.getWindow() != null) {
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
+                    editPreset.requestFocus();
+                    editPreset.setSelection(editPreset.getText().toString().length());
+                    InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (null != imm) imm.showSoftInput(editPreset, 0);
+                }
+            });
+            alertDialog.show();
+        }
     }
 
     @Override
@@ -1759,6 +1905,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnReverbSaveAs = mActivity.findViewById(R.id.btnReverbSaveAs);
         mBtnEchoSaveAs = mActivity.findViewById(R.id.btnEchoSaveAs);
         mBtnChorusSaveAs = mActivity.findViewById(R.id.btnChorusSaveAs);
+        mBtnDistortionSaveAs = mActivity.findViewById(R.id.btnDistortionSaveAs);
 
         mScrollCompCustomize = mActivity.findViewById(R.id.scrollCompCustomize);
         mSeekCompGain = mActivity.findViewById(R.id.seekCompGain);
@@ -1968,13 +2115,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.chorus), true);
         mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.distortionStrong), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.distortionMiddle), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.distortionWeak), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.distortionCustomize), true);
+        item = new EffectItem(getString(R.string.distortion), true);
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.reverse), false);
         mEffectItems.add(item);
@@ -2198,6 +2339,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnDistortionVolumePlus.setOnTouchListener(this);
         btnDistortionRandom.setOnClickListener(this);
         btnResetDistortion.setOnClickListener(this);
+        mBtnDistortionSaveAs.setOnClickListener(this);
 
         mEditTimeEffectDetail.setOnFocusChangeListener(this);
         mEditSpeedEffectDetail.setOnFocusChangeListener(this);
@@ -2213,11 +2355,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setEcho(100, 30, 60, 8, false);
         setReverb(70, 100, 85, 50, 90, false);
         setChorus(100, 10, 50, 100, 200, 1000, false);
-        setDistortionDrive(20, false);
-        setDistortionDry(95, false);
-        setDistortionWet(5, false);
-        setDistortionFeedback(10, false);
-        setDistortionVolume(100, false);
+        setDistortion(20, 95, 5, 10, 100, false);
     }
 
     private void loadData()
@@ -2227,6 +2365,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         ArrayList<EffectTemplateItem> reverbItems = gson.fromJson(preferences.getString("mReverbItems",""), new TypeToken<ArrayList<EffectTemplateItem>>(){}.getType());
         ArrayList<EffectTemplateItem> echoItems = gson.fromJson(preferences.getString("mEchoItems",""), new TypeToken<ArrayList<EffectTemplateItem>>(){}.getType());
         ArrayList<EffectTemplateItem> chorusItems = gson.fromJson(preferences.getString("mChorusItems",""), new TypeToken<ArrayList<EffectTemplateItem>>(){}.getType());
+        ArrayList<EffectTemplateItem> distortionItems = gson.fromJson(preferences.getString("mDistortionItems",""), new TypeToken<ArrayList<EffectTemplateItem>>(){}.getType());
 
         if(reverbItems != null) setReverbItems(reverbItems);
         else resetReverbs();
@@ -2234,6 +2373,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else resetEchos();
         if(chorusItems != null) setChorusItems(chorusItems);
         else resetChoruses();
+        if(distortionItems != null) setDistortionItems(distortionItems);
+        else resetDistortions();
 
         mBtnEffectTemplateOff.setSelected(true);
         for(int i = 0; i < mReverbItems.size(); i++)
@@ -2242,6 +2383,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mEchoItems.get(i).setSelected(false);
         for(int i = 0; i < mChorusItems.size(); i++)
             mChorusItems.get(i).setSelected(false);
+        for(int i = 0; i < mDistortionItems.size(); i++)
+            mDistortionItems.get(i).setSelected(false);
     }
 
     private void saveData()
@@ -2251,6 +2394,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         preferences.edit().putString("mReverbItems", gson.toJson(mReverbItems)).apply();
         preferences.edit().putString("mEchoItems", gson.toJson(mEchoItems)).apply();
         preferences.edit().putString("mChorusItems", gson.toJson(mChorusItems)).apply();
+        preferences.edit().putString("mDistortionItems", gson.toJson(mDistortionItems)).apply();
     }
 
     private void resetReverbs()
@@ -2298,13 +2442,26 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         resetChorus();
     }
 
+    private void resetDistortions()
+    {
+        if(mDistortionItems.size() > 0) mDistortionItems.clear();
+
+        mDistortionItems.add(new EffectTemplateItem(getString(R.string.strong), new ArrayList<>(Arrays.asList(0.2f, 0.96f, 0.03f, 0.1f, 1.0f))));
+        mDistortionItems.add(new EffectTemplateItem(getString(R.string.middle), new ArrayList<>(Arrays.asList(0.2f, 0.97f, 0.02f, 0.1f, 1.0f))));
+        mDistortionItems.add(new EffectTemplateItem(getString(R.string.weak), new ArrayList<>(Arrays.asList(0.2f, 0.98f, 0.01f, 0.1f, 1.0f))));
+
+        saveData();
+        mEffectTemplatesAdapter.notifyDataSetChanged();
+        resetDistortion();
+    }
+
     public void onEffectItemClick(int nEffect)
     {
         if(nEffect < 0 || mEffectItems.size() <= nEffect) return;
         EffectItem item = mEffectItems.get(nEffect);
 
         if(!item.isSelected()) {
-            if(nEffect == EFFECTTYPE_REVERB || nEffect == EFFECTTYPE_ECHO || nEffect == EFFECTTYPE_CHORUS) {
+            if(nEffect == EFFECTTYPE_REVERB || nEffect == EFFECTTYPE_ECHO || nEffect == EFFECTTYPE_CHORUS || nEffect == EFFECTTYPE_DISTORTION) {
                 onEffectDetailClick(nEffect);
                 return;
             }
@@ -2391,6 +2548,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             if(bAlreadySelected) mChorusSelected = -1;
             else mChorusSelected = nEffectTemplate;
         }
+        else if(mEffectDetail == EFFECTTYPE_DISTORTION) {
+            item = mDistortionItems.get(nEffectTemplate);
+            if(item.isSelected()) bAlreadySelected = true;
+            for(int i = 0; i < mDistortionItems.size(); i++) {
+                if (i != nEffectTemplate) mDistortionItems.get(i).setSelected(false);
+                else mDistortionItems.get(i).setSelected(!bAlreadySelected);
+            }
+            if(bAlreadySelected) mDistortionSelected = -1;
+            else mDistortionSelected = nEffectTemplate;
+        }
         else return;
         mBtnEffectTemplateOff.setSelected(bAlreadySelected);
 
@@ -2431,6 +2598,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 setChorus(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), arFloats.get(4), arFloats.get(5), true);
             }
         }
+        else if(mEffectDetail == EFFECTTYPE_DISTORTION) {
+            if (mDistortionSelected == -1) resetDistortion();
+            else {
+                ArrayList<Float> arFloats = mDistortionItems.get(nEffectTemplate).getArPresets();
+                setDistortion(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), arFloats.get(4), true);
+            }
+        }
     }
 
     public void resetEffect()
@@ -2469,11 +2643,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         resetEcho();
         resetReverb();
         resetChorus();
-        setDistortionDrive(20, false);
-        setDistortionDry(95, false);
-        setDistortionWet(5, false);
-        setDistortionFeedback(10, false);
-        setDistortionVolume(100, false);
+        resetDistortion();
     }
 
     private void setCompRandom()
@@ -2598,26 +2768,36 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     private void setDistortionRandom()
     {
-    	setDistortionDrive(getRandomValue(0, mSeekDistortionDrive.getMax()), true);
-    	int nDry = getRandomValue(50, 100);
-        setDistortionDry(nDry, true);
+        int nDry = getRandomValue(50, 100);
         int nWet;
         while(true) {
             nWet = getRandomValue(10, 100);
             if(nWet <= nDry) break;
         }
-        setDistortionWet(nWet, true);
-        setDistortionFeedback(getRandomValue(0, mSeekDistortionFeedback.getMax()), true);
-        setDistortionVolume(getRandomValue(80, 120), true);
+        setDistortion(getRandomValue(0, mSeekDistortionDrive.getMax()), nDry, nWet,
+                getRandomValue(0, mSeekDistortionFeedback.getMax()), getRandomValue(80, 120),
+                true);
     }
 
     private void resetDistortion()
     {
-        setDistortionDrive(20, true);
-        setDistortionDry(95, true);
-        setDistortionWet(5, true);
-        setDistortionFeedback(10, true);
-        setDistortionVolume(100, true);
+        mEffectItems.get(EFFECTTYPE_DISTORTION).setSelected(false);
+        boolean bSelected = false;
+        for(int i = 0; i < mEffectItems.size(); i++) {
+            if(mEffectItems.get(i).isSelected()) bSelected = true;
+        }
+        if(!bSelected) mEffectItems.get(0).setSelected(true);
+        mBtnEffectTemplateOff.setSelected(true);
+        for(int i = 0; i < mDistortionItems.size(); i++) mDistortionItems.get(i).setSelected(false);
+
+        mDistortionSelected = -1;
+        mEffectsAdapter.notifyDataSetChanged();
+        mEffectTemplatesAdapter.notifyDataSetChanged();
+
+        BASS.BASS_ChannelRemoveFX(MainActivity.sStream, mFxDistortion);
+        mFxDistortion = 0;
+
+        setDistortion(20, 95, 5, 10, 100, true);
     }
 
     public void onEffectDetailClick(int nEffect)
@@ -2633,6 +2813,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             else if(mEffectDetail == EFFECTTYPE_CHORUS) {
                 if(mChorusSelected != -1) onEffectItemClick(nEffect);
+            }
+            else if(mEffectDetail == EFFECTTYPE_DISTORTION) {
+                if(mDistortionSelected != -1) onEffectItemClick(nEffect);
             }
             else onEffectItemClick(nEffect);
         }
@@ -2800,14 +2983,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mEffectTemplatesAdapter.notifyDataSetChanged();
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         }
-        else if(nEffect == EFFECTTYPE_DISTORTION_CUSTOMIZE) {
-            mRelativeSliderEffectDatail.setVisibility(View.GONE);
-            mRelativeRollerEffectDetail.setVisibility(View.GONE);
-            mScrollCompCustomize.setVisibility(View.GONE);
-            mScrollEchoCustomize.setVisibility(View.GONE);
-            mScrollReverbCustomize.setVisibility(View.GONE);
-            mScrollChorusCustomize.setVisibility(View.GONE);
-            mScrollDistortionCustomize.setVisibility(View.VISIBLE);
+        else if(nEffect == EFFECTTYPE_DISTORTION) {
+            mEffectTemplatesAdapter.changeItems(mDistortionItems);
+            mBtnAddEffectTemplate.setContentDescription(getString(R.string.newDistortion));
+            for(int i = 0; i < mDistortionItems.size(); i++) mDistortionItems.get(i).setSelected(false);
+            if(mDistortionSelected == -1) resetDistortion();
+            else onEffectTemplateItemClick(mDistortionSelected);
+            mEffectTemplatesAdapter.notifyDataSetChanged();
+            mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         }
         else {
             mRelativeSliderEffectDatail.setVisibility(View.VISIBLE);
@@ -2870,6 +3053,20 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mImgEffectBack.setVisibility(View.VISIBLE);
             mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
             mBtnChorusSaveAs.setVisibility(View.VISIBLE);
+        }
+        else if(mEffectDetail == EFFECTTYPE_DISTORTION) {
+            EffectTemplateItem item = mDistortionItems.get(nTemplate);
+            mTextEffectName.setText(item.getEffectTemplateName());
+
+            mBtnEffectBack.setText(R.string.back);
+            mBtnEffectFinish.setText(R.string.done);
+
+            mBtnEffectFinish.setVisibility(View.VISIBLE);
+            mRelativeEffectTemplates.setVisibility(View.INVISIBLE);
+            mScrollDistortionCustomize.setVisibility(View.VISIBLE);
+            mImgEffectBack.setVisibility(View.VISIBLE);
+            mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+            mBtnDistortionSaveAs.setVisibility(View.VISIBLE);
         }
     }
 
@@ -2988,11 +3185,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             setChorus(mSeekChorusDry.getProgress(), mSeekChorusWet.getProgress(), mSeekChorusFeedback.getProgress(), mSeekChorusMinSweep.getProgress(), progress, mSeekChorusRate.getProgress(), fromTouch);
         else if(seekBar.getId() == R.id.seekChorusRate)
             setChorus(mSeekChorusDry.getProgress(), mSeekChorusWet.getProgress(), mSeekChorusFeedback.getProgress(), mSeekChorusMinSweep.getProgress(), mSeekChorusMaxSweep.getProgress(), progress, fromTouch);
-        else if(seekBar.getId() == R.id.seekDistortionDrive) setDistortionDrive(progress, fromTouch);
-        else if(seekBar.getId() == R.id.seekDistortionDry) setDistortionDry(progress, fromTouch);
-        else if(seekBar.getId() == R.id.seekDistortionWet) setDistortionWet(progress, fromTouch);
-        else if(seekBar.getId() == R.id.seekDistortionFeedback) setDistortionFeedback(progress, fromTouch);
-        else if(seekBar.getId() == R.id.seekDistortionVolume) setDistortionVolume(progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekDistortionDrive)
+            setDistortion(progress, mSeekDistortionDry.getProgress(), mSeekDistortionWet.getProgress(), mSeekDistortionFeedback.getProgress(), mSeekDistortionVolume.getProgress(), fromTouch);
+        else if(seekBar.getId() == R.id.seekDistortionDry)
+            setDistortion(mSeekDistortionDrive.getProgress(), progress, mSeekDistortionWet.getProgress(), mSeekDistortionFeedback.getProgress(), mSeekDistortionVolume.getProgress(), fromTouch);
+        else if(seekBar.getId() == R.id.seekDistortionWet)
+            setDistortion(mSeekDistortionDrive.getProgress(), mSeekDistortionDry.getProgress(), progress, mSeekDistortionFeedback.getProgress(), mSeekDistortionVolume.getProgress(), fromTouch);
+        else if(seekBar.getId() == R.id.seekDistortionFeedback)
+            setDistortion(mSeekDistortionDrive.getProgress(), mSeekDistortionDry.getProgress(), mSeekDistortionWet.getProgress(), progress, mSeekDistortionVolume.getProgress(), fromTouch);
+        else if(seekBar.getId() == R.id.seekDistortionVolume)
+            setDistortion(mSeekDistortionDrive.getProgress(), mSeekDistortionDry.getProgress(), mSeekDistortionWet.getProgress(), mSeekDistortionFeedback.getProgress(), progress, fromTouch);
     }
 
     private void updateComp()
@@ -3506,7 +3708,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     private void updateDistortion()
     {
-        if(!mEffectItems.get(EFFECTTYPE_DISTORTION_CUSTOMIZE).isSelected() || MainActivity.sStream == 0)
+        if(!mEffectItems.get(EFFECTTYPE_DISTORTION).isSelected() || MainActivity.sStream == 0)
             return;
         if(mFxDistortion == 0) mFxDistortion = BASS.BASS_ChannelSetFX(MainActivity.sStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
         BASS_FX.BASS_BFX_DISTORTION distortion = new BASS_FX.BASS_BFX_DISTORTION();
@@ -3519,154 +3721,103 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         BASS.BASS_FXSetParameters(mFxDistortion, distortion);
     }
 
-    public void setDistortionDrive(int nValue, boolean bSave)
-    {
-        mDistortionDrive = nValue / 100.0f;
+    public void setDistortion(int nDrive, int nDry, int nWet, int nFeedback, int nVolume, boolean bSave) {
+        if(nDrive < 0) nDrive = 0;
+        if(nDry < 0) nDry = 0;
+        if(nWet < 0) nWet = 0;
+        if(nFeedback < 0) nFeedback = 0;
+        if(nVolume < 0) nVolume = 0;
+
+        if(nDrive > mSeekDistortionDrive.getMax()) nDrive = mSeekDistortionDrive.getMax();
+        if(nDry > mSeekDistortionDry.getMax()) nDry = mSeekDistortionDry.getMax();
+        if(nWet > mSeekDistortionWet.getMax()) nWet = mSeekDistortionWet.getMax();
+        if(nFeedback > mSeekDistortionFeedback.getMax()) nFeedback = mSeekDistortionFeedback.getMax();
+        if(nVolume > mSeekDistortionVolume.getMax()) nVolume = mSeekDistortionVolume.getMax();
+
+        mDistortionDrive = nDrive / 100.0f;
+        mDistortionDry = nDry / 100.0f;
+        mDistortionWet = nWet / 100.0f;
+        mDistortionFeedback = nFeedback / 100.0f;
+        mDistortionVolume = nVolume / 100.0f;
+
         mTextDistortionDrive.setText(String.format(Locale.getDefault(), "%.2f", mDistortionDrive));
-        mSeekDistortionDrive.setProgress(nValue);
+        mTextDistortionDry.setText(String.format(Locale.getDefault(), "%.2f", mDistortionDry));
+        mTextDistortionWet.setText(String.format(Locale.getDefault(), "%.2f", mDistortionWet));
+        mTextDistortionFeedback.setText(String.format(Locale.getDefault(), "%.2f", mDistortionFeedback));
+        mTextDistortionVolume.setText(String.format(Locale.getDefault(), "%.2f", mDistortionVolume));
+
+        mSeekDistortionDrive.setProgress(nDrive);
+        mSeekDistortionDry.setProgress(nDry);
+        mSeekDistortionWet.setProgress(nWet);
+        mSeekDistortionFeedback.setProgress(nFeedback);
+        mSeekDistortionVolume.setProgress(nVolume);
+
         updateDistortion();
         if(bSave) mActivity.playlistFragment.updateSavingEffect();
     }
 
-    public void setDistortionDrive(float fValue, boolean bSave)
+    public void setDistortion(float fDrive, float fDry, float fWet, float fFeedback, float fVolume, boolean bSave)
     {
-        mDistortionDrive = fValue;
+        mDistortionDrive = fDrive;
+        mDistortionDry = fDry;
+        mDistortionWet = fWet;
+        mDistortionFeedback = fFeedback;
+        mDistortionVolume = fVolume;
+
         mTextDistortionDrive.setText(String.format(Locale.getDefault(), "%.2f", mDistortionDrive));
-        mSeekDistortionDrive.setProgress((int)(fValue * 100.0f));
-        updateDistortion();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setDistortionDry(int nValue, boolean bSave)
-    {
-        mDistortionDry = nValue / 100.0f;
         mTextDistortionDry.setText(String.format(Locale.getDefault(), "%.2f", mDistortionDry));
-        mSeekDistortionDry.setProgress(nValue);
-        updateDistortion();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setDistortionDry(float fValue, boolean bSave)
-    {
-        mDistortionDry = fValue;
-        mTextDistortionDry.setText(String.format(Locale.getDefault(), "%.2f", mDistortionDry));
-        mSeekDistortionDry.setProgress((int)(fValue * 100.0f));
-        updateDistortion();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setDistortionWet(int nValue, boolean bSave)
-    {
-        mDistortionWet = nValue / 100.0f;
         mTextDistortionWet.setText(String.format(Locale.getDefault(), "%.2f", mDistortionWet));
-        mSeekDistortionWet.setProgress(nValue);
-        updateDistortion();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setDistortionWet(float fValue, boolean bSave)
-    {
-        mDistortionWet = fValue;
-        mTextDistortionWet.setText(String.format(Locale.getDefault(), "%.2f", mDistortionWet));
-        mSeekDistortionWet.setProgress((int)(fValue * 100.0f));
-        updateDistortion();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setDistortionFeedback(int nValue, boolean bSave)
-    {
-        mDistortionFeedback = nValue / 100.0f;
         mTextDistortionFeedback.setText(String.format(Locale.getDefault(), "%.2f", mDistortionFeedback));
-        mSeekDistortionFeedback.setProgress(nValue);
-        updateDistortion();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setDistortionFeedback(float fValue, boolean bSave)
-    {
-        mDistortionFeedback = fValue;
-        mTextDistortionFeedback.setText(String.format(Locale.getDefault(), "%.2f", mDistortionFeedback));
-        mSeekDistortionFeedback.setProgress((int)(fValue * 100.0f));
-        updateDistortion();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
-
-    public void setDistortionVolume(int nValue, boolean bSave)
-    {
-        mDistortionVolume = nValue / 100.0f;
         mTextDistortionVolume.setText(String.format(Locale.getDefault(), "%.2f", mDistortionVolume));
-        mSeekDistortionVolume.setProgress(nValue);
-        updateDistortion();
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-    }
 
-    public void setDistortionVolume(float fValue, boolean bSave)
-    {
-        mDistortionVolume = fValue;
-        mTextDistortionVolume.setText(String.format(Locale.getDefault(), "%.2f", mDistortionVolume));
-        mSeekDistortionVolume.setProgress((int)(fValue * 100.0f));
+        mSeekDistortionDrive.setProgress((int)(fDrive * 100.0f));
+        mSeekDistortionDry.setProgress((int)(fDry * 100.0f));
+        mSeekDistortionWet.setProgress((int)(fWet * 100.0f));
+        mSeekDistortionFeedback.setProgress((int)(fFeedback * 100.0f));
+        mSeekDistortionVolume.setProgress((int)(fVolume * 100.0f));
+
         updateDistortion();
         if(bSave) mActivity.playlistFragment.updateSavingEffect();
     }
 
     private void minusDistortionDrive() {
-        int nValue = mSeekDistortionDrive.getProgress() - 1;
-        if(nValue < 0) nValue = 0;
-        setDistortionDrive(nValue, true);
+        setDistortion(mSeekDistortionDrive.getProgress()-1, mSeekDistortionDry.getProgress(), mSeekDistortionWet.getProgress(), mSeekDistortionFeedback.getProgress(), mSeekDistortionVolume.getProgress(), true);
     }
 
     private void plusDistortionDrive() {
-        int nValue = mSeekDistortionDrive.getProgress() + 1;
-        if(nValue > mSeekDistortionDrive.getMax()) nValue = mSeekDistortionDrive.getMax();
-        setDistortionDrive(nValue, true);
+        setDistortion(mSeekDistortionDrive.getProgress()+1, mSeekDistortionDry.getProgress(), mSeekDistortionWet.getProgress(), mSeekDistortionFeedback.getProgress(), mSeekDistortionVolume.getProgress(), true);
     }
 
     private void minusDistortionDry() {
-        int nValue = mSeekDistortionDry.getProgress() - 1;
-        if(nValue < 0) nValue = 0;
-        setDistortionDry(nValue, true);
+        setDistortion(mSeekDistortionDrive.getProgress(), mSeekDistortionDry.getProgress()-1, mSeekDistortionWet.getProgress(), mSeekDistortionFeedback.getProgress(), mSeekDistortionVolume.getProgress(), true);
     }
 
     private void plusDistortionDry() {
-        int nValue = mSeekDistortionDry.getProgress() + 1;
-        if(nValue > mSeekDistortionDry.getMax()) nValue = mSeekDistortionDry.getMax();
-        setDistortionDry(nValue, true);
+        setDistortion(mSeekDistortionDrive.getProgress(), mSeekDistortionDry.getProgress()+1, mSeekDistortionWet.getProgress(), mSeekDistortionFeedback.getProgress(), mSeekDistortionVolume.getProgress(), true);
     }
 
     private void minusDistortionWet() {
-        int nValue = mSeekDistortionWet.getProgress() - 1;
-        if(nValue < 0) nValue = 0;
-        setDistortionWet(nValue, true);
+        setDistortion(mSeekDistortionDrive.getProgress(), mSeekDistortionDry.getProgress(), mSeekDistortionWet.getProgress()-1, mSeekDistortionFeedback.getProgress(), mSeekDistortionVolume.getProgress(), true);
     }
 
     private void plusDistortionWet() {
-        int nValue = mSeekDistortionWet.getProgress() + 1;
-        if(nValue > mSeekDistortionWet.getMax()) nValue = mSeekDistortionWet.getMax();
-        setDistortionWet(nValue, true);
+        setDistortion(mSeekDistortionDrive.getProgress(), mSeekDistortionDry.getProgress(), mSeekDistortionWet.getProgress()+1, mSeekDistortionFeedback.getProgress(), mSeekDistortionVolume.getProgress(), true);
     }
 
     private void minusDistortionFeedback() {
-        int nValue = mSeekDistortionFeedback.getProgress() - 1;
-        if(nValue < 0) nValue = 0;
-        setDistortionFeedback(nValue, true);
+        setDistortion(mSeekDistortionDrive.getProgress(), mSeekDistortionDry.getProgress(), mSeekDistortionWet.getProgress(), mSeekDistortionFeedback.getProgress()-1, mSeekDistortionVolume.getProgress(), true);
     }
 
     private void plusDistortionFeedback() {
-        int nValue = mSeekDistortionFeedback.getProgress() + 1;
-        if(nValue > mSeekDistortionFeedback.getMax()) nValue = mSeekDistortionFeedback.getMax();
-        setDistortionFeedback(nValue, true);
+        setDistortion(mSeekDistortionDrive.getProgress(), mSeekDistortionDry.getProgress(), mSeekDistortionWet.getProgress(), mSeekDistortionFeedback.getProgress()+1, mSeekDistortionVolume.getProgress(), true);
     }
 
     private void minusDistortionVolume() {
-        int nValue = mSeekDistortionVolume.getProgress() - 1;
-        if(nValue < 0) nValue = 0;
-        setDistortionVolume(nValue, true);
+        setDistortion(mSeekDistortionDrive.getProgress(), mSeekDistortionDry.getProgress(), mSeekDistortionWet.getProgress(), mSeekDistortionFeedback.getProgress(), mSeekDistortionVolume.getProgress()-1, true);
     }
 
     private void plusDistortionVolume() {
-        int nValue = mSeekDistortionVolume.getProgress() + 1;
-        if(nValue > mSeekDistortionVolume.getMax()) nValue = mSeekDistortionVolume.getMax();
-        setDistortionVolume(nValue, true);
+        setDistortion(mSeekDistortionDrive.getProgress(), mSeekDistortionDry.getProgress(), mSeekDistortionWet.getProgress(), mSeekDistortionFeedback.getProgress(), mSeekDistortionVolume.getProgress()+1, true);
     }
 
     private void setPan(float pan)
@@ -3747,10 +3898,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 for(int i = EFFECTTYPE_COMP; i <= EFFECTTYPE_COMP_CUSTOMIZE; i++)
                     if(i != nSelect) deselectEffect(i);
             }
-            if((EFFECTTYPE_DISTORTION_STRONG <= nSelect && nSelect <= EFFECTTYPE_DISTORTION_CUSTOMIZE) || nSelect == EFFECTTYPE_LOWBATTERY)
+            if(nSelect == EFFECTTYPE_DISTORTION || nSelect == EFFECTTYPE_LOWBATTERY)
             {
-                for(int i = EFFECTTYPE_DISTORTION_STRONG; i <= EFFECTTYPE_DISTORTION_CUSTOMIZE; i++)
-                    if(i != nSelect) deselectEffect(i);
+                if(nSelect != EFFECTTYPE_DISTORTION) deselectEffect(EFFECTTYPE_DISTORTION);
                 if(nSelect != EFFECTTYPE_LOWBATTERY) deselectEffect(EFFECTTYPE_LOWBATTERY);
             }
             if(EFFECTTYPE_INCREASESPEED <= nSelect && nSelect <= EFFECTTYPE_METRONOME)
@@ -3790,6 +3940,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if(nEffect == EFFECTTYPE_REVERB) mReverbSelected = -1;
         if(nEffect == EFFECTTYPE_ECHO) mEchoSelected = -1;
         if(nEffect == EFFECTTYPE_CHORUS) mChorusSelected = -1;
+        if(nEffect == EFFECTTYPE_DISTORTION) mDistortionSelected = -1;
     }
 
     public void applyEffect()
@@ -4035,40 +4186,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 chorus.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(mFxChorus, chorus);
             }
-            else if(strEffect.equals(getString(R.string.distortionStrong))) {
-                mFxDistortion = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
-                distortion = new BASS_FX.BASS_BFX_DISTORTION();
-                distortion.fDrive = (float) 0.2;
-                distortion.fDryMix = (float) 0.96;
-                distortion.fWetMix = (float) 0.03;
-                distortion.fFeedback = (float) 0.1;
-                distortion.fVolume = (float) 1.0;
-                distortion.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxDistortion, distortion);
-            }
-            else if(strEffect.equals(getString(R.string.distortionMiddle))) {
-                mFxDistortion = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
-                distortion = new BASS_FX.BASS_BFX_DISTORTION();
-                distortion.fDrive = (float) 0.2;
-                distortion.fDryMix = (float) 0.97;
-                distortion.fWetMix = (float) 0.02;
-                distortion.fFeedback = (float) 0.1;
-                distortion.fVolume = (float) 1.0;
-                distortion.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxDistortion, distortion);
-            }
-            else if(strEffect.equals(getString(R.string.distortionWeak))) {
-                mFxDistortion = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
-                distortion = new BASS_FX.BASS_BFX_DISTORTION();
-                distortion.fDrive = (float) 0.2;
-                distortion.fDryMix = (float) 0.98;
-                distortion.fWetMix = (float) 0.01;
-                distortion.fFeedback = (float) 0.1;
-                distortion.fVolume = (float) 1.0;
-                distortion.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxDistortion, distortion);
-            }
-            else if(strEffect.equals(getString(R.string.distortionCustomize))) {
+            else if(strEffect.equals(getString(R.string.distortion))) {
                 mFxDistortion = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
                 distortion = new BASS_FX.BASS_BFX_DISTORTION();
                 distortion.fDrive = mDistortionDrive;
@@ -5043,6 +5161,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if(mEffectDetail == EFFECTTYPE_REVERB) menu.setTitle(getString(R.string.reverbTemplate));
         else if(mEffectDetail == EFFECTTYPE_ECHO) menu.setTitle(getString(R.string.echoTemplate));
         else if(mEffectDetail == EFFECTTYPE_CHORUS) menu.setTitle(getString(R.string.chorusTemplate));
+        else if(mEffectDetail == EFFECTTYPE_DISTORTION) menu.setTitle(getString(R.string.distortionTemplate));
         menu.addMenu(getString(R.string.sortTemplate), R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -5149,6 +5268,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             menu.setTitle(mEchoItems.get(nItem).getEffectTemplateName());
         else if(mEffectDetail == EFFECTTYPE_CHORUS)
             menu.setTitle(mChorusItems.get(nItem).getEffectTemplateName());
+        else if(mEffectDetail == EFFECTTYPE_DISTORTION)
+            menu.setTitle(mDistortionItems.get(nItem).getEffectTemplateName());
         menu.addMenu(getString(R.string.changeTemplateName), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -5166,6 +5287,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     editPreset.setText(mEchoItems.get(nItem).getEffectTemplateName());
                 else if(mEffectDetail == EFFECTTYPE_CHORUS)
                     editPreset.setText(mChorusItems.get(nItem).getEffectTemplateName());
+                else if(mEffectDetail == EFFECTTYPE_DISTORTION)
+                    editPreset.setText(mDistortionItems.get(nItem).getEffectTemplateName());
                 linearLayout.addView(editPreset);
                 builder.setView(linearLayout);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -5176,6 +5299,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                             mEchoItems.get(nItem).setEffectTemplateName(editPreset.getText().toString());
                         else if(mEffectDetail == EFFECTTYPE_CHORUS)
                             mChorusItems.get(nItem).setEffectTemplateName(editPreset.getText().toString());
+                        else if(mEffectDetail == EFFECTTYPE_DISTORTION)
+                            mDistortionItems.get(nItem).setEffectTemplateName(editPreset.getText().toString());
                         mEffectTemplatesAdapter.notifyItemChanged(nItem);
                         saveData();
                     }
@@ -5218,6 +5343,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     item = mChorusItems.get(nItem);
                     mChorusItems.add(nItem+1, new EffectTemplateItem(item.getEffectTemplateName(), new ArrayList<>(Arrays.asList(item.getArPresets().get(0), item.getArPresets().get(1), item.getArPresets().get(2), item.getArPresets().get(3)))));
                 }
+                else if(mEffectDetail == EFFECTTYPE_DISTORTION) {
+                    item = mDistortionItems.get(nItem);
+                    mDistortionItems.add(nItem+1, new EffectTemplateItem(item.getEffectTemplateName(), new ArrayList<>(Arrays.asList(item.getArPresets().get(0), item.getArPresets().get(1), item.getArPresets().get(2), item.getArPresets().get(3)))));
+                }
                 else return;
                 mEffectTemplatesAdapter.notifyItemInserted(nItem+1);
 
@@ -5229,6 +5358,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 }
                 else if(mEffectDetail == EFFECTTYPE_CHORUS) {
                     if (nItem < mChorusSelected) mChorusSelected++;
+                }
+                else if(mEffectDetail == EFFECTTYPE_DISTORTION) {
+                    if (nItem < mDistortionSelected) mDistortionSelected++;
                 }
 
                 for(int i = 0; i < mActivity.playlistFragment.getPlaylists().size(); i++) {
@@ -5250,6 +5382,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                                 if (nItem < saver.getChorusSelected())
                                     saver.setChorusSelected(saver.getChorusSelected() + 1);
                             }
+                            else if(mEffectDetail == EFFECTTYPE_DISTORTION) {
+                                if (nItem < saver.getDistortionSelected())
+                                    saver.setDistortionSelected(saver.getDistortionSelected() + 1);
+                            }
                         }
                     }
                 }
@@ -5269,6 +5405,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     builder.setTitle(mEchoItems.get(nItem).getEffectTemplateName());
                 else if(mEffectDetail == EFFECTTYPE_CHORUS)
                     builder.setTitle(mChorusItems.get(nItem).getEffectTemplateName());
+                else if(mEffectDetail == EFFECTTYPE_DISTORTION)
+                    builder.setTitle(mDistortionItems.get(nItem).getEffectTemplateName());
                 builder.setMessage(R.string.askDeleteTemplate);
                 builder.setPositiveButton(R.string.decideNot, null);
                 builder.setNegativeButton(R.string.doDelete, new DialogInterface.OnClickListener() {
@@ -5276,6 +5414,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                         if(mEffectDetail == EFFECTTYPE_REVERB) removeReverbItem(nItem);
                         else if(mEffectDetail == EFFECTTYPE_ECHO) removeEchoItem(nItem);
                         else if(mEffectDetail == EFFECTTYPE_CHORUS) removeChorusItem(nItem);
+                        else if(mEffectDetail == EFFECTTYPE_DISTORTION) removeDistortionItem(nItem);
                     }
                 });
                 final AlertDialog alertDialog = builder.create();
@@ -5387,6 +5526,37 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     }
                     else if(nItem < saver.getChorusSelected())
                         saver.setChorusSelected(saver.getChorusSelected()-1);
+                }
+            }
+        }
+        saveData();
+    }
+
+    private void removeDistortionItem(int nItem)
+    {
+        mDistortionItems.remove(nItem);
+        mEffectTemplatesAdapter.notifyItemRemoved(nItem);
+
+        if(nItem == mDistortionSelected) resetDistortion();
+        else if(nItem < mDistortionSelected) mDistortionSelected--;
+
+        for(int i = 0; i < mActivity.playlistFragment.getPlaylists().size(); i++) {
+
+            ArrayList<SongItem> arSongs = mActivity.playlistFragment.getPlaylists().get(i);
+            ArrayList<EffectSaver> arEffects = mActivity.playlistFragment.getEffects().get(i);
+            for(int j = 0; j < arSongs.size(); j++) {
+                EffectSaver saver = arEffects.get(j);
+                if(saver.isSave()) {
+                    if(nItem == saver.getDistortionSelected()) {
+                        saver.setDistortionSelected(-1);
+                        saver.setDistortionDrive(0.0f);
+                        saver.setDistortionDry(1.0f);
+                        saver.setDistortionWet(0.0f);
+                        saver.setDistortionFeedback(0.0f);
+                        saver.setDistortionVolume(0.0f);
+                    }
+                    else if(nItem < saver.getDistortionSelected())
+                        saver.setDistortionSelected(saver.getDistortionSelected()-1);
                 }
             }
         }

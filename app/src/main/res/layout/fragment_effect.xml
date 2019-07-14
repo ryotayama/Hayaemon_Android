@@ -2790,6 +2790,22 @@
 
                 </RelativeLayout>
 
+                <Button
+                    android:id="@+id/btnDistortionSaveAs"
+                    android:text="@string/saveAs"
+                    android:textColor="@drawable/btn_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="44dp"
+                    android:layout_marginRight="44dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/btn_border_background"
+                    android:stateListAnimator="@null"
+                    android:visibility="visible"
+                    android:layout_below="@+id/relativeSliderDistortionVolume"
+                    />
+
             </RelativeLayout>
 
         </ScrollView>

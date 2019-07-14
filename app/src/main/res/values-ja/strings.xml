@@ -63,10 +63,12 @@
     <string name="chorusMinSweep">効果の深さ（最小）</string>
     <string name="chorusMaxSweep">効果の深さ（最大）</string>
     <string name="chorusRate">音を揺らす速さ</string>
-    <string name="distortionStrong">ディストーション（強）</string>
-    <string name="distortionMiddle">ディストーション（中）</string>
-    <string name="distortionWeak">ディストーション（弱）</string>
-    <string name="distortionCustomize">ディストーション（カスタマイズ）</string>
+    <string name="distortion">ディストーション</string>
+    <string name="newDistortion">新規ディストーション</string>
+    <string name="distortionTemplate">ディズトーションテンプレート</string>
+    <string name="strong">強</string>
+    <string name="middle">中</string>
+    <string name="weak">弱</string>
     <string name="distortionDrive">歪み具合</string>
     <string name="distortionDry">原音</string>
     <string name="distortionWet">歪み音</string>
