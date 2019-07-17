@@ -318,9 +318,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             onPlayBtnClick();
         else if(v.getId() == R.id.btnForward)
             onForwardBtnClick();
-        else if(v.getId() == R.id.btnRecord)
-        {
-            startRecord();
+        else if(v.getId() == R.id.btnRecord) {
+            if(MainActivity.sRecord != 0) stopRecord();
+            else startRecord();
         }
         else if(v.getId() == R.id.btnLeft)
         {
