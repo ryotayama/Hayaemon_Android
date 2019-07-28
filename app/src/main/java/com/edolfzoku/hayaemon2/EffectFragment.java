@@ -4454,7 +4454,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
                     params.inputStream = getResources().openRawResource(R.raw.wave);
                     mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
-                    mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 38.399), endWave, this);
+                    mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 28.399), endWave, this);
                     BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol2);
                     BASS.BASS_ChannelPlay(mSEStream, true);
                 }
@@ -4498,7 +4498,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
                     params.inputStream = getResources().openRawResource(R.raw.fire);
                     mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
-                    mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 90.000), endFire, this);
+                    mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 10.000), endFire, this);
                     BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol6);
                     BASS.BASS_ChannelPlay(mSEStream, true);
                 }
@@ -4825,7 +4825,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 BASS.BASS_ChannelRemoveSync(mSEStream, mSync);
                 mSync = 0;
             }
-            mSync = BASS.BASS_ChannelSetSync(mSEStream2, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 38.399), endWave, this);
+            mSync = BASS.BASS_ChannelSetSync(mSEStream2, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 28.399), endWave, this);
             BASS.BASS_ChannelPlay(mSEStream2, FALSE);
             BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f, 1000);
             BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, mVol2, 1000);
@@ -4843,7 +4843,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 BASS.BASS_ChannelRemoveSync(mSEStream2, mSync);
                 mSync = 0;
             }
-            mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 38.399), endWave, this);
+            mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 28.399), endWave, this);
             BASS.BASS_ChannelPlay(mSEStream, FALSE);
             BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f, 1000);
             BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol2, 1000);
@@ -5021,7 +5021,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 BASS.BASS_ChannelRemoveSync(mSEStream, mSync);
                 mSync = 0;
             }
-            mSync = BASS.BASS_ChannelSetSync(mSEStream2, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 90.0), endFire, this);
+            mSync = BASS.BASS_ChannelSetSync(mSEStream2, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 10.0), endFire, this);
             BASS.BASS_ChannelPlay(mSEStream2, FALSE);
             BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, mVol6, 5000);
             BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f, 5000);
@@ -5039,7 +5039,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 BASS.BASS_ChannelRemoveSync(mSEStream2, mSync);
                 mSync = 0;
             }
-            mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 90.0), endFire, this);
+            mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 10.0), endFire, this);
             BASS.BASS_ChannelPlay(mSEStream, FALSE);
             BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol6, 5000);
             BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f, 5000);
