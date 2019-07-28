@@ -77,9 +77,11 @@ public class ForegroundService extends IntentService {
             if (Build.VERSION.SDK_INT >= 26) {
                 NotificationManager notificationManager =
                         (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-                NotificationChannel channel = new NotificationChannel("default",
+                NotificationChannel channel = new NotificationChannel("playsound",
                         getString(R.string.notificationDescription),
-                        NotificationManager.IMPORTANCE_LOW);
+                        NotificationManager.IMPORTANCE_DEFAULT);
+                channel.setSound(null, null);
+                channel.enableVibration(false);
                 channel.setDescription(getString(R.string.notificationDescription));
                 if (notificationManager != null)
                     notificationManager.createNotificationChannel(channel);
@@ -128,7 +130,7 @@ public class ForegroundService extends IntentService {
             actionPlayPause.icon = iconPlayPause;
             actionPlayPause.title = playPauseTitle;
             if(builder == null) {
-                builder = new NotificationCompat.Builder(this, "default");
+                builder = new NotificationCompat.Builder(this, "playsound");
                 builder.addAction(actionRewind);
                 builder.addAction(actionPlayPause);
                 builder.addAction(actionForward);
