@@ -2892,13 +2892,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saver.setPan(mActivity.effectFragment.getPan());
         saver.setFreq(mActivity.effectFragment.getFreq());
         saver.setBPM(mActivity.effectFragment.getBPM());
-        saver.setVol1(mActivity.effectFragment.getVol1());
-        saver.setVol2(mActivity.effectFragment.getVol2());
-        saver.setVol3(mActivity.effectFragment.getVol3());
-        saver.setVol4(mActivity.effectFragment.getVol4());
-        saver.setVol5(mActivity.effectFragment.getVol5());
-        saver.setVol6(mActivity.effectFragment.getVol6());
-        saver.setVol7(mActivity.effectFragment.getVol7());
+        saver.setSoundEffectVolume(mActivity.effectFragment.getSoundEffectVolume());
         saver.setTimeOmIncreaseSpeed(mActivity.effectFragment.getTimeOfIncreaseSpeed());
         saver.setIncreaseSpeed(mActivity.effectFragment.getIncreaseSpeed());
         saver.setTimeOmDecreaseSpeed(mActivity.effectFragment.getTimeOfDecreaseSpeed());
@@ -2944,6 +2938,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saver.setChorusSelected(mActivity.effectFragment.getChorusSelected());
         saver.setDistortionSelected(mActivity.effectFragment.getDistortionSelected());
         saver.setCompSelected(mActivity.effectFragment.getCompSelected());
+        saver.setSoundEffectSelected(mActivity.effectFragment.getSoundEffectSelected());
 
         saveFiles(false, true, false, false, false);
     }
@@ -3001,13 +2996,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setPan(mActivity.effectFragment.getPan());
             saver.setFreq(mActivity.effectFragment.getFreq());
             saver.setBPM(mActivity.effectFragment.getBPM());
-            saver.setVol1(mActivity.effectFragment.getVol1());
-            saver.setVol2(mActivity.effectFragment.getVol2());
-            saver.setVol3(mActivity.effectFragment.getVol3());
-            saver.setVol4(mActivity.effectFragment.getVol4());
-            saver.setVol5(mActivity.effectFragment.getVol5());
-            saver.setVol6(mActivity.effectFragment.getVol6());
-            saver.setVol7(mActivity.effectFragment.getVol7());
+            saver.setSoundEffectVolume(mActivity.effectFragment.getSoundEffectVolume());
             saver.setTimeOmIncreaseSpeed(mActivity.effectFragment.getTimeOfIncreaseSpeed());
             saver.setIncreaseSpeed(mActivity.effectFragment.getIncreaseSpeed());
             saver.setTimeOmDecreaseSpeed(mActivity.effectFragment.getTimeOfDecreaseSpeed());
@@ -3051,6 +3040,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setChorusSelected(mActivity.effectFragment.getChorusSelected());
             saver.setDistortionSelected(mActivity.effectFragment.getDistortionSelected());
             saver.setCompSelected(mActivity.effectFragment.getCompSelected());
+            saver.setSoundEffectSelected(mActivity.effectFragment.getSoundEffectSelected());
 
             saveFiles(false, true, false, false, false);
         }
@@ -3104,13 +3094,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mActivity.effectFragment.setPan(saver.getPan(), false);
         mActivity.effectFragment.setFreq(saver.getFreq(), false);
         mActivity.effectFragment.setBPM(saver.getBPM());
-        mActivity.effectFragment.setVol1(saver.getVol1());
-        mActivity.effectFragment.setVol2(saver.getVol2());
-        mActivity.effectFragment.setVol3(saver.getVol3());
-        mActivity.effectFragment.setVol4(saver.getVol4());
-        mActivity.effectFragment.setVol5(saver.getVol5());
-        mActivity.effectFragment.setVol6(saver.getVol6());
-        mActivity.effectFragment.setVol7(saver.getVol7());
+        mActivity.effectFragment.setSoundEffect(saver.getSoundEffectVolume(), false);
         mActivity.effectFragment.setTimeOfIncreaseSpeed(saver.getTimeOmIncreaseSpeed());
         mActivity.effectFragment.setIncreaseSpeed(saver.getIncreaseSpeed());
         mActivity.effectFragment.setTimeOfDecreaseSpeed(saver.getTimeOmDecreaseSpeed());
@@ -3139,6 +3123,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mActivity.effectFragment.setChorusSelected(saver.getChorusSelected());
         mActivity.effectFragment.setDistortionSelected(saver.getDistortionSelected());
         mActivity.effectFragment.setCompSelected(saver.getCompSelected());
+        mActivity.effectFragment.setSoundEffectSelected(saver.getSoundEffectSelected());
     }
 
     private void saveSong(int nPurpose, String strFileName)

@@ -44,12 +44,14 @@ public class EffectTemplatesAdapter extends RecyclerView.Adapter<EffectTemplates
     static class ViewHolder extends RecyclerView.ViewHolder {
         private RelativeLayout mEffectTemplateItem;
         private TextView mTextEffectTemplate;
+        private RelativeLayout mRelativeEffectTemplateDetail;
         private ImageButton mBtnEffectTemplateDetail;
         private ImageView mImgEffectTemplateRight;
         private ImageView mImgEffectTemplateMenu;
 
         RelativeLayout getEffectTemplateItem() { return mEffectTemplateItem; }
         TextView getTextEffectTemplate() { return mTextEffectTemplate; }
+        RelativeLayout getRelativeEffectTemplateDetail() { return mRelativeEffectTemplateDetail; }
         ImageButton getBtnEffectTemplateDetail() { return mBtnEffectTemplateDetail; }
         ImageView getImgEffectTemplateRight() { return mImgEffectTemplateRight; }
         ImageView getImgEffectTemplateMenu() { return mImgEffectTemplateMenu; }
@@ -58,6 +60,7 @@ public class EffectTemplatesAdapter extends RecyclerView.Adapter<EffectTemplates
             super(view);
             mEffectTemplateItem = view.findViewById(R.id.effectTemplateItem);
             mTextEffectTemplate = view.findViewById(R.id.textEffectTemplate);
+            mRelativeEffectTemplateDetail = view.findViewById(R.id.relativeEffectTemplateDetail);
             mBtnEffectTemplateDetail = view.findViewById(R.id.btnEffectTemplateDetail);
             mImgEffectTemplateRight = view.findViewById(R.id.imgEffectTemplateRight);
             mImgEffectTemplateMenu = view.findViewById(R.id.imgEffectTemplateMenu);
@@ -101,7 +104,7 @@ public class EffectTemplatesAdapter extends RecyclerView.Adapter<EffectTemplates
                 mActivity.effectFragment.onEffectTemplateItemClick(holder.getAdapterPosition());
             }
         });
-
+        RelativeLayout.LayoutParams paramRelative = (RelativeLayout.LayoutParams)holder.getRelativeEffectTemplateDetail().getLayoutParams();
         if(mActivity.effectFragment.isSorting()) {
             holder.getImgEffectTemplateMenu().setOnClickListener(null);
             holder.getImgEffectTemplateMenu().setOnTouchListener(new View.OnTouchListener() {
@@ -113,6 +116,8 @@ public class EffectTemplatesAdapter extends RecyclerView.Adapter<EffectTemplates
                 }
             });
             holder.getImgEffectTemplateMenu().setImageResource(R.drawable.ic_sort);
+            holder.getImgEffectTemplateMenu().setVisibility(View.VISIBLE);
+            paramRelative.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
             RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.getImgEffectTemplateMenu().getLayoutParams();
             param.leftMargin = param.rightMargin = (int) (8 * mActivity.getDensity());
             holder.getBtnEffectTemplateDetail().setVisibility(View.GONE);
@@ -147,7 +152,15 @@ public class EffectTemplatesAdapter extends RecyclerView.Adapter<EffectTemplates
                     mActivity.effectFragment.showMenu(holder.getAdapterPosition());
                 }
             });
-            holder.getImgEffectTemplateMenu().setImageResource(R.drawable.ic_button_more);
+            if(mActivity.effectFragment.getEffectDetail() == EffectFragment.EFFECTTYPE_SOUNDEFFECT) {
+                holder.getImgEffectTemplateMenu().setVisibility(View.GONE);
+                paramRelative.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
+            }
+            else {
+                holder.getImgEffectTemplateMenu().setImageResource(R.drawable.ic_button_more);
+                holder.getImgEffectTemplateMenu().setVisibility(View.VISIBLE);
+                paramRelative.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+            }
             RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.getImgEffectTemplateMenu().getLayoutParams();
             param.leftMargin = param.rightMargin = 0;
         }

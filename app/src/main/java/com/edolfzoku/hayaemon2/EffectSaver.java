@@ -60,13 +60,7 @@ class EffectSaver {
     private float fPan = 0.0f;
     private float fFreq = 0.0f;
     private int nBPM = 0;
-    private float mVol1 = 0.0f;
-    private float mVol2 = 0.0f;
-    private float mVol3 = 0.0f;
-    private float mVol4 = 0.0f;
-    private float mVol5 = 0.0f;
-    private float mVol6 = 0.0f;
-    private float mVol7 = 0.0f;
+    private float mSoundEffectVolume;
     private float mTimeOmIncreaseSpeed = 1.0f;
     private float mIncreaseSpeed = 0.1f;
     private float mTimeOmDecreaseSpeed = 1.0f;
@@ -85,7 +79,7 @@ class EffectSaver {
     private ArrayList<Double> arMarkerTime = null;
     private boolean bLoopMarker = false;
     private int nMarker = 0;
-    private int mReverbSelected = -1, mEchoSelected = -1, mChorusSelected = -1, mDistortionSelected = -1, mCompSelected = -1;
+    private int mReverbSelected = -1, mEchoSelected = -1, mChorusSelected = -1, mDistortionSelected = -1, mCompSelected = -1, mSoundEffectSelected = -1;
 
     void setSave(boolean save) { mSave = save; }
     void setSpeed(float speed) { mSpeed = speed; }
@@ -136,13 +130,7 @@ class EffectSaver {
     void setPan(float fPan) { this.fPan = fPan; }
     void setFreq(float fFreq) { this.fFreq = fFreq; }
     void setBPM(int nBPM) { this.nBPM = nBPM; }
-    void setVol1(float mVol1) { this.mVol1 = mVol1; }
-    void setVol2(float mVol2) { this.mVol2 = mVol2; }
-    void setVol3(float mVol3) { this.mVol3 = mVol3; }
-    void setVol4(float mVol4) { this.mVol4 = mVol4; }
-    void setVol5(float mVol5) { this.mVol5 = mVol5; }
-    void setVol6(float mVol6) { this.mVol6 = mVol6; }
-    void setVol7(float mVol7) { this.mVol7 = mVol7; }
+    void setSoundEffectVolume(float soundEffectVolume) { this.mSoundEffectVolume = soundEffectVolume; }
     void setTimeOmIncreaseSpeed(float mTimeOmIncreaseSpeed) { this.mTimeOmIncreaseSpeed = mTimeOmIncreaseSpeed; }
     void setIncreaseSpeed(float mIncreaseSpeed) { this.mIncreaseSpeed = mIncreaseSpeed; }
     void setTimeOmDecreaseSpeed(float mTimeOmDecreaseSpeed) { this.mTimeOmDecreaseSpeed = mTimeOmDecreaseSpeed; }
@@ -185,6 +173,7 @@ class EffectSaver {
     void setChorusSelected(int nSelected) { this.mChorusSelected = nSelected; }
     void setDistortionSelected(int nSelected) { this.mDistortionSelected = nSelected; }
     void setCompSelected(int nSelected) { this.mCompSelected = nSelected; }
+    void setSoundEffectSelected(int nSelected) { this.mSoundEffectSelected = nSelected; }
 
     boolean isSave() { return mSave; }
     float getSpeed() { return mSpeed; }
@@ -225,13 +214,7 @@ class EffectSaver {
     float getPan() { return fPan; }
     float getFreq() { return fFreq; }
     int getBPM() { return nBPM; }
-    float getVol1() { return mVol1; }
-    float getVol2() { return mVol2; }
-    float getVol3() { return mVol3; }
-    float getVol4() { return mVol4; }
-    float getVol5() { return mVol5; }
-    float getVol6() { return mVol6; }
-    float getVol7() { return mVol7; }
+    float getSoundEffectVolume() { return mSoundEffectVolume; }
     float getTimeOmIncreaseSpeed() { return mTimeOmIncreaseSpeed; }
     float getIncreaseSpeed() { return mIncreaseSpeed; }
     float getTimeOmDecreaseSpeed() { return mTimeOmDecreaseSpeed; }
@@ -274,6 +257,7 @@ class EffectSaver {
     int getChorusSelected() { return mChorusSelected; }
     int getDistortionSelected() { return mDistortionSelected; }
     int getCompSelected() { return mCompSelected; }
+    int getSoundEffectSelected() { return mSoundEffectSelected; }
 
     EffectSaver() {
     }
@@ -319,13 +303,7 @@ class EffectSaver {
         fPan = saver.fPan;
         fFreq = saver.fFreq;
         nBPM = saver.nBPM;
-        mVol1 = saver.mVol1;
-        mVol2 = saver.mVol2;
-        mVol3 = saver.mVol3;
-        mVol4 = saver.mVol4;
-        mVol5 = saver.mVol5;
-        mVol6 = saver.mVol6;
-        mVol7 = saver.mVol7;
+        mSoundEffectVolume = saver.mSoundEffectVolume;
         mTimeOmIncreaseSpeed = saver.mTimeOmIncreaseSpeed;
         mIncreaseSpeed = saver.mIncreaseSpeed;
         mTimeOmDecreaseSpeed = saver.mTimeOmDecreaseSpeed;
@@ -372,5 +350,6 @@ class EffectSaver {
         mChorusSelected = saver.mChorusSelected;
         mDistortionSelected = saver.mDistortionSelected;
         mCompSelected = saver.mCompSelected;
+        mSoundEffectSelected = saver.mSoundEffectSelected;
     }
 }

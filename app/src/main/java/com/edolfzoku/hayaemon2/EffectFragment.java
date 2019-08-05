@@ -84,6 +84,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private ArrayList<EffectTemplateItem> mChorusItems;
     private ArrayList<EffectTemplateItem> mDistortionItems;
     private ArrayList<EffectTemplateItem> mCompItems;
+    private ArrayList<EffectTemplateItem> mSoundEffectItems;
     private ItemTouchHelper mEffectTemplateTouchHelper;
     private int mDspVocalCancel = 0;
     private int mDspMonoral = 0;
@@ -102,13 +103,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private float mPan = 0.0f;
     private float mFreq = 1.0f;
     private int mBpm = 120;
-    private float mVol1 = 1.0f;
-    private float mVol2 = 1.0f;
-    private float mVol3 = 1.0f;
-    private float mVol4 = 1.0f;
-    private float mVol5 = 1.0f;
-    private float mVol6 = 1.0f;
-    private float mVol7 = 1.0f;
     private float mPeak = 0.0f;
     private float mTimeOfIncreaseSpeed = 1.0f;
     private float mIncreaseSpeed = 0.1f;
@@ -119,6 +113,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private float mReverbDry, mReverbWet, mReverbRoomSize, mReverbDamp, mReverbWidth;
     private float mChorusDry, mChorusWet, mChorusFeedback, mChorusMinSweep, mChorusMaxSweep, mChorusRate;
     private float mDistortionDrive, mDistortionDry, mDistortionWet, mDistortionFeedback, mDistortionVolume;
+    private float mSoundEffectVolume;
     private static final int EFFECTTYPE_RANDOM = 1;
     private static final int EFFECTTYPE_VOCALCANCEL = 2;
     // private static final int EFFECTTYPE_MONORAL = 3;
@@ -147,13 +142,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static final int EFFECTTYPE_NOSENSE_WEAK = 26;
     private static final int EFFECTTYPE_EARTRAINING = 27;
     private static final int EFFECTTYPE_METRONOME = 28;
-    private static final int EFFECTTYPE_RECORDNOISE = 29;
-    private static final int EFFECTTYPE_ROAROFWAVES = 30;
-    private static final int EFFECTTYPE_RAIN = 31;
-    private static final int EFFECTTYPE_RIVER = 32;
-    private static final int EFFECTTYPE_WAR = 33;
-    private static final int EFFECTTYPE_FIRE = 34;
-    private static final int EFFECTTYPE_CONCERTHALL = 35;
+    static final int EFFECTTYPE_SOUNDEFFECT = 29;
+    private static final int SOUNDEFFECTTYPE_RECORDNOISE = 0;
+    private static final int SOUNDEFFECTTYPE_ROAROFWAVES = 1;
+    private static final int SOUNDEFFECTTYPE_RAIN = 2;
+    private static final int SOUNDEFFECTTYPE_RIVER = 3;
+    private static final int SOUNDEFFECTTYPE_WAR = 4;
+    private static final int SOUNDEFFECTTYPE_FIRE = 5;
+    private static final int SOUNDEFFECTTYPE_CONCERTHALL = 6;
     private Timer mTimer;
     private int mSEStream;
     private int mSEStream2;
@@ -167,17 +163,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private float mVelo2 = 0.0f;
     private boolean mContinueFlag = true;
     private final Handler mHandlerLongClick;
-    private int mEffectDetail = -1, mReverbSelected = -1, mEchoSelected = -1, mChorusSelected = -1, mDistortionSelected = -1, mCompSelected = -1;
+    private int mEffectDetail = -1, mReverbSelected = -1, mEchoSelected = -1, mChorusSelected = -1, mDistortionSelected = -1, mCompSelected = -1, mSoundEffectSelected = -1;
 
     private RecyclerView mRecyclerEffects, mRecyclerEffectTemplates;
-    private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextEchoDry, mTextEchoWet, mTextEchoFeedback, mTextEchoDelay, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth, mTextChorusDry, mTextChorusWet, mTextChorusFeedback, mTextChorusMinSweep, mTextChorusMaxSweep, mTextChorusRate, mTextDistortionDrive, mTextDistortionDry, mTextDistortionWet, mTextDistortionFeedback, mTextDistortionVolume, mTextFinishSortEffect;
+    private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextEchoDry, mTextEchoWet, mTextEchoFeedback, mTextEchoDelay, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth, mTextChorusDry, mTextChorusWet, mTextChorusFeedback, mTextChorusMinSweep, mTextChorusMaxSweep, mTextChorusRate, mTextDistortionDrive, mTextDistortionDry, mTextDistortionWet, mTextDistortionFeedback, mTextDistortionVolume, mTextSoundEffectVolume, mTextFinishSortEffect;
     private EditText mEditSpeedEffectDetail, mEditTimeEffectDetail;
     private RelativeLayout mRelativeEffectDetail, mRelativeSliderEffectDatail, mRelativeRollerEffectDetail, mRelativeEffectTemplates, mRelativeEffectTitle;
-    private SeekBar mSeekEffectDetail, mSeekCompGain, mSeekCompThreshold, mSeekCompRatio, mSeekCompAttack, mSeekCompRelease, mSeekEchoDry, mSeekEchoWet, mSeekEchoFeedback, mSeekEchoDelay, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth, mSeekChorusDry, mSeekChorusWet, mSeekChorusFeedback, mSeekChorusMinSweep, mSeekChorusMaxSweep, mSeekChorusRate, mSeekDistortionDrive, mSeekDistortionDry, mSeekDistortionWet, mSeekDistortionFeedback, mSeekDistortionVolume;
-    private ImageButton mBtnEffectMinus, mBtnEffectPlus, mBtnCompGainMinus, mBtnCompGainPlus, mBtnCompThresholdMinus, mBtnCompThresholdPlus, mBtnCompRatioMinus, mBtnCompRatioPlus, mBtnCompAttackMinus, mBtnCompAttackPlus, mBtnCompReleaseMinus, mBtnCompReleasePlus, mBtnEchoDryMinus, mBtnEchoDryPlus, mBtnEchoWetMinus, mBtnEchoWetPlus, mBtnEchoFeedbackMinus, mBtnEchoFeedbackPlus, mBtnEchoDelayMinus, mBtnEchoDelayPlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus, mBtnChorusDryMinus, mBtnChorusDryPlus, mBtnChorusWetMinus, mBtnChorusWetPlus, mBtnChorusFeedbackMinus, mBtnChorusFeedbackPlus, mBtnChorusMinSweepMinus, mBtnChorusMinSweepPlus, mBtnChorusMaxSweepMinus, mBtnChorusMaxSweepPlus, mBtnChorusRateMinus, mBtnChorusRatePlus, mBtnDistortionDriveMinus, mBtnDistortionDrivePlus, mBtnDistortionDryMinus, mBtnDistortionDryPlus, mBtnDistortionWetMinus, mBtnDistortionWetPlus, mBtnDistortionFeedbackMinus, mBtnDistortionFeedbackPlus, mBtnDistortionVolumeMinus, mBtnDistortionVolumePlus;
+    private SeekBar mSeekEffectDetail, mSeekCompGain, mSeekCompThreshold, mSeekCompRatio, mSeekCompAttack, mSeekCompRelease, mSeekEchoDry, mSeekEchoWet, mSeekEchoFeedback, mSeekEchoDelay, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth, mSeekChorusDry, mSeekChorusWet, mSeekChorusFeedback, mSeekChorusMinSweep, mSeekChorusMaxSweep, mSeekChorusRate, mSeekDistortionDrive, mSeekDistortionDry, mSeekDistortionWet, mSeekDistortionFeedback, mSeekDistortionVolume, mSeekSoundEffectVolume;
+    private ImageButton mBtnEffectMinus, mBtnEffectPlus, mBtnCompGainMinus, mBtnCompGainPlus, mBtnCompThresholdMinus, mBtnCompThresholdPlus, mBtnCompRatioMinus, mBtnCompRatioPlus, mBtnCompAttackMinus, mBtnCompAttackPlus, mBtnCompReleaseMinus, mBtnCompReleasePlus, mBtnEchoDryMinus, mBtnEchoDryPlus, mBtnEchoWetMinus, mBtnEchoWetPlus, mBtnEchoFeedbackMinus, mBtnEchoFeedbackPlus, mBtnEchoDelayMinus, mBtnEchoDelayPlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus, mBtnChorusDryMinus, mBtnChorusDryPlus, mBtnChorusWetMinus, mBtnChorusWetPlus, mBtnChorusFeedbackMinus, mBtnChorusFeedbackPlus, mBtnChorusMinSweepMinus, mBtnChorusMinSweepPlus, mBtnChorusMaxSweepMinus, mBtnChorusMaxSweepPlus, mBtnChorusRateMinus, mBtnChorusRatePlus, mBtnDistortionDriveMinus, mBtnDistortionDrivePlus, mBtnDistortionDryMinus, mBtnDistortionDryPlus, mBtnDistortionWetMinus, mBtnDistortionWetPlus, mBtnDistortionFeedbackMinus, mBtnDistortionFeedbackPlus, mBtnDistortionVolumeMinus, mBtnDistortionVolumePlus, mBtnSoundEffectVolumeMinus, mBtnSoundEffectVolumePlus;
     private Button mBtnEffectBack, mBtnEffectFinish, mBtnEffectTemplateOff, mBtnReverbSaveAs, mBtnEchoSaveAs, mBtnChorusSaveAs, mBtnDistortionSaveAs, mBtnCompSaveAs;
     private AnimationButton mBtnEffectTemplateMenu, mBtnAddEffectTemplate;
-    private ScrollView mScrollCompCustomize, mScrollEchoCustomize, mScrollReverbCustomize, mScrollChorusCustomize, mScrollDistortionCustomize;
+    private ScrollView mScrollCompCustomize, mScrollEchoCustomize, mScrollReverbCustomize, mScrollChorusCustomize, mScrollDistortionCustomize, mScrollSoundEffectCustomize;
     private View mViewSepEffect, mViewSepEffectTemplate;
     private ImageView mImgEffectBack;
 
@@ -232,6 +228,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     public float getDistortionWet() { return mDistortionWet; }
     public float getDistortionFeedback() { return mDistortionFeedback; }
     public float getDistortionVolume() { return mDistortionVolume; }
+    public float getSoundEffectVolume() { return mSoundEffectVolume; }
     private void setReverbItems(ArrayList<EffectTemplateItem> lists) {
         mReverbItems = lists;
         mEffectTemplatesAdapter.changeItems(mReverbItems);
@@ -251,6 +248,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private void setCompItems(ArrayList<EffectTemplateItem> lists) {
         mCompItems = lists;
         mEffectTemplatesAdapter.changeItems(mCompItems);
+    }
+    private void setSoundEffectItems(ArrayList<EffectTemplateItem> lists) {
+        mSoundEffectItems = lists;
+        mEffectTemplatesAdapter.changeItems(mSoundEffectItems);
     }
 
     public boolean isSorting() { return mSorting; }
@@ -288,6 +289,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             EffectTemplateItem item = mCompItems.get(nItem);
             return item.isSelected();
         }
+        else if(mEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
+            if (nItem >= mSoundEffectItems.size()) return false;
+            EffectTemplateItem item = mSoundEffectItems.get(nItem);
+            return item.isSelected();
+        }
         return false;
     }
 
@@ -295,6 +301,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     {
         return mEffectItems.get(EFFECTTYPE_REVERSE).isSelected();
     }
+    public int getEffectDetail() { return mEffectDetail; }
 
     public ArrayList<EffectItem> getEffectItems()
     {
@@ -332,59 +339,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     {
         mBpm = bpm;
     }
-    public float getVol1()
-    {
-        return mVol1;
-    }
-    public void setVol1(float vol1)
-    {
-        mVol1 = vol1;
-    }
-    public float getVol2()
-    {
-        return mVol2;
-    }
-    public void setVol2(float vol2)
-    {
-        mVol2 = vol2;
-    }
-    public float getVol3()
-    {
-        return mVol3;
-    }
-    public void setVol3(float vol3)
-    {
-        mVol3 = vol3;
-    }
-    public float getVol4()
-    {
-        return mVol4;
-    }
-    public void setVol4(float vol4)
-    {
-        mVol4 = vol4;
-    }
-    public float getVol5()
-    {
-        return mVol5;
-    }
-    public void setVol5(float vol5)
-    {
-        mVol5 = vol5;
-    }
-    public float getVol6()
-    {
-        return mVol6;
-    }
-    public void setVol6(float vol6)
-    {
-        mVol6 = vol6;
-    }
-    public float getVol7()
-    {
-        return mVol7;
-    }
-    public void setVol7(float vol7) { mVol7 = vol7; }
     public int getReverbSelected() { return mReverbSelected; }
     public void setReverbSelected(int nSelected) {
         mReverbSelected = nSelected;
@@ -435,6 +389,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mEffectTemplatesAdapter.notifyDataSetChanged();
         }
     }
+    public int getSoundEffectSelected() { return mSoundEffectSelected; }
+    public void setSoundEffectSelected(int nSelected) {
+        mSoundEffectSelected = nSelected;
+        if(mRelativeEffectTemplates.getVisibility() == View.VISIBLE && mEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
+            mBtnEffectTemplateOff.setSelected(nSelected == -1);
+            for(int i = 0; i < mSoundEffectItems.size(); i++)
+                mSoundEffectItems.get(i).setSelected(i == nSelected);
+            mEffectTemplatesAdapter.notifyDataSetChanged();
+        }
+    }
 
     public EffectFragment()
     {
@@ -444,6 +408,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mChorusItems = new ArrayList<>();
         mDistortionItems = new ArrayList<>();
         mCompItems = new ArrayList<>();
+        mSoundEffectItems = new ArrayList<>();
         mHandlerLongClick = new Handler();
     }
 
@@ -541,6 +506,21 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mBtnEffectFinish.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.VISIBLE);
                 mScrollCompCustomize.setVisibility(View.INVISIBLE);
+                mTextEffectName.setText(mEffectItems.get(mEffectDetail).getEffectName());
+                mBtnEffectBack.setText(R.string.back);
+                mImgEffectBack.setVisibility(View.VISIBLE);
+                mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+                mBtnAddEffectTemplate.setAlpha(1.0f);
+            }
+            else if(mScrollSoundEffectCustomize.getVisibility() == View.VISIBLE) {
+                if(mSoundEffectSelected != -1) {
+                    ArrayList<Float> arFloats = mSoundEffectItems.get(mSoundEffectSelected).getArPresets();
+                    setSoundEffect(arFloats.get(0), true);
+                }
+                else resetSoundEffect();
+                mBtnEffectFinish.setVisibility(View.GONE);
+                mRelativeEffectTemplates.setVisibility(View.VISIBLE);
+                mScrollSoundEffectCustomize.setVisibility(View.INVISIBLE);
                 mTextEffectName.setText(mEffectItems.get(mEffectDetail).getEffectName());
                 mBtnEffectBack.setText(R.string.back);
                 mImgEffectBack.setVisibility(View.VISIBLE);
@@ -668,6 +648,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                             mRecyclerEffectTemplates.scrollToPosition(mDistortionItems.size()-1);
                         else if(mEffectDetail == EFFECTTYPE_COMP)
                             mRecyclerEffectTemplates.scrollToPosition(mCompItems.size()-1);
+                        else if(mEffectDetail == EFFECTTYPE_SOUNDEFFECT)
+                            mRecyclerEffectTemplates.scrollToPosition(mSoundEffectItems.size()-1);
                     }
                 });
                 builder.setNegativeButton(R.string.cancel, null);
@@ -773,6 +755,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     }
                     mScrollCompCustomize.setVisibility(View.INVISIBLE);
                 }
+                else if(mEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
+                    for (; nItem < mSoundEffectItems.size(); nItem++) {
+                        item = mSoundEffectItems.get(nItem);
+                        if (item.isSelected()) break;
+                    }
+                    if (item != null) {
+                        ArrayList<Float> arPresets = item.getArPresets();
+                        arPresets.set(0, Float.parseFloat((String) mTextSoundEffectVolume.getText()));
+                        saveData();
+                    }
+                    mScrollSoundEffectCustomize.setVisibility(View.INVISIBLE);
+                }
                 mBtnEffectFinish.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.VISIBLE);
                 mBtnAddEffectTemplate.setAlpha(1.0f);
@@ -865,6 +859,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             else if(mEffectDetail == EFFECTTYPE_COMP) {
                 for(int i = 0; i < mCompItems.size(); i++) mCompItems.get(i).setSelected(false);
                 resetComp();
+            }
+            else if(mEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
+                for(int i = 0; i < mSoundEffectItems.size(); i++) mSoundEffectItems.get(i).setSelected(false);
+                resetSoundEffect();
             }
             mEffectTemplatesAdapter.notifyDataSetChanged();
         }
@@ -1276,6 +1274,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             });
             alertDialog.show();
         }
+        else if(v.getId() == R.id.btnSoundEffectVolumeMinus) minusSoundEffectVolume();
+        else if(v.getId() == R.id.btnSoundEffectVolumePlus) plusSoundEffectVolume();
     }
 
     @Override
@@ -1840,6 +1840,28 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             });
             return true;
         }
+        else if (v.getId() == R.id.btnSoundEffectVolumeMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    minusSoundEffectVolume();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
+        else if (v.getId() == R.id.btnSoundEffectVolumePlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!mContinueFlag) return;
+                    plusSoundEffectVolume();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        }
         return false;
     }
 
@@ -1900,48 +1922,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", mBpm));
             applyEffect();
         }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_RECORDNOISE).getEffectName()))
-        {
-            mVol1 = nProgress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
-            applyEffect();
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_ROAROFWAVES).getEffectName()))
-        {
-            mVol2 = nProgress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
-            applyEffect();
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_RAIN).getEffectName()))
-        {
-            mVol3 = nProgress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
-            applyEffect();
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_RIVER).getEffectName()))
-        {
-            mVol4 = nProgress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
-            applyEffect();
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_WAR).getEffectName()))
-        {
-            mVol5 = nProgress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
-            applyEffect();
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_FIRE).getEffectName()))
-        {
-            mVol6 = nProgress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
-            applyEffect();
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_CONCERTHALL).getEffectName()))
-        {
-            mVol7 = nProgress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
-            applyEffect();
-        }
         mActivity.playlistFragment.updateSavingEffect();
     }
 
@@ -1967,48 +1947,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         {
             mBpm = nProgress + 10;
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", mBpm));
-            applyEffect();
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_RECORDNOISE).getEffectName()))
-        {
-            mVol1 = nProgress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
-            applyEffect();
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_ROAROFWAVES).getEffectName()))
-        {
-            mVol2 = nProgress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
-            applyEffect();
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_RAIN).getEffectName()))
-        {
-            mVol3 = nProgress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
-            applyEffect();
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_RIVER).getEffectName()))
-        {
-            mVol4 = nProgress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
-            applyEffect();
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_WAR).getEffectName()))
-        {
-            mVol5 = nProgress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
-            applyEffect();
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_FIRE).getEffectName()))
-        {
-            mVol6 = nProgress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
-            applyEffect();
-        }
-        else if(mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_CONCERTHALL).getEffectName()))
-        {
-            mVol7 = nProgress / 100.0f;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", nProgress));
             applyEffect();
         }
         mActivity.playlistFragment.updateSavingEffect();
@@ -2162,6 +2100,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnDistortionFeedbackPlus = mActivity.findViewById(R.id.btnDistortionFeedbackPlus);
         mBtnDistortionVolumeMinus = mActivity.findViewById(R.id.btnDistortionVolumeMinus);
         mBtnDistortionVolumePlus = mActivity.findViewById(R.id.btnDistortionVolumePlus);
+        mScrollSoundEffectCustomize = mActivity.findViewById(R.id.scrollSoundEffectCustomize);
+        mSeekSoundEffectVolume = mActivity.findViewById(R.id.seekSoundEffectVolume);
+        mTextSoundEffectVolume = mActivity.findViewById(R.id.textSoundEffectVolume);
+        mBtnSoundEffectVolumeMinus = mActivity.findViewById(R.id.btnSoundEffectVolumeMinus);
+        mBtnSoundEffectVolumePlus = mActivity.findViewById(R.id.btnSoundEffectVolumePlus);
+
         mRecyclerEffects = mActivity.findViewById(R.id.recyclerEffects);
         mRecyclerEffectTemplates = mActivity.findViewById(R.id.recyclerEffectTemplates);
         Button btnCompRandom = mActivity.findViewById(R.id.btnCompRandom);
@@ -2225,6 +2169,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mSeekDistortionWet.setOnSeekBarChangeListener(this);
         mSeekDistortionFeedback.setOnSeekBarChangeListener(this);
         mSeekDistortionVolume.setOnSeekBarChangeListener(this);
+        mSeekSoundEffectVolume.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekSoundEffectVolume.setOnSeekBarChangeListener(this);
 
         EffectItem item = new EffectItem(getString(R.string.off), false);
         mEffectItems.add(item);
@@ -2284,19 +2230,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.metronome), true);
         mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.recordNoise), true);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.wave), true);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.rain), true);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.river), true);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.war), true);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.fire), true);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.concertHall), true);
+        item = new EffectItem(getString(R.string.soundEffect), true);
         mEffectItems.add(item);
 
         loadData();
@@ -2488,6 +2422,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         btnResetDistortion.setOnClickListener(this);
         mBtnDistortionSaveAs.setOnClickListener(this);
         mBtnCompSaveAs.setOnClickListener(this);
+        mBtnSoundEffectVolumeMinus.setOnClickListener(this);
+        mBtnSoundEffectVolumeMinus.setOnLongClickListener(this);
+        mBtnSoundEffectVolumeMinus.setOnTouchListener(this);
+        mBtnSoundEffectVolumePlus.setOnClickListener(this);
+        mBtnSoundEffectVolumePlus.setOnLongClickListener(this);
+        mBtnSoundEffectVolumePlus.setOnTouchListener(this);
 
         mEditTimeEffectDetail.setOnFocusChangeListener(this);
         mEditSpeedEffectDetail.setOnFocusChangeListener(this);
@@ -2500,6 +2440,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setReverb(70, 100, 85, 50, 90, false);
         setChorus(100, 10, 50, 100, 200, 1000, false);
         setDistortion(20, 95, 5, 10, 100, false);
+        setSoundEffect(100, false);
     }
 
     private void loadData()
@@ -2511,6 +2452,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         ArrayList<EffectTemplateItem> chorusItems = gson.fromJson(preferences.getString("mChorusItems",""), new TypeToken<ArrayList<EffectTemplateItem>>(){}.getType());
         ArrayList<EffectTemplateItem> distortionItems = gson.fromJson(preferences.getString("mDistortionItems",""), new TypeToken<ArrayList<EffectTemplateItem>>(){}.getType());
         ArrayList<EffectTemplateItem> compItems = gson.fromJson(preferences.getString("mCompItems",""), new TypeToken<ArrayList<EffectTemplateItem>>(){}.getType());
+        ArrayList<EffectTemplateItem> soundEffectItems = gson.fromJson(preferences.getString("mSoundEffectItems",""), new TypeToken<ArrayList<EffectTemplateItem>>(){}.getType());
 
         if(reverbItems != null) setReverbItems(reverbItems);
         else resetReverbs();
@@ -2522,6 +2464,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else resetDistortions();
         if(compItems != null) setCompItems(compItems);
         else resetComps();
+        if(soundEffectItems != null) setSoundEffectItems(soundEffectItems);
+        else resetSoundEffects();
 
         mBtnEffectTemplateOff.setSelected(true);
         for(int i = 0; i < mReverbItems.size(); i++)
@@ -2534,6 +2478,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mDistortionItems.get(i).setSelected(false);
         for(int i = 0; i < mCompItems.size(); i++)
             mCompItems.get(i).setSelected(false);
+        for(int i = 0; i < mSoundEffectItems.size(); i++)
+            mSoundEffectItems.get(i).setSelected(false);
     }
 
     private void saveData()
@@ -2545,6 +2491,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         preferences.edit().putString("mChorusItems", gson.toJson(mChorusItems)).apply();
         preferences.edit().putString("mDistortionItems", gson.toJson(mDistortionItems)).apply();
         preferences.edit().putString("mCompItems", gson.toJson(mCompItems)).apply();
+        preferences.edit().putString("mSoundEffectItems", gson.toJson(mSoundEffectItems)).apply();
     }
 
     private void resetReverbs()
@@ -2616,13 +2563,29 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         resetComp();
     }
 
+    private void resetSoundEffects()
+    {
+        if(mSoundEffectItems.size() > 0) mSoundEffectItems.clear();
+
+        mSoundEffectItems.add(new EffectTemplateItem(getString(R.string.recordNoise), new ArrayList<>(Arrays.asList(100.0f))));
+        mSoundEffectItems.add(new EffectTemplateItem(getString(R.string.wave), new ArrayList<>(Arrays.asList(100.0f))));
+        mSoundEffectItems.add(new EffectTemplateItem(getString(R.string.rain), new ArrayList<>(Arrays.asList(100.0f))));
+        mSoundEffectItems.add(new EffectTemplateItem(getString(R.string.river), new ArrayList<>(Arrays.asList(100.0f))));
+        mSoundEffectItems.add(new EffectTemplateItem(getString(R.string.war), new ArrayList<>(Arrays.asList(100.0f))));
+        mSoundEffectItems.add(new EffectTemplateItem(getString(R.string.fire), new ArrayList<>(Arrays.asList(100.0f))));
+        mSoundEffectItems.add(new EffectTemplateItem(getString(R.string.concertHall), new ArrayList<>(Arrays.asList(100.0f))));
+
+        mEffectTemplatesAdapter.notifyDataSetChanged();
+        resetSoundEffect();
+    }
+
     public void onEffectItemClick(int nEffect)
     {
         if(nEffect < 0 || mEffectItems.size() <= nEffect) return;
         EffectItem item = mEffectItems.get(nEffect);
 
         if(!item.isSelected()) {
-            if(nEffect == EFFECTTYPE_REVERB || nEffect == EFFECTTYPE_ECHO || nEffect == EFFECTTYPE_CHORUS || nEffect == EFFECTTYPE_DISTORTION || nEffect == EFFECTTYPE_COMP) {
+            if(nEffect == EFFECTTYPE_REVERB || nEffect == EFFECTTYPE_ECHO || nEffect == EFFECTTYPE_CHORUS || nEffect == EFFECTTYPE_DISTORTION || nEffect == EFFECTTYPE_COMP || nEffect == EFFECTTYPE_SOUNDEFFECT) {
                 onEffectDetailClick(nEffect);
                 return;
             }
@@ -2729,6 +2692,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             if(bAlreadySelected) mCompSelected = -1;
             else mCompSelected = nEffectTemplate;
         }
+        else if(mEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
+            item = mSoundEffectItems.get(nEffectTemplate);
+            if(item.isSelected()) bAlreadySelected = true;
+            for(int i = 0; i < mSoundEffectItems.size(); i++) {
+                if (i != nEffectTemplate) mSoundEffectItems.get(i).setSelected(false);
+                else mSoundEffectItems.get(i).setSelected(!bAlreadySelected);
+            }
+            if(bAlreadySelected) mSoundEffectSelected = -1;
+            else mSoundEffectSelected = nEffectTemplate;
+        }
         else return;
         mBtnEffectTemplateOff.setSelected(bAlreadySelected);
 
@@ -2783,6 +2756,25 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 setComp(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), arFloats.get(4), true);
             }
         }
+        else if(mEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
+            if (mSoundEffectSelected == -1) resetSoundEffect();
+            else {
+                if(mSEStream != 0) {
+                    BASS.BASS_StreamFree(mSEStream);
+                    mSEStream = 0;
+                }
+                if(mSEStream2 != 0) {
+                    BASS.BASS_StreamFree(mSEStream2);
+                    mSEStream2 = 0;
+                }
+                if(mHandler != null) {
+                    mHandler.removeCallbacks(onTimer);
+                    mHandler = null;
+                }
+                ArrayList<Float> arFloats = mSoundEffectItems.get(nEffectTemplate).getArPresets();
+                setSoundEffect(arFloats.get(0), true);
+            }
+        }
     }
 
     public void resetEffect()
@@ -2818,6 +2810,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         resetReverb();
         resetChorus();
         resetDistortion();
+        resetSoundEffect();
     }
 
     private void setCompRandom()
@@ -2987,6 +2980,37 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setDistortion(20, 95, 5, 10, 100, true);
     }
 
+    private void resetSoundEffect()
+    {
+        mEffectItems.get(EFFECTTYPE_SOUNDEFFECT).setSelected(false);
+        boolean bSelected = false;
+        for(int i = 0; i < mEffectItems.size(); i++) {
+            if(mEffectItems.get(i).isSelected()) bSelected = true;
+        }
+        if(!bSelected) mEffectItems.get(0).setSelected(true);
+        mBtnEffectTemplateOff.setSelected(true);
+        for(int i = 0; i < mSoundEffectItems.size(); i++) mSoundEffectItems.get(i).setSelected(false);
+
+        mSoundEffectSelected = -1;
+        mEffectsAdapter.notifyDataSetChanged();
+        mEffectTemplatesAdapter.notifyDataSetChanged();
+
+        if(mSEStream != 0) {
+            BASS.BASS_StreamFree(mSEStream);
+            mSEStream = 0;
+        }
+        if(mSEStream2 != 0) {
+            BASS.BASS_StreamFree(mSEStream2);
+            mSEStream2 = 0;
+        }
+        if(mHandler != null) {
+            mHandler.removeCallbacks(onTimer);
+            mHandler = null;
+        }
+
+        setSoundEffect(100, true);
+    }
+
     public void onEffectDetailClick(int nEffect)
     {
         mEffectDetail = nEffect;
@@ -3006,6 +3030,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             else if(mEffectDetail == EFFECTTYPE_COMP) {
                 if(mCompSelected != -1) onEffectItemClick(nEffect);
+            }
+            else if(mEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
+                if(mSoundEffectSelected != -1) onEffectItemClick(nEffect);
             }
             else onEffectItemClick(nEffect);
         }
@@ -3055,62 +3082,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mSeekEffectDetail.setMax(290);
             mSeekEffectDetail.setProgress(mBpm - 10);
         }
-        else if(nEffect == EFFECTTYPE_RECORDNOISE)
-        {
-            mTextEffectLabel.setText(R.string.volume);
-            mTextEffectLabel.setVisibility(View.VISIBLE);
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", (int)(mVol1 * 100)));
-            mSeekEffectDetail.setMax(100);
-            mSeekEffectDetail.setProgress((int)(mVol1 * 100));
-        }
-        else if(nEffect == EFFECTTYPE_ROAROFWAVES)
-        {
-            mTextEffectLabel.setText(R.string.volume);
-            mTextEffectLabel.setVisibility(View.VISIBLE);
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", (int)(mVol2 * 100)));
-            mSeekEffectDetail.setMax(100);
-            mSeekEffectDetail.setProgress((int)(mVol2 * 100));
-        }
-        else if(nEffect == EFFECTTYPE_RAIN)
-        {
-            mTextEffectLabel.setText(R.string.volume);
-            mTextEffectLabel.setVisibility(View.VISIBLE);
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", (int)(mVol3 * 100)));
-            mSeekEffectDetail.setMax(100);
-            mSeekEffectDetail.setProgress((int)(mVol3 * 100));
-        }
-        else if(nEffect == EFFECTTYPE_RIVER)
-        {
-            mTextEffectLabel.setText(R.string.volume);
-            mTextEffectLabel.setVisibility(View.VISIBLE);
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", (int)(mVol4 * 100)));
-            mSeekEffectDetail.setMax(100);
-            mSeekEffectDetail.setProgress((int)(mVol4 * 100));
-        }
-        else if(nEffect == EFFECTTYPE_WAR)
-        {
-            mTextEffectLabel.setText(R.string.volume);
-            mTextEffectLabel.setVisibility(View.VISIBLE);
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", (int)(mVol5 * 100)));
-            mSeekEffectDetail.setMax(100);
-            mSeekEffectDetail.setProgress((int)(mVol5 * 100));
-        }
-        else if(nEffect == EFFECTTYPE_FIRE)
-        {
-            mTextEffectLabel.setText(R.string.volume);
-            mTextEffectLabel.setVisibility(View.VISIBLE);
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", (int)(mVol6 * 100)));
-            mSeekEffectDetail.setMax(100);
-            mSeekEffectDetail.setProgress((int)(mVol6 * 100));
-        }
-        else if(nEffect == EFFECTTYPE_CONCERTHALL)
-        {
-            mTextEffectLabel.setText(R.string.volume);
-            mTextEffectLabel.setVisibility(View.VISIBLE);
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", (int)(mVol7 * 100)));
-            mSeekEffectDetail.setMax(100);
-            mSeekEffectDetail.setProgress((int)(mVol7 * 100));
-        }
         else mTextEffectLabel.setVisibility(View.INVISIBLE);
 
         if(nEffect == EFFECTTYPE_PAN)
@@ -3136,6 +3107,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mScrollReverbCustomize.setVisibility(View.GONE);
             mScrollChorusCustomize.setVisibility(View.GONE);
             mScrollDistortionCustomize.setVisibility(View.GONE);
+            mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
+            mScrollSoundEffectCustomize.setVisibility(View.GONE);
         }
         else if(nEffect == EFFECTTYPE_COMP) {
             mEffectTemplatesAdapter.changeItems(mCompItems);
@@ -3144,6 +3117,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             if(mCompSelected == -1) resetComp();
             else onEffectTemplateItemClick(mCompSelected);
             mEffectTemplatesAdapter.notifyDataSetChanged();
+            mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         }
         else if(nEffect == EFFECTTYPE_ECHO) {
@@ -3153,6 +3127,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             if(mEchoSelected == -1) resetEcho();
             else onEffectTemplateItemClick(mEchoSelected);
             mEffectTemplatesAdapter.notifyDataSetChanged();
+            mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         }
         else if(nEffect == EFFECTTYPE_REVERB) {
@@ -3162,6 +3137,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             if(mReverbSelected == -1) resetReverb();
             else onEffectTemplateItemClick(mReverbSelected);
             mEffectTemplatesAdapter.notifyDataSetChanged();
+            mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         }
         else if(nEffect == EFFECTTYPE_CHORUS) {
@@ -3171,6 +3147,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             if(mChorusSelected == -1) resetChorus();
             else onEffectTemplateItemClick(mChorusSelected);
             mEffectTemplatesAdapter.notifyDataSetChanged();
+            mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         }
         else if(nEffect == EFFECTTYPE_DISTORTION) {
@@ -3180,6 +3157,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             if(mDistortionSelected == -1) resetDistortion();
             else onEffectTemplateItemClick(mDistortionSelected);
             mEffectTemplatesAdapter.notifyDataSetChanged();
+            mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
+            mRelativeEffectTemplates.setVisibility(View.VISIBLE);
+        }
+        else if(nEffect == EFFECTTYPE_SOUNDEFFECT) {
+            mEffectTemplatesAdapter.changeItems(mSoundEffectItems);
+            mBtnAddEffectTemplate.setVisibility(View.INVISIBLE);
+            for(int i = 0; i < mSoundEffectItems.size(); i++) mSoundEffectItems.get(i).setSelected(false);
+            if(mSoundEffectSelected == -1) resetSoundEffect();
+            else onEffectTemplateItemClick(mSoundEffectSelected);
+            mEffectTemplatesAdapter.notifyDataSetChanged();
+            mBtnEffectTemplateMenu.setVisibility(View.INVISIBLE);
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         }
         else {
@@ -3190,6 +3178,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mScrollReverbCustomize.setVisibility(View.GONE);
             mScrollChorusCustomize.setVisibility(View.GONE);
             mScrollDistortionCustomize.setVisibility(View.GONE);
+            mScrollSoundEffectCustomize.setVisibility(View.GONE);
             mSeekEffectDetail.setOnSeekBarChangeListener(this);
         }
 
@@ -3272,6 +3261,19 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
             mBtnCompSaveAs.setVisibility(View.VISIBLE);
         }
+        else if(mEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
+            EffectTemplateItem item = mSoundEffectItems.get(nTemplate);
+            mTextEffectName.setText(item.getEffectTemplateName());
+
+            mBtnEffectBack.setText(R.string.back);
+            mBtnEffectFinish.setText(R.string.done);
+
+            mBtnEffectFinish.setVisibility(View.VISIBLE);
+            mRelativeEffectTemplates.setVisibility(View.INVISIBLE);
+            mScrollSoundEffectCustomize.setVisibility(View.VISIBLE);
+            mImgEffectBack.setVisibility(View.VISIBLE);
+            mBtnEffectBack.setPadding((int)(32 * mActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+        }
     }
 
     @Override
@@ -3295,62 +3297,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mBpm = progress + 10;
                 mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", mBpm));
                 applyEffect();
-            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_RECORDNOISE).getEffectName())) {
-                mVol1 = progress / 100.0f;
-                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
-                applyEffect();
-                if (mEffectItems.get(EFFECTTYPE_RECORDNOISE).isSelected()) {
-                    int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
-                    BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol1);
-                }
-            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_ROAROFWAVES).getEffectName())) {
-                mVol2 = progress / 100.0f;
-                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
-                applyEffect();
-                if (mEffectItems.get(EFFECTTYPE_ROAROFWAVES).isSelected()) {
-                    int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
-                    BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol2);
-                }
-            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_RAIN).getEffectName())) {
-                mVol3 = progress / 100.0f;
-                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
-                applyEffect();
-                if (mEffectItems.get(EFFECTTYPE_RAIN).isSelected()) {
-                    int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
-                    BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol3);
-                }
-            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_RIVER).getEffectName())) {
-                mVol4 = progress / 100.0f;
-                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
-                applyEffect();
-                if (mEffectItems.get(EFFECTTYPE_RIVER).isSelected()) {
-                    int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
-                    BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol4);
-                }
-            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_WAR).getEffectName())) {
-                mVol5 = progress / 100.0f;
-                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
-                applyEffect();
-                if (mEffectItems.get(EFFECTTYPE_WAR).isSelected()) {
-                    int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
-                    BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol5);
-                }
-            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_FIRE).getEffectName())) {
-                mVol6 = progress / 100.0f;
-                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
-                applyEffect();
-                if (mEffectItems.get(EFFECTTYPE_FIRE).isSelected()) {
-                    int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
-                    BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol6);
-                }
-            } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_CONCERTHALL).getEffectName())) {
-                mVol7 = progress / 100.0f;
-                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", progress));
-                applyEffect();
-                if (mEffectItems.get(EFFECTTYPE_CONCERTHALL).isSelected()) {
-                    int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
-                    BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol7);
-                }
             }
             mActivity.playlistFragment.updateSavingEffect();
         }
@@ -3404,6 +3350,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             setDistortion(mSeekDistortionDrive.getProgress(), mSeekDistortionDry.getProgress(), mSeekDistortionWet.getProgress(), progress, mSeekDistortionVolume.getProgress(), fromTouch);
         else if(seekBar.getId() == R.id.seekDistortionVolume)
             setDistortion(mSeekDistortionDrive.getProgress(), mSeekDistortionDry.getProgress(), mSeekDistortionWet.getProgress(), mSeekDistortionFeedback.getProgress(), progress, fromTouch);
+        else if(seekBar.getId() == R.id.seekSoundEffectVolume)
+            setSoundEffect(progress, fromTouch);
     }
 
     private void updateComp()
@@ -3978,6 +3926,118 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setDistortion(mSeekDistortionDrive.getProgress(), mSeekDistortionDry.getProgress(), mSeekDistortionWet.getProgress(), mSeekDistortionFeedback.getProgress(), mSeekDistortionVolume.getProgress()+1, true);
     }
 
+    private void updateSoundEffect()
+    {
+        if(!mEffectItems.get(EFFECTTYPE_SOUNDEFFECT).isSelected()) return;
+        if (mSEStream == 0) {
+            if (mSoundEffectSelected == SOUNDEFFECTTYPE_RECORDNOISE) {
+                mSE1PlayingFlag = true;
+                MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                params.inputStream = getResources().openRawResource(R.raw.recordnoise);
+                mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 4.653), endRecordNoise, this);
+                BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
+                BASS.BASS_ChannelPlay(mSEStream, true);
+            }
+            else if (mSoundEffectSelected == SOUNDEFFECTTYPE_ROAROFWAVES) {
+                mSE1PlayingFlag = true;
+                MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                params.inputStream = getResources().openRawResource(R.raw.wave);
+                mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 28.399), endWave, this);
+                BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
+                BASS.BASS_ChannelPlay(mSEStream, true);
+            }
+            else if (mSoundEffectSelected == SOUNDEFFECTTYPE_RAIN) {
+                mSE1PlayingFlag = true;
+                MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                params.inputStream = getResources().openRawResource(R.raw.rain);
+                mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 1.503), endRain, this);
+                BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
+                BASS.BASS_ChannelPlay(mSEStream, true);
+            }
+            else if (mSoundEffectSelected == SOUNDEFFECTTYPE_RIVER) {
+                mSE1PlayingFlag = true;
+                MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                params.inputStream = getResources().openRawResource(R.raw.river);
+                mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 60.000), endRiver, this);
+                BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
+                BASS.BASS_ChannelPlay(mSEStream, true);
+            }
+            else if (mSoundEffectSelected == SOUNDEFFECTTYPE_WAR) {
+                mSE1PlayingFlag = true;
+                MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                params.inputStream = getResources().openRawResource(R.raw.war);
+                mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 30.000), endWar, this);
+                BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
+                BASS.BASS_ChannelPlay(mSEStream, true);
+            }
+            else if (mSoundEffectSelected == SOUNDEFFECTTYPE_FIRE) {
+                mSE1PlayingFlag = true;
+                MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                params.inputStream = getResources().openRawResource(R.raw.fire);
+                mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 10.000), endFire, this);
+                BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
+                BASS.BASS_ChannelPlay(mSEStream, true);
+            }
+            else if (mSoundEffectSelected == SOUNDEFFECTTYPE_CONCERTHALL) {
+                mSE1PlayingFlag = true;
+                MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                params.inputStream = getResources().openRawResource(R.raw.cheer);
+                mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 14.000), endCheer, this);
+                BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
+                BASS.BASS_ChannelPlay(mSEStream, true);
+
+                mHandler = new Handler();
+                mHandler.post(onTimer);
+            }
+        }
+        else {
+            int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
+            BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
+        }
+    }
+
+    public void setSoundEffect(int nVolume, boolean bSave) {
+        if(nVolume < 0) nVolume = 0;
+
+        if(nVolume > mSeekSoundEffectVolume.getMax()) nVolume = mSeekSoundEffectVolume.getMax();
+
+        mSoundEffectVolume = nVolume;
+
+        mTextSoundEffectVolume.setText(String.format(Locale.getDefault(), "%.0f", mSoundEffectVolume));
+
+        mSeekSoundEffectVolume.setProgress(nVolume);
+
+        updateSoundEffect();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    public void setSoundEffect(float fVolume, boolean bSave)
+    {
+        mSoundEffectVolume = fVolume;
+
+        mTextSoundEffectVolume.setText(String.format(Locale.getDefault(), "%.0f", mSoundEffectVolume));
+
+        mSeekSoundEffectVolume.setProgress((int)fVolume);
+
+        updateSoundEffect();
+        if(bSave) mActivity.playlistFragment.updateSavingEffect();
+    }
+
+    private void minusSoundEffectVolume() {
+        setSoundEffect(mSeekSoundEffectVolume.getProgress()-1, true);
+    }
+
+    private void plusSoundEffectVolume() {
+        setSoundEffect(mSeekSoundEffectVolume.getProgress()+1, true);
+    }
+
     private void setPan(float pan)
     {
         setPan(pan, true);
@@ -4061,10 +4121,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 for(int i = EFFECTTYPE_INCREASESPEED; i <= EFFECTTYPE_METRONOME; i++)
                     if(i != nSelect) deselectEffect(i);
             }
-            if(nSelect == EFFECTTYPE_OLDRECORD || (EFFECTTYPE_METRONOME <= nSelect && nSelect <= EFFECTTYPE_CONCERTHALL))
+            if(nSelect == EFFECTTYPE_OLDRECORD || (EFFECTTYPE_METRONOME <= nSelect && nSelect <= SOUNDEFFECTTYPE_CONCERTHALL))
             {
                 if(nSelect != EFFECTTYPE_OLDRECORD) deselectEffect(EFFECTTYPE_OLDRECORD);
-                for(int i = EFFECTTYPE_METRONOME; i <= EFFECTTYPE_CONCERTHALL; i++)
+                for(int i = EFFECTTYPE_METRONOME; i <= SOUNDEFFECTTYPE_CONCERTHALL; i++)
                     if(i != nSelect) deselectEffect(i);
             }
         }
@@ -4095,6 +4155,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if(nEffect == EFFECTTYPE_CHORUS) mChorusSelected = -1;
         if(nEffect == EFFECTTYPE_DISTORTION) mDistortionSelected = -1;
         if(nEffect == EFFECTTYPE_COMP) mCompSelected = -1;
+        if(nEffect == EFFECTTYPE_SOUNDEFFECT) mSoundEffectSelected = -1;
     }
 
     public void applyEffect()
@@ -4290,17 +4351,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 p.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(mFxComp, p);
             }
-            else if(strEffect.equals(getString(R.string.comp))) {
-                mFxComp = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_COMPRESSOR2, 2);
-                BASS_FX.BASS_BFX_COMPRESSOR2 p = new BASS_FX.BASS_BFX_COMPRESSOR2();
-                p.fGain = mCompGain;
-                p.fThreshold = mCompThreshold;
-                p.fRatio = mCompRatio;
-                p.fAttack = mCompAttack;
-                p.fRelease = mCompRelease;
-                p.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                BASS.BASS_FXSetParameters(mFxComp, p);
-            }
             else if(strEffect.equals(getString(R.string.frequency)))
                 BASS.BASS_ChannelSetAttribute(sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * mFreq);
             else if(strEffect.equals(getString(R.string.phaseReversal)))
@@ -4389,7 +4439,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     params.inputStream = getResources().openRawResource(R.raw.recordnoise);
                     mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
                     mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 4.653), endRecordNoise, this);
-                    BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol1);
+                    BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
                     BASS.BASS_ChannelPlay(mSEStream, true);
                 }
 
@@ -4420,7 +4470,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mHandler.post(onTimer);
             }
             else if(strEffect.equals(getString(R.string.noSenseStrong)) || strEffect.equals(getString(R.string.noSenseMiddle)) || strEffect.equals(getString(R.string.noSenseWeak))) {
-                mVelo1 = mVol2 = 0.0f;
+                mVelo1 = mSoundEffectVolume = 0.0f;
                 mActivity.controlFragment.setSpeed(0.0f);
                 mActivity.controlFragment.setPitch(0.0f);
 
@@ -4437,83 +4487,85 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 long lPeriod = (long) ((60.0 / mBpm) * 1000);
                 mTimer.schedule(metronomeTask, lPeriod, lPeriod);
             }
-            else if(strEffect.equals(getString(R.string.recordNoise))) {
-                if (mSEStream == 0) {
-                    mSE1PlayingFlag = true;
-                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
-                    params.inputStream = getResources().openRawResource(R.raw.recordnoise);
-                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
-                    mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 4.653), endRecordNoise, this);
-                    BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol1);
-                    BASS.BASS_ChannelPlay(mSEStream, true);
+            else if(strEffect.equals(getString(R.string.soundEffect))) {
+                if(mSoundEffectSelected == SOUNDEFFECTTYPE_RECORDNOISE) {
+                    if (mSEStream == 0) {
+                        mSE1PlayingFlag = true;
+                        MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                        params.inputStream = getResources().openRawResource(R.raw.recordnoise);
+                        mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                        mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 4.653), endRecordNoise, this);
+                        BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
+                        BASS.BASS_ChannelPlay(mSEStream, true);
+                    }
                 }
-            }
-            else if(strEffect.equals(getString(R.string.wave))) {
-                if (mSEStream == 0) {
-                    mSE1PlayingFlag = true;
-                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
-                    params.inputStream = getResources().openRawResource(R.raw.wave);
-                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
-                    mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 28.399), endWave, this);
-                    BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol2);
-                    BASS.BASS_ChannelPlay(mSEStream, true);
+                else if(mSoundEffectSelected == SOUNDEFFECTTYPE_ROAROFWAVES) {
+                    if (mSEStream == 0) {
+                        mSE1PlayingFlag = true;
+                        MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                        params.inputStream = getResources().openRawResource(R.raw.wave);
+                        mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                        mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 28.399), endWave, this);
+                        BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
+                        BASS.BASS_ChannelPlay(mSEStream, true);
+                    }
                 }
-            }
-            else if(strEffect.equals(getString(R.string.rain))) {
-                if (mSEStream == 0) {
-                    mSE1PlayingFlag = true;
-                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
-                    params.inputStream = getResources().openRawResource(R.raw.rain);
-                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
-                    mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 1.503), endRain, this);
-                    BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol3);
-                    BASS.BASS_ChannelPlay(mSEStream, true);
+                else if(mSoundEffectSelected == SOUNDEFFECTTYPE_RAIN) {
+                    if (mSEStream == 0) {
+                        mSE1PlayingFlag = true;
+                        MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                        params.inputStream = getResources().openRawResource(R.raw.rain);
+                        mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                        mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 1.503), endRain, this);
+                        BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
+                        BASS.BASS_ChannelPlay(mSEStream, true);
+                    }
                 }
-            }
-            else if(strEffect.equals(getString(R.string.river))) {
-                if (mSEStream == 0) {
-                    mSE1PlayingFlag = true;
-                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
-                    params.inputStream = getResources().openRawResource(R.raw.river);
-                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
-                    mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 60.000), endRiver, this);
-                    BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol4);
-                    BASS.BASS_ChannelPlay(mSEStream, true);
+                else if(mSoundEffectSelected == SOUNDEFFECTTYPE_RIVER) {
+                    if (mSEStream == 0) {
+                        mSE1PlayingFlag = true;
+                        MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                        params.inputStream = getResources().openRawResource(R.raw.river);
+                        mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                        mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 60.000), endRiver, this);
+                        BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
+                        BASS.BASS_ChannelPlay(mSEStream, true);
+                    }
                 }
-            }
-            else if(strEffect.equals(getString(R.string.war))) {
-                if (mSEStream == 0) {
-                    mSE1PlayingFlag = true;
-                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
-                    params.inputStream = getResources().openRawResource(R.raw.war);
-                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
-                    mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 30.000), endWar, this);
-                    BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol5);
-                    BASS.BASS_ChannelPlay(mSEStream, true);
+                else if(mSoundEffectSelected == SOUNDEFFECTTYPE_WAR) {
+                    if (mSEStream == 0) {
+                        mSE1PlayingFlag = true;
+                        MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                        params.inputStream = getResources().openRawResource(R.raw.war);
+                        mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                        mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 30.000), endWar, this);
+                        BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
+                        BASS.BASS_ChannelPlay(mSEStream, true);
+                    }
                 }
-            }
-            else if(strEffect.equals(getString(R.string.fire))) {
-                if (mSEStream == 0) {
-                    mSE1PlayingFlag = true;
-                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
-                    params.inputStream = getResources().openRawResource(R.raw.fire);
-                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
-                    mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 10.000), endFire, this);
-                    BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol6);
-                    BASS.BASS_ChannelPlay(mSEStream, true);
+                else if(mSoundEffectSelected == SOUNDEFFECTTYPE_FIRE) {
+                    if (mSEStream == 0) {
+                        mSE1PlayingFlag = true;
+                        MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                        params.inputStream = getResources().openRawResource(R.raw.fire);
+                        mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                        mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 10.000), endFire, this);
+                        BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
+                        BASS.BASS_ChannelPlay(mSEStream, true);
+                    }
                 }
-            }
-            else if(strEffect.equals(getString(R.string.concertHall))) {
-                if (mSEStream == 0) {
-                    mSE1PlayingFlag = true;
-                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
-                    params.inputStream = getResources().openRawResource(R.raw.cheer);
-                    mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
-                    mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 14.000), endCheer, this);
-                    BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol7);
+                else if(mSoundEffectSelected == SOUNDEFFECTTYPE_CONCERTHALL) {
+                    if (mSEStream == 0) {
+                        mSE1PlayingFlag = true;
+                        MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                        params.inputStream = getResources().openRawResource(R.raw.cheer);
+                        mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                        mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 14.000), endCheer, this);
+                        BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f);
 
-                    mHandler = new Handler();
-                    mHandler.post(onTimer);
+                        mHandler = new Handler();
+                        mHandler.post(onTimer);
+                    }
                 }
             }
         }
@@ -4697,33 +4749,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mActivity.equalizerFragment.setEQRandom();
                 mHandler.postDelayed(this, 3000);
             }
-            else if(mEffectItems.get(EFFECTTYPE_CONCERTHALL).isSelected())
+            else if(mEffectItems.get(SOUNDEFFECTTYPE_CONCERTHALL).isSelected())
             {
                 int hSETemp = mSE1PlayingFlag ? mSEStream : mSEStream2;
-                if(BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_PLAYING)
-                {
-                    if(BASS.BASS_ChannelIsActive(hSETemp) == BASS.BASS_ACTIVE_PAUSED || BASS.BASS_ChannelIsActive(hSETemp) == BASS.BASS_ACTIVE_STOPPED)
-                    {
-                        BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, mVol7);
-                        BASS.BASS_ChannelPlay(hSETemp, true);
-                        mHandler.postDelayed(this, 100);
-                        return;
-                    }
-                }
-                if(MainActivity.sStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_PAUSED || BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_STOPPED)
-                {
-                    if(BASS.BASS_ChannelIsActive(hSETemp) == BASS.BASS_ACTIVE_PLAYING)
-                        BASS.BASS_ChannelPause(hSETemp);
-                    mHandler.postDelayed(this, 100);
-                    return;
-                }
-                if(BASS.BASS_ChannelIsActive(hSETemp) == BASS.BASS_ACTIVE_PAUSED)
-                {
-                    mHandler.postDelayed(this, 100);
-                    return;
-                }
-                if(BASS.BASS_ChannelIsSliding(hSETemp, BASS.BASS_ATTRIB_VOL))
-                {
+                if(BASS.BASS_ChannelIsSliding(hSETemp, BASS.BASS_ATTRIB_VOL)) {
                     mHandler.postDelayed(this, 100);
                     return;
                 }
@@ -4747,7 +4776,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 fVol += mAccel;
                 if(fVol > 1.0f) fVol = 1.0f;
                 else if(fVol < 0.5f) fVol = 0.5f;
-                BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol * mVol7);
+                BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol * mSoundEffectVolume / 100.0f);
                 mHandler.postDelayed(this, 100);
             }
         }
@@ -4779,16 +4808,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mSync = BASS.BASS_ChannelSetSync(mSEStream2, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 4.653), endRecordNoise, this);
             BASS.BASS_ChannelPlay(mSEStream2, FALSE);
             BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f, 1000);
-            BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, mVol1, 1000);
+            BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f, 1000);
             mSE1PlayingFlag = false;
         }
-        else if(BASS.BASS_ChannelIsActive(mSEStream2) == BASS.BASS_ACTIVE_PLAYING)
+        else
         {
             MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
             params.inputStream = getResources().openRawResource(R.raw.recordnoise);
             mSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             BASS.BASS_ChannelSetAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f);
-            BASS.BASS_ChannelSetPosition(mSEStream, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 1.417), BASS.BASS_POS_BYTE);
+            BASS.BASS_ChannelSetPosition(mSEStream, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 1.417), BASS.BASS_POS_BYTE);
             if(mSync != 0)
             {
                 BASS.BASS_ChannelRemoveSync(mSEStream2, mSync);
@@ -4797,7 +4826,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 4.653), endRecordNoise, this);
             BASS.BASS_ChannelPlay(mSEStream, FALSE);
             BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f, 1000);
-            BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol1, 1000);
+            BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f, 1000);
             mSE1PlayingFlag = true;
         }
     }
@@ -4828,7 +4857,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mSync = BASS.BASS_ChannelSetSync(mSEStream2, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 28.399), endWave, this);
             BASS.BASS_ChannelPlay(mSEStream2, FALSE);
             BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f, 1000);
-            BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, mVol2, 1000);
+            BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f, 1000);
             mSE1PlayingFlag = false;
         }
         else if(BASS.BASS_ChannelIsActive(mSEStream2) == BASS.BASS_ACTIVE_PLAYING)
@@ -4846,7 +4875,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 28.399), endWave, this);
             BASS.BASS_ChannelPlay(mSEStream, FALSE);
             BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f, 1000);
-            BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol2, 1000);
+            BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f, 1000);
             mSE1PlayingFlag = true;
         }
     }
@@ -4876,7 +4905,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             mSync = BASS.BASS_ChannelSetSync(mSEStream2, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 1.503), endRain, this);
             BASS.BASS_ChannelPlay(mSEStream2, FALSE);
-            BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, mVol3, 150);
+            BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f, 150);
             BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f, 300);
             mSE1PlayingFlag = false;
         }
@@ -4894,7 +4923,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 1.503), endRain, this);
             BASS.BASS_ChannelPlay(mSEStream, FALSE);
-            BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol3, 150);
+            BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f, 150);
             BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f, 300);
             mSE1PlayingFlag = true;
         }
@@ -4925,7 +4954,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             mSync = BASS.BASS_ChannelSetSync(mSEStream2, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 60.0), endRiver, this);
             BASS.BASS_ChannelPlay(mSEStream2, FALSE);
-            BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, mVol4, 5000);
+            BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f, 5000);
             BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f, 5000);
             mSE1PlayingFlag = false;
         }
@@ -4943,7 +4972,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 60.0), endRiver, this);
             BASS.BASS_ChannelPlay(mSEStream, FALSE);
-            BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol4, 5000);
+            BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f, 5000);
             BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f, 5000);
             mSE1PlayingFlag = true;
         }
@@ -4974,7 +5003,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             mSync = BASS.BASS_ChannelSetSync(mSEStream2, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 30.0), endWar, this);
             BASS.BASS_ChannelPlay(mSEStream2, FALSE);
-            BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, mVol5, 1000);
+            BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f, 1000);
             BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f, 1000);
             mSE1PlayingFlag = false;
         }
@@ -4992,7 +5021,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 30.0), endWar, this);
             BASS.BASS_ChannelPlay(mSEStream, FALSE);
-            BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol5, 1000);
+            BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f, 1000);
             BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f, 1000);
             mSE1PlayingFlag = true;
         }
@@ -5023,7 +5052,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             mSync = BASS.BASS_ChannelSetSync(mSEStream2, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream2, 10.0), endFire, this);
             BASS.BASS_ChannelPlay(mSEStream2, FALSE);
-            BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, mVol6, 5000);
+            BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f, 5000);
             BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, 0.0f, 5000);
             mSE1PlayingFlag = false;
         }
@@ -5041,7 +5070,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             mSync = BASS.BASS_ChannelSetSync(mSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(mSEStream, 10.0), endFire, this);
             BASS.BASS_ChannelPlay(mSEStream, FALSE);
-            BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mVol6, 5000);
+            BASS.BASS_ChannelSlideAttribute(mSEStream, BASS.BASS_ATTRIB_VOL, mSoundEffectVolume / 100.0f, 5000);
             BASS.BASS_ChannelSlideAttribute(mSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f, 5000);
             mSE1PlayingFlag = true;
         }

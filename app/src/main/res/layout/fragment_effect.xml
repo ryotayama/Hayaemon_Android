@@ -2826,6 +2826,111 @@
 
         </ScrollView>
 
+        <ScrollView
+            android:id="@+id/scrollSoundEffectCustomize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/viewSepEffect"
+            android:visibility="invisible"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:background="#FFF"
+                >
+
+                <TextView
+                    android:id="@+id/textSoundEffectVolumeLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/volume"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_alignParentTop="true"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderSoundEffectVolume"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/textSoundEffectVolumeLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekSoundEffectVolume"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="100"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textSoundEffectVolume"
+                        android:layout_toStartOf="@id/textSoundEffectVolume"
+                        android:thumb="@drawable/thumbplaying"
+                        />
+
+                    <TextView
+                        android:id="@+id/textSoundEffectVolume"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnSoundEffectVolumeMinus"
+                        android:layout_toStartOf="@+id/btnSoundEffectVolumeMinus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnSoundEffectVolumeMinus"
+                        android:contentDescription="@string/minus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/minusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnSoundEffectVolumePlus"
+                        android:layout_toStartOf="@+id/btnSoundEffectVolumePlus"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnSoundEffectVolumePlus"
+                        android:contentDescription="@string/plus"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/plusbutton"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </ScrollView>
+
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
