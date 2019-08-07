@@ -93,6 +93,8 @@
             android:paddingBottom="8dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:layout_below="@id/viewSepItemHeader"
             >
 
@@ -121,7 +123,7 @@
 
             <TextView
                 android:id="@+id/textPurpleTitle"
-                android:layout_width="180dp"
+                android:layout_width="188dp"
                 android:layout_height="wrap_content"
                 android:text="@string/purpleSeaUrchinPointer_Short"
                 android:textSize="16sp"
@@ -139,7 +141,7 @@
 
             <TextView
                 android:id="@+id/textPurpleDescription"
-                android:layout_width="180dp"
+                android:layout_width="188dp"
                 android:layout_height="wrap_content"
                 android:text="@string/purpleSeaUrchinPointer_Description"
                 android:fontFamily="monospace"
@@ -156,7 +158,7 @@
                 />
 
             <View
-                android:layout_width="208dp"
+                android:layout_width="216dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/seaurchinborder"
                 android:layout_marginTop="-14dp"
@@ -174,7 +176,11 @@
                 android:textColor="#FFF"
                 android:textStyle="bold"
                 android:background="@drawable/itempurchase"
-                android:layout_marginTop="14dp"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="12"
+                android:layout_marginTop="6dp"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/textPurpleDescription"
                 />
@@ -197,14 +203,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/item_control_pointer_uni_bafun"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/btnPurpleSet"
                 />
 
             <TextView
                 android:id="@+id/textElegantTitle"
-                android:layout_width="180dp"
+                android:layout_width="188dp"
                 android:layout_height="wrap_content"
                 android:text="@string/elegantSeaUrchinPointer_Short"
                 android:textSize="16sp"
@@ -222,7 +228,7 @@
 
             <TextView
                 android:id="@+id/textElegantDescription"
-                android:layout_width="180dp"
+                android:layout_width="188dp"
                 android:layout_height="wrap_content"
                 android:text="@string/elegantSeaUrchinPointer_Desctiption"
                 android:fontFamily="monospace"
@@ -239,7 +245,7 @@
                 />
 
             <View
-                android:layout_width="208dp"
+                android:layout_width="216dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/seaurchinborder"
                 android:layout_marginTop="-14dp"
@@ -257,7 +263,11 @@
                 android:textColor="#FFF"
                 android:textStyle="bold"
                 android:background="@drawable/itempurchase"
-                android:layout_marginTop="14dp"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="12"
+                android:layout_marginTop="6dp"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/textElegantDescription"
                 />
@@ -300,7 +310,7 @@
 
             <TextView
                 android:id="@+id/textPinkCamperTitle"
-                android:layout_width="180dp"
+                android:layout_width="188dp"
                 android:layout_height="wrap_content"
                 android:text="@string/pinkCamperPointer_Short"
                 android:textSize="16sp"
@@ -318,7 +328,7 @@
 
             <TextView
                 android:id="@+id/textPinkCamperDescription"
-                android:layout_width="180dp"
+                android:layout_width="188dp"
                 android:layout_height="wrap_content"
                 android:text="@string/pinkCamperPointer_Desctiption"
                 android:fontFamily="monospace"
@@ -329,13 +339,14 @@
                 android:shadowDx="0"
                 android:shadowDy="3"
                 android:shadowRadius="1"
+                android:includeFontPadding="false"
                 android:layout_marginBottom="14dp"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/textPinkCamperTitle"
                 />
 
             <View
-                android:layout_width="208dp"
+                android:layout_width="216dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/camperborder"
                 android:layout_marginTop="-14dp"
@@ -353,7 +364,11 @@
                 android:textColor="#FFF"
                 android:textStyle="bold"
                 android:background="@drawable/itempurchase"
-                android:layout_marginTop="14dp"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="12"
+                android:layout_marginTop="6dp"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/textPinkCamperDescription"
                 />
@@ -368,6 +383,180 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/btnPinkCamperPurchase"
+                />
+
+            <ImageView
+                android:id="@+id/imgBlueCamper"
+                android:contentDescription="@null"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/item_control_pointer_camper_bl"
+                android:layout_marginTop="16dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/btnPinkCamperSet"
+                />
+
+            <TextView
+                android:id="@+id/textBlueCamperTitle"
+                android:layout_width="188dp"
+                android:layout_height="wrap_content"
+                android:text="@string/blueCamperPointer_Short"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#0085cd"
+                android:shadowColor="#C0E1F3"
+                android:shadowDx="0"
+                android:shadowDy="3"
+                android:shadowRadius="1"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/imgBlueCamper"
+                />
+
+            <TextView
+                android:id="@+id/textBlueCamperDescription"
+                android:layout_width="188dp"
+                android:layout_height="wrap_content"
+                android:text="@string/blueCamperPointer_Desctiption"
+                android:fontFamily="monospace"
+                android:textSize="13dp"
+                android:textColor="#0085cd"
+                android:lineSpacingExtra="10sp"
+                android:shadowColor="#C0E1F3"
+                android:shadowDx="0"
+                android:shadowDy="3"
+                android:shadowRadius="1"
+                android:layout_marginBottom="14dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/textBlueCamperTitle"
+                />
+
+            <View
+                android:layout_width="216dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/camperborder"
+                android:layout_marginTop="-14dp"
+                android:layout_marginBottom="-14dp"
+                android:layout_alignTop="@+id/textBlueCamperTitle"
+                android:layout_alignBottom="@id/textBlueCamperDescription"
+                android:layout_centerHorizontal="true"
+                />
+
+            <Button
+                android:id="@+id/btnBlueCamperPurchase"
+                android:layout_width="160dp"
+                android:layout_height="44dp"
+                android:text="@string/purchase"
+                android:textColor="#FFF"
+                android:textStyle="bold"
+                android:background="@drawable/itempurchase"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="12"
+                android:layout_marginTop="6dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/textBlueCamperDescription"
+                />
+
+            <Button
+                android:id="@+id/btnBlueCamperSet"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:text="@string/set"
+                android:textColor="#007AFF"
+                android:visibility="gone"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/btnBlueCamperPurchase"
+                />
+
+            <ImageView
+                android:id="@+id/imgOrangeCamper"
+                android:contentDescription="@null"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/item_control_pointer_camper_or"
+                android:layout_marginTop="16dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/btnBlueCamperSet"
+                />
+
+            <TextView
+                android:id="@+id/textOrangeCamperTitle"
+                android:layout_width="188dp"
+                android:layout_height="wrap_content"
+                android:text="@string/orangeCamperPointer_Short"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#0085cd"
+                android:shadowColor="#C0E1F3"
+                android:shadowDx="0"
+                android:shadowDy="3"
+                android:shadowRadius="1"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/imgOrangeCamper"
+                />
+
+            <TextView
+                android:id="@+id/textOrangeCamperDescription"
+                android:layout_width="188dp"
+                android:layout_height="wrap_content"
+                android:text="@string/orangeCamperPointer_Desctiption"
+                android:fontFamily="monospace"
+                android:textSize="13dp"
+                android:textColor="#0085cd"
+                android:lineSpacingExtra="10sp"
+                android:shadowColor="#C0E1F3"
+                android:shadowDx="0"
+                android:shadowDy="3"
+                android:shadowRadius="1"
+                android:layout_marginBottom="14dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/textOrangeCamperTitle"
+                />
+
+            <View
+                android:layout_width="216dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/camperborder"
+                android:layout_marginTop="-14dp"
+                android:layout_marginBottom="-14dp"
+                android:layout_alignTop="@+id/textOrangeCamperTitle"
+                android:layout_alignBottom="@id/textOrangeCamperDescription"
+                android:layout_centerHorizontal="true"
+                />
+
+            <Button
+                android:id="@+id/btnOrangeCamperPurchase"
+                android:layout_width="160dp"
+                android:layout_height="44dp"
+                android:text="@string/purchase"
+                android:textColor="#FFF"
+                android:textStyle="bold"
+                android:background="@drawable/itempurchase"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="12"
+                android:layout_marginTop="6dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/textOrangeCamperDescription"
+                />
+
+            <Button
+                android:id="@+id/btnOrangeCamperSet"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:text="@string/set"
+                android:textColor="#007AFF"
+                android:visibility="gone"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/btnOrangeCamperPurchase"
                 />
 
         </RelativeLayout>

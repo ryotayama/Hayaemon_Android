@@ -138,6 +138,14 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             mImgPoint.setImageResource(R.drawable.control_pointer_camper_pk);
             mImgPoint.setTag(3);
         }
+        else if(nImgPointTag == 4) {
+            mImgPoint.setImageResource(R.drawable.control_pointer_camper_bl);
+            mImgPoint.setTag(4);
+        }
+        else if(nImgPointTag == 5) {
+            mImgPoint.setImageResource(R.drawable.control_pointer_camper_or);
+            mImgPoint.setTag(5);
+        }
         if(nImgPointTag != 0) {
             mImgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
             mImgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;

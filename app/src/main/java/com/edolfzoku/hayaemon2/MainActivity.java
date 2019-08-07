@@ -847,6 +847,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if(strVersionName != null && !strCurrentVersionName.equals(strVersionName))
                 mShowUpdateLog = true;
         }
+        if(strVersionName == null) {
+            preferences.edit().putBoolean("bPinkCamperDisplayed", true).apply();
+            preferences.edit().putBoolean("bBlueCamperDisplayed", true).apply();
+            preferences.edit().putBoolean("bOrangeCamperDisplayed", true).apply();
+        }
         preferences.edit().putString("versionname", strCurrentVersionName).apply();
 
         mPlayNextByBPos = preferences.getBoolean("bPlayNextByBPos", false);
@@ -1138,13 +1143,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
             boolean bPinkCamperDisplayed = preferences.getBoolean("bPinkCamperDisplayed", false);
+            boolean bBlueCamperDisplayed = preferences.getBoolean("bBlueCamperDisplayed", false);
+            boolean bOrangeCamperDisplayed = preferences.getBoolean("bOrangeCamperDisplayed", false);
+            int nCount = 0;
+            if(!bPinkCamperDisplayed) nCount++;
+            if(!bBlueCamperDisplayed) nCount++;
+            if(!bOrangeCamperDisplayed) nCount++;
 
             findViewById(R.id.textPlaying).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
             findViewById(R.id.relativePlayingInMenu).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
             findViewById(R.id.relativeSave).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
             findViewById(R.id.relativeLock).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
             findViewById(R.id.dividerMenu).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
-            findViewById(R.id.textItemNew).setVisibility(bPinkCamperDisplayed ? View.GONE : View.VISIBLE);
+            TextView textView = findViewById(R.id.textItemNew);
+            textView.setVisibility(nCount == 0 ? View.GONE : View.VISIBLE);
+            textView.setText(String.format(Locale.getDefault(), "%d", nCount));
+
             if(!isAdsVisible()) findViewById(R.id.relativeHideAds).setVisibility(View.GONE);
             if(sStream != 0) {
                 playlistFragment.selectPlaylist(playlistFragment.getPlayingPlaylist());
@@ -1891,6 +1905,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         preferences.edit().putBoolean("bPinkCamperDisplayed", true).apply();
+        preferences.edit().putBoolean("bBlueCamperDisplayed", true).apply();
+        preferences.edit().putBoolean("bOrangeCamperDisplayed", true).apply();
         FragmentManager fragmentManager = getSupportFragmentManager();
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
@@ -2005,6 +2021,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 ItemFragment itemFragment = (ItemFragment)fragmentManager.findFragmentById(R.id.relativeMain);
                 itemFragment.buyPinkCamperPointer();
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(requestCode == 1005)
+        {
+            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
+
+            try {
+                JSONObject jo = new JSONObject(purchaseData);
+                jo.getString("productId");
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                ItemFragment itemFragment = (ItemFragment)fragmentManager.findFragmentById(R.id.relativeMain);
+                itemFragment.buyBlueCamperPointer();
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(requestCode == 1006)
+        {
+            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
+
+            try {
+                JSONObject jo = new JSONObject(purchaseData);
+                jo.getString("productId");
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                ItemFragment itemFragment = (ItemFragment)fragmentManager.findFragmentById(R.id.relativeMain);
+                itemFragment.buyOrangeCamperPointer();
             }
             catch (JSONException e) {
                 e.printStackTrace();

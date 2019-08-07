@@ -187,7 +187,9 @@
     <string name="purchasedItem">Purchased items</string>
     <string name="pointerPurple">Control Pointer - Purple Sea Urchin</string>
     <string name="pointerElegant">Control Pointer - Elegant Sea Urchin</string>
-    <string name="pointerCamper">Control Pointer - Pink Camper</string>
+    <string name="pointerPinkCamper">Control Pointer - Pink Camper</string>
+    <string name="pointerBlueCamper">Control Pointer - Blue Camper</string>
+    <string name="pointerOrangeCamper">Control Pointer - Orange Camper</string>
     <string name="speedWithColon">Speed：</string>
     <string name="pitchWithColon">Pitch：</string>
     <string name="lockSpeed">Lock the speed</string>
@@ -242,8 +244,12 @@
     <string name="purpleSeaUrchinPointer_Description">Elegant and pale taste with cream colored.</string>
     <string name="elegantSeaUrchinPointer_Short">&lt;Elegant&gt;</string>
     <string name="pinkCamperPointer_Short">&lt;Pink&gt;</string>
+    <string name="blueCamperPointer_Short">&lt;Blue&gt;</string>
+    <string name="orangeCamperPointer_Short">&lt;Orange&gt;</string>
     <string name="elegantSeaUrchinPointer_Desctiption">Deep and rich taste with orange colored.</string>
     <string name="pinkCamperPointer_Desctiption">We will rush to the user in need by ego searching.</string>
+    <string name="blueCamperPointer_Desctiption">We will rush to the user in need by ego searching.</string>
+    <string name="orangeCamperPointer_Desctiption">We will rush to the user in need by ego searching.</string>
     <string name="purchase">Purchase</string>
     <string name="purchased">Purchased</string>
     <string name="set">Set</string>
@@ -301,6 +307,8 @@
     <string name="purpleSeaUrchinPointer">Sea Urchin Pointer (Purple)</string>
     <string name="elegantSeaUrchinPointer">Sea Urchin Pointer (Elegant)</string>
     <string name="pinkCamperPointer">Camper Pointer (Pink)</string>
+    <string name="blueCamperPointer">Camper Pointer (Blue)</string>
+    <string name="orangeCamperPointer">Camper Pointer (Orange)</string>
     <string name="askDeleteSong">This app deletes the song, is it OK?</string>
     <string name="askEmptyPlaylist">This app empties the playlist, is it OK?</string>
     <string name="askDeletePlaylist">This app deletes the playlist, is it OK?</string>

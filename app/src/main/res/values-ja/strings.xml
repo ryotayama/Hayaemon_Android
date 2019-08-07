@@ -187,7 +187,9 @@
     <string name="purchasedItem">課金済みのアイテム</string>
     <string name="pointerPurple">コントロールポインター - ムラサキウニ</string>
     <string name="pointerElegant">コントロールポインター - バフンウニ</string>
-    <string name="pointerCamper">コントロールポインター - キャンピングカー</string>
+    <string name="pointerPinkCamper">コントロールポインター - キャンピングカー（ぴんく）</string>
+    <string name="pointerBlueCamper">コントロールポインター - キャンピングカー（みずいろ）</string>
+    <string name="pointerOrangeCamper">コントロールポインター - キャンピングカー（おれんじ）</string>
     <string name="speedWithColon">速度：</string>
     <string name="pitchWithColon">音程：</string>
     <string name="lockSpeed">速度をロック</string>
@@ -242,8 +244,12 @@
     <string name="purpleSeaUrchinPointer_Description">くりーむいろの　たんぱくで\nじょうひんな　おあじ</string>
     <string name="elegantSeaUrchinPointer_Short">【ばふん】240円</string>
     <string name="pinkCamperPointer_Short">【ぴんく】360円</string>
+    <string name="blueCamperPointer_Short">【みずいろ】360円</string>
+    <string name="orangeCamperPointer_Short">【おれんじ】360円</string>
     <string name="elegantSeaUrchinPointer_Desctiption">おれんじいろの　のうこうで\nぜいたくな　おあじ</string>
     <string name="pinkCamperPointer_Desctiption">えごさーちで　ゆーざーさんの\nもとへ　かけつけます</string>
+    <string name="blueCamperPointer_Desctiption">えごさーちで　ゆーざーさんの\nもとへ　かけつけます</string>
+    <string name="orangeCamperPointer_Desctiption">えごさーちで　ゆーざーさんの\nもとへ　かけつけます</string>
     <string name="purchase">購入する</string>
     <string name="purchased">購入済み</string>
     <string name="set">設定する</string>
@@ -301,6 +307,8 @@
     <string name="purpleSeaUrchinPointer">【謹製】お布施ウニポインター【むらさき】</string>
     <string name="elegantSeaUrchinPointer">【謹製】お布施ウニポインター【ばふん】</string>
     <string name="pinkCamperPointer">【動く！】キャンピングカーポインター【ぴんく】</string>
+    <string name="blueCamperPointer">【動く！】キャンピングカーポインター【みずいろ】</string>
+    <string name="orangeCamperPointer">【動く！】キャンピングカーポインター【おれんじ】</string>
     <string name="askDeleteSong">曲を削除しますが、よろしいでしょうか？</string>
     <string name="askEmptyPlaylist">再生リストを空にしますが、よろしいでしょうか？</string>
     <string name="askDeletePlaylist">再生リストを削除しますが、よろしいでしょうか？</string>
