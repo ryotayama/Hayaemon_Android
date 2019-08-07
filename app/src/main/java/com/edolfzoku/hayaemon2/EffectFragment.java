@@ -529,6 +529,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             else {
                 mRelativeEffectDetail.setVisibility(View.GONE);
+                mRelativeEffectTemplates.setVisibility(View.INVISIBLE);
                 mRecyclerEffects.setVisibility(View.VISIBLE);
             }
         }
