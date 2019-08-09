@@ -1319,9 +1319,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     builder.setTitle(R.string.addURL);
                     LinearLayout linearLayout = new LinearLayout(activity);
                     linearLayout.setOrientation(LinearLayout.VERTICAL);
-                    final EditText editURL = new EditText (activity);
+                    final ClearableEditText editURL = new ClearableEditText(activity);
                     editURL.setHint(R.string.URL);
-                    editURL.setHintTextColor(Color.argb(255, 192, 192, 192));
                     editURL.setText("");
                     linearLayout.addView(editURL);
                     builder.setView(linearLayout);

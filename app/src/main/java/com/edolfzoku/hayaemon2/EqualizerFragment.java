@@ -541,9 +541,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     builder.setTitle(R.string.saveTemplate);
                     LinearLayout linearLayout = new LinearLayout(mActivity);
                     linearLayout.setOrientation(LinearLayout.VERTICAL);
-                    final EditText editPreset = new EditText(mActivity);
+                    final ClearableEditText editPreset = new ClearableEditText(mActivity);
                     editPreset.setHint(R.string.templateName);
-                    editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
                     editPreset.setText(R.string.newTemplate);
                     linearLayout.addView(editPreset);
                     builder.setView(linearLayout);
@@ -636,9 +635,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 builder.setTitle(R.string.saveTemplate);
                 LinearLayout linearLayout = new LinearLayout(mActivity);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
-                final EditText editPreset = new EditText(mActivity);
+                final ClearableEditText editPreset = new ClearableEditText(mActivity);
                 editPreset.setHint(R.string.templateName);
-                editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
                 editPreset.setText(R.string.newTemplate);
                 linearLayout.addView(editPreset);
                 builder.setView(linearLayout);
@@ -1143,9 +1141,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 builder.setTitle(R.string.changeTemplateName);
                 LinearLayout linearLayout = new LinearLayout(mActivity);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
-                final EditText editPreset = new EditText (mActivity);
+                final ClearableEditText editPreset = new ClearableEditText(mActivity);
                 editPreset.setHint(R.string.templateName);
-                editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
                 editPreset.setText(mEqualizerItems.get(nItem).getEqualizerName());
                 linearLayout.addView(editPreset);
                 builder.setView(linearLayout);

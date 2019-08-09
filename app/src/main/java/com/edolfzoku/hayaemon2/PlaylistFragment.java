@@ -63,6 +63,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -279,9 +281,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                     builder.setTitle(R.string.addNewList);
-                    final EditText editText = new EditText (mActivity);
+                    final ClearableEditText editText = new ClearableEditText(mActivity);
                     editText.setHint(R.string.playlist);
-                    editText.setHintTextColor(Color.argb(255, 192, 192, 192));
                     editText.setText(R.string.playlist);
                     builder.setView(editText);
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -333,9 +334,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
             builder.setTitle(R.string.addNewList);
-            final EditText editText = new EditText (mActivity);
+            final ClearableEditText editText = new ClearableEditText(mActivity);
             editText.setHint(R.string.playlist);
-            editText.setHintTextColor(Color.argb(255, 192, 192, 192));
             editText.setText(R.string.playlist);
             builder.setView(editText);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -396,9 +396,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                             builder.setTitle(R.string.addURL);
                             LinearLayout linearLayout = new LinearLayout(mActivity);
                             linearLayout.setOrientation(LinearLayout.VERTICAL);
-                            final EditText editURL = new EditText (mActivity);
+                            final ClearableEditText editURL = new ClearableEditText(mActivity);
                             editURL.setHint(R.string.URL);
-                            editURL.setHintTextColor(Color.argb(255, 192, 192, 192));
                             editURL.setText("");
                             linearLayout.addView(editURL);
                             builder.setView(linearLayout);
@@ -1146,15 +1145,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         builder.setTitle(R.string.addURL);
         LinearLayout linearLayout = new LinearLayout(mActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        final EditText editTitle = new EditText (mActivity);
+        final ClearableEditText editTitle = new ClearableEditText(mActivity);
         editTitle.setHint(R.string.title);
-        editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         Date date = new Date(System.currentTimeMillis());
         editTitle.setText(String.format(Locale.getDefault(), "タイトル(%s)", df.format(date)));
-        final EditText editArtist = new EditText (mActivity);
+        final ClearableEditText editArtist = new ClearableEditText(mActivity);
         editArtist.setHint(R.string.artist);
-        editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
         editArtist.setText("");
         linearLayout.addView(editTitle);
         linearLayout.addView(editArtist);
@@ -1378,15 +1375,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         builder.setTitle(R.string.newRecord);
         LinearLayout linearLayout = new LinearLayout(mActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        final EditText editTitle = new EditText (mActivity);
+        final ClearableEditText editTitle = new ClearableEditText(mActivity);
         editTitle.setHint(R.string.title);
-        editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         Date date = new Date(System.currentTimeMillis());
         editTitle.setText(String.format(Locale.getDefault(), "%s(%s)", getString(R.string.newRecord), df.format((date))));
-        final EditText editArtist = new EditText (mActivity);
+        final ClearableEditText editArtist = new ClearableEditText(mActivity);
         editArtist.setHint(R.string.artist);
-        editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
         editArtist.setText("");
         linearLayout.addView(editTitle);
         linearLayout.addView(editArtist);
@@ -2152,13 +2147,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         builder.setTitle(R.string.changeTitleAndArtist);
         LinearLayout linearLayout = new LinearLayout(mActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        final EditText editTitle = new EditText (mActivity);
+        final ClearableEditText editTitle = new ClearableEditText(mActivity);
         editTitle.setHint(R.string.title);
-        editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
         editTitle.setText(songItem.getTitle());
-        final EditText editArtist = new EditText (mActivity);
+        final ClearableEditText editArtist = new ClearableEditText(mActivity);
         editArtist.setHint(R.string.artist);
-        editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
         editArtist.setText(songItem.getArtist());
         linearLayout.addView(editTitle);
         linearLayout.addView(editArtist);
@@ -2222,9 +2215,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.changePlaylistName);
-                final EditText editText = new EditText (mActivity);
+                final ClearableEditText editText = new ClearableEditText(mActivity);
                 editText.setHint(R.string.playlist);
-                editText.setHintTextColor(Color.argb(255, 192, 192, 192));
                 editText.setText(mPlaylistNames.get(nPosition));
                 builder.setView(editText);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -2264,9 +2256,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.copyPlaylist);
-                final EditText editText = new EditText (mActivity);
+                final ClearableEditText editText = new ClearableEditText(mActivity);
                 editText.setHint(R.string.playlist);
-                editText.setHintTextColor(Color.argb(255, 192, 192, 192));
                 editText.setText(String.format(Locale.getDefault(), "%s のコピー", mPlaylistNames.get(nPosition)));
                 builder.setView(editText);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -2523,9 +2514,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.changePlaylistName);
-                final EditText editText = new EditText (mActivity);
+                final ClearableEditText editText = new ClearableEditText(mActivity);
                 editText.setHint(R.string.playlist);
-                editText.setHintTextColor(Color.argb(255, 192, 192, 192));
                 editText.setText(mPlaylistNames.get(nPosition));
                 builder.setView(editText);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -2565,9 +2555,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 menu.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.copyPlaylist);
-                final EditText editText = new EditText (mActivity);
+                final ClearableEditText editText = new ClearableEditText(mActivity);
                 editText.setHint(R.string.playlist);
-                editText.setHintTextColor(Color.argb(255, 192, 192, 192));
                 editText.setText(String.format(Locale.getDefault(), "%s のコピー", mPlaylistNames.get(nPosition)));
                 builder.setView(editText);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -3385,9 +3374,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         builder.setTitle(R.string.export);
         LinearLayout linearLayout = new LinearLayout(mActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        final EditText editTitle = new EditText (mActivity);
+        final ClearableEditText editTitle = new ClearableEditText(mActivity);
         editTitle.setHint(R.string.fileName);
-        editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
         ArrayList<SongItem> arSongs = mPlaylists.get(mSelectedPlaylist);
         SongItem item = arSongs.get(mSelectedItem);
         String strTitle = item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_");
@@ -4180,15 +4168,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         builder.setTitle(R.string.addFromVideo);
         LinearLayout linearLayout = new LinearLayout(mActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        final EditText editTitle = new EditText (mActivity);
+        final ClearableEditText editTitle = new ClearableEditText(mActivity);
         editTitle.setHint(R.string.title);
-        editTitle.setHintTextColor(Color.argb(255, 192, 192, 192));
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         Date date = new Date(System.currentTimeMillis());
         editTitle.setText(String.format(Locale.getDefault(), "ムービー(%s)", df.format(date)));
-        final EditText editArtist = new EditText (mActivity);
+        final ClearableEditText editArtist = new ClearableEditText(mActivity);
         editArtist.setHint(R.string.artist);
-        editArtist.setHintTextColor(Color.argb(255, 192, 192, 192));
         editArtist.setText("");
         linearLayout.addView(editTitle);
         linearLayout.addView(editArtist);

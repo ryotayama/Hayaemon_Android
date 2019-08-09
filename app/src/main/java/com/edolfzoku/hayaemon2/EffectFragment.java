@@ -539,9 +539,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 builder.setTitle(R.string.saveTemplate);
                 LinearLayout linearLayout = new LinearLayout(mActivity);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
-                final EditText editPreset = new EditText(mActivity);
+                final ClearableEditText editPreset = new ClearableEditText(mActivity);
                 editPreset.setHint(R.string.templateName);
-                editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
                 if(mEffectDetail == EFFECTTYPE_REVERB) editPreset.setText(R.string.newReverb);
                 else if(mEffectDetail == EFFECTTYPE_ECHO) editPreset.setText(R.string.newEcho);
                 else if(mEffectDetail == EFFECTTYPE_CHORUS) editPreset.setText(R.string.newChorus);
@@ -892,9 +891,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             builder.setTitle(R.string.saveTemplate);
             LinearLayout linearLayout = new LinearLayout(mActivity);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
-            final EditText editPreset = new EditText(mActivity);
+            final ClearableEditText editPreset = new ClearableEditText(mActivity);
             editPreset.setHint(R.string.templateName);
-            editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
             editPreset.setText(R.string.newComp);
             linearLayout.addView(editPreset);
             builder.setView(linearLayout);
@@ -971,9 +969,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             builder.setTitle(R.string.saveTemplate);
             LinearLayout linearLayout = new LinearLayout(mActivity);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
-            final EditText editPreset = new EditText(mActivity);
+            final ClearableEditText editPreset = new ClearableEditText(mActivity);
             editPreset.setHint(R.string.templateName);
-            editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
             editPreset.setText(R.string.newEcho);
             linearLayout.addView(editPreset);
             builder.setView(linearLayout);
@@ -1052,9 +1049,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             builder.setTitle(R.string.saveTemplate);
             LinearLayout linearLayout = new LinearLayout(mActivity);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
-            final EditText editPreset = new EditText(mActivity);
+            final ClearableEditText editPreset = new ClearableEditText(mActivity);
             editPreset.setHint(R.string.templateName);
-            editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
             editPreset.setText(R.string.newReverb);
             linearLayout.addView(editPreset);
             builder.setView(linearLayout);
@@ -1135,9 +1131,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             builder.setTitle(R.string.saveTemplate);
             LinearLayout linearLayout = new LinearLayout(mActivity);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
-            final EditText editPreset = new EditText(mActivity);
+            final ClearableEditText editPreset = new ClearableEditText(mActivity);
             editPreset.setHint(R.string.templateName);
-            editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
             editPreset.setText(R.string.newChorus);
             linearLayout.addView(editPreset);
             builder.setView(linearLayout);
@@ -1217,9 +1212,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             builder.setTitle(R.string.saveTemplate);
             LinearLayout linearLayout = new LinearLayout(mActivity);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
-            final EditText editPreset = new EditText(mActivity);
+            final ClearableEditText editPreset = new ClearableEditText(mActivity);
             editPreset.setHint(R.string.templateName);
-            editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
             editPreset.setText(R.string.newDistortion);
             linearLayout.addView(editPreset);
             builder.setView(linearLayout);
@@ -5469,9 +5463,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 builder.setTitle(R.string.changeTemplateName);
                 LinearLayout linearLayout = new LinearLayout(mActivity);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
-                final EditText editPreset = new EditText (mActivity);
+                final ClearableEditText editPreset = new ClearableEditText(mActivity);
                 editPreset.setHint(R.string.templateName);
-                editPreset.setHintTextColor(Color.argb(255, 192, 192, 192));
                 if(mEffectDetail == EFFECTTYPE_REVERB)
                     editPreset.setText(mReverbItems.get(nItem).getEffectTemplateName());
                 else if(mEffectDetail == EFFECTTYPE_ECHO)
