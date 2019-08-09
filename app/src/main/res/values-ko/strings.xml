@@ -340,4 +340,5 @@
     <string name="selectedSongs">선택중인 곡</string>
     <string name="sec">초</string>
     <string name="zeroHMS">00:00:00.00</string>
+    <string name="clearEditText">입력 상자를 지우십시오</string>
 </resources>

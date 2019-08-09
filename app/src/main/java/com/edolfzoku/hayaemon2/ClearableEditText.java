@@ -30,6 +30,7 @@ public class ClearableEditText extends RelativeLayout {
         editText.setHorizontallyScrolling(true);
         editText.setSingleLine(true);
         final ImageView imgClear = new ImageView(context);
+        imgClear.setContentDescription(context.getString(R.string.clearEditText));
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
