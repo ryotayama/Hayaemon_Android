@@ -174,7 +174,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private Button mBtnEffectOff, mBtnEffectBack, mBtnEffectFinish, mBtnEffectTemplateOff, mBtnReverbSaveAs, mBtnEchoSaveAs, mBtnChorusSaveAs, mBtnDistortionSaveAs, mBtnCompSaveAs;
     private AnimationButton mBtnEffectTemplateMenu, mBtnAddEffectTemplate;
     private ScrollView mScrollCompCustomize, mScrollEchoCustomize, mScrollReverbCustomize, mScrollChorusCustomize, mScrollDistortionCustomize, mScrollSoundEffectCustomize;
-    private View mViewSepEffectDetail, mViewSepEffectTemplate;
+    private View mViewSepEffect, mViewSepEffectDetail, mViewSepEffectTemplate;
     private ImageView mImgEffectBack;
 
     public ItemTouchHelper getEffectTemplateTouchHelper() { return mEffectTemplateTouchHelper; }
@@ -552,6 +552,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mRelativeEffectDetail.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.INVISIBLE);
                 mBtnEffectOff.setVisibility(View.VISIBLE);
+                mViewSepEffect.setVisibility(View.VISIBLE);
                 mRecyclerEffects.setVisibility(View.VISIBLE);
             }
         }
@@ -2002,6 +2003,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnEffectTemplateOff = mActivity.findViewById(R.id.btnEffectTemplateOff);
         mBtnEffectTemplateMenu = mActivity.findViewById(R.id.btnEffectTemplateMenu);
         mBtnAddEffectTemplate = mActivity.findViewById(R.id.btnAddEffectTemplate);
+        mViewSepEffect = mActivity.findViewById(R.id.viewSepEffect);
         mViewSepEffectDetail = mActivity.findViewById(R.id.viewSepEffectDetail);
         mViewSepEffectTemplate = mActivity.findViewById(R.id.viewSepEffectTemplate);
         mTextFinishSortEffect = mActivity.findViewById(R.id.textFinishSortEffect);
@@ -3196,6 +3198,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         mRelativeEffectDetail.setVisibility(View.VISIBLE);
         mBtnEffectOff.setVisibility(View.INVISIBLE);
+        mViewSepEffect.setVisibility(View.INVISIBLE);
         mRecyclerEffects.setVisibility(View.INVISIBLE);
     }
 
