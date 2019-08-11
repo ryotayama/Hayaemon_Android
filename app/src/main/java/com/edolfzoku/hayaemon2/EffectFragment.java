@@ -114,35 +114,35 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private float mChorusDry, mChorusWet, mChorusFeedback, mChorusMinSweep, mChorusMaxSweep, mChorusRate;
     private float mDistortionDrive, mDistortionDry, mDistortionWet, mDistortionFeedback, mDistortionVolume;
     private float mSoundEffectVolume;
-    private static final int EFFECTTYPE_RANDOM = 1;
-    private static final int EFFECTTYPE_VOCALCANCEL = 2;
-    // private static final int EFFECTTYPE_MONORAL = 3;
-    // private static final int EFFECTTYPE_LEFTONLY = 4;
-    // private static final int EFFECTTYPE_RIGHTONLY = 5;
-    // private static final int EFFECTTYPE_REPLACE = 6;
-    // private static final int EFFECTTYPE_DOUBLING = 7;
-    private static final int EFFECTTYPE_TRANSCRIBESIDEGUITAR = 8;
-    private static final int EFFECTTYPE_TRANSCRIBEBASS = 9;
-    private static final int EFFECTTYPE_PAN = 10;
-    // private static final int EFFECTTYPE_NORMALIZE = 11;
-    private static final int EFFECTTYPE_COMP = 12;
-    private static final int EFFECTTYPE_FREQUENCY = 13;
-    // private static final int EFFECTTYPE_PHASEREVERSAL = 14;
-    private static final int EFFECTTYPE_ECHO = 15;
-    private static final int EFFECTTYPE_REVERB = 16;
-    private static final int EFFECTTYPE_CHORUS = 17;
-    private static final int EFFECTTYPE_DISTORTION = 18;
-    static final int EFFECTTYPE_REVERSE = 19;
-    private static final int EFFECTTYPE_INCREASESPEED = 20;
-    private static final int EFFECTTYPE_DECREASESPEED = 21;
-    private static final int EFFECTTYPE_OLDRECORD = 22;
-    private static final int EFFECTTYPE_LOWBATTERY = 23;
-    private static final int EFFECTTYPE_NOSENSE_STRONG = 24;
-    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 25;
-    private static final int EFFECTTYPE_NOSENSE_WEAK = 26;
-    private static final int EFFECTTYPE_EARTRAINING = 27;
-    private static final int EFFECTTYPE_METRONOME = 28;
-    static final int EFFECTTYPE_SOUNDEFFECT = 29;
+    private static final int EFFECTTYPE_RANDOM = 0;
+    private static final int EFFECTTYPE_VOCALCANCEL = 1;
+    // private static final int EFFECTTYPE_MONORAL = 2;
+    // private static final int EFFECTTYPE_LEFTONLY = 3;
+    // private static final int EFFECTTYPE_RIGHTONLY = 4;
+    // private static final int EFFECTTYPE_REPLACE = 5;
+    // private static final int EFFECTTYPE_DOUBLING = 6;
+    private static final int EFFECTTYPE_TRANSCRIBESIDEGUITAR = 7;
+    private static final int EFFECTTYPE_TRANSCRIBEBASS = 8;
+    private static final int EFFECTTYPE_PAN = 9;
+    // private static final int EFFECTTYPE_NORMALIZE = 10;
+    private static final int EFFECTTYPE_COMP = 11;
+    private static final int EFFECTTYPE_FREQUENCY = 12;
+    // private static final int EFFECTTYPE_PHASEREVERSAL = 13;
+    private static final int EFFECTTYPE_ECHO = 14;
+    private static final int EFFECTTYPE_REVERB = 15;
+    private static final int EFFECTTYPE_CHORUS = 16;
+    private static final int EFFECTTYPE_DISTORTION = 17;
+    static final int EFFECTTYPE_REVERSE = 18;
+    private static final int EFFECTTYPE_INCREASESPEED = 19;
+    private static final int EFFECTTYPE_DECREASESPEED = 20;
+    private static final int EFFECTTYPE_OLDRECORD = 21;
+    private static final int EFFECTTYPE_LOWBATTERY = 22;
+    private static final int EFFECTTYPE_NOSENSE_STRONG = 23;
+    private static final int EFFECTTYPE_NOSENSE_MIDDLE = 24;
+    private static final int EFFECTTYPE_NOSENSE_WEAK = 25;
+    private static final int EFFECTTYPE_EARTRAINING = 26;
+    private static final int EFFECTTYPE_METRONOME = 27;
+    static final int EFFECTTYPE_SOUNDEFFECT = 28;
     private static final int SOUNDEFFECTTYPE_RECORDNOISE = 0;
     private static final int SOUNDEFFECTTYPE_ROAROFWAVES = 1;
     private static final int SOUNDEFFECTTYPE_RAIN = 2;
@@ -171,10 +171,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private RelativeLayout mRelativeEffectDetail, mRelativeSliderEffectDatail, mRelativeRollerEffectDetail, mRelativeEffectTemplates, mRelativeEffectTitle;
     private SeekBar mSeekEffectDetail, mSeekCompGain, mSeekCompThreshold, mSeekCompRatio, mSeekCompAttack, mSeekCompRelease, mSeekEchoDry, mSeekEchoWet, mSeekEchoFeedback, mSeekEchoDelay, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth, mSeekChorusDry, mSeekChorusWet, mSeekChorusFeedback, mSeekChorusMinSweep, mSeekChorusMaxSweep, mSeekChorusRate, mSeekDistortionDrive, mSeekDistortionDry, mSeekDistortionWet, mSeekDistortionFeedback, mSeekDistortionVolume, mSeekSoundEffectVolume;
     private ImageButton mBtnEffectMinus, mBtnEffectPlus, mBtnCompGainMinus, mBtnCompGainPlus, mBtnCompThresholdMinus, mBtnCompThresholdPlus, mBtnCompRatioMinus, mBtnCompRatioPlus, mBtnCompAttackMinus, mBtnCompAttackPlus, mBtnCompReleaseMinus, mBtnCompReleasePlus, mBtnEchoDryMinus, mBtnEchoDryPlus, mBtnEchoWetMinus, mBtnEchoWetPlus, mBtnEchoFeedbackMinus, mBtnEchoFeedbackPlus, mBtnEchoDelayMinus, mBtnEchoDelayPlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus, mBtnChorusDryMinus, mBtnChorusDryPlus, mBtnChorusWetMinus, mBtnChorusWetPlus, mBtnChorusFeedbackMinus, mBtnChorusFeedbackPlus, mBtnChorusMinSweepMinus, mBtnChorusMinSweepPlus, mBtnChorusMaxSweepMinus, mBtnChorusMaxSweepPlus, mBtnChorusRateMinus, mBtnChorusRatePlus, mBtnDistortionDriveMinus, mBtnDistortionDrivePlus, mBtnDistortionDryMinus, mBtnDistortionDryPlus, mBtnDistortionWetMinus, mBtnDistortionWetPlus, mBtnDistortionFeedbackMinus, mBtnDistortionFeedbackPlus, mBtnDistortionVolumeMinus, mBtnDistortionVolumePlus, mBtnSoundEffectVolumeMinus, mBtnSoundEffectVolumePlus;
-    private Button mBtnEffectBack, mBtnEffectFinish, mBtnEffectTemplateOff, mBtnReverbSaveAs, mBtnEchoSaveAs, mBtnChorusSaveAs, mBtnDistortionSaveAs, mBtnCompSaveAs;
+    private Button mBtnEffectOff, mBtnEffectBack, mBtnEffectFinish, mBtnEffectTemplateOff, mBtnReverbSaveAs, mBtnEchoSaveAs, mBtnChorusSaveAs, mBtnDistortionSaveAs, mBtnCompSaveAs;
     private AnimationButton mBtnEffectTemplateMenu, mBtnAddEffectTemplate;
     private ScrollView mScrollCompCustomize, mScrollEchoCustomize, mScrollReverbCustomize, mScrollChorusCustomize, mScrollDistortionCustomize, mScrollSoundEffectCustomize;
-    private View mViewSepEffect, mViewSepEffectTemplate;
+    private View mViewSepEffectDetail, mViewSepEffectTemplate;
     private ImageView mImgEffectBack;
 
     public ItemTouchHelper getEffectTemplateTouchHelper() { return mEffectTemplateTouchHelper; }
@@ -310,6 +310,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     public void setEffectItems(ArrayList<EffectItem> effectItems)
     {
+        boolean bSelected = false;
         for(int i = 0; i < mEffectItems.size(); i++)
         {
             EffectItem item = mEffectItems.get(i);
@@ -318,10 +319,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 EffectItem itemSaved = effectItems.get(j);
                 if(item.getEffectName().equals(itemSaved.getEffectName())) {
                     item.setSelected(itemSaved.isSelected());
+                    if(itemSaved.isSelected()) bSelected = true;
                     mEffectsAdapter.notifyItemChanged(i);
                 }
             }
         }
+        mBtnEffectOff.setSelected(!bSelected);
     }
     public float getPan()
     {
@@ -436,7 +439,25 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     @Override
     public void onClick(View v)
     {
-        if (v.getId() == R.id.btnEffectBack) {
+        if(v.getId() == R.id.btnEffectOff) {
+            resetEffect();
+            mEffectsAdapter.notifyDataSetChanged();
+            if(mSEStream != 0) {
+                BASS.BASS_StreamFree(mSEStream);
+                mSEStream = 0;
+            }
+            if(mSEStream2 != 0) {
+                BASS.BASS_StreamFree(mSEStream2);
+                mSEStream2 = 0;
+            }
+            if(mHandler != null) {
+                mHandler.removeCallbacks(onTimer);
+                mHandler = null;
+            }
+            applyEffect();
+            mActivity.playlistFragment.updateSavingEffect();
+        }
+        else if (v.getId() == R.id.btnEffectBack) {
             if(mScrollReverbCustomize.getVisibility() == View.VISIBLE) {
                 if(mReverbSelected != -1) {
                     ArrayList<Float> arFloats = mReverbItems.get(mReverbSelected).getArPresets();
@@ -530,6 +551,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             else {
                 mRelativeEffectDetail.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.INVISIBLE);
+                mBtnEffectOff.setVisibility(View.VISIBLE);
                 mRecyclerEffects.setVisibility(View.VISIBLE);
             }
         }
@@ -830,7 +852,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mRecyclerEffectTemplates.setPadding(0, 0, 0, 0);
             mBtnEffectTemplateOff.setVisibility(View.VISIBLE);
             mRelativeEffectTitle.setVisibility(View.VISIBLE);
-            mViewSepEffect.setVisibility(View.VISIBLE);
+            mViewSepEffectDetail.setVisibility(View.VISIBLE);
             mViewSepEffectTemplate.setVisibility(View.VISIBLE);
             mBtnAddEffectTemplate.setAlpha(1.0f);
             mTextFinishSortEffect.setVisibility(View.INVISIBLE);
@@ -1974,12 +1996,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mTextEffectLabel = mActivity.findViewById(R.id.textEffectLabel);
         mRelativeSliderEffectDatail = mActivity.findViewById(R.id.relativeSliderEffectDatail);
         mRelativeRollerEffectDetail = mActivity.findViewById(R.id.relativeRollerEffectDatail);
+        mBtnEffectOff = mActivity.findViewById(R.id.btnEffectOff);
         mBtnEffectBack = mActivity.findViewById(R.id.btnEffectBack);
         mBtnEffectFinish = mActivity.findViewById(R.id.btnEffectFinish);
         mBtnEffectTemplateOff = mActivity.findViewById(R.id.btnEffectTemplateOff);
         mBtnEffectTemplateMenu = mActivity.findViewById(R.id.btnEffectTemplateMenu);
         mBtnAddEffectTemplate = mActivity.findViewById(R.id.btnAddEffectTemplate);
-        mViewSepEffect = mActivity.findViewById(R.id.viewSepEffect);
+        mViewSepEffectDetail = mActivity.findViewById(R.id.viewSepEffectDetail);
         mViewSepEffectTemplate = mActivity.findViewById(R.id.viewSepEffectTemplate);
         mTextFinishSortEffect = mActivity.findViewById(R.id.textFinishSortEffect);
         mImgEffectBack = mActivity.findViewById(R.id.imgEffectBack);
@@ -2167,9 +2190,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mSeekSoundEffectVolume.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
         mSeekSoundEffectVolume.setOnSeekBarChangeListener(this);
 
-        EffectItem item = new EffectItem(getString(R.string.off), false);
-        mEffectItems.add(item);
-        item = new EffectItem(getString(R.string.random), false);
+        EffectItem item = new EffectItem(getString(R.string.random), false);
         mEffectItems.add(item);
         item = new EffectItem(getString(R.string.vocalCancel), false);
         mEffectItems.add(item);
@@ -2243,6 +2264,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnEffectTemplateMenu.setOnClickListener(this);
         mBtnAddEffectTemplate.setOnClickListener(this);
         mTextFinishSortEffect.setOnClickListener(this);
+        mBtnEffectOff.setOnClickListener(this);
         mBtnEffectBack.setOnClickListener(this);
         mBtnEffectTemplateOff.setOnClickListener(this);
         mBtnEffectFinish.setOnClickListener(this);
@@ -2427,8 +2449,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mEditTimeEffectDetail.setOnFocusChangeListener(this);
         mEditSpeedEffectDetail.setOnFocusChangeListener(this);
 
-        mEffectItems.get(0).setSelected(true);
-        mEffectsAdapter.notifyItemChanged(0);
+        mBtnEffectOff.setSelected(true);
 
         setComp(200, 4000, 900, 119, 39999, false);
         setEcho(100, 30, 60, 8, false);
@@ -2580,6 +2601,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         EffectItem item = mEffectItems.get(nEffect);
 
         if(!item.isSelected()) {
+            mBtnEffectOff.setSelected(false);
             if(nEffect == EFFECTTYPE_REVERB || nEffect == EFFECTTYPE_ECHO || nEffect == EFFECTTYPE_CHORUS || nEffect == EFFECTTYPE_DISTORTION || nEffect == EFFECTTYPE_COMP || nEffect == EFFECTTYPE_SOUNDEFFECT) {
                 onEffectDetailClick(nEffect);
                 return;
@@ -2596,7 +2618,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mActivity.setSync();
         }
         if(!item.isSelected() && (nEffect == EFFECTTYPE_RANDOM || nEffect == EFFECTTYPE_OLDRECORD || nEffect == EFFECTTYPE_LOWBATTERY || nEffect == EFFECTTYPE_EARTRAINING))
-            mActivity.equalizerFragment.setEQ(0);
+            mActivity.equalizerFragment.resetEQ();
         if(!item.isSelected() && (nEffect == EFFECTTYPE_RANDOM || nEffect == EFFECTTYPE_NOSENSE_STRONG || nEffect == EFFECTTYPE_NOSENSE_MIDDLE || nEffect == EFFECTTYPE_NOSENSE_WEAK))
         {
             mActivity.controlFragment.setSpeed(0.0f);
@@ -2604,7 +2626,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
         if(!item.isSelected() && nEffect == EFFECTTYPE_TRANSCRIBEBASS)
         {
-            mActivity.equalizerFragment.setEQ(0);
+            mActivity.equalizerFragment.resetEQ();
             mActivity.controlFragment.setPitch(0.0f);
         }
         checkDuplicate(nEffect);
@@ -2628,8 +2650,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         for(int i = 0; i < mEffectItems.size(); i++) {
             if(mEffectItems.get(i).isSelected()) bSelected = true;
         }
-        if(!bSelected) mEffectItems.get(0).setSelected(true);
-        mEffectsAdapter.notifyItemChanged(0);
+        if(!bSelected) mBtnEffectOff.setSelected(true);
         mActivity.playlistFragment.updateSavingEffect();
     }
 
@@ -2712,7 +2733,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         for(int i = 0; i < mEffectItems.size(); i++) {
             if(mEffectItems.get(i).isSelected()) bSelected = true;
         }
-        if(!bSelected) mEffectItems.get(0).setSelected(true);
+        if(!bSelected) mBtnEffectOff.setSelected(true);
         mActivity.playlistFragment.updateSavingEffect();
         mEffectsAdapter.notifyItemChanged(mEffectDetail);
 
@@ -2774,22 +2795,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     public void resetEffect()
     {
-        EffectItem item = mEffectItems.get(0);
-        item.setSelected(true);
-        mEffectsAdapter.notifyItemChanged(0);
-        for(int i = 1; i < mEffectItems.size(); i++)
+        mBtnEffectOff.setSelected(true);
+        for(int i = 0; i < mEffectItems.size(); i++)
         {
             if(mEffectItems.get(i).isSelected() && (i == EFFECTTYPE_RANDOM || i == EFFECTTYPE_OLDRECORD || i == EFFECTTYPE_LOWBATTERY || i == EFFECTTYPE_EARTRAINING))
-                mActivity.equalizerFragment.setEQ(0);
-            if(mEffectItems.get(i).isSelected() && (i == EFFECTTYPE_RANDOM || i == EFFECTTYPE_NOSENSE_STRONG || i == EFFECTTYPE_NOSENSE_MIDDLE || i == EFFECTTYPE_NOSENSE_WEAK))
-            {
+                mActivity.equalizerFragment.resetEQ();
+            if(mEffectItems.get(i).isSelected() && (i == EFFECTTYPE_RANDOM || i == EFFECTTYPE_NOSENSE_STRONG || i == EFFECTTYPE_NOSENSE_MIDDLE || i == EFFECTTYPE_NOSENSE_WEAK)) {
                 mActivity.controlFragment.setSpeed(0.0f);
                 mActivity.controlFragment.setPitch(0.0f);
             }
-            if(mEffectItems.get(i).isSelected() && (i == EFFECTTYPE_TRANSCRIBEBASS))
-            {
-                mActivity.equalizerFragment.setEQ(0);
+            if(mEffectItems.get(i).isSelected() && (i == EFFECTTYPE_TRANSCRIBEBASS)) {
                 mActivity.controlFragment.setPitch(0.0f);
+                mActivity.equalizerFragment.resetEQ();
             }
             mEffectItems.get(i).setSelected(false);
             mEffectsAdapter.notifyItemChanged(i);
@@ -2825,7 +2842,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         for(int i = 0; i < mEffectItems.size(); i++) {
             if(mEffectItems.get(i).isSelected()) bSelected = true;
         }
-        if(!bSelected) mEffectItems.get(0).setSelected(true);
+        if(!bSelected) mBtnEffectOff.setSelected(true);
         mBtnEffectTemplateOff.setSelected(true);
         for(int i = 0; i < mCompItems.size(); i++) mCompItems.get(i).setSelected(false);
 
@@ -2858,7 +2875,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         for(int i = 0; i < mEffectItems.size(); i++) {
             if(mEffectItems.get(i).isSelected()) bSelected = true;
         }
-        if(!bSelected) mEffectItems.get(0).setSelected(true);
+        if(!bSelected) mBtnEffectOff.setSelected(true);
         mBtnEffectTemplateOff.setSelected(true);
         for(int i = 0; i < mEchoItems.size(); i++) mEchoItems.get(i).setSelected(false);
 
@@ -2894,7 +2911,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         for(int i = 0; i < mEffectItems.size(); i++) {
             if(mEffectItems.get(i).isSelected()) bSelected = true;
         }
-        if(!bSelected) mEffectItems.get(0).setSelected(true);
+        if(!bSelected) mBtnEffectOff.setSelected(true);
         mBtnEffectTemplateOff.setSelected(true);
         for(int i = 0; i < mReverbItems.size(); i++) mReverbItems.get(i).setSelected(false);
 
@@ -2927,7 +2944,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         for(int i = 0; i < mEffectItems.size(); i++) {
             if(mEffectItems.get(i).isSelected()) bSelected = true;
         }
-        if(!bSelected) mEffectItems.get(0).setSelected(true);
+        if(!bSelected) mBtnEffectOff.setSelected(true);
         mBtnEffectTemplateOff.setSelected(true);
         for(int i = 0; i < mChorusItems.size(); i++) mChorusItems.get(i).setSelected(false);
 
@@ -2961,7 +2978,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         for(int i = 0; i < mEffectItems.size(); i++) {
             if(mEffectItems.get(i).isSelected()) bSelected = true;
         }
-        if(!bSelected) mEffectItems.get(0).setSelected(true);
+        if(!bSelected) mBtnEffectOff.setSelected(true);
         mBtnEffectTemplateOff.setSelected(true);
         for(int i = 0; i < mDistortionItems.size(); i++) mDistortionItems.get(i).setSelected(false);
 
@@ -2982,7 +2999,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         for(int i = 0; i < mEffectItems.size(); i++) {
             if(mEffectItems.get(i).isSelected()) bSelected = true;
         }
-        if(!bSelected) mEffectItems.get(0).setSelected(true);
+        if(!bSelected) mBtnEffectOff.setSelected(true);
         mBtnEffectTemplateOff.setSelected(true);
         for(int i = 0; i < mSoundEffectItems.size(); i++) mSoundEffectItems.get(i).setSelected(false);
 
@@ -3178,6 +3195,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
 
         mRelativeEffectDetail.setVisibility(View.VISIBLE);
+        mBtnEffectOff.setVisibility(View.INVISIBLE);
         mRecyclerEffects.setVisibility(View.INVISIBLE);
     }
 
@@ -4082,46 +4100,38 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     private void checkDuplicate(int nSelect)
     {
-        if(nSelect == 0)
+        mBtnEffectOff.setSelected(false);
+        if(EFFECTTYPE_VOCALCANCEL <= nSelect && nSelect <= EFFECTTYPE_TRANSCRIBESIDEGUITAR)
         {
-            for(int i = 1; i < mEffectItems.size(); i++)
-                deselectEffect(i);
+            for (int i = EFFECTTYPE_VOCALCANCEL; i <= EFFECTTYPE_TRANSCRIBESIDEGUITAR; i++)
+                if(i != nSelect) deselectEffect(i);
         }
-        else
+        if(nSelect == EFFECTTYPE_RANDOM || nSelect == EFFECTTYPE_TRANSCRIBESIDEGUITAR || nSelect == EFFECTTYPE_TRANSCRIBEBASS || nSelect == EFFECTTYPE_OLDRECORD || nSelect == EFFECTTYPE_LOWBATTERY || nSelect == EFFECTTYPE_EARTRAINING || nSelect == EFFECTTYPE_NOSENSE_STRONG || nSelect == EFFECTTYPE_NOSENSE_MIDDLE || nSelect == EFFECTTYPE_NOSENSE_WEAK) {
+            if(nSelect != EFFECTTYPE_RANDOM) deselectEffect(EFFECTTYPE_RANDOM);
+            if(nSelect != EFFECTTYPE_TRANSCRIBESIDEGUITAR) deselectEffect(EFFECTTYPE_TRANSCRIBESIDEGUITAR);
+            if (nSelect != EFFECTTYPE_TRANSCRIBEBASS) deselectEffect(EFFECTTYPE_TRANSCRIBEBASS);
+            if (nSelect != EFFECTTYPE_OLDRECORD) deselectEffect(EFFECTTYPE_OLDRECORD);
+            if (nSelect != EFFECTTYPE_LOWBATTERY) deselectEffect(EFFECTTYPE_LOWBATTERY);
+            if (nSelect != EFFECTTYPE_EARTRAINING) deselectEffect(EFFECTTYPE_EARTRAINING);
+            if (nSelect != EFFECTTYPE_NOSENSE_STRONG) deselectEffect(EFFECTTYPE_NOSENSE_STRONG);
+            if (nSelect != EFFECTTYPE_NOSENSE_MIDDLE) deselectEffect(EFFECTTYPE_NOSENSE_MIDDLE);
+            if (nSelect != EFFECTTYPE_NOSENSE_WEAK) deselectEffect(EFFECTTYPE_NOSENSE_WEAK);
+        }
+        if(nSelect == EFFECTTYPE_DISTORTION || nSelect == EFFECTTYPE_LOWBATTERY)
         {
-            deselectEffect(0);
-            if(EFFECTTYPE_VOCALCANCEL <= nSelect && nSelect <= EFFECTTYPE_TRANSCRIBESIDEGUITAR)
-            {
-                for (int i = EFFECTTYPE_VOCALCANCEL; i <= EFFECTTYPE_TRANSCRIBESIDEGUITAR; i++)
-                    if(i != nSelect) deselectEffect(i);
-            }
-            if(nSelect == EFFECTTYPE_RANDOM || nSelect == EFFECTTYPE_TRANSCRIBESIDEGUITAR || nSelect == EFFECTTYPE_TRANSCRIBEBASS || nSelect == EFFECTTYPE_OLDRECORD || nSelect == EFFECTTYPE_LOWBATTERY || nSelect == EFFECTTYPE_EARTRAINING || nSelect == EFFECTTYPE_NOSENSE_STRONG || nSelect == EFFECTTYPE_NOSENSE_MIDDLE || nSelect == EFFECTTYPE_NOSENSE_WEAK) {
-                if(nSelect != EFFECTTYPE_RANDOM) deselectEffect(EFFECTTYPE_RANDOM);
-                if(nSelect != EFFECTTYPE_TRANSCRIBESIDEGUITAR) deselectEffect(EFFECTTYPE_TRANSCRIBESIDEGUITAR);
-                if (nSelect != EFFECTTYPE_TRANSCRIBEBASS) deselectEffect(EFFECTTYPE_TRANSCRIBEBASS);
-                if (nSelect != EFFECTTYPE_OLDRECORD) deselectEffect(EFFECTTYPE_OLDRECORD);
-                if (nSelect != EFFECTTYPE_LOWBATTERY) deselectEffect(EFFECTTYPE_LOWBATTERY);
-                if (nSelect != EFFECTTYPE_EARTRAINING) deselectEffect(EFFECTTYPE_EARTRAINING);
-                if (nSelect != EFFECTTYPE_NOSENSE_STRONG) deselectEffect(EFFECTTYPE_NOSENSE_STRONG);
-                if (nSelect != EFFECTTYPE_NOSENSE_MIDDLE) deselectEffect(EFFECTTYPE_NOSENSE_MIDDLE);
-                if (nSelect != EFFECTTYPE_NOSENSE_WEAK) deselectEffect(EFFECTTYPE_NOSENSE_WEAK);
-            }
-            if(nSelect == EFFECTTYPE_DISTORTION || nSelect == EFFECTTYPE_LOWBATTERY)
-            {
-                if(nSelect != EFFECTTYPE_DISTORTION) deselectEffect(EFFECTTYPE_DISTORTION);
-                if(nSelect != EFFECTTYPE_LOWBATTERY) deselectEffect(EFFECTTYPE_LOWBATTERY);
-            }
-            if(EFFECTTYPE_INCREASESPEED <= nSelect && nSelect <= EFFECTTYPE_METRONOME)
-            {
-                for(int i = EFFECTTYPE_INCREASESPEED; i <= EFFECTTYPE_METRONOME; i++)
-                    if(i != nSelect) deselectEffect(i);
-            }
-            if(nSelect == EFFECTTYPE_OLDRECORD || (EFFECTTYPE_METRONOME <= nSelect && nSelect <= SOUNDEFFECTTYPE_CONCERTHALL))
-            {
-                if(nSelect != EFFECTTYPE_OLDRECORD) deselectEffect(EFFECTTYPE_OLDRECORD);
-                for(int i = EFFECTTYPE_METRONOME; i <= SOUNDEFFECTTYPE_CONCERTHALL; i++)
-                    if(i != nSelect) deselectEffect(i);
-            }
+            if(nSelect != EFFECTTYPE_DISTORTION) deselectEffect(EFFECTTYPE_DISTORTION);
+            if(nSelect != EFFECTTYPE_LOWBATTERY) deselectEffect(EFFECTTYPE_LOWBATTERY);
+        }
+        if(EFFECTTYPE_INCREASESPEED <= nSelect && nSelect <= EFFECTTYPE_METRONOME)
+        {
+            for(int i = EFFECTTYPE_INCREASESPEED; i <= EFFECTTYPE_METRONOME; i++)
+                if(i != nSelect) deselectEffect(i);
+        }
+        if(nSelect == EFFECTTYPE_OLDRECORD || (EFFECTTYPE_METRONOME <= nSelect && nSelect <= SOUNDEFFECTTYPE_CONCERTHALL))
+        {
+            if(nSelect != EFFECTTYPE_OLDRECORD) deselectEffect(EFFECTTYPE_OLDRECORD);
+            for(int i = EFFECTTYPE_METRONOME; i <= SOUNDEFFECTTYPE_CONCERTHALL; i++)
+                if(i != nSelect) deselectEffect(i);
         }
         mActivity.playlistFragment.updateSavingEffect();
     }
@@ -4134,16 +4144,15 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mEffectsAdapter.notifyItemChanged(nEffect);
 
         if(nEffect == EFFECTTYPE_RANDOM || nEffect == EFFECTTYPE_TRANSCRIBESIDEGUITAR || nEffect == EFFECTTYPE_OLDRECORD || nEffect == EFFECTTYPE_LOWBATTERY || nEffect == EFFECTTYPE_EARTRAINING)
-            mActivity.equalizerFragment.setEQ(0);
+            mActivity.equalizerFragment.resetEQ();
         if(nEffect == EFFECTTYPE_RANDOM || nEffect == EFFECTTYPE_NOSENSE_STRONG || nEffect == EFFECTTYPE_NOSENSE_MIDDLE || nEffect == EFFECTTYPE_NOSENSE_WEAK)
         {
             mActivity.controlFragment.setSpeed(0.0f);
             mActivity.controlFragment.setPitch(0.0f);
         }
-        if(nEffect == EFFECTTYPE_TRANSCRIBEBASS)
-        {
-            mActivity.equalizerFragment.setEQ(0);
+        if(nEffect == EFFECTTYPE_TRANSCRIBEBASS) {
             mActivity.controlFragment.setPitch(0.0f);
+            mActivity.equalizerFragment.resetEQ();
         }
         if(nEffect == EFFECTTYPE_REVERB) mReverbSelected = -1;
         if(nEffect == EFFECTTYPE_ECHO) mEchoSelected = -1;
@@ -5349,7 +5358,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mBtnEffectTemplateOff.setVisibility(View.GONE);
 
                 mRelativeEffectTitle.setVisibility(View.GONE);
-                mViewSepEffect.setVisibility(View.GONE);
+                mViewSepEffectDetail.setVisibility(View.GONE);
                 mViewSepEffectTemplate.setVisibility(View.GONE);
                 mBtnAddEffectTemplate.setAlpha(0.0f);
                 mTextFinishSortEffect.setVisibility(View.VISIBLE);

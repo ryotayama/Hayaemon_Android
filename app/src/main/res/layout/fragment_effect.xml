@@ -85,7 +85,7 @@
         </RelativeLayout>
 
         <View
-            android:id="@+id/viewSepEffect"
+            android:id="@+id/viewSepEffectDetail"
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:background="#BFBFBF"
@@ -104,7 +104,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginRight="12dp"
             android:layout_marginEnd="12dp"
-            android:layout_below="@id/viewSepEffect"
+            android:layout_below="@id/viewSepEffectDetail"
             android:visibility="invisible"
             />
 
@@ -253,7 +253,7 @@
             android:id="@+id/relativeEffectTemplates"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/viewSepEffect"
+            android:layout_below="@id/viewSepEffectDetail"
             android:visibility="invisible"
             >
 
@@ -325,7 +325,7 @@
             android:id="@+id/scrollCompCustomize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/viewSepEffect"
+            android:layout_below="@id/viewSepEffectDetail"
             android:visibility="invisible"
             >
 
@@ -826,7 +826,7 @@
             android:id="@+id/scrollEchoCustomize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/viewSepEffect"
+            android:layout_below="@id/viewSepEffectDetail"
             android:visibility="invisible"
             >
 
@@ -1242,7 +1242,7 @@
             android:id="@+id/scrollReverbCustomize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/viewSepEffect"
+            android:layout_below="@id/viewSepEffectDetail"
             android:visibility="invisible"
             >
 
@@ -1743,7 +1743,7 @@
             android:id="@+id/scrollChorusCustomize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/viewSepEffect"
+            android:layout_below="@id/viewSepEffectDetail"
             android:visibility="invisible"
             >
 
@@ -2329,7 +2329,7 @@
             android:id="@+id/scrollDistortionCustomize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/viewSepEffect"
+            android:layout_below="@id/viewSepEffectDetail"
             android:visibility="invisible"
             >
 
@@ -2830,7 +2830,7 @@
             android:id="@+id/scrollSoundEffectCustomize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/viewSepEffect"
+            android:layout_below="@id/viewSepEffectDetail"
             android:visibility="invisible"
             >
 
@@ -2933,6 +2933,28 @@
 
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/btnEffectOff"
+        android:text="@string/off"
+        android:textColor="@drawable/btn_text"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="44dp"
+        android:layout_marginRight="44dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:stateListAnimator="@null"
+        android:background="@drawable/btn_border_background"
+        />
+
+    <View
+        android:id="@+id/viewSepEffect"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#BFBFBF"
+        android:layout_below="@+id/btnEffectOff"
+        />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerEffects"
         android:layout_height="match_parent"
@@ -2940,6 +2962,7 @@
         android:divider="#BFBFBF"
         android:dividerHeight="1px"
         android:clipToPadding="false"
+        android:layout_below="@+id/viewSepEffect"
         android:visibility="visible"
         />
 
