@@ -45,11 +45,13 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
         private TextView mTextEffect;
         private ImageButton mBtnEffectDetail;
         private ImageView mImgRight;
+        private View mViewSepEffect;
 
         RelativeLayout getEffectItem() { return mEffectItem; }
         TextView getTextEffect() { return mTextEffect; }
         ImageButton getButtonEffectDetail() { return mBtnEffectDetail; }
         ImageView getImgRight() { return mImgRight; }
+        View getViewSepEffect() { return mViewSepEffect; }
 
         ViewHolder(View view) {
             super(view);
@@ -57,6 +59,7 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
             mTextEffect = view.findViewById(R.id.textEffect);
             mBtnEffectDetail = view.findViewById(R.id.btnEffectDetail);
             mImgRight = view.findViewById(R.id.imgRight);
+            mViewSepEffect = view.findViewById(R.id.viewSepEffect);
         }
     }
 
@@ -77,14 +80,19 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull final EffectsAdapter.ViewHolder holder, int position)
     {
+        holder.getButtonEffectDetail().setBackgroundResource(mActivity.isDarkMode() ? R.drawable.ic_button_info_dark : R.drawable.ic_button_info);
+        holder.getImgRight().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_button_listright_dark : R.drawable.ic_button_listright);
+        holder.getViewSepEffect().setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeSep : R.color.lightModeSep));
+        holder.getTextEffect().setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeGray : R.color.lightModeGray));
+
         EffectItem item = mItems.get(position);
         String name = item.getEffectName();
         holder.getTextEffect().setText(name);
 
         if(mActivity.effectFragment.isSelectedItem(position))
-            holder.itemView.setBackgroundColor(Color.argb(255, 224, 239, 255));
+            holder.itemView.setBackgroundColor(mActivity.isDarkMode() ? mActivity.getResources().getColor(R.color.darkModeSelect) : Color.argb(255, 224, 239, 255));
         else
-            holder.itemView.setBackgroundColor(Color.argb(255, 255, 255, 255));
+            holder.itemView.setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeBk : R.color.lightModeBk));
         holder.getEffectItem().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,19 +106,6 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
         }
         else {
             holder.getButtonEffectDetail().setVisibility(View.VISIBLE);
-            holder.getButtonEffectDetail().setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event)
-                {
-                    if(event.getAction() == MotionEvent.ACTION_DOWN)
-                        holder.getButtonEffectDetail().setColorFilter(new PorterDuffColorFilter(Color.parseColor("#ffcce4ff"), PorterDuff.Mode.SRC_IN));
-                    else if(event.getAction() == MotionEvent.ACTION_UP)
-                        holder.getButtonEffectDetail().setColorFilter(null);
-                    else if(event.getAction() == MotionEvent.ACTION_CANCEL)
-                        holder.getButtonEffectDetail().setColorFilter(null);
-                    return false;
-                }
-            });
             holder.getImgRight().setVisibility(View.VISIBLE);
             holder.getButtonEffectDetail().setOnClickListener(new View.OnClickListener() {
                 @Override

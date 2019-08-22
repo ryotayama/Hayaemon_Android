@@ -21,6 +21,8 @@ package com.edolfzoku.hayaemon2;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -39,6 +41,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
@@ -138,12 +142,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     private RecyclerView mRecyclerPlaylists, mRecyclerTab, mRecyclerSongs;
     private Button mBtnSortPlaylist, mBtnFinishLyrics;
     private AnimationButton mBtnAddPlaylist, mBtnArtworkInPlayingBar, mBtnAddSong, mBtnEdit;
-    private TextView mTextTitleInPlayingBar, mTextArtistInPlayingBar, mTextFinishSort, mTextLyricsTitle, mTextNoLyrics, mTextLyrics, mTextTapEdit, mTextPlaylistInMultipleSelection;
-    private RelativeLayout mRelativeSongs, mRelativePlaylists, mRelativeLyrics;
+    private TextView mTextTitleInPlayingBar, mTextArtistInPlayingBar, mTextFinishSort, mTextLyricsTitle, mTextNoLyrics, mTextLyrics, mTextTapEdit, mTextPlaylistInMultipleSelection, mTextPlaylist;
+    private RelativeLayout mRelativeSongs, mRelativePlaylists, mRelativeLyrics, mRelativeLyricsTitle;
     private ImageView mImgEdit, mImgSelectAllInMultipleSelection;
     private EditText mEditLyrics;
     private ImageButton mBtnLeft, mBtnAddPlaylist_small;
-    private View mDevider2, mViewMultipleSelection;
+    private View mDevider1, mDevider2, mViewMultipleSelection, mViewSepLyrics;
 
     public ArrayList<ArrayList<SongItem>> getPlaylists() { return mPlaylists; }
     public void setPlaylists(ArrayList<ArrayList<SongItem>> arLists) { mPlaylists = arLists; }
@@ -279,9 +283,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             Runnable timer=new Runnable() {
                 public void run()
                 {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                    AlertDialog.Builder builder;
+                    if(mActivity.isDarkMode())
+                        builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                    else
+                        builder = new AlertDialog.Builder(mActivity);
                     builder.setTitle(R.string.addNewList);
-                    final ClearableEditText editText = new ClearableEditText(mActivity);
+                    final ClearableEditText editText = new ClearableEditText(mActivity, mActivity.isDarkMode());
                     editText.setHint(R.string.playlist);
                     editText.setText(R.string.playlist);
                     builder.setView(editText);
@@ -332,9 +340,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
         else if(v.getId() == R.id.btnAddPlaylist_small)
         {
-            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            AlertDialog.Builder builder;
+            if(mActivity.isDarkMode())
+                builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+            else
+                builder = new AlertDialog.Builder(mActivity);
             builder.setTitle(R.string.addNewList);
-            final ClearableEditText editText = new ClearableEditText(mActivity);
+            final ClearableEditText editText = new ClearableEditText(mActivity, mActivity.isDarkMode());
             editText.setHint(R.string.playlist);
             editText.setText(R.string.playlist);
             builder.setView(editText);
@@ -371,7 +383,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 {
                     final BottomMenu menu = new BottomMenu(mActivity);
                     menu.setTitle(getString(R.string.addSong));
-                    menu.addMenu(getString(R.string.addFromLocal), R.drawable.ic_actionsheet_music, new View.OnClickListener() {
+                    menu.addMenu(getString(R.string.addFromLocal), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_music_dark : R.drawable.ic_actionsheet_music, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             menu.dismiss();
@@ -379,7 +391,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         }
                     });
                     if(Build.VERSION.SDK_INT >= 18) {
-                        menu.addMenu(getString(R.string.addFromVideo), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
+                        menu.addMenu(getString(R.string.addFromVideo), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_film_dark : R.drawable.ic_actionsheet_film, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 menu.dismiss();
@@ -387,16 +399,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                             }
                         });
                     }
-                    menu.addMenu(getString(R.string.addURL), R.drawable.ic_actionsheet_globe, new View.OnClickListener() {
+                    menu.addMenu(getString(R.string.addURL), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_globe_dark : R.drawable.ic_actionsheet_globe, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             menu.dismiss();
 
-                            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                            AlertDialog.Builder builder;
+                            if(mActivity.isDarkMode())
+                                builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                            else
+                                builder = new AlertDialog.Builder(mActivity);
                             builder.setTitle(R.string.addURL);
                             LinearLayout linearLayout = new LinearLayout(mActivity);
                             linearLayout.setOrientation(LinearLayout.VERTICAL);
-                            final ClearableEditText editURL = new ClearableEditText(mActivity);
+                            final ClearableEditText editURL = new ClearableEditText(mActivity, mActivity.isDarkMode());
                             editURL.setHint(R.string.URL);
                             editURL.setText("");
                             linearLayout.addView(editURL);
@@ -540,7 +556,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             final BottomMenu menu = new BottomMenu(mActivity);
             menu.setTitle(getString(R.string.playStop));
             if(MainActivity.sStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PLAYING || mActivity.effectFragment.isReverse()) {
-                menu.addMenu(getString(R.string.play), R.drawable.ic_actionsheet_play, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.play), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_play_dark : R.drawable.ic_actionsheet_play, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                     menu.dismiss();
@@ -555,7 +571,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 });
             }
             if(MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_PLAYING) {
-                menu.addMenu(getString(R.string.pause), R.drawable.ic_actionsheet_pause, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.pause), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_pause_dark : R.drawable.ic_actionsheet_pause, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
@@ -564,7 +580,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 });
             }
             if(MainActivity.sStream == 0 || BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PLAYING || !mActivity.effectFragment.isReverse()) {
-                menu.addMenu(getString(R.string.reverse), R.drawable.ic_actionsheet_reverse, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.reverse), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_reverse_dark : R.drawable.ic_actionsheet_reverse, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
@@ -579,7 +595,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 });
             }
             if(MainActivity.sStream != 0) {
-                menu.addDestructiveMenu(getString(R.string.stop), R.drawable.ic_actionsheet_stop, new View.OnClickListener() {
+                menu.addDestructiveMenu(getString(R.string.stop), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_stop_dark : R.drawable.ic_actionsheet_stop, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
@@ -604,8 +620,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
         if(nSelected == 0 && !mAllowSelectNone) finishMultipleSelection();
         else if(nSelected == arSongs.size())
-            mImgSelectAllInMultipleSelection.setImageResource(R.drawable.ic_button_check_on);
-        else mImgSelectAllInMultipleSelection.setImageResource(R.drawable.ic_button_check_off);
+            mImgSelectAllInMultipleSelection.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_button_check_on_dark : R.drawable.ic_button_check_on);
+        else mImgSelectAllInMultipleSelection.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_button_check_off_dark : R.drawable.ic_button_check_off);
     }
 
     public void startMultipleSelection(final int nItem)
@@ -661,7 +677,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 mViewMultipleSelection.setVisibility(View.GONE);
-                mImgSelectAllInMultipleSelection.setImageResource(R.drawable.ic_button_check_off);
+                mImgSelectAllInMultipleSelection.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_button_check_off_dark : R.drawable.ic_button_check_off);
             }
         }).translationY(-mViewMultipleSelection.getHeight()).setDuration(nDuration).start();
     }
@@ -679,14 +695,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
 
         if(bUnselectSongFounded) {
-            mImgSelectAllInMultipleSelection.setImageResource(R.drawable.ic_button_check_on);
+            mImgSelectAllInMultipleSelection.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_button_check_on_dark : R.drawable.ic_button_check_on);
             for(int i = 0; i < arSongs.size(); i++) {
                 SongItem song = arSongs.get(i);
                 song.setSelected(true);
             }
         }
         else {
-            mImgSelectAllInMultipleSelection.setImageResource(R.drawable.ic_button_check_off);
+            mImgSelectAllInMultipleSelection.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_button_check_off_dark : R.drawable.ic_button_check_off);
             for(int i = 0; i < arSongs.size(); i++) {
                 SongItem song = arSongs.get(i);
                 song.setSelected(false);
@@ -698,7 +714,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     private void deleteMultipleSelection()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        AlertDialog.Builder builder;
+        if(mActivity.isDarkMode())
+            builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+        else
+            builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(R.string.delete);
         builder.setMessage(R.string.askDeleteSong);
         builder.setPositiveButton(getString(R.string.decideNot), null);
@@ -739,7 +759,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     alertDialog.getWindow().setAttributes(lp);
                 }
                 Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                positiveButton.setTextColor(getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeRed : R.color.lightModeRed));
             }
         });
         alertDialog.show();
@@ -752,7 +772,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         for(int i = 0; i < mPlaylistNames.size(); i++)
         {
             final int nPlaylistTo = i;
-            menu.addMenu(mPlaylistNames.get(i), R.drawable.ic_actionsheet_folder, new View.OnClickListener() {
+            menu.addMenu(mPlaylistNames.get(i), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_folder_dark : R.drawable.ic_actionsheet_folder, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     copyMultipleSelection(nPlaylistTo);
@@ -782,7 +802,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         {
             if(mSelectedPlaylist == i) continue;
             final int nPlaylistTo = i;
-            menu.addMenu(mPlaylistNames.get(i), R.drawable.ic_actionsheet_folder, new View.OnClickListener() {
+            menu.addMenu(mPlaylistNames.get(i), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_folder_dark : R.drawable.ic_actionsheet_folder, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     moveMultipleSelection(nPlaylistTo);
@@ -825,7 +845,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         final BottomMenu menu = new BottomMenu(mActivity);
         menu.setTitle(getString(R.string.selectedSongs));
-        menu.addMenu(getString(R.string.changeArtwork), R.drawable.ic_actionsheet_image, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.changeArtwork), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_image_dark : R.drawable.ic_actionsheet_image, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changeArtworkMultipleSelection();
@@ -833,7 +853,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
         });
         if(bChangeArtworkFounded)
-            menu.addDestructiveMenu(getString(R.string.resetArtwork), R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
+            menu.addDestructiveMenu(getString(R.string.resetArtwork), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_initialize_dark : R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     resetArtworkMultipleSelection();
@@ -841,7 +861,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 }
             });
         if(bUnlockFounded)
-            menu.addMenu(getString(R.string.restoreEffect), R.drawable.ic_actionsheet_lock, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.restoreEffect), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_lock_dark : R.drawable.ic_actionsheet_lock, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     restoreEffectMultipleSelection();
@@ -849,7 +869,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 }
             });
         if(bLockFounded)
-            menu.addMenu(getString(R.string.cancelRestoreEffect), R.drawable.ic_actionsheet_unlock, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.cancelRestoreEffect), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_unlock_dark : R.drawable.ic_actionsheet_unlock, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     cancelRestoreEffectMultipleSelection();
@@ -924,7 +944,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         mmr.release();
                     }
                     if(bitmap != null) mActivity.getBtnArtworkInPlayingBar().setImageBitmap(bitmap);
-                    else mActivity.getBtnArtworkInPlayingBar().setImageResource(R.drawable.ic_playing_large_artwork);
+                    else mActivity.getBtnArtworkInPlayingBar().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_playing_large_artwork_dark : R.drawable.ic_playing_large_artwork);
                     mActivity.getBtnArtworkInPlayingBar().setImageBitmap(bitmap);
                 }
             }
@@ -1022,7 +1042,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         else
             nFreeSpace = (long)sf.getAvailableBlocks() * (long)sf.getBlockSize();
         if(nFreeSpace < 100) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            AlertDialog.Builder builder;
+            if(mActivity.isDarkMode())
+                builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+            else
+                builder = new AlertDialog.Builder(mActivity);
             builder.setTitle(R.string.diskFullError);
             builder.setMessage(R.string.diskFullErrorDetail);
             builder.setPositiveButton("OK", null);
@@ -1042,7 +1066,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             alertDialog.show();
             return;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        AlertDialog.Builder builder;
+        if(mActivity.isDarkMode())
+            builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+        else
+            builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(R.string.downloading);
         LinearLayout linearLayout = new LinearLayout(mActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -1108,7 +1136,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(nError == 1)
         {
             if(!file.delete()) System.out.println("ファイルが削除できませんでした");
-            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            AlertDialog.Builder builder;
+            if(mActivity.isDarkMode())
+                builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+            else
+                builder = new AlertDialog.Builder(mActivity);
             builder.setTitle(R.string.downloadError);
             builder.setMessage(R.string.downloadErrorDetail);
             builder.setPositiveButton("OK", null);
@@ -1141,16 +1173,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             return;
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        AlertDialog.Builder builder;
+        if(mActivity.isDarkMode())
+            builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+        else
+            builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(R.string.addURL);
         LinearLayout linearLayout = new LinearLayout(mActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        final ClearableEditText editTitle = new ClearableEditText(mActivity);
+        final ClearableEditText editTitle = new ClearableEditText(mActivity, mActivity.isDarkMode());
         editTitle.setHint(R.string.title);
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         Date date = new Date(System.currentTimeMillis());
         editTitle.setText(String.format(Locale.getDefault(), "タイトル(%s)", df.format(date)));
-        final ClearableEditText editArtist = new ClearableEditText(mActivity);
+        final ClearableEditText editArtist = new ClearableEditText(mActivity, mActivity.isDarkMode());
         editArtist.setHint(R.string.artist);
         editArtist.setText("");
         linearLayout.addView(editTitle);
@@ -1212,7 +1248,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         else
             nFreeSpace = (long)sf.getAvailableBlocks() * (long)sf.getBlockSize();
         if(nFreeSpace < 100) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            AlertDialog.Builder builder;
+            if(mActivity.isDarkMode())
+                builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+            else
+                builder = new AlertDialog.Builder(mActivity);
             builder.setTitle(R.string.diskFullError);
             builder.setMessage(R.string.diskFullErrorDetail);
             builder.setPositiveButton("OK", null);
@@ -1371,16 +1411,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             return;
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        AlertDialog.Builder builder;
+        if(mActivity.isDarkMode())
+            builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+        else
+            builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(R.string.newRecord);
         LinearLayout linearLayout = new LinearLayout(mActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        final ClearableEditText editTitle = new ClearableEditText(mActivity);
+        final ClearableEditText editTitle = new ClearableEditText(mActivity, mActivity.isDarkMode());
         editTitle.setHint(R.string.title);
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         Date date = new Date(System.currentTimeMillis());
         editTitle.setText(String.format(Locale.getDefault(), "%s(%s)", getString(R.string.newRecord), df.format((date))));
-        final ClearableEditText editArtist = new ClearableEditText(mActivity);
+        final ClearableEditText editArtist = new ClearableEditText(mActivity, mActivity.isDarkMode());
         editArtist.setHint(R.string.artist);
         editArtist.setText("");
         linearLayout.addView(editTitle);
@@ -1480,14 +1524,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mImgEdit = mActivity.findViewById(R.id.imgEdit);
         mTextTapEdit = mActivity.findViewById(R.id.textTapEdit);
         mRelativeLyrics = mActivity.findViewById(R.id.relativeLyrics);
+        mRelativeLyricsTitle = mActivity.findViewById(R.id.relativeLyricsTitle);
         mBtnFinishLyrics = mActivity.findViewById(R.id.btnFinishLyrics);
         mEditLyrics = mActivity.findViewById(R.id.editLyrics);
         mImgSelectAllInMultipleSelection = mActivity.findViewById(R.id.imgSelectAllInMultipleSelection);
         mBtnLeft = mActivity.findViewById(R.id.btnLeft);
         mBtnAddPlaylist_small = mActivity.findViewById(R.id.btnAddPlaylist_small);
+        mDevider1 = mActivity.findViewById(R.id.devider1);
         mDevider2 = mActivity.findViewById(R.id.devider2);
         mViewMultipleSelection = mActivity.findViewById(R.id.viewMultipleSelection);
+        mViewSepLyrics = mActivity.findViewById(R.id.viewSepLyrics);
         mTextPlaylistInMultipleSelection = mActivity.findViewById(R.id.textPlaylistInMultipleSelection);
+        mTextPlaylist = mActivity.findViewById(R.id.textPlaylist);
         AnimationButton btnRewind = mActivity.findViewById(R.id.btnRewind);
         AnimationButton btnPlay = mActivity.findViewById(R.id.btnPlay);
         AnimationButton btnForward = mActivity.findViewById(R.id.btnForward);
@@ -1546,6 +1594,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         int nSelectedPlaylist = preferences.getInt("SelectedPlaylist", 0);
         selectPlaylist(nSelectedPlaylist);
+
+        if(mActivity.isDarkMode()) setDarkMode(false);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -1781,7 +1831,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             mmr.release();
         }
         if(bitmap != null) mBtnArtworkInPlayingBar.setImageBitmap(bitmap);
-        else mBtnArtworkInPlayingBar.setImageResource(R.drawable.ic_playing_large_artwork);
+        else mBtnArtworkInPlayingBar.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_playing_large_artwork_dark : R.drawable.ic_playing_large_artwork);
         saveFiles(true, false, false, false, false);
     }
 
@@ -1862,7 +1912,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         final BottomMenu menu = new BottomMenu(mActivity);
         menu.setTitle(strTitle);
-        menu.addMenu(getString(R.string.saveExport), R.drawable.ic_actionsheet_save, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.saveExport), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_save_dark : R.drawable.ic_actionsheet_save, new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
@@ -1870,7 +1920,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
                 final BottomMenu menu = new BottomMenu(mActivity);
                 menu.setTitle(getString(R.string.saveExport));
-                menu.addMenu(getString(R.string.saveToApp), R.drawable.ic_actionsheet_save, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.saveToApp), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_save_dark : R.drawable.ic_actionsheet_save, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
@@ -1878,7 +1928,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     }
                 });
                 if(Build.VERSION.SDK_INT >= 18) {
-                    menu.addMenu(getString(R.string.saveAsVideo), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
+                    menu.addMenu(getString(R.string.saveAsVideo), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_film_dark : R.drawable.ic_actionsheet_film, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             menu.dismiss();
@@ -1886,7 +1936,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         }
                     });
                 }
-                menu.addMenu(getString(R.string.export), R.drawable.ic_actionsheet_share, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.export), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_share_dark : R.drawable.ic_actionsheet_share, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
@@ -1901,7 +1951,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         EffectSaver saver = arEffectSavers.get(nItem);
         if(saver.isSave())
         {
-            menu.addMenu(getString(R.string.cancelRestoreEffect), R.drawable.ic_actionsheet_unlock, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.cancelRestoreEffect), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_unlock_dark : R.drawable.ic_actionsheet_unlock, new View.OnClickListener() {
                 @Override
                 public void onClick(View view)
                 {
@@ -1913,7 +1963,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
         else
         {
-            menu.addMenu(getString(R.string.restoreEffect), R.drawable.ic_actionsheet_lock, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.restoreEffect), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_lock_dark : R.drawable.ic_actionsheet_lock, new View.OnClickListener() {
                 @Override
                 public void onClick(View view)
                 {
@@ -1924,7 +1974,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             });
         }
         menu.addSeparator();
-        menu.addMenu(getString(R.string.changeArtwork), R.drawable.ic_actionsheet_image, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.changeArtwork), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_image_dark : R.drawable.ic_actionsheet_image, new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
@@ -1944,7 +1994,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 }
             }
         });
-        menu.addMenu(getString(R.string.changeTitleAndArtist), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.changeTitleAndArtist), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_edit_dark : R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
@@ -1952,7 +2002,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 changeTitleAndArtist(nItem);
             }
         });
-        menu.addMenu(getString(R.string.showLyrics), R.drawable.ic_actionsheet_file_text, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.showLyrics), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_file_text_dark : R.drawable.ic_actionsheet_file_text, new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
@@ -1961,7 +2011,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
         });
         menu.addSeparator();
-        menu.addMenu(getString(R.string.copy), R.drawable.ic_actionsheet_copy, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.copy), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_copy_dark : R.drawable.ic_actionsheet_copy, new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
@@ -1971,7 +2021,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 for(int i = 0; i < mPlaylistNames.size(); i++)
                 {
                     final int nPlaylistTo = i;
-                    menu.addMenu(mPlaylistNames.get(i), R.drawable.ic_actionsheet_folder, new View.OnClickListener() {
+                    menu.addMenu(mPlaylistNames.get(i), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_folder_dark : R.drawable.ic_actionsheet_folder, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             copySong(mSelectedPlaylist, nItem, nPlaylistTo);
@@ -1983,7 +2033,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 menu.show();
             }
         });
-        menu.addMenu(getString(R.string.moveToAnotherPlaylist), R.drawable.ic_actionsheet_folder_move, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.moveToAnotherPlaylist), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_folder_move_dark : R.drawable.ic_actionsheet_folder_move, new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
@@ -1995,7 +2045,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 {
                     if(mSelectedPlaylist == i) continue;
                     final int nPlaylistTo = i;
-                    menu.addMenu(mPlaylistNames.get(i), R.drawable.ic_actionsheet_folder, new View.OnClickListener() {
+                    menu.addMenu(mPlaylistNames.get(i), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_folder_dark : R.drawable.ic_actionsheet_folder, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             moveSong(mSelectedPlaylist, nItem, nPlaylistTo);
@@ -2007,12 +2057,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 menu.show();
             }
         });
-        menu.addDestructiveMenu(getString(R.string.delete), R.drawable.ic_actionsheet_delete, new View.OnClickListener() {
+        menu.addDestructiveMenu(getString(R.string.delete), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_delete_dark : R.drawable.ic_actionsheet_delete, new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
                 menu.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                AlertDialog.Builder builder;
+                if(mActivity.isDarkMode())
+                    builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                else
+                    builder = new AlertDialog.Builder(mActivity);
                 String strTitle = songItem.getTitle();
                 builder.setTitle(strTitle);
                 builder.setMessage(R.string.askDeleteSong);
@@ -2046,7 +2100,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                             alertDialog.getWindow().setAttributes(lp);
                         }
                         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                        positiveButton.setTextColor(getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeRed : R.color.lightModeRed));
                     }
                 });
                 alertDialog.show();
@@ -2143,14 +2197,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         ArrayList<SongItem> arSongs = mPlaylists.get(mSelectedPlaylist);
         final SongItem songItem = arSongs.get(nItem);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        AlertDialog.Builder builder;
+        if(mActivity.isDarkMode())
+            builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+        else
+            builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(R.string.changeTitleAndArtist);
         LinearLayout linearLayout = new LinearLayout(mActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        final ClearableEditText editTitle = new ClearableEditText(mActivity);
+        final ClearableEditText editTitle = new ClearableEditText(mActivity, mActivity.isDarkMode());
         editTitle.setHint(R.string.title);
         editTitle.setText(songItem.getTitle());
-        final ClearableEditText editArtist = new ClearableEditText(mActivity);
+        final ClearableEditText editArtist = new ClearableEditText(mActivity, mActivity.isDarkMode());
         editArtist.setHint(R.string.artist);
         editArtist.setText(songItem.getArtist());
         linearLayout.addView(editTitle);
@@ -2166,12 +2224,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     mTextTitleInPlayingBar.setText(songItem.getTitle());
                     if(songItem.getArtist() == null || songItem.getArtist().equals(""))
                     {
-                        mTextArtistInPlayingBar.setTextColor(Color.argb(255, 147, 156, 160));
+                        if(mActivity.isDarkMode()) mTextArtistInPlayingBar.setTextColor(mActivity.getResources().getColor(R.color.darkModeTextDarkGray));
+                        else mTextArtistInPlayingBar.setTextColor(Color.argb(255, 147, 156, 160));
                         mTextArtistInPlayingBar.setText(R.string.unknownArtist);
                     }
                     else
                     {
-                        mTextArtistInPlayingBar.setTextColor(Color.argb(255, 102, 102, 102));
+                        mTextArtistInPlayingBar.setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeGray : R.color.lightModeGray));
                         mTextArtistInPlayingBar.setText(songItem.getArtist());
                     }
                 }
@@ -2209,13 +2268,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         final BottomMenu menu = new BottomMenu(mActivity);
         menu.setTitle(strPlaylist);
-        menu.addMenu(getString(R.string.changePlaylistName), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.changePlaylistName), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_edit_dark : R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                AlertDialog.Builder builder;
+                if(mActivity.isDarkMode())
+                    builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                else
+                    builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.changePlaylistName);
-                final ClearableEditText editText = new ClearableEditText(mActivity);
+                final ClearableEditText editText = new ClearableEditText(mActivity, mActivity.isDarkMode());
                 editText.setHint(R.string.playlist);
                 editText.setText(mPlaylistNames.get(nPosition));
                 builder.setView(editText);
@@ -2250,13 +2313,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 alertDialog.show();
             }
         });
-        menu.addMenu(getString(R.string.copyPlaylist), R.drawable.ic_actionsheet_copy, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.copyPlaylist), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_copy_dark : R.drawable.ic_actionsheet_copy, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                AlertDialog.Builder builder;
+                if(mActivity.isDarkMode())
+                    builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                else
+                    builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.copyPlaylist);
-                final ClearableEditText editText = new ClearableEditText(mActivity);
+                final ClearableEditText editText = new ClearableEditText(mActivity, mActivity.isDarkMode());
                 editText.setHint(R.string.playlist);
                 editText.setText(String.format(Locale.getDefault(), "%s のコピー", mPlaylistNames.get(nPosition)));
                 builder.setView(editText);
@@ -2324,11 +2391,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 alertDialog.show();
             }
         });
-        menu.addDestructiveMenu(getString(R.string.emptyPlaylist), R.drawable.ic_actionsheet_folder_erase, new View.OnClickListener() {
+        menu.addDestructiveMenu(getString(R.string.emptyPlaylist), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_folder_erase_dark : R.drawable.ic_actionsheet_folder_erase, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                AlertDialog.Builder builder;
+                if(mActivity.isDarkMode())
+                    builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                else
+                    builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.emptyPlaylist);
                 builder.setMessage(R.string.askEmptyPlaylist);
                 builder.setPositiveButton(getString(R.string.decideNot), null);
@@ -2367,17 +2438,21 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                             alertDialog.getWindow().setAttributes(lp);
                         }
                         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                        positiveButton.setTextColor(getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeRed : R.color.lightModeRed));
                     }
                 });
                 alertDialog.show();
             }
         });
-        menu.addDestructiveMenu(getString(R.string.deletePlaylist), R.drawable.ic_actionsheet_delete, new View.OnClickListener() {
+        menu.addDestructiveMenu(getString(R.string.deletePlaylist), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_delete_dark : R.drawable.ic_actionsheet_delete, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                AlertDialog.Builder builder;
+                if(mActivity.isDarkMode())
+                    builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                else
+                    builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.deletePlaylist);
                 builder.setMessage(R.string.askDeletePlaylist);
                 builder.setPositiveButton(getString(R.string.decideNot), null);
@@ -2420,7 +2495,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                             alertDialog.getWindow().setAttributes(lp);
                         }
                         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                        positiveButton.setTextColor(getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeRed : R.color.lightModeRed));
                     }
                 });
                 alertDialog.show();
@@ -2451,7 +2526,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         final BottomMenu menu = new BottomMenu(mActivity);
         menu.setTitle(strPlaylist);
         if(arSongs.size() >= 1)
-            menu.addMenu(getString(R.string.selectSongs), R.drawable.ic_actionsheet_select, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.selectSongs), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_select_dark : R.drawable.ic_actionsheet_select, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
@@ -2459,7 +2534,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 }
             });
         if(arSongs.size() >= 2)
-            menu.addMenu(getString(R.string.sortSongs), R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.sortSongs), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_sort_dark : R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
@@ -2475,7 +2550,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             });
         if(arSongs.size() >= 1) menu.addSeparator();
         if(arSongs.size() >= 1) {
-            menu.addMenu(getString(R.string.changeArtwork), R.drawable.ic_actionsheet_image, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.changeArtwork), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_image_dark : R.drawable.ic_actionsheet_image, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     changeArtworkMultipleSelection();
@@ -2483,7 +2558,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 }
             });
             if (bChangeArtworkFounded)
-                menu.addDestructiveMenu(getString(R.string.resetArtwork), R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
+                menu.addDestructiveMenu(getString(R.string.resetArtwork), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_initialize_dark : R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         resetArtworkMultipleSelection();
@@ -2491,7 +2566,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     }
                 });
             if (bUnlockFounded)
-                menu.addMenu(getString(R.string.restoreEffect), R.drawable.ic_actionsheet_lock, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.restoreEffect), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_lock_dark : R.drawable.ic_actionsheet_lock, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         restoreEffectMultipleSelection();
@@ -2499,7 +2574,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     }
                 });
             if (bLockFounded)
-                menu.addMenu(getString(R.string.cancelRestoreEffect), R.drawable.ic_actionsheet_unlock, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.cancelRestoreEffect), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_unlock_dark : R.drawable.ic_actionsheet_unlock, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         cancelRestoreEffectMultipleSelection();
@@ -2508,13 +2583,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 });
             menu.addSeparator();
         }
-        menu.addMenu(getString(R.string.changePlaylistName), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.changePlaylistName), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_edit_dark : R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                AlertDialog.Builder builder;
+                if(mActivity.isDarkMode())
+                    builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                else
+                    builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.changePlaylistName);
-                final ClearableEditText editText = new ClearableEditText(mActivity);
+                final ClearableEditText editText = new ClearableEditText(mActivity, mActivity.isDarkMode());
                 editText.setHint(R.string.playlist);
                 editText.setText(mPlaylistNames.get(nPosition));
                 builder.setView(editText);
@@ -2549,13 +2628,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 alertDialog.show();
             }
         });
-        menu.addMenu(getString(R.string.copyPlaylist), R.drawable.ic_actionsheet_copy, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.copyPlaylist), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_copy_dark : R.drawable.ic_actionsheet_copy, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                AlertDialog.Builder builder;
+                if(mActivity.isDarkMode())
+                    builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                else
+                    builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.copyPlaylist);
-                final ClearableEditText editText = new ClearableEditText(mActivity);
+                final ClearableEditText editText = new ClearableEditText(mActivity, mActivity.isDarkMode());
                 editText.setHint(R.string.playlist);
                 editText.setText(String.format(Locale.getDefault(), "%s のコピー", mPlaylistNames.get(nPosition)));
                 builder.setView(editText);
@@ -2623,11 +2706,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 alertDialog.show();
             }
         });
-        menu.addDestructiveMenu(getString(R.string.emptyPlaylist), R.drawable.ic_actionsheet_folder_erase, new View.OnClickListener() {
+        menu.addDestructiveMenu(getString(R.string.emptyPlaylist), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_folder_erase_dark : R.drawable.ic_actionsheet_folder_erase, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                AlertDialog.Builder builder;
+                if(mActivity.isDarkMode())
+                    builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                else
+                    builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.emptyPlaylist);
                 builder.setMessage(R.string.askEmptyPlaylist);
                 builder.setPositiveButton(getString(R.string.decideNot), null);
@@ -2669,17 +2756,21 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                             alertDialog.getWindow().setAttributes(lp);
                         }
                         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                        positiveButton.setTextColor(getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeRed : R.color.lightModeRed));
                     }
                 });
                 alertDialog.show();
             }
         });
-        menu.addDestructiveMenu(getString(R.string.deletePlaylist), R.drawable.ic_actionsheet_delete, new View.OnClickListener() {
+        menu.addDestructiveMenu(getString(R.string.deletePlaylist), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_delete_dark : R.drawable.ic_actionsheet_delete, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                AlertDialog.Builder builder;
+                if(mActivity.isDarkMode())
+                    builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                else
+                    builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.deletePlaylist);
                 builder.setMessage(R.string.askDeletePlaylist);
                 builder.setPositiveButton(getString(R.string.decideNot), null);
@@ -2722,7 +2813,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                             alertDialog.getWindow().setAttributes(lp);
                         }
                         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                        positiveButton.setTextColor(getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeRed : R.color.lightModeRed));
                     }
                 });
                 alertDialog.show();
@@ -3117,7 +3208,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     private void saveSong(int nPurpose, String strFileName)
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        AlertDialog.Builder builder;
+        if(mActivity.isDarkMode())
+            builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+        else
+            builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(R.string.saving);
         LinearLayout linearLayout = new LinearLayout(mActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -3370,11 +3465,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     public void export()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        AlertDialog.Builder builder;
+        if(mActivity.isDarkMode())
+            builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+        else
+            builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(R.string.export);
         LinearLayout linearLayout = new LinearLayout(mActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        final ClearableEditText editTitle = new ClearableEditText(mActivity);
+        final ClearableEditText editTitle = new ClearableEditText(mActivity, mActivity.isDarkMode());
         editTitle.setHint(R.string.fileName);
         ArrayList<SongItem> arSongs = mPlaylists.get(mSelectedPlaylist);
         SongItem item = arSongs.get(mSelectedItem);
@@ -3500,7 +3599,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         ContentResolver cr = mActivity.getContentResolver();
         cr.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        AlertDialog.Builder builder;
+        if(mActivity.isDarkMode())
+            builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+        else
+            builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(R.string.saveAsVideo);
         builder.setMessage(R.string.saved);
         builder.setPositiveButton("OK", null);
@@ -3526,11 +3629,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         BASS.BASS_ChannelPlay(MainActivity.sStream, false);
         mActivity.loopFragment.startTimer();
         mActivity.getBtnPlay().setContentDescription(getString(R.string.pause));
-        mActivity.getBtnPlay().setImageResource(R.drawable.ic_bar_button_pause);
+        mActivity.getBtnPlay().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_bar_button_pause_dark : R.drawable.ic_bar_button_pause);
         mActivity.getBtnPlayInPlayingBar().setContentDescription(getString(R.string.pause));
         if(mActivity.getSeekCurPos().getVisibility() == View.VISIBLE)
-            mActivity.getBtnPlayInPlayingBar().setImageResource(R.drawable.ic_playing_large_pause);
-        else mActivity.getBtnPlayInPlayingBar().setImageResource(R.drawable.ic_bar_button_pause);
+            mActivity.getBtnPlayInPlayingBar().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_playing_large_pause_dark : R.drawable.ic_playing_large_pause);
+        else mActivity.getBtnPlayInPlayingBar().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_bar_button_pause_dark : R.drawable.ic_bar_button_pause);
         mSongsAdapter.notifyDataSetChanged();
         mPlaylistsAdapter.notifyDataSetChanged();
         mTabAdapter.notifyDataSetChanged();
@@ -3543,11 +3646,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         BASS.BASS_ChannelPause(MainActivity.sStream);
         mActivity.loopFragment.stopTimer();
         mActivity.getBtnPlay().setContentDescription(getString(R.string.play));
-        mActivity.getBtnPlay().setImageResource(R.drawable.ic_bar_button_play);
+        mActivity.getBtnPlay().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_bar_button_play_dark : R.drawable.ic_bar_button_play);
         mActivity.getBtnPlayInPlayingBar().setContentDescription(getString(R.string.play));
         if(mActivity.getSeekCurPos().getVisibility() == View.VISIBLE)
-            mActivity.getBtnPlayInPlayingBar().setImageResource(R.drawable.ic_playing_large_play);
-        else mActivity.getBtnPlayInPlayingBar().setImageResource(R.drawable.ic_bar_button_play);
+            mActivity.getBtnPlayInPlayingBar().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_playing_large_play_dark : R.drawable.ic_playing_large_play);
+        else mActivity.getBtnPlayInPlayingBar().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_bar_button_play_dark : R.drawable.ic_bar_button_play);
         mSongsAdapter.notifyDataSetChanged();
         mActivity.startNotification();
     }
@@ -3778,16 +3881,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
         }
         if(bitmap != null) mBtnArtworkInPlayingBar.setImageBitmap(bitmap);
-        else mBtnArtworkInPlayingBar.setImageResource(R.drawable.ic_playing_large_artwork);
+        else mBtnArtworkInPlayingBar.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_playing_large_artwork_dark : R.drawable.ic_playing_large_artwork);
         mTextTitleInPlayingBar.setText(item.getTitle());
         if(item.getArtist() == null || item.getArtist().equals(""))
         {
-            mTextArtistInPlayingBar.setTextColor(Color.argb(255, 147, 156, 160));
+            if(mActivity.isDarkMode()) mTextArtistInPlayingBar.setTextColor(mActivity.getResources().getColor(R.color.darkModeTextDarkGray));
+            else mTextArtistInPlayingBar.setTextColor(Color.argb(255, 147, 156, 160));
             mTextArtistInPlayingBar.setText(R.string.unknownArtist);
         }
         else
         {
-            mTextArtistInPlayingBar.setTextColor(Color.argb(255, 102, 102, 102));
+            mTextArtistInPlayingBar.setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeGray : R.color.lightModeGray));
             mTextArtistInPlayingBar.setText(item.getArtist());
         }
 
@@ -3872,11 +3976,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             mActivity.loopFragment.startTimer();
         }
         mActivity.getBtnPlay().setContentDescription(getString(R.string.pause));
-        mActivity.getBtnPlay().setImageResource(R.drawable.ic_bar_button_pause);
+        mActivity.getBtnPlay().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_bar_button_pause_dark : R.drawable.ic_bar_button_pause);
         mActivity.getBtnPlayInPlayingBar().setContentDescription(getString(R.string.pause));
         if(mActivity.getSeekCurPos().getVisibility() == View.VISIBLE)
-            mActivity.getBtnPlayInPlayingBar().setImageResource(R.drawable.ic_playing_large_pause);
-        else mActivity.getBtnPlayInPlayingBar().setImageResource(R.drawable.ic_bar_button_pause);
+            mActivity.getBtnPlayInPlayingBar().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_playing_large_pause_dark : R.drawable.ic_playing_large_pause);
+        else mActivity.getBtnPlayInPlayingBar().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_bar_button_pause_dark : R.drawable.ic_bar_button_pause);
         mSongsAdapter.notifyDataSetChanged();
         if(mSelectedPlaylist == mPlayingPlaylist && !mMultiSelecting && !mSorting) mRecyclerSongs.scrollToPosition(mPlaying);
         mPlaylistsAdapter.notifyDataSetChanged();
@@ -4023,11 +4127,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mActivity.loopFragment.stopTimer();
         mActivity.loopFragment.getTextCurValue().setText(getString(R.string.zeroHMS));
         mActivity.getBtnPlay().setContentDescription(getString(R.string.play));
-        mActivity.getBtnPlay().setImageResource(R.drawable.ic_bar_button_play);
+        mActivity.getBtnPlay().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_bar_button_play_dark : R.drawable.ic_bar_button_play);
         mActivity.getBtnPlayInPlayingBar().setContentDescription(getString(R.string.play));
         if(mActivity.getSeekCurPos().getVisibility() == View.VISIBLE)
-            mActivity.getBtnPlayInPlayingBar().setImageResource(R.drawable.ic_playing_large_play);
-        else mActivity.getBtnPlayInPlayingBar().setImageResource(R.drawable.ic_bar_button_play);
+            mActivity.getBtnPlayInPlayingBar().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_playing_large_play_dark : R.drawable.ic_playing_large_play);
+        else mActivity.getBtnPlayInPlayingBar().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_bar_button_play_dark : R.drawable.ic_bar_button_play);
         mActivity.clearLoop();
         mSongsAdapter.notifyDataSetChanged();
         mPlaylistsAdapter.notifyDataSetChanged();
@@ -4164,16 +4268,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        AlertDialog.Builder builder;
+        if(mActivity.isDarkMode())
+            builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+        else
+            builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(R.string.addFromVideo);
         LinearLayout linearLayout = new LinearLayout(mActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        final ClearableEditText editTitle = new ClearableEditText(mActivity);
+        final ClearableEditText editTitle = new ClearableEditText(mActivity, mActivity.isDarkMode());
         editTitle.setHint(R.string.title);
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         Date date = new Date(System.currentTimeMillis());
         editTitle.setText(String.format(Locale.getDefault(), "ムービー(%s)", df.format(date)));
-        final ClearableEditText editArtist = new ClearableEditText(mActivity);
+        final ClearableEditText editArtist = new ClearableEditText(mActivity, mActivity.isDarkMode());
         editArtist.setHint(R.string.artist);
         editArtist.setText("");
         linearLayout.addView(editTitle);
@@ -4395,5 +4503,157 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saveFiles(true, false, false, false, false);
             mActivity.effectFragment.setPeak(fPeak);
         }
+    }
+
+    public void setLightMode(boolean animated) {
+        final RelativeLayout relativePlaylistFragment = mActivity.findViewById(R.id.relativePlaylistFragment);
+        final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
+        final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
+        final int nLightModeSep = getResources().getColor(R.color.lightModeSep);
+        final int nDarkModeSep = getResources().getColor(R.color.darkModeSep);
+        final int nLightModeBlue = getResources().getColor(R.color.lightModeBlue);
+        final int nDarkModeBlue = getResources().getColor(R.color.darkModeBlue);
+        final int nLightModeText = getResources().getColor(android.R.color.black);
+        final int nDarkModeText = getResources().getColor(android.R.color.white);
+        if(animated) {
+            final ArgbEvaluator eval = new ArgbEvaluator();
+            ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    float fProgress = valueAnimator.getAnimatedFraction();
+                    int nColorModeBk = (Integer) eval.evaluate(fProgress, nDarkModeBk, nLightModeBk);
+                    int nColorModeSep = (Integer) eval.evaluate(fProgress, nDarkModeSep, nLightModeSep);
+                    int nColorModeBlue = (Integer) eval.evaluate(fProgress, nDarkModeBlue, nLightModeBlue);
+                    int nColorModeText = (Integer) eval.evaluate(fProgress, nDarkModeText, nLightModeText);
+                    relativePlaylistFragment.setBackgroundColor(nColorModeBk);
+                    mRelativePlaylists.setBackgroundColor(nColorModeBk);
+                    mBtnAddPlaylist_small.setBackgroundColor(nColorModeBk);
+                    mRelativeLyricsTitle.setBackgroundColor(nColorModeBk);
+                    mDevider1.setBackgroundColor(nColorModeSep);
+                    mDevider2.setBackgroundColor(nColorModeSep);
+                    mViewSepLyrics.setBackgroundColor(nColorModeSep);
+                    mTextPlaylist.setTextColor(nColorModeText);
+                    mTextLyricsTitle.setTextColor(nColorModeText);
+                    mTextLyrics.setTextColor(nColorModeText);
+                    mEditLyrics.setTextColor(nColorModeText);
+                    mBtnSortPlaylist.setTextColor(nColorModeBlue);
+                    mBtnFinishLyrics.setTextColor(nColorModeBlue);
+                }
+            });
+
+            TransitionDrawable tdBtnAddSong = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.button_big_add_music_dark), getResources().getDrawable(R.drawable.button_big_add_music) });
+            TransitionDrawable tdBtnAddPlaylist = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.button_big_add_folder_dark), getResources().getDrawable(R.drawable.button_big_add_folder) });
+            TransitionDrawable tdBtnLeft = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_button_arrow_left_dark), getResources().getDrawable(R.drawable.ic_button_arrow_left) });
+            TransitionDrawable tdBtnAddPlaylist_small = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_button_plus_dark), getResources().getDrawable(R.drawable.ic_button_plus) });
+            TransitionDrawable tdBtnEdit = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.button_big_edit_dark), getResources().getDrawable(R.drawable.button_big_edit) });
+            TransitionDrawable tdImgEdit = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bg_edit_dark), getResources().getDrawable(R.drawable.ic_bg_edit) });
+
+            mBtnAddSong.setImageDrawable(tdBtnAddSong);
+            mBtnAddPlaylist.setImageDrawable(tdBtnAddPlaylist);
+            mBtnLeft.setImageDrawable(tdBtnLeft);
+            mBtnAddPlaylist_small.setImageDrawable(tdBtnAddPlaylist_small);
+            mBtnEdit.setImageDrawable(tdBtnEdit);
+            mImgEdit.setImageDrawable(tdImgEdit);
+
+            int duration = 300;
+            anim.setDuration(duration).start();
+            tdBtnAddSong.startTransition(duration);
+            tdBtnAddPlaylist.startTransition(duration);
+            tdBtnLeft.startTransition(duration);
+            tdBtnAddPlaylist_small.startTransition(duration);
+            tdBtnEdit.startTransition(duration);
+            tdImgEdit.startTransition(duration);
+        }
+        else {
+            relativePlaylistFragment.setBackgroundColor(nLightModeBk);
+            mRelativePlaylists.setBackgroundColor(nLightModeBk);
+            mBtnAddPlaylist_small.setBackgroundColor(nLightModeBk);
+            mRelativeLyricsTitle.setBackgroundColor(nLightModeBk);
+            mDevider1.setBackgroundColor(nLightModeSep);
+            mDevider2.setBackgroundColor(nLightModeSep);
+            mViewSepLyrics.setBackgroundColor(nLightModeSep);
+            mTextPlaylist.setTextColor(nLightModeText);
+            mTextLyricsTitle.setTextColor(nLightModeText);
+            mTextLyrics.setTextColor(nLightModeText);
+            mEditLyrics.setTextColor(nLightModeText);
+            mBtnSortPlaylist.setTextColor(nLightModeBlue);
+            mBtnFinishLyrics.setTextColor(nLightModeBlue);
+
+            mBtnAddSong.setImageDrawable(getResources().getDrawable(R.drawable.button_big_add_music));
+            mBtnAddPlaylist.setImageDrawable(getResources().getDrawable(R.drawable.button_big_add_folder));
+            mBtnLeft.setImageDrawable(getResources().getDrawable(R.drawable.ic_button_arrow_left));
+            mBtnAddPlaylist_small.setImageDrawable(getResources().getDrawable(R.drawable.ic_button_plus));
+            mBtnEdit.setImageDrawable(getResources().getDrawable(R.drawable.button_big_edit));
+            mImgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_bg_edit));
+        }
+        mSongsAdapter.notifyDataSetChanged();
+        mPlaylistsAdapter.notifyDataSetChanged();
+        mTabAdapter.notifyDataSetChanged();
+    }
+
+    public void setDarkMode(boolean animated) {
+        if(mActivity == null) return;
+        final RelativeLayout relativePlaylistFragment = mActivity.findViewById(R.id.relativePlaylistFragment);
+        final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
+        final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
+        final int nLightModeSep = getResources().getColor(R.color.lightModeSep);
+        final int nDarkModeSep = getResources().getColor(R.color.darkModeSep);
+        final int nLightModeBlue = getResources().getColor(R.color.lightModeBlue);
+        final int nDarkModeBlue = getResources().getColor(R.color.darkModeBlue);
+        final int nLightModeText = getResources().getColor(android.R.color.black);
+        final int nDarkModeText = getResources().getColor(android.R.color.white);
+        final ArgbEvaluator eval = new ArgbEvaluator();
+        ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+            float fProgress = valueAnimator.getAnimatedFraction();
+            int nColorModeBk = (Integer) eval.evaluate(fProgress, nLightModeBk, nDarkModeBk);
+            int nColorModeSep = (Integer) eval.evaluate(fProgress, nLightModeSep, nDarkModeSep);
+            int nColorModeBlue = (Integer) eval.evaluate(fProgress, nLightModeBlue, nDarkModeBlue);
+            int nColorModeText = (Integer) eval.evaluate(fProgress, nLightModeText, nDarkModeText);
+            relativePlaylistFragment.setBackgroundColor(nColorModeBk);
+            mRelativePlaylists.setBackgroundColor(nColorModeBk);
+            mBtnAddPlaylist_small.setBackgroundColor(nColorModeBk);
+            mRelativeLyricsTitle.setBackgroundColor(nColorModeBk);
+            mDevider1.setBackgroundColor(nColorModeSep);
+            mDevider2.setBackgroundColor(nColorModeSep);
+            mViewSepLyrics.setBackgroundColor(nColorModeSep);
+            mTextPlaylist.setTextColor(nColorModeText);
+            mTextLyricsTitle.setTextColor(nColorModeText);
+            mTextLyrics.setTextColor(nColorModeText);
+            mEditLyrics.setTextColor(nColorModeText);
+            mBtnSortPlaylist.setTextColor(nColorModeBlue);
+            mBtnFinishLyrics.setTextColor(nColorModeBlue);
+            }
+        });
+
+        TransitionDrawable tdBtnAddSong = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.button_big_add_music), getResources().getDrawable(R.drawable.button_big_add_music_dark) });
+        TransitionDrawable tdBtnAddPlaylist = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.button_big_add_folder), getResources().getDrawable(R.drawable.button_big_add_folder_dark) });
+        TransitionDrawable tdBtnLeft = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_button_arrow_left), getResources().getDrawable(R.drawable.ic_button_arrow_left_dark) });
+        TransitionDrawable tdBtnAddPlaylist_small = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_button_plus), getResources().getDrawable(R.drawable.ic_button_plus_dark) });
+        TransitionDrawable tdBtnEdit = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.button_big_edit), getResources().getDrawable(R.drawable.button_big_edit_dark) });
+        TransitionDrawable tdImgEdit = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bg_edit), getResources().getDrawable(R.drawable.ic_bg_edit_dark) });
+
+        mBtnAddSong.setImageDrawable(tdBtnAddSong);
+        mBtnAddPlaylist.setImageDrawable(tdBtnAddPlaylist);
+        mBtnLeft.setImageDrawable(tdBtnLeft);
+        mBtnAddPlaylist_small.setImageDrawable(tdBtnAddPlaylist_small);
+        mBtnEdit.setImageDrawable(tdBtnEdit);
+        mImgEdit.setImageDrawable(tdImgEdit);
+
+        int duration = animated ? 300 : 0;
+        anim.setDuration(duration).start();
+        tdBtnAddSong.startTransition(duration);
+        tdBtnAddPlaylist.startTransition(duration);
+        tdBtnLeft.startTransition(duration);
+        tdBtnAddPlaylist_small.startTransition(duration);
+        tdBtnEdit.startTransition(duration);
+        tdImgEdit.startTransition(duration);
+
+        mSongsAdapter.notifyDataSetChanged();
+        mPlaylistsAdapter.notifyDataSetChanged();
+        mTabAdapter.notifyDataSetChanged();
     }
 }

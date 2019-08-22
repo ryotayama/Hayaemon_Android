@@ -33,7 +33,7 @@ class BottomMenu extends BottomSheetDialog {
 
     @SuppressLint("ClickableViewAccessibility")
     BottomMenu(@NonNull Context context) {
-        super(context);
+        super(context, ((MainActivity)context).isDarkMode() ? R.style.BottomSheetDialog_dark : R.style.BottomSheetDialog);
         mActivity = (MainActivity)context;
         mLinearLayoutParent = new LinearLayout(context);
         mLinearLayoutParent.setOrientation(LinearLayout.VERTICAL);
@@ -49,7 +49,7 @@ class BottomMenu extends BottomSheetDialog {
                     for(int i = 0; i < mLinearLayout.getChildCount(); i++) {
                         View childView = mLinearLayout.getChildAt(i);
                         if(childView.getHeight() != 1)
-                            childView.setBackgroundColor(Color.argb(255, 255, 255, 255));
+                            childView.setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeBk : android.R.color.white));
                     }
                 }
                 return false;
@@ -98,13 +98,14 @@ class BottomMenu extends BottomSheetDialog {
         textTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
         textTitle.setGravity(Gravity.CENTER);
         textTitle.setText(strTitle);
+        textTitle.setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeGray : R.color.lightModeGray));
         textTitle.setEllipsize(TextUtils.TruncateAt.END);
         textTitle.setSingleLine();
         textTitle.setHeight((int) (48 * mActivity.getDensity()));
         mLinearLayoutParent.addView(textTitle, param);
 
         View viewSep = new View(getContext());
-        viewSep.setBackgroundColor(Color.argb(255, 208, 208, 208));
+        viewSep.setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeSep : R.color.lightModeSep));
         LinearLayout.LayoutParams paramViewSep = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         paramViewSep.topMargin = 0;
         paramViewSep.bottomMargin = (int) (8 * mActivity.getDensity());
@@ -118,7 +119,7 @@ class BottomMenu extends BottomSheetDialog {
 
     void addSeparator() {
         View viewSep = new View(getContext());
-        viewSep.setBackgroundColor(Color.argb(255, 208, 208, 208));
+        viewSep.setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeSep : R.color.lightModeSep));
         LinearLayout.LayoutParams paramViewSep = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         paramViewSep.topMargin = (int) (8 * mActivity.getDensity());
         paramViewSep.bottomMargin = (int) (8 * mActivity.getDensity());
@@ -149,18 +150,18 @@ class BottomMenu extends BottomSheetDialog {
         textLocal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         textLocal.setGravity(Gravity.START | Gravity.CENTER);
         textLocal.setText(strText);
-        textLocal.setTextColor(Color.argb(255, 0, 0, 0));
+        textLocal.setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? android.R.color.white : android.R.color.black));
         relativeLocal.setOnClickListener(listener);
         relativeLocal.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
                     setCancelable(false);
-                    relativeLocal.setBackgroundColor(Color.argb(255, 229, 229, 229));
+                    relativeLocal.setBackgroundColor(mActivity.isDarkMode() ? mActivity.getResources().getColor(R.color.darkModeLightBk) : Color.argb(255, 229, 229, 229));
                 }
                 else if(event.getAction() == MotionEvent.ACTION_UP) {
                     setCancelable(true);
-                    relativeLocal.setBackgroundColor(Color.argb(255, 255, 255, 255));
+                    relativeLocal.setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeBk : android.R.color.white));
                 }
                 return false;
             }
@@ -194,18 +195,18 @@ class BottomMenu extends BottomSheetDialog {
         textLocal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         textLocal.setGravity(Gravity.START | Gravity.CENTER);
         textLocal.setText(strText);
-        textLocal.setTextColor(Color.argb(255, 255, 45, 85));
+        textLocal.setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeRed : R.color.lightModeRed));
         relativeLocal.setOnClickListener(listener);
         relativeLocal.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
                     setCancelable(false);
-                    relativeLocal.setBackgroundColor(Color.argb(255, 229, 229, 229));
+                    relativeLocal.setBackgroundColor(mActivity.isDarkMode() ? mActivity.getResources().getColor(R.color.darkModeLightBk) : Color.argb(255, 229, 229, 229));
                 }
                 else if(event.getAction() == MotionEvent.ACTION_UP) {
                     setCancelable(true);
-                    relativeLocal.setBackgroundColor(Color.argb(255, 255, 255, 255));
+                    relativeLocal.setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeBk : android.R.color.white));
                 }
                 return false;
             }
@@ -225,7 +226,7 @@ class BottomMenu extends BottomSheetDialog {
     @SuppressLint("ClickableViewAccessibility")
     void setCancelMenu() {
         View viewSep = new View(getContext());
-        viewSep.setBackgroundColor(Color.argb(255, 208, 208, 208));
+        viewSep.setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeSep : R.color.lightModeSep));
         LinearLayout.LayoutParams paramViewSep = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         paramViewSep.topMargin = (int) (8 * mActivity.getDensity());
         paramViewSep.bottomMargin = 0;
@@ -238,6 +239,7 @@ class BottomMenu extends BottomSheetDialog {
         textCancel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         textCancel.setGravity(Gravity.CENTER);
         textCancel.setText(R.string.cancel);
+        textCancel.setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeGray : R.color.lightModeGray));
         textCancel.setHeight((int) (48 * mActivity.getDensity()));
         textCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -250,11 +252,11 @@ class BottomMenu extends BottomSheetDialog {
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
                     setCancelable(false);
-                    textCancel.setBackgroundColor(Color.argb(255, 229, 229, 229));
+                    textCancel.setBackgroundColor(mActivity.isDarkMode() ? mActivity.getResources().getColor(R.color.darkModeLightBk) : Color.argb(255, 229, 229, 229));
                 }
                 else if(event.getAction() == MotionEvent.ACTION_UP) {
                     setCancelable(true);
-                    textCancel.setBackgroundColor(Color.argb(255, 255, 255, 255));
+                    textCancel.setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeBk : android.R.color.white));
                 }
                 return false;
             }

@@ -8,9 +8,7 @@
     android:layout_height="match_parent"
     tools:openDrawer="start" >
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:id="@+id/relativeMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -345,6 +343,7 @@
                     android:max="60"
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentRight="true"
@@ -468,6 +467,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/relativeLeftMenu"
         android:layout_width="272dp"
         android:layout_height="match_parent"
         android:clickable="true"
@@ -481,7 +481,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
-            android:layout_above="@+id/dividerMenuBottom"
+            android:layout_above="@+id/viewSep3"
             >
 
             <RelativeLayout
@@ -514,7 +514,6 @@
                     android:id="@+id/relativePlayingInMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#FFF"
                     android:animateLayoutChanges="true"
                     android:visibility="visible"
                     android:layout_marginTop="16dp"
@@ -601,6 +600,7 @@
                         />
 
                     <TextView
+                        android:id="@+id/textSave"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/saveExport"
@@ -686,6 +686,7 @@
                         />
 
                     <TextView
+                        android:id="@+id/textAddSong"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/addSong"
@@ -723,6 +724,7 @@
                         />
 
                     <TextView
+                        android:id="@+id/textHideAds"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/hideAds"
@@ -814,6 +816,7 @@
                         />
 
                     <TextView
+                        android:id="@+id/textReport"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/report"
@@ -851,6 +854,7 @@
                         />
 
                     <TextView
+                        android:id="@+id/textReview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/review"
@@ -888,6 +892,7 @@
                         />
 
                     <TextView
+                        android:id="@+id/textInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/about"
@@ -907,7 +912,7 @@
         </ScrollView>
 
         <View
-            android:id="@+id/dividerMenuBottom"
+            android:id="@+id/viewSep3"
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:background="#BFBFBF"
@@ -924,7 +929,7 @@
             <com.edolfzoku.hayaemon2.AnimationButton
                 android:id="@+id/btnSetting"
                 android:contentDescription="@string/setting"
-                android:layout_width="wrap_content"
+                android:layout_width="44dp"
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:src="@drawable/ic_leftmenu_settings"
@@ -936,6 +941,23 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                />
+
+            <com.edolfzoku.hayaemon2.AnimationButton
+                android:id="@+id/btnDarkMode"
+                android:contentDescription="@string/darkMode"
+                android:layout_width="44dp"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:src="@drawable/ic_leftmenu_dark"
+                android:scaleType="centerInside"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 />
 
         </RelativeLayout>

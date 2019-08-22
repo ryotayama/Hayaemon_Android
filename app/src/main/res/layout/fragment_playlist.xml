@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativePlaylistFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="0dp"
@@ -24,6 +25,7 @@
             >
 
             <TextView
+                android:id="@+id/textPlaylist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/playlist"
@@ -105,13 +107,13 @@
         android:layout_height="match_parent"
         >
 
-        <ImageButton
+        <com.edolfzoku.hayaemon2.HighlightImageButton
             android:id="@+id/btnLeft"
             android:contentDescription="@string/changePlaylistScreen"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/arrowleftbutton"
-            android:background="#FFFFFF"
+            android:src="@drawable/ic_button_arrow_left"
+            android:background="@null"
             android:scaleType="centerInside"
             android:clickable="true"
             android:focusable="true"
@@ -134,13 +136,12 @@
             android:layout_toStartOf="@+id/btnAddPlaylist_small"
             />
 
-        <ImageButton
+        <com.edolfzoku.hayaemon2.HighlightImageButton
             android:id="@+id/btnAddPlaylist_small"
             android:contentDescription="@string/addPlaylist"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/plusbutton"
-            android:background="#FFFFFF"
+            android:background="@drawable/ic_button_plus"
             android:scaleType="centerInside"
             android:clickable="true"
             android:focusable="true"
@@ -151,7 +152,7 @@
             />
 
         <View
-            android:id="@+id/devider2"
+                                android:id="@+id/devider2"
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:background="#BFBFBF"
@@ -182,7 +183,7 @@
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:background="@null"
-                android:src="@drawable/add_music"
+                android:src="@drawable/button_big_add_music"
                 android:scaleType="centerInside"
                 android:clickable="true"
                 android:focusable="true"
@@ -393,7 +394,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:background="@null"
-            android:src="@drawable/edit_lyric"
+            android:src="@drawable/button_big_edit"
             android:scaleType="centerInside"
             android:clickable="true"
             android:focusable="true"
@@ -414,7 +415,7 @@
                 android:layout_width="76dp"
                 android:layout_height="66dp"
                 android:background="@null"
-                android:src="@drawable/bg_edit"
+                android:src="@drawable/ic_bg_edit"
                 android:scaleType="centerInside"
                 android:clickable="true"
                 android:focusable="true"

@@ -18,10 +18,14 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -34,6 +38,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_FX;
@@ -58,8 +63,10 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     private final Handler mHandler;
 
     private ImageView mImgPoint;
-    private View mViewBk;
-    private AnimationButton mBtnLink, mBtnLockSpeed, mBtnLockPitch;
+    private View mViewBk, mViewSepBelowSpeed, mViewSepBelowPitch, mViewLineHorizontal, mViewLineVertical;
+    private AnimationButton mBtnLink, mBtnLockSpeed, mBtnLockPitch, mBtnPitchUp, mBtnPitchDown, mBtnSpeedUp, mBtnSpeedDown;
+    private Button mBtnResetSpeed, mBtnResetPitch;
+    private TextView mTextSpeed, mTextPitch;
     private EditText mTextSpeedValue, mTextPitchValue;
 
     public float getSpeed() { return mSpeed; }
@@ -112,21 +119,28 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
 
         mImgPoint = mActivity.findViewById(R.id.imgPoint);
         mViewBk = mActivity.findViewById(R.id.imgBack);
+        mViewSepBelowSpeed = mActivity.findViewById(R.id.viewSepBelowSpeed);
+        mViewSepBelowPitch = mActivity.findViewById(R.id.viewSepBelowPitch);
+        mViewLineHorizontal = mActivity.findViewById(R.id.viewLineHorizontal);
+        mViewLineVertical = mActivity.findViewById(R.id.viewLineVertical);
         mBtnLink = mActivity.findViewById(R.id.btnLink);
         mBtnLockSpeed = mActivity.findViewById(R.id.btnLockSpeed);
         mBtnLockPitch = mActivity.findViewById(R.id.btnLockPitch);
+        mTextSpeed = mActivity.findViewById(R.id.textSpeed);
         mTextSpeedValue = mActivity.findViewById(R.id.textSpeedValue);
+        mTextPitch = mActivity.findViewById(R.id.textPitch);
         mTextPitchValue = mActivity.findViewById(R.id.textPitchValue);
-        Button btnResetSpeed = mActivity.findViewById(R.id.btnResetSpeed);
-        Button btnResetPitch = mActivity.findViewById(R.id.btnResetPitch);
-        AnimationButton btnSpeedUp = mActivity.findViewById(R.id.btnSpeedUp);
-        AnimationButton btnSpeedDown = mActivity.findViewById(R.id.btnSpeedDown);
-        AnimationButton btnPitchUp = mActivity.findViewById(R.id.btnPitchUp);
-        AnimationButton btnPitchDown = mActivity.findViewById(R.id.btnPitchDown);
+        mBtnResetSpeed = mActivity.findViewById(R.id.btnResetSpeed);
+        mBtnResetPitch = mActivity.findViewById(R.id.btnResetPitch);
+        mBtnSpeedUp = mActivity.findViewById(R.id.btnSpeedUp);
+        mBtnSpeedDown = mActivity.findViewById(R.id.btnSpeedDown);
+        mBtnPitchUp = mActivity.findViewById(R.id.btnPitchUp);
+        mBtnPitchDown = mActivity.findViewById(R.id.btnPitchDown);
 
         SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         int nImgPointTag = preferences.getInt("imgPointTag", 0);
-        if(nImgPointTag == 1) {
+        if(nImgPointTag == 0) mImgPoint.setTag(0);
+        else if(nImgPointTag == 1) {
             mImgPoint.setImageResource(R.drawable.control_pointer_uni_murasaki);
             mImgPoint.setTag(1);
         }
@@ -146,27 +160,27 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             mImgPoint.setImageResource(R.drawable.control_pointer_camper_or);
             mImgPoint.setTag(5);
         }
-        if(nImgPointTag != 0) {
-            mImgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
-            mImgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        }
+        mImgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mImgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
         mViewBk.setOnTouchListener(this);
         mBtnLink.setOnTouchListener(this);
         mBtnLockSpeed.setOnTouchListener(this);
         mBtnLockPitch.setOnTouchListener(this);
-        btnResetSpeed.setOnTouchListener(this);
-        btnResetPitch.setOnTouchListener(this);
-        btnSpeedUp.setOnTouchListener(this);
-        btnSpeedUp.setOnLongClickListener(this);
-        btnSpeedDown.setOnTouchListener(this);
-        btnSpeedDown.setOnLongClickListener(this);
-        btnPitchUp.setOnTouchListener(this);
-        btnPitchUp.setOnLongClickListener(this);
-        btnPitchDown.setOnTouchListener(this);
-        btnPitchDown.setOnLongClickListener(this);
+        mBtnResetSpeed.setOnTouchListener(this);
+        mBtnResetPitch.setOnTouchListener(this);
+        mBtnSpeedUp.setOnTouchListener(this);
+        mBtnSpeedUp.setOnLongClickListener(this);
+        mBtnSpeedDown.setOnTouchListener(this);
+        mBtnSpeedDown.setOnLongClickListener(this);
+        mBtnPitchUp.setOnTouchListener(this);
+        mBtnPitchUp.setOnLongClickListener(this);
+        mBtnPitchDown.setOnTouchListener(this);
+        mBtnPitchDown.setOnLongClickListener(this);
         mTextSpeedValue.setOnFocusChangeListener(this);
         mTextPitchValue.setOnFocusChangeListener(this);
+
+        if(mActivity.isDarkMode()) setDarkMode(false);
     }
 
     @Override
@@ -176,10 +190,14 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         {
             if(v.getId() == R.id.textSpeedValue) {
                 mTextSpeedValue.clearFocus();
+                mTextSpeedValue.setCursorVisible(true);
+                mTextSpeedValue.setSelection(mTextSpeedValue.getText().length());
                 showSpeedDialog();
             }
             else if(v.getId() == R.id.textPitchValue) {
                 mTextPitchValue.clearFocus();
+                mTextPitchValue.setCursorVisible(true);
+                mTextPitchValue.setSelection(mTextPitchValue.getText().length());
                 showPitchDialog();
             }
         }
@@ -361,6 +379,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     {
         mTextSpeedValue.clearFocus();
         mTextPitchValue.clearFocus();
+        mTextSpeedValue.setCursorVisible(false);
+        mTextPitchValue.setCursorVisible(false);
     }
 
     private final Runnable repeatSpeedUp = new Runnable()
@@ -445,12 +465,12 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     {
         mLinkFlag = linkFrag;
         if(mLinkFlag) {
-            mBtnLink.setImageResource(R.drawable.ic_control_link_on);
+            mBtnLink.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_link_on_dark : R.drawable.ic_control_link_on);
             mLockSpeedFlag = mLockPitchFlag = false;
-            mBtnLockSpeed.setImageResource(R.drawable.ic_control_unlock);
-            mBtnLockPitch.setImageResource(R.drawable.ic_control_unlock);
+            mBtnLockSpeed.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_unlock_dark : R.drawable.ic_control_unlock);
+            mBtnLockPitch.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_unlock_dark : R.drawable.ic_control_unlock);
         }
-        else mBtnLink.setImageResource(R.drawable.ic_control_link_off);
+        else mBtnLink.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_link_off_dark : R.drawable.ic_control_link_off);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -469,11 +489,11 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             {
                 mLockSpeedFlag = !mLockSpeedFlag;
                 if(mLockSpeedFlag) {
-                    mBtnLockSpeed.setImageResource(R.drawable.ic_control_lock);
+                    mBtnLockSpeed.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_lock_dark : R.drawable.ic_control_lock);
                     mLinkFlag = false;
-                    mBtnLink.setImageResource(R.drawable.ic_control_link_off);
+                    mBtnLink.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_link_off_dark : R.drawable.ic_control_link_off);
                 }
-                else mBtnLockSpeed.setImageResource(R.drawable.ic_control_unlock);
+                else mBtnLockSpeed.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_unlock_dark : R.drawable.ic_control_unlock);
             }
             return false;
         }
@@ -483,11 +503,11 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             {
                 mLockPitchFlag = !mLockPitchFlag;
                 if(mLockPitchFlag) {
-                    mBtnLockPitch.setImageResource(R.drawable.ic_control_lock);
+                    mBtnLockPitch.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_lock_dark : R.drawable.ic_control_lock);
                     mLinkFlag = false;
-                    mBtnLink.setImageResource(R.drawable.ic_control_link_off);
+                    mBtnLink.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_link_off_dark : R.drawable.ic_control_link_off);
                 }
-                else mBtnLockPitch.setImageResource(R.drawable.ic_control_unlock);
+                else mBtnLockPitch.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_unlock_dark : R.drawable.ic_control_unlock);
             }
             return false;
         }
@@ -613,5 +633,195 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             return true;
         }
         return false;
+    }
+
+    public void setLightMode(boolean animated) {
+        final int nDarkModeSep = getResources().getColor(R.color.darkModeSep);
+        final int nLightModeSep = getResources().getColor(R.color.lightModeSep);
+        final int nLightModeText = getResources().getColor(android.R.color.black);
+        final int nDarkModeText = getResources().getColor(android.R.color.white);
+        final int nLightModeBlue = getResources().getColor(R.color.lightModeBlue);
+        final int nDarkModeBlue = getResources().getColor(R.color.darkModeBlue);
+        if(animated) {
+            final ArgbEvaluator eval = new ArgbEvaluator();
+            ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    float fProgress = valueAnimator.getAnimatedFraction();
+                    int nColorModeSep = (Integer) eval.evaluate(fProgress, nDarkModeSep, nLightModeSep);
+                    int nColorModeText = (Integer) eval.evaluate(fProgress, nDarkModeText, nLightModeText);
+                    int nColorModeBlue = (Integer) eval.evaluate(fProgress, nDarkModeBlue, nLightModeBlue);
+                    mViewSepBelowSpeed.setBackgroundColor(nColorModeSep);
+                    mViewSepBelowPitch.setBackgroundColor(nColorModeSep);
+                    mViewLineHorizontal.setBackgroundColor(nColorModeSep);
+                    mViewLineVertical.setBackgroundColor(nColorModeSep);
+                    mTextSpeed.setTextColor(nColorModeText);
+                    mTextSpeedValue.setTextColor(nColorModeText);
+                    mTextPitch.setTextColor(nColorModeText);
+                    mTextPitchValue.setTextColor(nColorModeText);
+                    mBtnResetSpeed.setTextColor(nColorModeBlue);
+                    mBtnResetPitch.setTextColor(nColorModeBlue);
+                }
+            });
+
+            TransitionDrawable tdBtnLink;
+            if(mLinkFlag)
+                tdBtnLink = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_link_on_dark), getResources().getDrawable(R.drawable.ic_control_link_on)});
+            else
+                tdBtnLink = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_link_off_dark), getResources().getDrawable(R.drawable.ic_control_link_off)});
+            TransitionDrawable tdBtnLockSpeed;
+            if(mLockSpeedFlag)
+                tdBtnLockSpeed = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_lock_dark), getResources().getDrawable(R.drawable.ic_control_lock)});
+            else
+                tdBtnLockSpeed = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_unlock_dark), getResources().getDrawable(R.drawable.ic_control_unlock)});
+            TransitionDrawable tdBtnLockPitch;
+            if(mLockPitchFlag)
+                tdBtnLockPitch = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_lock_dark), getResources().getDrawable(R.drawable.ic_control_lock)});
+            else
+                tdBtnLockPitch = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_unlock_dark), getResources().getDrawable(R.drawable.ic_control_unlock)});
+            TransitionDrawable tdBtnPitchUp = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.control_pitch_sharp_dark), getResources().getDrawable(R.drawable.control_pitch_sharp)});
+            TransitionDrawable tdBtnPitchDown = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.control_pitch_flat_dark), getResources().getDrawable(R.drawable.control_pitch_flat)});
+            TransitionDrawable tdBtnSpeedUp = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.control_speed_up_dark), getResources().getDrawable(R.drawable.control_speed_up)});
+            TransitionDrawable tdBtnSpeedDown = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.control_speed_down_dark), getResources().getDrawable(R.drawable.control_speed_down)});
+
+            mBtnLink.setImageDrawable(tdBtnLink);
+            mBtnLockSpeed.setImageDrawable(tdBtnLockSpeed);
+            mBtnLockPitch.setImageDrawable(tdBtnLockPitch);
+            mBtnPitchUp.setImageDrawable(tdBtnPitchUp);
+            mBtnPitchDown.setImageDrawable(tdBtnPitchDown);
+            mBtnSpeedUp.setImageDrawable(tdBtnSpeedUp);
+            mBtnSpeedDown.setImageDrawable(tdBtnSpeedDown);
+
+            int duration = 300;
+            anim.setDuration(duration).start();
+            tdBtnLink.startTransition(duration);
+            tdBtnLockSpeed.startTransition(duration);
+            tdBtnLockPitch.startTransition(duration);
+            tdBtnPitchUp.startTransition(duration);
+            tdBtnPitchDown.startTransition(duration);
+            tdBtnSpeedUp.startTransition(duration);
+            tdBtnSpeedDown.startTransition(duration);
+            if((Integer)mImgPoint.getTag() == 0) {
+                TransitionDrawable tdImgPoint = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_pointer_dark), getResources().getDrawable(R.drawable.ic_control_pointer)});
+                mImgPoint.setImageDrawable(tdImgPoint);
+                tdImgPoint.startTransition(duration);
+            }
+        }
+        else {
+            mViewSepBelowSpeed.setBackgroundColor(nLightModeSep);
+            mViewSepBelowPitch.setBackgroundColor(nLightModeSep);
+            mViewLineHorizontal.setBackgroundColor(nLightModeSep);
+            mViewLineVertical.setBackgroundColor(nLightModeSep);
+            mTextSpeed.setTextColor(nLightModeText);
+            mTextSpeedValue.setTextColor(nLightModeText);
+            mTextPitch.setTextColor(nLightModeText);
+            mTextPitchValue.setTextColor(nLightModeText);
+            mBtnResetSpeed.setTextColor(nLightModeBlue);
+            mBtnResetPitch.setTextColor(nLightModeBlue);
+
+            if(mLinkFlag)
+                mBtnLink.setImageDrawable(getResources().getDrawable(R.drawable.ic_control_link_on));
+            else
+                mBtnLink.setImageDrawable(getResources().getDrawable(R.drawable.ic_control_link_off));
+            if(mLockSpeedFlag)
+                mBtnLockSpeed.setImageDrawable(getResources().getDrawable(R.drawable.ic_control_lock));
+            else
+                mBtnLockSpeed.setImageDrawable(getResources().getDrawable(R.drawable.ic_control_unlock));
+            if(mLockPitchFlag)
+                mBtnLockPitch.setImageDrawable(getResources().getDrawable(R.drawable.ic_control_lock));
+            else
+                mBtnLockPitch.setImageDrawable(getResources().getDrawable(R.drawable.ic_control_unlock));
+            mBtnPitchUp.setImageDrawable(getResources().getDrawable(R.drawable.control_pitch_sharp));
+            mBtnPitchDown.setImageDrawable(getResources().getDrawable(R.drawable.control_pitch_flat));
+            mBtnSpeedUp.setImageDrawable(getResources().getDrawable(R.drawable.control_speed_up));
+            mBtnSpeedDown.setImageDrawable(getResources().getDrawable(R.drawable.control_speed_down));
+            if((Integer)mImgPoint.getTag() == 0)
+                mImgPoint.setImageDrawable(getResources().getDrawable(R.drawable.ic_control_pointer));
+        }
+
+        mTextSpeedValue.setBackgroundResource(R.drawable.editborder);
+        mTextPitchValue.setBackgroundResource(R.drawable.editborder);
+        mBtnResetSpeed.setBackgroundResource(R.drawable.resetbutton);
+        mBtnResetPitch.setBackgroundResource(R.drawable.resetbutton);
+    }
+
+    public void setDarkMode(boolean animated) {
+        if(mActivity == null) return;
+        final int nDarkModeSep = getResources().getColor(R.color.darkModeSep);
+        final int nLightModeSep = getResources().getColor(R.color.lightModeSep);
+        final int nLightModeText = getResources().getColor(android.R.color.black);
+        final int nDarkModeText = getResources().getColor(android.R.color.white);
+        final int nLightModeBlue = getResources().getColor(R.color.lightModeBlue);
+        final int nDarkModeBlue = getResources().getColor(R.color.darkModeBlue);
+        final ArgbEvaluator eval = new ArgbEvaluator();
+        ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float fProgress = valueAnimator.getAnimatedFraction();
+                int nColorModeSep = (Integer) eval.evaluate(fProgress, nLightModeSep, nDarkModeSep);
+                int nColorModeText = (Integer) eval.evaluate(fProgress, nLightModeText, nDarkModeText);
+                int nColorModeBlue = (Integer) eval.evaluate(fProgress, nLightModeBlue, nDarkModeBlue);
+                mViewSepBelowSpeed.setBackgroundColor(nColorModeSep);
+                mViewSepBelowPitch.setBackgroundColor(nColorModeSep);
+                mViewLineHorizontal.setBackgroundColor(nColorModeSep);
+                mViewLineVertical.setBackgroundColor(nColorModeSep);
+                mTextSpeed.setTextColor(nColorModeText);
+                mTextSpeedValue.setTextColor(nColorModeText);
+                mTextPitch.setTextColor(nColorModeText);
+                mTextPitchValue.setTextColor(nColorModeText);
+                mBtnResetSpeed.setTextColor(nColorModeBlue);
+                mBtnResetPitch.setTextColor(nColorModeBlue);
+            }
+        });
+
+        TransitionDrawable tdBtnLink;
+        if(mLinkFlag)
+            tdBtnLink = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_link_on), getResources().getDrawable(R.drawable.ic_control_link_on_dark)});
+        else
+            tdBtnLink = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_link_off), getResources().getDrawable(R.drawable.ic_control_link_off_dark)});
+        TransitionDrawable tdBtnLockSpeed;
+        if(mLockSpeedFlag)
+            tdBtnLockSpeed = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_lock), getResources().getDrawable(R.drawable.ic_control_lock_dark)});
+        else
+            tdBtnLockSpeed = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_unlock), getResources().getDrawable(R.drawable.ic_control_unlock_dark)});
+        TransitionDrawable tdBtnLockPitch;
+        if(mLockPitchFlag)
+            tdBtnLockPitch = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_lock), getResources().getDrawable(R.drawable.ic_control_lock_dark)});
+        else
+            tdBtnLockPitch = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_unlock), getResources().getDrawable(R.drawable.ic_control_unlock_dark)});
+        TransitionDrawable tdBtnPitchUp = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.control_pitch_sharp), getResources().getDrawable(R.drawable.control_pitch_sharp_dark)});
+        TransitionDrawable tdBtnPitchDown = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.control_pitch_flat), getResources().getDrawable(R.drawable.control_pitch_flat_dark)});
+        TransitionDrawable tdBtnSpeedUp = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.control_speed_up), getResources().getDrawable(R.drawable.control_speed_up_dark)});
+        TransitionDrawable tdBtnSpeedDown = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.control_speed_down), getResources().getDrawable(R.drawable.control_speed_down_dark)});
+
+        mBtnLink.setImageDrawable(tdBtnLink);
+        mBtnLockSpeed.setImageDrawable(tdBtnLockSpeed);
+        mBtnLockPitch.setImageDrawable(tdBtnLockPitch);
+        mBtnPitchUp.setImageDrawable(tdBtnPitchUp);
+        mBtnPitchDown.setImageDrawable(tdBtnPitchDown);
+        mBtnSpeedUp.setImageDrawable(tdBtnSpeedUp);
+        mBtnSpeedDown.setImageDrawable(tdBtnSpeedDown);
+
+        int duration = animated ? 300 : 0;
+        anim.setDuration(duration).start();
+        tdBtnLink.startTransition(duration);
+        tdBtnLockSpeed.startTransition(duration);
+        tdBtnLockPitch.startTransition(duration);
+        tdBtnPitchUp.startTransition(duration);
+        tdBtnPitchDown.startTransition(duration);
+        tdBtnSpeedUp.startTransition(duration);
+        tdBtnSpeedDown.startTransition(duration);
+        if((Integer)mImgPoint.getTag() == 0) {
+            TransitionDrawable tdImgPoint = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_pointer), getResources().getDrawable(R.drawable.ic_control_pointer_dark)});
+            mImgPoint.setImageDrawable(tdImgPoint);
+            tdImgPoint.startTransition(duration);
+        }
+
+        mTextSpeedValue.setBackgroundResource(R.drawable.editborder_dark);
+        mTextPitchValue.setBackgroundResource(R.drawable.editborder_dark);
+        mBtnResetSpeed.setBackgroundResource(R.drawable.resetbutton_dark);
+        mBtnResetPitch.setBackgroundResource(R.drawable.resetbutton_dark);
     }
 }

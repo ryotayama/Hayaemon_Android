@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +14,19 @@ import android.widget.RelativeLayout;
 
 public class ClearableEditText extends RelativeLayout {
     private EditText editText;
+    private boolean mDarkMode = false;
 
-    public ClearableEditText(final Context context) {
+    public ClearableEditText(final Context context, boolean darkMode) {
         super(context);
 
+        mDarkMode = darkMode;
         editText = new EditText (context);
         RelativeLayout.LayoutParams paramEditText = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         paramEditText.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         paramEditText.addRule(RelativeLayout.CENTER_VERTICAL);
         paramEditText.leftMargin = (int) (8 * context.getResources().getDisplayMetrics().density);
         paramEditText.rightMargin = (int) (8 * context.getResources().getDisplayMetrics().density);
+        editText.setTextColor(mDarkMode ? Color.WHITE : Color.BLACK);
         editText.setHintTextColor(Color.argb(255, 192, 192, 192));
         editText.setMaxLines(1);
         editText.setHorizontallyScrolling(true);
@@ -56,8 +58,8 @@ public class ClearableEditText extends RelativeLayout {
         });
         addView(editText, paramEditText);
 
-        imgClear.setImageResource(R.drawable.ic_button_clear);
-        imgClear.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
+        imgClear.setImageResource(mDarkMode ? R.drawable.ic_button_clear_dark : R.drawable.ic_button_clear);
+        imgClear.setColorFilter(new PorterDuffColorFilter(Color.parseColor(mDarkMode ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
         imgClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

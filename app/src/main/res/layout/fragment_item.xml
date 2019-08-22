@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeItemScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EFEFF4"
@@ -66,7 +67,6 @@
 
         <TextView
             android:id="@+id/textItemHeader"
-            android:background="#EFEFF4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/controlScreen"
@@ -97,6 +97,18 @@
             android:clipToPadding="false"
             android:layout_below="@id/viewSepItemHeader"
             >
+
+            <View
+                android:id="@+id/viewPurpleBorder"
+                android:layout_width="216dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/seaurchinborder"
+                android:layout_marginTop="-14dp"
+                android:layout_marginBottom="-14dp"
+                android:layout_alignTop="@+id/textPurpleTitle"
+                android:layout_alignBottom="@id/textPurpleDescription"
+                android:layout_centerHorizontal="true"
+                />
 
             <TextView
                 android:id="@+id/textItem"
@@ -157,17 +169,6 @@
                 android:layout_below="@+id/textPurpleTitle"
                 />
 
-            <View
-                android:layout_width="216dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/seaurchinborder"
-                android:layout_marginTop="-14dp"
-                android:layout_marginBottom="-14dp"
-                android:layout_alignTop="@+id/textPurpleTitle"
-                android:layout_alignBottom="@id/textPurpleDescription"
-                android:layout_centerHorizontal="true"
-                />
-
             <Button
                 android:id="@+id/btnPurplePurchase"
                 android:layout_width="160dp"
@@ -195,6 +196,18 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/btnPurplePurchase"
+                />
+
+            <View
+                android:id="@+id/viewElegantBorder"
+                android:layout_width="216dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/seaurchinborder"
+                android:layout_marginTop="-14dp"
+                android:layout_marginBottom="-14dp"
+                android:layout_alignTop="@+id/textElegantTitle"
+                android:layout_alignBottom="@id/textElegantDescription"
+                android:layout_centerHorizontal="true"
                 />
 
             <ImageView
@@ -244,17 +257,6 @@
                 android:layout_below="@+id/textElegantTitle"
                 />
 
-            <View
-                android:layout_width="216dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/seaurchinborder"
-                android:layout_marginTop="-14dp"
-                android:layout_marginBottom="-14dp"
-                android:layout_alignTop="@+id/textElegantTitle"
-                android:layout_alignBottom="@id/textElegantDescription"
-                android:layout_centerHorizontal="true"
-                />
-
             <Button
                 android:id="@+id/btnElegantPurchase"
                 android:layout_width="160dp"
@@ -295,6 +297,18 @@
                 android:layout_marginTop="24dp"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/btnElegantSet"
+                />
+
+            <View
+                android:id="@+id/viewPinkCamperBorder"
+                android:layout_width="216dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/camperborder"
+                android:layout_marginTop="-14dp"
+                android:layout_marginBottom="-14dp"
+                android:layout_alignTop="@+id/textPinkCamperTitle"
+                android:layout_alignBottom="@id/textPinkCamperDescription"
+                android:layout_centerHorizontal="true"
                 />
 
             <ImageView
@@ -345,17 +359,6 @@
                 android:layout_below="@+id/textPinkCamperTitle"
                 />
 
-            <View
-                android:layout_width="216dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/camperborder"
-                android:layout_marginTop="-14dp"
-                android:layout_marginBottom="-14dp"
-                android:layout_alignTop="@+id/textPinkCamperTitle"
-                android:layout_alignBottom="@id/textPinkCamperDescription"
-                android:layout_centerHorizontal="true"
-                />
-
             <Button
                 android:id="@+id/btnPinkCamperPurchase"
                 android:layout_width="160dp"
@@ -383,6 +386,18 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/btnPinkCamperPurchase"
+                />
+
+            <View
+                android:id="@+id/viewBlueCamperBorder"
+                android:layout_width="216dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/camperborder"
+                android:layout_marginTop="-14dp"
+                android:layout_marginBottom="-14dp"
+                android:layout_alignTop="@+id/textBlueCamperTitle"
+                android:layout_alignBottom="@id/textBlueCamperDescription"
+                android:layout_centerHorizontal="true"
                 />
 
             <ImageView
@@ -432,17 +447,6 @@
                 android:layout_below="@+id/textBlueCamperTitle"
                 />
 
-            <View
-                android:layout_width="216dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/camperborder"
-                android:layout_marginTop="-14dp"
-                android:layout_marginBottom="-14dp"
-                android:layout_alignTop="@+id/textBlueCamperTitle"
-                android:layout_alignBottom="@id/textBlueCamperDescription"
-                android:layout_centerHorizontal="true"
-                />
-
             <Button
                 android:id="@+id/btnBlueCamperPurchase"
                 android:layout_width="160dp"
@@ -470,6 +474,18 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/btnBlueCamperPurchase"
+                />
+
+            <View
+                android:id="@+id/viewOrangeCamperBorder"
+                android:layout_width="216dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/camperborder"
+                android:layout_marginTop="-14dp"
+                android:layout_marginBottom="-14dp"
+                android:layout_alignTop="@+id/textOrangeCamperTitle"
+                android:layout_alignBottom="@id/textOrangeCamperDescription"
+                android:layout_centerHorizontal="true"
                 />
 
             <ImageView
@@ -517,17 +533,6 @@
                 android:layout_marginBottom="14dp"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/textOrangeCamperTitle"
-                />
-
-            <View
-                android:layout_width="216dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/camperborder"
-                android:layout_marginTop="-14dp"
-                android:layout_marginBottom="-14dp"
-                android:layout_alignTop="@+id/textOrangeCamperTitle"
-                android:layout_alignBottom="@id/textOrangeCamperDescription"
-                android:layout_centerHorizontal="true"
                 />
 
             <Button

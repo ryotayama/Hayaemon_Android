@@ -45,6 +45,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
         final TextView textSongCount;
         final ImageView imgRight;
         final ImageView imgPlaylistMenu;
+        final View viewSepPlaylist;
 
         ViewHolder(View view) {
             super(view);
@@ -53,6 +54,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             textSongCount = view.findViewById(R.id.textSongCount);
             imgRight = view.findViewById(R.id.imgRight);
             imgPlaylistMenu = view.findViewById(R.id.imgPlaylistMenu);
+            viewSepPlaylist = view.findViewById(R.id.viewSepPlaylist);
         }
     }
 
@@ -74,10 +76,14 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
     @Override
     public void onBindViewHolder(@NonNull final PlaylistsAdapter.ViewHolder holder, int position)
     {
+        holder.viewSepPlaylist.setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeSep : R.color.lightModeSep));
+
         String item = mItems.get(position);
 
         holder.textName.setText(item);
+        holder.textName.setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? android.R.color.white : android.R.color.black));
         holder.textSongCount.setText(String.format(Locale.getDefault(), "%d曲", mActivity.playlistFragment.getSongCount(position)));
+        holder.textSongCount.setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeGray : R.color.lightModeGray));
 
         holder.playlistItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,9 +129,9 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
         }
 
         if(mActivity.playlistFragment.getPlayingPlaylist() == position && mActivity.playlistFragment.getPlaying() != -1)
-            holder.playlistItem.setBackgroundColor(Color.argb(255, 224, 239, 255));
+            holder.playlistItem.setBackgroundColor(mActivity.isDarkMode() ? mActivity.getResources().getColor(R.color.darkModeSelect) : Color.argb(255, 224, 239, 255));
         else
-            holder.playlistItem.setBackgroundColor(Color.argb(255, 255, 255, 255));
+            holder.playlistItem.setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeBk : R.color.lightModeBk));
     }
 
     @Override

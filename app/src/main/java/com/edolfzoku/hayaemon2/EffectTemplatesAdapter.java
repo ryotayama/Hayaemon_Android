@@ -48,6 +48,7 @@ public class EffectTemplatesAdapter extends RecyclerView.Adapter<EffectTemplates
         private ImageButton mBtnEffectTemplateDetail;
         private ImageView mImgEffectTemplateRight;
         private ImageView mImgEffectTemplateMenu;
+        private View mViewSepEffectTemplate;
 
         RelativeLayout getEffectTemplateItem() { return mEffectTemplateItem; }
         TextView getTextEffectTemplate() { return mTextEffectTemplate; }
@@ -55,6 +56,7 @@ public class EffectTemplatesAdapter extends RecyclerView.Adapter<EffectTemplates
         ImageButton getBtnEffectTemplateDetail() { return mBtnEffectTemplateDetail; }
         ImageView getImgEffectTemplateRight() { return mImgEffectTemplateRight; }
         ImageView getImgEffectTemplateMenu() { return mImgEffectTemplateMenu; }
+        View getViewSepEffectTemplate() { return mViewSepEffectTemplate; }
 
         ViewHolder(View view) {
             super(view);
@@ -64,6 +66,7 @@ public class EffectTemplatesAdapter extends RecyclerView.Adapter<EffectTemplates
             mBtnEffectTemplateDetail = view.findViewById(R.id.btnEffectTemplateDetail);
             mImgEffectTemplateRight = view.findViewById(R.id.imgEffectTemplateRight);
             mImgEffectTemplateMenu = view.findViewById(R.id.imgEffectTemplateMenu);
+            mViewSepEffectTemplate = view.findViewById(R.id.viewSepEffectTemplate);
         }
     }
 
@@ -90,14 +93,19 @@ public class EffectTemplatesAdapter extends RecyclerView.Adapter<EffectTemplates
     @Override
     public void onBindViewHolder(@NonNull final EffectTemplatesAdapter.ViewHolder holder, int position)
     {
+        holder.getBtnEffectTemplateDetail().setBackgroundResource(mActivity.isDarkMode() ? R.drawable.ic_button_info_dark : R.drawable.ic_button_info);
+        holder.getImgEffectTemplateRight().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_button_listright_dark : R.drawable.ic_button_listright);
+        holder.getViewSepEffectTemplate().setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeSep : R.color.lightModeSep));
+        holder.getTextEffectTemplate().setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeGray : R.color.lightModeGray));
+
         EffectTemplateItem item = mItems.get(position);
         String name = item.getEffectTemplateName();
         holder.getTextEffectTemplate().setText(name);
 
         if(mActivity.effectFragment.isSelectedTemplateItem(position))
-            holder.itemView.setBackgroundColor(Color.argb(255, 224, 239, 255));
+            holder.itemView.setBackgroundColor(mActivity.isDarkMode() ? mActivity.getResources().getColor(R.color.darkModeSelect) : Color.argb(255, 224, 239, 255));
         else
-            holder.itemView.setBackgroundColor(Color.argb(255, 255, 255, 255));
+            holder.itemView.setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeBk : R.color.lightModeBk));
         holder.getEffectTemplateItem().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,19 +134,6 @@ public class EffectTemplatesAdapter extends RecyclerView.Adapter<EffectTemplates
         else {
             holder.getBtnEffectTemplateDetail().setVisibility(View.VISIBLE);
             holder.getImgEffectTemplateRight().setVisibility(View.VISIBLE);
-            holder.getBtnEffectTemplateDetail().setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event)
-                {
-                    if(event.getAction() == MotionEvent.ACTION_DOWN)
-                        holder.getBtnEffectTemplateDetail().setColorFilter(new PorterDuffColorFilter(Color.parseColor("#ffcce4ff"), PorterDuff.Mode.SRC_IN));
-                    else if(event.getAction() == MotionEvent.ACTION_UP)
-                        holder.getBtnEffectTemplateDetail().setColorFilter(null);
-                    else if(event.getAction() == MotionEvent.ACTION_CANCEL)
-                        holder.getBtnEffectTemplateDetail().setColorFilter(null);
-                    return false;
-                }
-            });
             holder.getBtnEffectTemplateDetail().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

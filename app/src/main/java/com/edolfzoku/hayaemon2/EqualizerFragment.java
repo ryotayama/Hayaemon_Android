@@ -18,12 +18,17 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -67,8 +72,10 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     private ArrayList<EqualizerItem> mEqualizerItems;
     private ItemTouchHelper mEqualizerTouchHelper;
     private float[] mCenters;
+    private ArrayList<TextView> mTextNames;
     private ArrayList<TextView> mTextValues;
     private ArrayList<SeekBar> mSeeks;
+    private ArrayList<HighlightImageButton> mButtonMinus, mButtonPlus;
     private ArrayList<Integer> mHfxs;
     private boolean mSorting = false;
     private boolean mContinue = true;
@@ -79,7 +86,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     private RelativeLayout mRelativeTemplateHeader;
     private ScrollView mScrollView;
     private TextView mTextTemplateName, mTextFinishSortEqualizer;
-    private View mViewSepEqualizer, mViewSepEqualizerCustomize;
+    private View mViewSepEqualizerHeader, mViewSepEqualizerCustomize;
     private Button mBtnEqualizerOff, mBtnBackCustomize, mBtnFinishCustomize, mBtnEqualizerRandom, mBtnResetEqualizer, mBtnEqualizerSaveAs;
     private AnimationButton mBtnEqualizerMenu, mBtnAddEqualizerTemplate;
     private ImageView mImgBackEqualizer;
@@ -148,7 +155,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         mTextFinishSortEqualizer = mActivity.findViewById(R.id.textFinishSortEqualizer);
         mRelativeTemplateHeader = mActivity.findViewById(R.id.relativeTemplateHeader);
         mTextTemplateName = mActivity.findViewById(R.id.textTemplateName);
-        mViewSepEqualizer = mActivity.findViewById(R.id.viewSepEqualizer);
+        mViewSepEqualizerHeader = mActivity.findViewById(R.id.viewSepEqualizerHeader);
         mViewSepEqualizerCustomize = mActivity.findViewById(R.id.viewSepEqualizerCustomize);
         mBtnEqualizerOff = mActivity.findViewById(R.id.btnEqualizerOff);
         mBtnEqualizerMenu = mActivity.findViewById(R.id.btnEqualizerMenu);
@@ -177,6 +184,40 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         mRecyclerEqualizers.setLayoutManager(equalizersManager);
         mRecyclerEqualizers.setAdapter(mEqualizersAdapter);
         ((DefaultItemAnimator) mRecyclerEqualizers.getItemAnimator()).setSupportsChangeAnimations(false);
+
+        mTextNames = new ArrayList<>();
+        mTextNames.add((TextView)mActivity.findViewById(R.id.textVolName));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text20KName));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text16KName));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text12_5KName));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text10KName));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text8KName));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text6_3KName));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text5KName));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text4KName));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text3_15KName));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text2_5KName));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text2KName));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text1_6KName));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text1_25KName));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text1KName));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text800Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text630Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text500Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text400Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text315Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text250Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text200Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text160Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text125Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text100Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text80Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text63Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text50Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text40Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text31_5Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text25Name));
+        mTextNames.add((TextView)mActivity.findViewById(R.id.text20Name));
 
         mTextValues = new ArrayList<>();
         mTextValues.add((TextView)mActivity.findViewById(R.id.textVolValue));
@@ -302,44 +343,44 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
         mTextFinishSortEqualizer.setOnClickListener(this);
 
-        ArrayList<ImageButton> arButtonMinus = new ArrayList<>();
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btnVolMinus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn20KMinus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn16KMinus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn12_5KMinus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn10KMinus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn8KMinus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn6_3KMinus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn5KMinus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn4KMinus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn3_15KMinus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn2_5KMinus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn2KMinus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn1_6KMinus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn1_25KMinus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn1KMinus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn800Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn630Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn500Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn400Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn315Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn250Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn200Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn160Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn125Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn100Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn80Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn63Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn50Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn40Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn31_5Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn25Minus));
-        arButtonMinus.add((ImageButton)mActivity.findViewById(R.id.btn20Minus));
+        mButtonMinus = new ArrayList<>();
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btnVolMinus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn20KMinus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn16KMinus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn12_5KMinus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn10KMinus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn8KMinus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn6_3KMinus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn5KMinus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn4KMinus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn3_15KMinus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn2_5KMinus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn2KMinus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn1_6KMinus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn1_25KMinus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn1KMinus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn800Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn630Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn500Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn400Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn315Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn250Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn200Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn160Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn125Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn100Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn80Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn63Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn50Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn40Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn31_5Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn25Minus));
+        mButtonMinus.add((HighlightImageButton)mActivity.findViewById(R.id.btn20Minus));
 
-        for(int i = 0; i < arButtonMinus.size(); i++)
+        for(int i = 0; i < mButtonMinus.size(); i++)
         {
             final int j = i;
-            arButtonMinus.get(i).setOnClickListener(new View.OnClickListener()
+            mButtonMinus.get(i).setOnClickListener(new View.OnClickListener()
             {
                 public void onClick(View v)
                 {
@@ -348,7 +389,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     else setEQ(j, nProgress);
                 }
             });
-            arButtonMinus.get(i).setOnLongClickListener(new View.OnLongClickListener()
+            mButtonMinus.get(i).setOnLongClickListener(new View.OnLongClickListener()
             {
                 @Override
                 public boolean onLongClick(View view)
@@ -359,7 +400,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     return true;
                 }
             });
-            arButtonMinus.get(i).setOnTouchListener(new View.OnTouchListener()
+            mButtonMinus.get(i).setOnTouchListener(new View.OnTouchListener()
             {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -370,44 +411,44 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             });
         }
 
-        ArrayList<ImageButton> arButtonPlus = new ArrayList<>();
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btnVolPlus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn20KPlus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn16KPlus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn12_5KPlus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn10KPlus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn8KPlus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn6_3KPlus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn5KPlus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn4KPlus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn3_15KPlus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn2_5KPlus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn2KPlus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn1_6KPlus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn1_25KPlus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn1KPlus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn800Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn630Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn500Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn400Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn315Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn250Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn200Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn160Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn125Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn100Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn80Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn63Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn50Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn40Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn31_5Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn25Plus));
-        arButtonPlus.add((ImageButton)mActivity.findViewById(R.id.btn20Plus));
+        mButtonPlus = new ArrayList<>();
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btnVolPlus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn20KPlus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn16KPlus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn12_5KPlus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn10KPlus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn8KPlus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn6_3KPlus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn5KPlus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn4KPlus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn3_15KPlus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn2_5KPlus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn2KPlus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn1_6KPlus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn1_25KPlus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn1KPlus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn800Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn630Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn500Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn400Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn315Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn250Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn200Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn160Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn125Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn100Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn80Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn63Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn50Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn40Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn31_5Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn25Plus));
+        mButtonPlus.add((HighlightImageButton)mActivity.findViewById(R.id.btn20Plus));
 
-        for(int i = 0; i < arButtonPlus.size(); i++)
+        for(int i = 0; i < mButtonPlus.size(); i++)
         {
             final int j = i;
-            arButtonPlus.get(i).setOnClickListener(new View.OnClickListener()
+            mButtonPlus.get(i).setOnClickListener(new View.OnClickListener()
             {
                 public void onClick(View v)
                 {
@@ -416,7 +457,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     else setEQ(j, nProgress);
                 }
             });
-            arButtonPlus.get(i).setOnLongClickListener(new View.OnLongClickListener()
+            mButtonPlus.get(i).setOnLongClickListener(new View.OnLongClickListener()
             {
                 @Override
                 public boolean onLongClick(View view)
@@ -427,7 +468,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     return true;
                 }
             });
-            arButtonPlus.get(i).setOnTouchListener(new View.OnTouchListener()
+            mButtonPlus.get(i).setOnTouchListener(new View.OnTouchListener()
             {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -439,6 +480,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         }
 
         loadData();
+
+        if(mActivity.isDarkMode()) setDarkMode(false);
     }
 
     private final Runnable repeatMinusValue = new Runnable()
@@ -475,7 +518,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             case R.id.textFinishSortEqualizer:
                 mRecyclerEqualizers.setPadding(0, 0, 0, 0);
                 mBtnEqualizerOff.setVisibility(View.VISIBLE);
-                mViewSepEqualizer.setVisibility(View.VISIBLE);
+                mViewSepEqualizerHeader.setVisibility(View.VISIBLE);
                 mBtnAddEqualizerTemplate.setAlpha(1.0f);
                 mTextFinishSortEqualizer.setVisibility(View.GONE);
                 mSorting = false;
@@ -537,11 +580,15 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
             case R.id.btnFinishCustomize:
                 if(mAddTemplate) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                    AlertDialog.Builder builder;
+                    if(mActivity.isDarkMode())
+                        builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                    else
+                        builder = new AlertDialog.Builder(mActivity);
                     builder.setTitle(R.string.saveTemplate);
                     LinearLayout linearLayout = new LinearLayout(mActivity);
                     linearLayout.setOrientation(LinearLayout.VERTICAL);
-                    final ClearableEditText editPreset = new ClearableEditText(mActivity);
+                    final ClearableEditText editPreset = new ClearableEditText(mActivity, mActivity.isDarkMode());
                     editPreset.setHint(R.string.templateName);
                     editPreset.setText(R.string.newTemplate);
                     linearLayout.addView(editPreset);
@@ -631,11 +678,15 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 break;
 
             case R.id.btnEqualizerSaveAs:
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                AlertDialog.Builder builder;
+                if(mActivity.isDarkMode())
+                    builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                else
+                    builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.saveTemplate);
                 LinearLayout linearLayout = new LinearLayout(mActivity);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
-                final ClearableEditText editPreset = new ClearableEditText(mActivity);
+                final ClearableEditText editPreset = new ClearableEditText(mActivity, mActivity.isDarkMode());
                 editPreset.setHint(R.string.templateName);
                 editPreset.setText(R.string.newTemplate);
                 linearLayout.addView(editPreset);
@@ -1053,13 +1104,13 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     public void showEqualizerMenu() {
         final BottomMenu menu = new BottomMenu(mActivity);
         menu.setTitle(getString(R.string.equalizerTemplate));
-        menu.addMenu(getString(R.string.sortTemplate), R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.sortTemplate), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_sort_dark : R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
                 mRecyclerEqualizers.setPadding(0, 0, 0, (int)(64 * mActivity.getDensity()));
                 mBtnEqualizerOff.setVisibility(View.GONE);
-                mViewSepEqualizer.setVisibility(View.GONE);
+                mViewSepEqualizerHeader.setVisibility(View.GONE);
                 mBtnAddEqualizerTemplate.setAlpha(0.0f);
                 mTextFinishSortEqualizer.setVisibility(View.VISIBLE);
                 mSorting = true;
@@ -1095,11 +1146,15 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 mEqualizerTouchHelper.attachToRecyclerView(mRecyclerEqualizers);
             }
         });
-        menu.addDestructiveMenu(getString(R.string.initializeTemplate), R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
+        menu.addDestructiveMenu(getString(R.string.initializeTemplate), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_initialize_dark : R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                AlertDialog.Builder builder;
+                if(mActivity.isDarkMode())
+                    builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                else
+                    builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.initializeTemplate);
                 builder.setMessage(R.string.askinitializeTemplate);
                 builder.setPositiveButton(R.string.decideNot, null);
@@ -1120,7 +1175,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                             alertDialog.getWindow().setAttributes(lp);
                         }
                         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                        positiveButton.setTextColor(getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeRed : R.color.lightModeRed));
                     }
                 });
                 alertDialog.show();
@@ -1133,15 +1188,19 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     public void showMenu(final int nItem) {
         final BottomMenu menu = new BottomMenu(mActivity);
         menu.setTitle(mEqualizerItems.get(nItem).getEqualizerName());
-        menu.addMenu(getString(R.string.changeTemplateName), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.changeTemplateName), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_edit_dark : R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                AlertDialog.Builder builder;
+                if(mActivity.isDarkMode())
+                    builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                else
+                    builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(R.string.changeTemplateName);
                 LinearLayout linearLayout = new LinearLayout(mActivity);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
-                final ClearableEditText editPreset = new ClearableEditText(mActivity);
+                final ClearableEditText editPreset = new ClearableEditText(mActivity, mActivity.isDarkMode());
                 editPreset.setHint(R.string.templateName);
                 editPreset.setText(mEqualizerItems.get(nItem).getEqualizerName());
                 linearLayout.addView(editPreset);
@@ -1174,7 +1233,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 alertDialog.show();
             }
         });
-        menu.addMenu(getString(R.string.copy), R.drawable.ic_actionsheet_copy, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.copy), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_copy_dark : R.drawable.ic_actionsheet_copy, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
@@ -1189,11 +1248,15 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 mRecyclerEqualizers.scrollToPosition(nItem+1);
             }
         });
-        menu.addDestructiveMenu(getString(R.string.delete), R.drawable.ic_actionsheet_delete, new View.OnClickListener() {
+        menu.addDestructiveMenu(getString(R.string.delete), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_delete_dark : R.drawable.ic_actionsheet_delete, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                AlertDialog.Builder builder;
+                if(mActivity.isDarkMode())
+                    builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+                else
+                    builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle(mEqualizerItems.get(nItem).getEqualizerName());
                 builder.setMessage(R.string.askDeleteTemplate);
                 builder.setPositiveButton(R.string.decideNot, null);
@@ -1214,7 +1277,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                             alertDialog.getWindow().setAttributes(lp);
                         }
                         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        positiveButton.setTextColor(Color.argb(255, 255, 0, 0));
+                        positiveButton.setTextColor(getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeRed : R.color.lightModeRed));
                     }
                 });
                 alertDialog.show();
@@ -1233,5 +1296,163 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         mEqualizerItems.remove(nItem);
         mEqualizersAdapter.notifyItemRemoved(nItem);
         saveData();
+    }
+
+    public void setLightMode(boolean animated) {
+        final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
+        final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
+        final int nLightModeText = getResources().getColor(android.R.color.black);
+        final int nDarkModeText = getResources().getColor(android.R.color.white);
+        final int nDarkModeSep = getResources().getColor(R.color.darkModeSep);
+        final int nLightModeSep = getResources().getColor(R.color.lightModeSep);
+        final int nLightModeBlue = getResources().getColor(R.color.lightModeBlue);
+        final int nDarkModeBlue = getResources().getColor(R.color.darkModeBlue);
+        if(animated) {
+            final ArgbEvaluator eval = new ArgbEvaluator();
+            ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    float fProgress = valueAnimator.getAnimatedFraction();
+                    int nColorModeBk = (Integer) eval.evaluate(fProgress, nDarkModeBk, nLightModeBk);
+                    int nColorModeText = (Integer) eval.evaluate(fProgress, nDarkModeText, nLightModeText);
+                    int nColorModeSep = (Integer) eval.evaluate(fProgress, nDarkModeSep, nLightModeSep);
+                    int nColorModeBlue = (Integer) eval.evaluate(fProgress, nDarkModeBlue, nLightModeBlue);
+                    mRelativeTemplateHeader.setBackgroundColor(nColorModeBk);
+                    mTextTemplateName.setTextColor(nColorModeText);
+                    mViewSepEqualizerHeader.setBackgroundColor(nColorModeSep);
+                    mViewSepEqualizerCustomize.setBackgroundColor(nColorModeSep);
+                    mBtnBackCustomize.setTextColor(nColorModeBlue);
+                    mBtnFinishCustomize.setTextColor(nColorModeBlue);
+                    mBtnEqualizerRandom.setTextColor(nColorModeBlue);
+                    mBtnResetEqualizer.setTextColor(nColorModeBlue);
+                    for(int i = 0; i < mTextNames.size(); i++) {
+                        mTextNames.get(i).setTextColor(nColorModeText);
+                    }
+                    for(int i = 0; i < mTextValues.size(); i++) {
+                        mTextValues.get(i).setTextColor(nColorModeText);
+                    }
+                }
+            });
+            TransitionDrawable tdBtnEqualizerMenu = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_button_more_blue_dark), getResources().getDrawable(R.drawable.ic_button_more_blue)});
+            TransitionDrawable tdBtnAddEqualizerTemplate = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.button_big_equalizer_dark), getResources().getDrawable(R.drawable.button_big_equalizer)});
+            TransitionDrawable tdImgBackEqualizer = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_button_back_dark), getResources().getDrawable(R.drawable.ic_button_back)});
+
+            mBtnEqualizerMenu.setImageDrawable(tdBtnEqualizerMenu);
+            mBtnAddEqualizerTemplate.setImageDrawable(tdBtnAddEqualizerTemplate);
+            mImgBackEqualizer.setImageDrawable(tdImgBackEqualizer);
+
+            int duration = 300;
+            anim.setDuration(duration).start();
+            tdBtnEqualizerMenu.startTransition(duration);
+            tdBtnAddEqualizerTemplate.startTransition(duration);
+            tdImgBackEqualizer.startTransition(duration);
+        }
+        else {
+            mRelativeTemplateHeader.setBackgroundColor(nLightModeBk);
+            mTextTemplateName.setTextColor(nLightModeText);
+            mViewSepEqualizerHeader.setBackgroundColor(nLightModeSep);
+            mViewSepEqualizerCustomize.setBackgroundColor(nLightModeSep);
+            mBtnBackCustomize.setTextColor(nLightModeBlue);
+            mBtnFinishCustomize.setTextColor(nLightModeBlue);
+            mBtnEqualizerRandom.setTextColor(nLightModeBlue);
+            mBtnResetEqualizer.setTextColor(nLightModeBlue);
+            for(int i = 0; i < mTextNames.size(); i++) {
+                mTextNames.get(i).setTextColor(nLightModeText);
+            }
+            for(int i = 0; i < mTextValues.size(); i++) {
+                mTextValues.get(i).setTextColor(nLightModeText);
+            }
+            mBtnEqualizerMenu.setImageDrawable(getResources().getDrawable(R.drawable.ic_button_more_blue));
+            mBtnAddEqualizerTemplate.setImageDrawable(getResources().getDrawable(R.drawable.button_big_equalizer));
+            mImgBackEqualizer.setImageDrawable(getResources().getDrawable(R.drawable.ic_button_back));
+        }
+
+        mBtnEqualizerOff.setTextColor(getResources().getColorStateList(R.color.btn_text));
+        mBtnEqualizerOff.setBackgroundResource(R.drawable.btn_border_background);
+        mBtnEqualizerRandom.setBackgroundResource(R.drawable.resetbutton);
+        mBtnResetEqualizer.setBackgroundResource(R.drawable.resetbutton);
+        for(int i = 0; i < mSeeks.size(); i++) {
+            mSeeks.get(i).setProgressDrawable(getResources().getDrawable(R.drawable.progress));
+            mSeeks.get(i).setThumb(getResources().getDrawable(R.drawable.thumbplaying));
+        }
+        for(int i = 0; i < mButtonMinus.size(); i++) {
+            mButtonMinus.get(i).setBackgroundResource(R.drawable.ic_button_minus);
+        }
+        for(int i = 0; i < mButtonPlus.size(); i++) {
+            mButtonPlus.get(i).setBackgroundResource(R.drawable.ic_button_plus);
+        }
+        mBtnEqualizerSaveAs.setTextColor(getResources().getColorStateList(R.color.btn_text));
+        mBtnEqualizerSaveAs.setBackgroundResource(R.drawable.btn_border_background);
+        mEqualizersAdapter.notifyDataSetChanged();
+    }
+
+    public void setDarkMode(boolean animated) {
+        if(mActivity == null) return;
+        final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
+        final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
+        final int nLightModeText = getResources().getColor(android.R.color.black);
+        final int nDarkModeText = getResources().getColor(android.R.color.white);
+        final int nDarkModeSep = getResources().getColor(R.color.darkModeSep);
+        final int nLightModeSep = getResources().getColor(R.color.lightModeSep);
+        final int nLightModeBlue = getResources().getColor(R.color.lightModeBlue);
+        final int nDarkModeBlue = getResources().getColor(R.color.darkModeBlue);
+        final ArgbEvaluator eval = new ArgbEvaluator();
+        ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float fProgress = valueAnimator.getAnimatedFraction();
+                int nColorModeBk = (Integer) eval.evaluate(fProgress, nLightModeBk, nDarkModeBk);
+                int nColorModeText = (Integer) eval.evaluate(fProgress, nLightModeText, nDarkModeText);
+                int nColorModeSep = (Integer) eval.evaluate(fProgress, nLightModeSep, nDarkModeSep);
+                int nColorModeBlue = (Integer) eval.evaluate(fProgress, nLightModeBlue, nDarkModeBlue);
+                mRelativeTemplateHeader.setBackgroundColor(nColorModeBk);
+                mTextTemplateName.setTextColor(nColorModeText);
+                mViewSepEqualizerHeader.setBackgroundColor(nColorModeSep);
+                mViewSepEqualizerCustomize.setBackgroundColor(nColorModeSep);
+                mBtnBackCustomize.setTextColor(nColorModeBlue);
+                mBtnFinishCustomize.setTextColor(nColorModeBlue);
+                mBtnEqualizerRandom.setTextColor(nColorModeBlue);
+                mBtnResetEqualizer.setTextColor(nColorModeBlue);
+                for(int i = 0; i < mTextNames.size(); i++) {
+                    mTextNames.get(i).setTextColor(nColorModeText);
+                }
+                for(int i = 0; i < mTextValues.size(); i++) {
+                    mTextValues.get(i).setTextColor(nColorModeText);
+                }
+            }
+        });
+        TransitionDrawable tdBtnEqualizerMenu = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_button_more_blue), getResources().getDrawable(R.drawable.ic_button_more_blue_dark)});
+        TransitionDrawable tdBtnAddEqualizerTemplate = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.button_big_equalizer), getResources().getDrawable(R.drawable.button_big_equalizer_dark)});
+        TransitionDrawable tdImgBackEqualizer = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_button_back), getResources().getDrawable(R.drawable.ic_button_back_dark)});
+
+        mBtnEqualizerMenu.setImageDrawable(tdBtnEqualizerMenu);
+        mBtnAddEqualizerTemplate.setImageDrawable(tdBtnAddEqualizerTemplate);
+        mImgBackEqualizer.setImageDrawable(tdImgBackEqualizer);
+
+        int duration = animated ? 300 : 0;
+        anim.setDuration(duration).start();
+        tdBtnEqualizerMenu.startTransition(duration);
+        tdBtnAddEqualizerTemplate.startTransition(duration);
+        tdImgBackEqualizer.startTransition(duration);
+
+        mBtnEqualizerOff.setTextColor(getResources().getColorStateList(R.color.btn_text_dark));
+        mBtnEqualizerOff.setBackgroundResource(R.drawable.btn_border_background_dark);
+        mBtnEqualizerRandom.setBackgroundResource(R.drawable.resetbutton_dark);
+        mBtnResetEqualizer.setBackgroundResource(R.drawable.resetbutton_dark);
+        for(int i = 0; i < mSeeks.size(); i++) {
+            mSeeks.get(i).setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));
+            mSeeks.get(i).setThumb(getResources().getDrawable(R.drawable.thumbplaying_dark));
+        }
+        for(int i = 0; i < mButtonMinus.size(); i++) {
+            mButtonMinus.get(i).setBackgroundResource(R.drawable.ic_button_minus_dark);
+        }
+        for(int i = 0; i < mButtonPlus.size(); i++) {
+            mButtonPlus.get(i).setBackgroundResource(R.drawable.ic_button_plus_dark);
+        }
+        mBtnEqualizerSaveAs.setTextColor(getResources().getColorStateList(R.color.btn_text_dark));
+        mBtnEqualizerSaveAs.setBackgroundResource(R.drawable.btn_border_background_dark);
+        mEqualizersAdapter.notifyDataSetChanged();
     }
 }

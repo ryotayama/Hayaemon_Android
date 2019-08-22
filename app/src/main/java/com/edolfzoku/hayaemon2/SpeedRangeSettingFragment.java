@@ -3,18 +3,30 @@ package com.edolfzoku.hayaemon2;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
+import java.lang.reflect.Field;
 import java.util.Locale;
 
 public class SpeedRangeSettingFragment extends Fragment implements View.OnClickListener
@@ -129,6 +141,78 @@ public class SpeedRangeSettingFragment extends Fragment implements View.OnClickL
                 }
             }
         });
+
+        if(mActivity.isDarkMode()) {
+            RelativeLayout relativeSpeedRangeScreen = mActivity.findViewById(R.id.relativeSpeedRangeScreen);
+            RelativeLayout relativeSpeedRangeSettingTitle = mActivity.findViewById(R.id.relativeSpeedRangeSettingTitle);
+            ImageView imgBackSpeedRange = mActivity.findViewById(R.id.imgBackSpeedRange);
+            TextView textSpeedRangeSettingTitle = mActivity.findViewById(R.id.textSpeedRangeSettingTitle);
+            View viewSepSpeedRangeSetting = mActivity.findViewById(R.id.viewSepSpeedRangeSetting);
+            LinearLayout linearSpeedRangeSetting = mActivity.findViewById(R.id.linearSpeedRangeSetting);
+            TextView textPercentFrom = mActivity.findViewById(R.id.textPercentFrom);
+            TextView textRange = mActivity.findViewById(R.id.textRange);
+            TextView textPercentTo = mActivity.findViewById(R.id.textPercentTo);
+            Button btnResetSpeedRange = mActivity.findViewById(R.id.btnResetSpeedRange);
+
+            relativeSpeedRangeScreen.setBackgroundColor(getResources().getColor(R.color.darkModeBk));
+            relativeSpeedRangeSettingTitle.setBackgroundColor(getResources().getColor(R.color.darkModeBk));
+            imgBackSpeedRange.setImageDrawable(getResources().getDrawable(R.drawable.ic_button_back_dark));
+            btnReturnSpeedRangeSetting.setTextColor(getResources().getColor(R.color.darkModeBlue));
+            btnCloseSpeedRangeSetting.setTextColor(getResources().getColor(R.color.darkModeBlue));
+            textSpeedRangeSettingTitle.setTextColor(getResources().getColor(android.R.color.white));
+            viewSepSpeedRangeSetting.setBackgroundColor(getResources().getColor(R.color.darkModeSep));
+            linearSpeedRangeSetting.setBackgroundColor(getResources().getColor(R.color.darkModeLightBk));
+            setNumberPickerTextColor(intSpeedRangeFromPicker, Color.WHITE);
+            setDividerColor(intSpeedRangeFromPicker, Color.rgb(38, 40, 44));
+            setNumberPickerTextColor(intSpeedRangeToPicker, Color.WHITE);
+            setDividerColor(intSpeedRangeToPicker, Color.rgb(38, 40, 44));
+            textPercentFrom.setTextColor(getResources().getColor(android.R.color.white));
+            textRange.setTextColor(getResources().getColor(android.R.color.white));
+            textPercentTo.setTextColor(getResources().getColor(android.R.color.white));
+            btnResetSpeedRange.setTextColor(getResources().getColorStateList(R.color.btn_text_dark));
+            btnResetSpeedRange.setBackgroundResource(R.drawable.resetbutton_dark);
+        }
+        else {
+            setDividerColor(intSpeedRangeFromPicker, Color.rgb(192, 192, 192));
+            setDividerColor(intSpeedRangeToPicker, Color.rgb(192, 192, 192));
+        }
+    }
+
+    private static void setNumberPickerTextColor(NumberPicker numberPicker, int color)
+    {
+        try{
+            Field selectorWheelPaintField = numberPicker.getClass()
+                    .getDeclaredField("mSelectorWheelPaint");
+            selectorWheelPaintField.setAccessible(true);
+            ((Paint)selectorWheelPaintField.get(numberPicker)).setColor(color);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        final int count = numberPicker.getChildCount();
+        for(int i = 0; i < count; i++){
+            View child = numberPicker.getChildAt(i);
+            if(child instanceof EditText)
+                ((EditText)child).setTextColor(color);
+        }
+        numberPicker.invalidate();
+    }
+
+    private void setDividerColor(NumberPicker picker, int color) {
+        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+        for (java.lang.reflect.Field pf : pickerFields) {
+            if (pf.getName().equals("mSelectionDivider")) {
+                pf.setAccessible(true);
+                try {
+                    ColorDrawable colorDrawable = new ColorDrawable(color);
+                    pf.set(picker, colorDrawable);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
     }
 
     @Override

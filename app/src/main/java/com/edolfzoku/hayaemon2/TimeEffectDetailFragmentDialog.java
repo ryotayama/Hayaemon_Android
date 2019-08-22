@@ -3,6 +3,9 @@ package com.edolfzoku.hayaemon2;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -11,9 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import java.lang.reflect.Field;
 import java.util.Locale;
 
 public class TimeEffectDetailFragmentDialog extends DialogFragment
@@ -110,7 +115,11 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
                 mDecNumberPicker.setValue(i);
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        AlertDialog.Builder builder;
+        if(mActivity.isDarkMode())
+            builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+        else
+            builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(R.string.adjustTime);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
@@ -133,7 +142,50 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
                 }
             }
         });
+        if(mActivity.isDarkMode()) {
+            setNumberPickerTextColor(mIntNumberPicker, Color.WHITE);
+            setNumberPickerTextColor(mDecNumberPicker, Color.WHITE);
+            setDividerColor(mIntNumberPicker, Color.rgb(38, 40, 44));
+            setDividerColor(mDecNumberPicker, Color.rgb(38, 40, 44));
+        }
         return alertDialog;
+    }
+
+    private static void setNumberPickerTextColor(NumberPicker numberPicker, int color)
+    {
+        try{
+            Field selectorWheelPaintField = numberPicker.getClass()
+                    .getDeclaredField("mSelectorWheelPaint");
+            selectorWheelPaintField.setAccessible(true);
+            ((Paint)selectorWheelPaintField.get(numberPicker)).setColor(color);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        final int count = numberPicker.getChildCount();
+        for(int i = 0; i < count; i++){
+            View child = numberPicker.getChildAt(i);
+            if(child instanceof EditText)
+                ((EditText)child).setTextColor(color);
+        }
+        numberPicker.invalidate();
+    }
+
+    private void setDividerColor(NumberPicker picker, int color) {
+        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+        for (java.lang.reflect.Field pf : pickerFields) {
+            if (pf.getName().equals("mSelectionDivider")) {
+                pf.setAccessible(true);
+                try {
+                    ColorDrawable colorDrawable = new ColorDrawable(color);
+                    pf.set(picker, colorDrawable);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
     }
 
     @Override

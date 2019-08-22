@@ -3,4 +3,23 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#007AFF</color>
+    <color name="darkModeBk">#202225</color>
+    <color name="darkModeLightBk">#2F3136</color>
+    <color name="darkModeBlue">#66A4FF</color>
+    <color name="darkModeBlueTrans">#4066A4FF</color>
+    <color name="darkModeRed">#FF697F</color>
+    <color name="darkModeSep">#484C53</color>
+    <color name="darkModeGray">#C7C7CC</color>
+    <color name="darkModeTextDarkGray">#939CA0</color>
+    <color name="darkModeSelect">#2D323E</color>
+    <color name="darkModePlaying">#A6ADB2</color>
+    <color name="darkModePurchase">#CE7412</color>
+    <color name="darkModePurchaseTrans">#40CE7412</color>
+    <color name="lightModeBk">#FFFFFF</color>
+    <color name="lightModeLightBk">#F0F0F0</color>
+    <color name="lightModeBlue">#007AFF</color>
+    <color name="lightModeRed">#FF2D55</color>
+    <color name="lightModeSep">#BFBFBF</color>
+    <color name="lightModeGray">#666666</color>
+    <color name="lightModeTextDarkGray">#949494</color>
 </resources>

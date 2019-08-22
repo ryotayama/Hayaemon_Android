@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:background="@drawable/updatedialog_dark"
+    >
+
+    <ImageView
+        android:id="@+id/imgIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/ic_launcher"
+        android:layout_marginTop="16dp"
+        />
+
+    <TextView
+        android:id="@+id/textUpdatelogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ハヤえもんAndroid版が\nアップデートされました！"
+        android:textColor="@android:color/white"
+        android:textSize="17dp"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_below="@+id/imgIcon"
+        />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:padding="12dp"
+        android:background="@color/darkModeLightBk"
+        android:scrollbars="vertical"
+        android:layout_below="@+id/textUpdatelogTitle"
+        android:layout_above="@+id/textViewBlog"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="16dp"
+        android:text="この内容は開発者ブログから"
+        android:textColorLink="@color/darkModeBlue"
+        android:layout_above="@+id/textViewRead"
+        android:id="@+id/textViewBlog"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="16dp"
+        android:text="いつでも読み返せます。"
+        android:layout_above="@+id/textViewArticle"
+        android:id="@+id/textViewRead"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="16dp"
+        android:textColorLink="@color/darkModeBlue"
+        android:text="該当記事へ"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/switchNextHidden"
+        android:id="@+id/textViewArticle"
+        />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:text="次回から表示しない"
+        android:layout_above="@+id/btns"
+        android:id="@+id/switchNextHidden"
+        />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/btns"
+        >
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="@string/close"
+            android:textColor="@color/darkModeBlue"
+            android:id="@+id/btnClose"
+            />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="シェア"
+            android:textColor="@color/darkModeBlue"
+            android:id="@+id/btnShare"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>

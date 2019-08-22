@@ -43,8 +43,10 @@ class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
     private final float mZoom;
     private final ArrayList<Bitmap> mBitmaps;
     private final ArrayList<Canvas> mCanvases;
+    private final int mColorBk;
+    private final int mColorWave;
 
-    WaveViewTask(WaveView view, int tempStream, int width, int height, float zoom, ArrayList<Bitmap> bitmaps, ArrayList<Canvas> canvases)
+    WaveViewTask(WaveView view, int tempStream, int width, int height, float zoom, ArrayList<Bitmap> bitmaps, ArrayList<Canvas> canvases, int colorBk, int colorWave)
     {
         mWaveViewRef = new WeakReference<>(view);
         mTempStream = tempStream;
@@ -53,6 +55,8 @@ class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
         mZoom = zoom;
         mBitmaps = bitmaps;
         mCanvases = canvases;
+        mColorBk = colorBk;
+        mColorWave = colorWave;
     }
 
     @Override
@@ -99,9 +103,9 @@ class WaveViewTask extends AsyncTask<Integer, Integer, Integer>
                     nRightHeight= (int)(nHalfHeight * arLevels[0]);
                 if(nLeftHeight < 2) nLeftHeight = 2;
                 if(nRightHeight < 2) nRightHeight = 2;
-                paint.setColor(Color.argb(255, 255, 255, 255));
+                paint.setColor(mColorBk);
                 canvas.drawLine(j, 0, j, nHalfHeight * 2, paint);
-                paint.setColor(Color.argb(255, 128, 166, 199));
+                paint.setColor(mColorWave);
                 canvas.drawLine(j, nHalfHeight / 2.0f - nLeftHeight / 2.0f, j, nHalfHeight / 2.0f + nLeftHeight / 2.0f, paint);
                 canvas.drawLine(j, nHalfHeight + nHalfHeight / 2.0f - nRightHeight / 2.0f, j, nHalfHeight + nHalfHeight / 2.0f + nRightHeight / 2.0f, paint);
                 if (this.isCancelled()) break;

@@ -10,7 +10,9 @@
     <RelativeLayout
         android:id="@+id/relativeTabLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        >
 
         <RadioGroup
             android:id="@+id/radioGroupLoopMode"
@@ -24,8 +26,8 @@
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/relativeZoomIn"
-            android:layout_toStartOf="@+id/relativeZoomIn"
+            android:layout_toLeftOf="@+id/btnZoomIn"
+            android:layout_toStartOf="@+id/btnZoomIn"
             android:orientation="horizontal" >
 
             <RadioButton
@@ -37,7 +39,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/abLoop"
-                android:textColor="@drawable/radio_text_color" />
+                android:textColor="@color/radio_text_color" />
 
             <RadioButton
                 android:id="@+id/radioButtonMarkerPlay"
@@ -48,49 +50,33 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/markerPlay"
-                android:textColor="@drawable/radio_text_color" />
+                android:textColor="@color/radio_text_color" />
 
         </RadioGroup>
 
-        <RelativeLayout
-            android:id="@+id/relativeZoomIn"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_toLeftOf="@+id/relativeZoomOut"
-            android:layout_toStartOf="@+id/relativeZoomOut"
+        <com.edolfzoku.hayaemon2.AnimationButton
+            android:id="@+id/btnZoomIn"
+            android:contentDescription="@string/zoomin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_abloop_zoom_in"
+            android:background="@null"
+            android:layout_toLeftOf="@+id/btnZoomOut"
+            android:layout_toStartOf="@+id/btnZoomOut"
             android:layout_centerVertical="true"
-            >
+            />
 
-            <ImageView
-                android:id="@+id/imgZoomIn"
-                android:contentDescription="@string/zoomin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/zoomin"
-                android:layout_centerInParent="true"
-                />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/relativeZoomOut"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+        <com.edolfzoku.hayaemon2.AnimationButton
+            android:id="@+id/btnZoomOut"
+            android:contentDescription="@string/zoomout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_abloop_zoom_out"
+            android:background="@null"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            >
-
-            <ImageView
-                android:id="@+id/imgZoomOut"
-                android:contentDescription="@string/zoomout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/zoomout"
-                android:layout_centerInParent="true"
-                />
-
-        </RelativeLayout>
+            />
 
     </RelativeLayout>
 
@@ -169,7 +155,7 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/line1_loop"
+        android:id="@+id/viewSep1Loop"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="#808080"
@@ -183,8 +169,8 @@
         android:layout_height="0dp"
         android:padding="0dp"
         android:layout_margin="0dp"
-        android:layout_below="@+id/line1_loop"
-        android:layout_above="@+id/line2_loop"
+        android:layout_below="@+id/viewSep1Loop"
+        android:layout_above="@+id/viewSep3Loop"
         >
 
         <com.edolfzoku.hayaemon2.WaveView
@@ -197,6 +183,7 @@
         </com.edolfzoku.hayaemon2.WaveView>
 
         <View
+            android:id="@+id/viewSep2Loop"
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:background="#808080"
@@ -207,7 +194,7 @@
     </RelativeLayout>
 
     <View
-        android:id="@+id/line2_loop"
+        android:id="@+id/viewSep3Loop"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="#808080"
@@ -442,7 +429,7 @@
         <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnPrevmarker"
             android:contentDescription="@string/prevMarker"
-            android:src="@drawable/ic_prevmarker"
+            android:src="@drawable/ic_abloop_marker_lead"
             android:background="#00000000"
             android:layout_width="0px"
             android:layout_height="wrap_content"
@@ -454,7 +441,7 @@
         <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnDelmarker"
             android:contentDescription="@string/delMarker"
-            android:src="@drawable/ic_delmarker"
+            android:src="@drawable/ic_abloop_marker_erase"
             android:background="#00000000"
             android:layout_width="0px"
             android:layout_height="wrap_content"
@@ -466,7 +453,7 @@
         <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnAddmarker"
             android:contentDescription="@string/addMarker"
-            android:src="@drawable/ic_addmarker"
+            android:src="@drawable/ic_abloop_marker_add"
             android:background="#00000000"
             android:layout_width="0px"
             android:layout_height="wrap_content"
@@ -478,7 +465,7 @@
         <com.edolfzoku.hayaemon2.AnimationButton
             android:id="@+id/btnNextmarker"
             android:contentDescription="@string/nextMarker"
-            android:src="@drawable/ic_nextmarker"
+            android:src="@drawable/ic_abloop_marker_end"
             android:background="#00000000"
             android:layout_width="0px"
             android:layout_height="wrap_content"

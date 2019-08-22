@@ -50,6 +50,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         private final ImageView mImgLock;
         private final TextView mTextTime;
         private final ImageView mImgSongMenu;
+        private final View mViewSepSong;
 
         RelativeLayout getSongItem() { return mSongItem; }
         ImageView getImgSelectSong() { return mImgSelectSong; }
@@ -60,6 +61,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         ImageView getImgLock() { return mImgLock; }
         TextView getTextTime() { return mTextTime; }
         ImageView getImgSongMenu() { return mImgSongMenu; }
+        View getViewSepSong() { return mViewSepSong; }
 
         ViewHolder(View view) {
             super(view);
@@ -72,6 +74,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             mImgLock = view.findViewById(R.id.imgLock);
             mTextTime = view.findViewById(R.id.textTime);
             mImgSongMenu = view.findViewById(R.id.imgSongMenu);
+            mViewSepSong = view.findViewById(R.id.viewSepSong);
         }
     }
 
@@ -92,6 +95,8 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position)
     {
+        holder.getViewSepSong().setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeSep : R.color.lightModeSep));
+
         ArrayList<SongItem> arSongs = mActivity.playlistFragment.getPlaylists ().get(mActivity.playlistFragment.getSelectedPlaylist());
         SongItem item = arSongs.get(position);
         if(item.getTime() == null) mActivity.playlistFragment.updateSongTime(item);
@@ -102,22 +107,25 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         holder.itemView.setLongClickable(true);
 
         holder.getTextNumber().setText(item.getNumber());
+        holder.getTextNumber().setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeGray : R.color.lightModeGray));
         holder.getTextTitle().setText(item.getTitle());
+        holder.getTextTitle().setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? android.R.color.white : android.R.color.black));
         if(item.getArtist() == null || item.getArtist().equals(""))
         {
-            holder.getTextArtist().setTextColor(Color.argb(255, 147, 156, 160));
+            if(mActivity.isDarkMode()) holder.getTextArtist().setTextColor(mActivity.getResources().getColor(R.color.darkModeTextDarkGray));
+            else holder.getTextArtist().setTextColor(Color.argb(255, 147, 156, 160));
             holder.getTextArtist().setText(R.string.unknownArtist);
         }
         else
         {
-            holder.getTextArtist().setTextColor(Color.argb(255, 102, 102, 102));
+            holder.getTextArtist().setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeGray : R.color.lightModeGray));
             holder.getTextArtist().setText(item.getArtist());
         }
         if(mActivity.playlistFragment.getPlayingPlaylist() == mActivity.playlistFragment.getSelectedPlaylist() && nItem == mActivity.playlistFragment.getPlaying()) {
             if(BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_PLAYING)
-                holder.getImgStatus().setImageResource(R.drawable.circle_music);
+                holder.getImgStatus().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_icon_playlist_playing_dark : R.drawable.ic_icon_playlist_playing);
             else
-                holder.getImgStatus().setImageResource(R.drawable.pause_circle);
+                holder.getImgStatus().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_icon_playlist_pause_dark : R.drawable.ic_icon_playlist_pause);
             holder.getTextNumber().setVisibility(View.INVISIBLE);
         }
         else {
@@ -125,11 +133,15 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             holder.getTextNumber().setVisibility(View.VISIBLE);
         }
 
-        if(bLock) holder.getImgLock().setVisibility(View.VISIBLE);
+        if(bLock) {
+            holder.getImgLock().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_icon_playlist_lock_dark : R.drawable.ic_icon_playlist_lock);
+            holder.getImgLock().setVisibility(View.VISIBLE);
+        }
         else holder.getImgLock().setVisibility(View.GONE);
 
         String strTime = item.getTime();
         holder.getTextTime().setText(strTime);
+        holder.getTextTime().setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? android.R.color.white : android.R.color.black));
         if(strTime != null && strTime.length() >= 6) holder.getTextTime().setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
         else holder.getTextTime().setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11);
 
@@ -151,8 +163,8 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
                     return true;
                 }
             });
-            if(bSelected) holder.getImgSelectSong().setImageResource(R.drawable.ic_button_check_on);
-            else holder.getImgSelectSong().setImageResource(R.drawable.ic_button_check_off);
+            if(bSelected) holder.getImgSelectSong().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_button_check_on_dark : R.drawable.ic_button_check_on);
+            else holder.getImgSelectSong().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_button_check_off_dark : R.drawable.ic_button_check_off);
             holder.getImgSelectSong().setVisibility(View.VISIBLE);
             holder.getImgSongMenu().setImageResource(R.drawable.ic_sort);
             RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.getImgSongMenu().getLayoutParams();
@@ -208,9 +220,9 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         }
 
         if(mActivity.playlistFragment.getPlayingPlaylist() == mActivity.playlistFragment.getSelectedPlaylist() && nItem == mActivity.playlistFragment.getPlaying())
-            holder.getSongItem().setBackgroundColor(Color.argb(255, 224, 239, 255));
+            holder.getSongItem().setBackgroundColor(mActivity.isDarkMode() ? mActivity.getResources().getColor(R.color.darkModeSelect) : Color.argb(255, 224, 239, 255));
         else
-            holder.getSongItem().setBackgroundColor(Color.argb(255, 255, 255, 255));
+            holder.getSongItem().setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeBk : R.color.lightModeBk));
     }
 
     @Override

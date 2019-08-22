@@ -127,7 +127,8 @@
                 android:layout_alignParentStart="true"
                 android:layout_toLeftOf="@id/textEffectDetail"
                 android:layout_toStartOf="@id/textEffectDetail"
-                android:thumb="@drawable/thumb"
+                android:thumb="@drawable/thumbplaying"
+                android:progressDrawable="@drawable/progress"
                 />
 
             <TextView
@@ -145,13 +146,12 @@
                 android:layout_toStartOf="@+id/btnEffectMinus"
                 />
 
-            <ImageButton
+            <com.edolfzoku.hayaemon2.HighlightImageButton
                 android:id="@+id/btnEffectMinus"
                 android:contentDescription="@string/minus"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/minusbutton"
-                android:background="@null"
+                android:background="@drawable/ic_button_minus"
                 android:scaleType="centerInside"
                 android:clickable="true"
                 android:focusable="true"
@@ -160,13 +160,12 @@
                 android:layout_toStartOf="@+id/btnEffectPlus"
                 />
 
-            <ImageButton
+            <com.edolfzoku.hayaemon2.HighlightImageButton
                 android:id="@+id/btnEffectPlus"
                 android:contentDescription="@string/plus"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/plusbutton"
-                android:background="@null"
+                android:background="@drawable/ic_button_plus"
                 android:scaleType="centerInside"
                 android:clickable="true"
                 android:focusable="true"
@@ -260,7 +259,7 @@
             <Button
                 android:id="@+id/btnEffectTemplateOff"
                 android:text="@string/off"
-                android:textColor="@drawable/btn_text"
+                android:textColor="@color/btn_text"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_marginLeft="44dp"
@@ -285,7 +284,7 @@
                 />
 
             <View
-                android:id="@+id/viewSepEffectTemplate"
+                android:id="@+id/viewSepEffectTemplateHeader"
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:background="#BFBFBF"
@@ -300,7 +299,7 @@
                 android:dividerHeight="1px"
                 android:paddingBottom="80dp"
                 android:clipToPadding="false"
-                android:layout_below="@+id/viewSepEffectTemplate"
+                android:layout_below="@+id/viewSepEffectTemplateHeader"
                 />
 
             <com.edolfzoku.hayaemon2.AnimationButton
@@ -330,6 +329,7 @@
             >
 
             <RelativeLayout
+                android:id="@+id/relativeComp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -350,7 +350,7 @@
                         android:id="@+id/btnCompRandom"
                         android:text="@string/random"
                         android:textSize="12sp"
-                        android:textColor="@drawable/btn_text"
+                        android:textColor="@color/btn_text"
                         android:background="@drawable/resetbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
@@ -362,7 +362,7 @@
                         android:id="@+id/btnResetComp"
                         android:text="@string/reset"
                         android:textSize="12sp"
-                        android:textColor="@drawable/btn_text"
+                        android:textColor="@color/btn_text"
                         android:background="@drawable/resetbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
@@ -411,6 +411,7 @@
                         android:layout_toLeftOf="@id/textCompGain"
                         android:layout_toStartOf="@id/textCompGain"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -429,13 +430,12 @@
                         android:layout_toStartOf="@+id/btnCompGainMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnCompGainMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -444,13 +444,12 @@
                         android:layout_toStartOf="@+id/btnCompGainPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnCompGainPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -496,6 +495,7 @@
                         android:layout_toLeftOf="@id/textCompThreshold"
                         android:layout_toStartOf="@id/textCompThreshold"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -514,13 +514,12 @@
                         android:layout_toStartOf="@+id/btnCompThresholdMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnCompThresholdMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -529,13 +528,12 @@
                         android:layout_toStartOf="@+id/btnCompThresholdPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnCompThresholdPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -581,6 +579,7 @@
                         android:layout_toLeftOf="@id/textCompRatio"
                         android:layout_toStartOf="@id/textCompRatio"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -599,13 +598,12 @@
                         android:layout_toStartOf="@+id/btnCompRatioMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnCompRatioMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -614,13 +612,12 @@
                         android:layout_toStartOf="@+id/btnCompRatioPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnCompRatioPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -666,6 +663,7 @@
                         android:layout_toLeftOf="@id/textCompAttack"
                         android:layout_toStartOf="@id/textCompAttack"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -684,13 +682,12 @@
                         android:layout_toStartOf="@+id/btnCompAttackMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnCompAttackMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -699,13 +696,12 @@
                         android:layout_toStartOf="@+id/btnCompAttackPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnCompAttackPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -752,6 +748,7 @@
                         android:layout_toLeftOf="@id/textCompRelease"
                         android:layout_toStartOf="@id/textCompRelease"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -770,13 +767,12 @@
                         android:layout_toStartOf="@+id/btnCompReleaseMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnCompReleaseMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -785,13 +781,12 @@
                         android:layout_toStartOf="@+id/btnCompReleasePlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnCompReleasePlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -805,7 +800,7 @@
                 <Button
                     android:id="@+id/btnCompSaveAs"
                     android:text="@string/saveAs"
-                    android:textColor="@drawable/btn_text"
+                    android:textColor="@color/btn_text"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_marginLeft="44dp"
@@ -831,6 +826,7 @@
             >
 
             <RelativeLayout
+                android:id="@+id/relativeEcho"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -851,7 +847,7 @@
                         android:id="@+id/btnEchoRandom"
                         android:text="@string/random"
                         android:textSize="12sp"
-                        android:textColor="@drawable/btn_text"
+                        android:textColor="@color/btn_text"
                         android:background="@drawable/resetbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
@@ -863,7 +859,7 @@
                         android:id="@+id/btnResetEcho"
                         android:text="@string/reset"
                         android:textSize="12sp"
-                        android:textColor="@drawable/btn_text"
+                        android:textColor="@color/btn_text"
                         android:background="@drawable/resetbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
@@ -912,6 +908,7 @@
                         android:layout_toLeftOf="@id/textEchoDry"
                         android:layout_toStartOf="@id/textEchoDry"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -930,13 +927,12 @@
                         android:layout_toStartOf="@+id/btnEchoDryMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnEchoDryMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -945,13 +941,12 @@
                         android:layout_toStartOf="@+id/btnEchoDryPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnEchoDryPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -997,6 +992,7 @@
                         android:layout_toLeftOf="@id/textEchoWet"
                         android:layout_toStartOf="@id/textEchoWet"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -1015,13 +1011,12 @@
                         android:layout_toStartOf="@+id/btnEchoWetMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnEchoWetMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1030,13 +1025,12 @@
                         android:layout_toStartOf="@+id/btnEchoWetPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnEchoWetPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1082,6 +1076,7 @@
                         android:layout_toLeftOf="@id/textEchoFeedback"
                         android:layout_toStartOf="@id/textEchoFeedback"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -1100,13 +1095,12 @@
                         android:layout_toStartOf="@+id/btnEchoFeedbackMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnEchoFeedbackMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1115,13 +1109,12 @@
                         android:layout_toStartOf="@+id/btnEchoFeedbackPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnEchoFeedbackPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1168,6 +1161,7 @@
                         android:layout_toLeftOf="@id/textEchoDelay"
                         android:layout_toStartOf="@id/textEchoDelay"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -1186,13 +1180,12 @@
                         android:layout_toStartOf="@+id/btnEchoDelayMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnEchoDelayMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1201,13 +1194,12 @@
                         android:layout_toStartOf="@+id/btnEchoDelayPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnEchoDelayPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1221,7 +1213,7 @@
                 <Button
                     android:id="@+id/btnEchoSaveAs"
                     android:text="@string/saveAs"
-                    android:textColor="@drawable/btn_text"
+                    android:textColor="@color/btn_text"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_marginLeft="44dp"
@@ -1247,6 +1239,7 @@
             >
 
             <RelativeLayout
+                android:id="@+id/relativeReverb"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -1267,7 +1260,7 @@
                         android:id="@+id/btnReverbRandom"
                         android:text="@string/random"
                         android:textSize="12sp"
-                        android:textColor="@drawable/btn_text"
+                        android:textColor="@color/btn_text"
                         android:background="@drawable/resetbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
@@ -1279,7 +1272,7 @@
                         android:id="@+id/btnResetReverb"
                         android:text="@string/reset"
                         android:textSize="12sp"
-                        android:textColor="@drawable/btn_text"
+                        android:textColor="@color/btn_text"
                         android:background="@drawable/resetbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
@@ -1328,6 +1321,7 @@
                         android:layout_toLeftOf="@id/textReverbDry"
                         android:layout_toStartOf="@id/textReverbDry"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -1346,13 +1340,12 @@
                         android:layout_toStartOf="@+id/btnReverbDryMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnReverbDryMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1361,13 +1354,12 @@
                         android:layout_toStartOf="@+id/btnReverbDryPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnReverbDryPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1413,6 +1405,7 @@
                         android:layout_toLeftOf="@id/textReverbWet"
                         android:layout_toStartOf="@id/textReverbWet"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -1431,13 +1424,12 @@
                         android:layout_toStartOf="@+id/btnReverbWetMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnReverbWetMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1446,13 +1438,12 @@
                         android:layout_toStartOf="@+id/btnReverbWetPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnReverbWetPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1498,6 +1489,7 @@
                         android:layout_toLeftOf="@id/textReverbRoomSize"
                         android:layout_toStartOf="@id/textReverbRoomSize"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -1516,13 +1508,12 @@
                         android:layout_toStartOf="@+id/btnReverbRoomSizeMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnReverbRoomSizeMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1531,13 +1522,12 @@
                         android:layout_toStartOf="@+id/btnReverbRoomSizePlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnReverbRoomSizePlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1583,6 +1573,7 @@
                         android:layout_toLeftOf="@id/textReverbDamp"
                         android:layout_toStartOf="@id/textReverbDamp"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -1601,13 +1592,12 @@
                         android:layout_toStartOf="@+id/btnReverbDampMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnReverbDampMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1616,13 +1606,12 @@
                         android:layout_toStartOf="@+id/btnReverbDampPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnReverbDampPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1669,6 +1658,7 @@
                         android:layout_toLeftOf="@id/textReverbWidth"
                         android:layout_toStartOf="@id/textReverbWidth"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -1687,13 +1677,12 @@
                         android:layout_toStartOf="@+id/btnReverbWidthMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnReverbWidthMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1702,13 +1691,12 @@
                         android:layout_toStartOf="@+id/btnReverbWidthPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnReverbWidthPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1722,7 +1710,7 @@
                 <Button
                     android:id="@+id/btnReverbSaveAs"
                     android:text="@string/saveAs"
-                    android:textColor="@drawable/btn_text"
+                    android:textColor="@color/btn_text"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_marginLeft="44dp"
@@ -1748,6 +1736,7 @@
             >
 
             <RelativeLayout
+                android:id="@+id/relativeChorus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -1768,7 +1757,7 @@
                         android:id="@+id/btnChorusRandom"
                         android:text="@string/random"
                         android:textSize="12sp"
-                        android:textColor="@drawable/btn_text"
+                        android:textColor="@color/btn_text"
                         android:background="@drawable/resetbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
@@ -1780,7 +1769,7 @@
                         android:id="@+id/btnResetChorus"
                         android:text="@string/reset"
                         android:textSize="12sp"
-                        android:textColor="@drawable/btn_text"
+                        android:textColor="@color/btn_text"
                         android:background="@drawable/resetbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
@@ -1829,6 +1818,7 @@
                         android:layout_toLeftOf="@id/textChorusDry"
                         android:layout_toStartOf="@id/textChorusDry"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -1847,13 +1837,12 @@
                         android:layout_toStartOf="@+id/btnChorusDryMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnChorusDryMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1862,13 +1851,12 @@
                         android:layout_toStartOf="@+id/btnChorusDryPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnChorusDryPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1914,6 +1902,7 @@
                         android:layout_toLeftOf="@id/textChorusWet"
                         android:layout_toStartOf="@id/textChorusWet"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -1932,13 +1921,12 @@
                         android:layout_toStartOf="@+id/btnChorusWetMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnChorusWetMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1947,13 +1935,12 @@
                         android:layout_toStartOf="@+id/btnChorusWetPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnChorusWetPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -1999,6 +1986,7 @@
                         android:layout_toLeftOf="@id/textChorusFeedback"
                         android:layout_toStartOf="@id/textChorusFeedback"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -2017,13 +2005,12 @@
                         android:layout_toStartOf="@+id/btnChorusFeedbackMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnChorusFeedbackMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2032,13 +2019,12 @@
                         android:layout_toStartOf="@+id/btnChorusFeedbackPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnChorusFeedbackPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2084,6 +2070,7 @@
                         android:layout_toLeftOf="@id/textChorusMinSweep"
                         android:layout_toStartOf="@id/textChorusMinSweep"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -2102,13 +2089,12 @@
                         android:layout_toStartOf="@+id/btnChorusMinSweepMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnChorusMinSweepMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2117,13 +2103,12 @@
                         android:layout_toStartOf="@+id/btnChorusMinSweepPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnChorusMinSweepPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2169,6 +2154,7 @@
                         android:layout_toLeftOf="@id/textChorusMaxSweep"
                         android:layout_toStartOf="@id/textChorusMaxSweep"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -2187,13 +2173,12 @@
                         android:layout_toStartOf="@+id/btnChorusMaxSweepMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnChorusMaxSweepMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2202,13 +2187,12 @@
                         android:layout_toStartOf="@+id/btnChorusMaxSweepPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnChorusMaxSweepPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2255,6 +2239,7 @@
                         android:layout_toLeftOf="@id/textChorusRate"
                         android:layout_toStartOf="@id/textChorusRate"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -2273,13 +2258,12 @@
                         android:layout_toStartOf="@+id/btnChorusRateMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnChorusRateMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2288,13 +2272,12 @@
                         android:layout_toStartOf="@+id/btnChorusRatePlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnChorusRatePlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2308,7 +2291,7 @@
                 <Button
                     android:id="@+id/btnChorusSaveAs"
                     android:text="@string/saveAs"
-                    android:textColor="@drawable/btn_text"
+                    android:textColor="@color/btn_text"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_marginLeft="44dp"
@@ -2334,6 +2317,7 @@
             >
 
             <RelativeLayout
+                android:id="@+id/relativeDistortion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -2354,7 +2338,7 @@
                         android:id="@+id/btnDistortionRandom"
                         android:text="@string/random"
                         android:textSize="12sp"
-                        android:textColor="@drawable/btn_text"
+                        android:textColor="@color/btn_text"
                         android:background="@drawable/resetbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
@@ -2366,7 +2350,7 @@
                         android:id="@+id/btnResetDistortion"
                         android:text="@string/reset"
                         android:textSize="12sp"
-                        android:textColor="@drawable/btn_text"
+                        android:textColor="@color/btn_text"
                         android:background="@drawable/resetbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
@@ -2415,6 +2399,7 @@
                         android:layout_toLeftOf="@id/textDistortionDrive"
                         android:layout_toStartOf="@id/textDistortionDrive"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -2433,13 +2418,12 @@
                         android:layout_toStartOf="@+id/btnDistortionDriveMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnDistortionDriveMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2448,13 +2432,12 @@
                         android:layout_toStartOf="@+id/btnDistortionDrivePlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnDistortionDrivePlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2500,6 +2483,7 @@
                         android:layout_toLeftOf="@id/textDistortionDry"
                         android:layout_toStartOf="@id/textDistortionDry"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -2518,13 +2502,12 @@
                         android:layout_toStartOf="@+id/btnDistortionDryMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnDistortionDryMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2533,13 +2516,12 @@
                         android:layout_toStartOf="@+id/btnDistortionDryPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnDistortionDryPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2585,6 +2567,7 @@
                         android:layout_toLeftOf="@id/textDistortionWet"
                         android:layout_toStartOf="@id/textDistortionWet"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -2603,13 +2586,12 @@
                         android:layout_toStartOf="@+id/btnDistortionWetMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnDistortionWetMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2618,13 +2600,12 @@
                         android:layout_toStartOf="@+id/btnDistortionWetPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnDistortionWetPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2670,6 +2651,7 @@
                         android:layout_toLeftOf="@id/textDistortionFeedback"
                         android:layout_toStartOf="@id/textDistortionFeedback"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -2688,13 +2670,12 @@
                         android:layout_toStartOf="@+id/btnDistortionFeedbackMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnDistortionFeedbackMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2703,13 +2684,12 @@
                         android:layout_toStartOf="@+id/btnDistortionFeedbackPlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnDistortionFeedbackPlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2756,6 +2736,7 @@
                         android:layout_toLeftOf="@id/textDistortionVolume"
                         android:layout_toStartOf="@id/textDistortionVolume"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -2774,13 +2755,12 @@
                         android:layout_toStartOf="@+id/btnDistortionVolumeMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnDistortionVolumeMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2789,13 +2769,12 @@
                         android:layout_toStartOf="@+id/btnDistortionVolumePlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnDistortionVolumePlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2809,7 +2788,7 @@
                 <Button
                     android:id="@+id/btnDistortionSaveAs"
                     android:text="@string/saveAs"
-                    android:textColor="@drawable/btn_text"
+                    android:textColor="@color/btn_text"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_marginLeft="44dp"
@@ -2835,6 +2814,7 @@
             >
 
             <RelativeLayout
+                android:id="@+id/relativeSoundEffect"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -2877,6 +2857,7 @@
                         android:layout_toLeftOf="@id/textSoundEffectVolume"
                         android:layout_toStartOf="@id/textSoundEffectVolume"
                         android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
                         />
 
                     <TextView
@@ -2895,13 +2876,12 @@
                         android:layout_toStartOf="@+id/btnSoundEffectVolumeMinus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnSoundEffectVolumeMinus"
                         android:contentDescription="@string/minus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/minusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_minus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2910,13 +2890,12 @@
                         android:layout_toStartOf="@+id/btnSoundEffectVolumePlus"
                         />
 
-                    <ImageButton
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
                         android:id="@+id/btnSoundEffectVolumePlus"
                         android:contentDescription="@string/plus"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/plusbutton"
-                        android:background="@null"
+                        android:background="@drawable/ic_button_plus"
                         android:scaleType="centerInside"
                         android:clickable="true"
                         android:focusable="true"
@@ -2936,7 +2915,7 @@
     <Button
         android:id="@+id/btnEffectOff"
         android:text="@string/off"
-        android:textColor="@drawable/btn_text"
+        android:textColor="@color/btn_text"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginLeft="44dp"
@@ -2948,7 +2927,7 @@
         />
 
     <View
-        android:id="@+id/viewSepEffect"
+        android:id="@+id/viewSepEffectHeader"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="#BFBFBF"
@@ -2962,7 +2941,7 @@
         android:divider="#BFBFBF"
         android:dividerHeight="1px"
         android:clipToPadding="false"
-        android:layout_below="@+id/viewSepEffect"
+        android:layout_below="@+id/viewSepEffectHeader"
         android:visibility="visible"
         />
 

@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:src="@drawable/ic_listright"
+        android:src="@drawable/ic_button_listright"
         android:scaleType="centerInside"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="6dp"
@@ -64,6 +64,7 @@
         />
 
     <View
+        android:id="@+id/viewSepPlaylist"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="#BFBFBF"

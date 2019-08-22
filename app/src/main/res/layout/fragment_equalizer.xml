@@ -9,7 +9,7 @@
     <Button
         android:id="@+id/btnEqualizerOff"
         android:text="@string/off"
-        android:textColor="@drawable/btn_text"
+        android:textColor="@color/btn_text"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginLeft="44dp"
@@ -34,7 +34,7 @@
         />
 
     <View
-        android:id="@+id/viewSepEqualizer"
+        android:id="@+id/viewSepEqualizerHeader"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="#BFBFBF"
@@ -49,7 +49,7 @@
         android:dividerHeight="1px"
         android:paddingBottom="80dp"
         android:clipToPadding="false"
-        android:layout_below="@+id/viewSepEqualizer"
+        android:layout_below="@+id/viewSepEqualizerHeader"
         />
 
     <com.edolfzoku.hayaemon2.AnimationButton
@@ -82,6 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_button_back"
+            android:background="@null"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_centerVertical="true"
@@ -181,7 +182,7 @@
                         android:id="@+id/btnEqualizerRandom"
                         android:text="@string/random"
                         android:textSize="12sp"
-                        android:textColor="@drawable/btn_text"
+                        android:textColor="@color/btn_text"
                         android:background="@drawable/resetbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
@@ -193,7 +194,7 @@
                         android:id="@+id/btnResetEqualizer"
                         android:text="@string/reset"
                         android:textSize="12sp"
-                        android:textColor="@drawable/btn_text"
+                        android:textColor="@color/btn_text"
                         android:background="@drawable/resetbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
@@ -240,7 +241,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -255,26 +257,24 @@
                     android:layout_toStartOf="@+id/btnVolMinus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btnVolMinus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btnVolPlus"
                     android:layout_toStartOf="@+id/btnVolPlus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btnVolPlus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -315,7 +315,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -330,26 +331,24 @@
                     android:layout_toStartOf="@+id/btn20KMinus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn20KMinus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn20KPlus"
                     android:layout_toStartOf="@+id/btn20KPlus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn20KPlus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -390,7 +389,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -405,26 +405,24 @@
                     android:layout_toStartOf="@+id/btn16KMinus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn16KMinus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn16KPlus"
                     android:layout_toStartOf="@+id/btn16KPlus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn16KPlus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -465,7 +463,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -480,26 +479,24 @@
                     android:layout_toStartOf="@+id/btn12_5KMinus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn12_5KMinus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn12_5KPlus"
                     android:layout_toStartOf="@+id/btn12_5KPlus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn12_5KPlus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -541,7 +538,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -556,26 +554,24 @@
                     android:layout_toStartOf="@+id/btn10KMinus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn10KMinus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn10KPlus"
                     android:layout_toStartOf="@+id/btn10KPlus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn10KPlus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -616,7 +612,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -631,26 +628,24 @@
                     android:layout_toStartOf="@+id/btn8KMinus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn8KMinus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn8KPlus"
                     android:layout_toStartOf="@+id/btn8KPlus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn8KPlus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -691,7 +686,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -706,26 +702,24 @@
                     android:layout_toStartOf="@+id/btn6_3KMinus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn6_3KMinus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn6_3KPlus"
                     android:layout_toStartOf="@+id/btn6_3KPlus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn6_3KPlus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -766,7 +760,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -781,26 +776,24 @@
                     android:layout_toStartOf="@+id/btn5KMinus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn5KMinus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn5KPlus"
                     android:layout_toStartOf="@+id/btn5KPlus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn5KPlus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -841,7 +834,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -856,26 +850,24 @@
                     android:layout_toStartOf="@+id/btn4KMinus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn4KMinus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn4KPlus"
                     android:layout_toStartOf="@+id/btn4KPlus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn4KPlus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -916,7 +908,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
                 <TextView
                     android:id="@+id/text3_15KValue"
@@ -930,26 +923,24 @@
                     android:layout_toStartOf="@+id/btn3_15KMinus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn3_15KMinus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn3_15KPlus"
                     android:layout_toStartOf="@+id/btn3_15KPlus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn3_15KPlus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -990,7 +981,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -1005,26 +997,24 @@
                     android:layout_toStartOf="@+id/btn2_5KMinus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn2_5KMinus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn2_5KPlus"
                     android:layout_toStartOf="@+id/btn2_5KPlus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn2_5KPlus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -1065,7 +1055,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -1080,26 +1071,24 @@
                     android:layout_toStartOf="@+id/btn2KMinus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn2KMinus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn2KPlus"
                     android:layout_toStartOf="@+id/btn2KPlus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn2KPlus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -1140,7 +1129,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -1155,26 +1145,24 @@
                     android:layout_toStartOf="@+id/btn1_6KMinus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn1_6KMinus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn1_6KPlus"
                     android:layout_toStartOf="@+id/btn1_6KPlus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn1_6KPlus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -1215,7 +1203,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -1230,26 +1219,24 @@
                     android:layout_toStartOf="@+id/btn1_25KMinus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn1_25KMinus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn1_25KPlus"
                     android:layout_toStartOf="@+id/btn1_25KPlus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn1_25KPlus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -1290,7 +1277,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -1305,26 +1293,24 @@
                     android:layout_toStartOf="@+id/btn1KMinus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn1KMinus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn1KPlus"
                     android:layout_toStartOf="@+id/btn1KPlus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn1KPlus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -1365,7 +1351,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -1380,26 +1367,24 @@
                     android:layout_toStartOf="@+id/btn800Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn800Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn800Plus"
                     android:layout_toStartOf="@+id/btn800Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn800Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -1440,7 +1425,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -1455,26 +1441,24 @@
                     android:layout_toStartOf="@+id/btn630Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn630Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn630Plus"
                     android:layout_toStartOf="@+id/btn630Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn630Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -1515,7 +1499,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -1530,26 +1515,24 @@
                     android:layout_toStartOf="@+id/btn500Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn500Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn500Plus"
                     android:layout_toStartOf="@+id/btn500Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn500Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -1590,7 +1573,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -1605,26 +1589,24 @@
                     android:layout_toStartOf="@+id/btn400Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn400Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn400Plus"
                     android:layout_toStartOf="@+id/btn400Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn400Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -1665,7 +1647,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -1680,26 +1663,24 @@
                     android:layout_toStartOf="@+id/btn315Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn315Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn315Plus"
                     android:layout_toStartOf="@+id/btn315Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn315Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -1740,7 +1721,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -1755,26 +1737,24 @@
                     android:layout_toStartOf="@+id/btn250Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn250Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn250Plus"
                     android:layout_toStartOf="@+id/btn250Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn250Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -1815,7 +1795,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -1830,26 +1811,24 @@
                     android:layout_toStartOf="@+id/btn200Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn200Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn200Plus"
                     android:layout_toStartOf="@+id/btn200Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn200Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -1890,7 +1869,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -1905,26 +1885,24 @@
                     android:layout_toStartOf="@+id/btn160Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn160Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn160Plus"
                     android:layout_toStartOf="@+id/btn160Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn160Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -1965,7 +1943,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -1980,26 +1959,24 @@
                     android:layout_toStartOf="@+id/btn125Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn125Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn125Plus"
                     android:layout_toStartOf="@+id/btn125Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn125Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -2040,7 +2017,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -2055,26 +2033,24 @@
                     android:layout_toStartOf="@+id/btn100Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn100Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn100Plus"
                     android:layout_toStartOf="@+id/btn100Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn100Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -2115,7 +2091,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -2130,26 +2107,24 @@
                     android:layout_toStartOf="@+id/btn80Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn80Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn80Plus"
                     android:layout_toStartOf="@+id/btn80Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn80Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -2190,7 +2165,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -2205,26 +2181,24 @@
                     android:layout_toStartOf="@+id/btn63Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn63Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn63Plus"
                     android:layout_toStartOf="@+id/btn63Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn63Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -2265,7 +2239,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -2280,26 +2255,24 @@
                     android:layout_toStartOf="@+id/btn50Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn50Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn50Plus"
                     android:layout_toStartOf="@+id/btn50Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn50Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -2340,7 +2313,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -2355,26 +2329,24 @@
                     android:layout_toStartOf="@+id/btn40Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn40Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn40Plus"
                     android:layout_toStartOf="@+id/btn40Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn40Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -2415,7 +2387,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -2430,26 +2403,24 @@
                     android:layout_toStartOf="@+id/btn31_5Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn31_5Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn31_5Plus"
                     android:layout_toStartOf="@+id/btn31_5Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn31_5Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -2490,7 +2461,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -2505,26 +2477,24 @@
                     android:layout_toStartOf="@+id/btn25Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn25Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn25Plus"
                     android:layout_toStartOf="@+id/btn25Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn25Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -2565,7 +2535,8 @@
                     android:layout_centerVertical="true"
                     android:max="60"
                     android:progress="30"
-                    android:thumb="@drawable/thumb"
+                    android:thumb="@drawable/thumbplaying"
+                    android:progressDrawable="@drawable/progress"
                     />
 
                 <TextView
@@ -2580,26 +2551,24 @@
                     android:layout_toStartOf="@+id/btn20Minus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn20Minus"
                     android:contentDescription="@string/minus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/minusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_minus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_toLeftOf="@+id/btn20Plus"
                     android:layout_toStartOf="@+id/btn20Plus"
                     />
 
-                <ImageButton
+                <com.edolfzoku.hayaemon2.HighlightImageButton
                     android:id="@+id/btn20Plus"
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/plusbutton"
-                    android:background="@null"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
@@ -2611,7 +2580,7 @@
             <Button
                 android:id="@+id/btnEqualizerSaveAs"
                 android:text="@string/saveAs"
-                android:textColor="@drawable/btn_text"
+                android:textColor="@color/btn_text"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_marginLeft="44dp"

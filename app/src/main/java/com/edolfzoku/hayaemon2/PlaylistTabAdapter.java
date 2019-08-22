@@ -70,12 +70,14 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
         holder.textPlaylistTab.setLongClickable(true);
 
         holder.textPlaylistTab.setText(item);
+        holder.textPlaylistTab.setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? android.R.color.white : android.R.color.black));
         if(position == mActivity.playlistFragment.getSelectedPlaylist()) {
             holder.textPlaylistTab.setContentDescription(item + "、選択ずみ");
             holder.textPlaylistTab.setTypeface(Typeface.DEFAULT_BOLD);
-            holder.relativePlaylistTab.setBackgroundResource(R.drawable.playlisttab_select);
+            holder.relativePlaylistTab.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.playlisttab_select_dark : R.drawable.playlisttab_select);
             holder.textPlaylistTab.setPadding(holder.textPlaylistTab.getPaddingLeft(), holder.textPlaylistTab.getPaddingTop(), 0, holder.textPlaylistTab.getPaddingBottom());
             holder.btnPlaylistMenu.setVisibility(View.VISIBLE);
+            holder.btnPlaylistMenu.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_button_more_blue_dark : R.drawable.ic_button_more_blue);
             holder.btnPlaylistMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -93,7 +95,7 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
         else {
             holder.textPlaylistTab.setContentDescription(item);
             holder.textPlaylistTab.setTypeface(Typeface.DEFAULT);
-            holder.relativePlaylistTab.setBackgroundResource(R.drawable.playlisttab_normal);
+            holder.relativePlaylistTab.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.playlisttab_normal_dark : R.drawable.playlisttab_normal);
             holder.textPlaylistTab.setPadding(holder.textPlaylistTab.getPaddingLeft(), holder.textPlaylistTab.getPaddingTop(), (int) (16 * mActivity.getDensity()), holder.textPlaylistTab.getPaddingBottom());
             holder.btnPlaylistMenu.setVisibility(View.GONE);
         }

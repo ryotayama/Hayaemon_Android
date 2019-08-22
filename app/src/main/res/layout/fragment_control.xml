@@ -34,7 +34,7 @@
         android:id="@+id/btnResetSpeed"
         android:text="@string/reset"
         android:textSize="11dp"
-        android:textColor="@drawable/btn_text"
+        android:textColor="@color/btn_text"
         android:background="@drawable/resetbutton"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
@@ -69,7 +69,7 @@
         android:focusable="true"
         />
     <View
-        android:id="@+id/deviderSpeedPitch"
+        android:id="@+id/viewSepBelowSpeed"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="#BFBFBF"
@@ -83,7 +83,7 @@
         android:background="@null"
         android:layout_marginTop="-22dp"
         android:layout_centerHorizontal="true"
-        android:layout_alignTop="@+id/deviderSpeedPitch"
+        android:layout_alignTop="@+id/viewSepBelowSpeed"
         />
     <TextView
         android:id="@+id/textPitch"
@@ -121,7 +121,7 @@
         android:id="@+id/btnResetPitch"
         android:text="@string/reset"
         android:textSize="11dp"
-        android:textColor="@drawable/btn_text"
+        android:textColor="@color/btn_text"
         android:background="@drawable/resetbutton"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
@@ -129,7 +129,7 @@
         android:layout_marginBottom="6dp"
         android:layout_marginRight="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_below="@+id/deviderSpeedPitch"
+        android:layout_below="@+id/viewSepBelowSpeed"
         android:layout_toLeftOf="@+id/btnLockPitch"
         android:layout_toStartOf="@+id/btnLockPitch"
         android:clickable="true"
@@ -149,13 +149,14 @@
         android:layout_marginEnd="8dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="4dp"
-        android:layout_below="@+id/deviderSpeedPitch"
+        android:layout_below="@+id/viewSepBelowSpeed"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:clickable="true"
         android:focusable="true"
         />
     <View
+        android:id="@+id/viewSepBelowPitch"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="#BFBFBF"
@@ -170,10 +171,10 @@
         android:layout_below="@id/btnResetPitch"
         >
         <View
-            android:id="@+id/line1"
+            android:id="@+id/viewLineHorizontal"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:background="#CCC"
+            android:background="@color/lightModeSep"
             android:layout_toRightOf="@+id/btnSpeedDown"
             android:layout_toEndOf="@+id/btnSpeedDown"
             android:layout_toLeftOf="@+id/btnSpeedUp"
@@ -182,10 +183,10 @@
             android:layout_margin="0dp"
             />
         <View
-            android:id="@+id/line2"
+            android:id="@+id/viewLineVertical"
             android:layout_width="1dp"
             android:layout_height="0dp"
-            android:background="#CCC"
+            android:background="@color/lightModeSep"
             android:layout_below="@+id/btnPitchUp"
             android:layout_above="@+id/btnPitchDown"
             android:layout_centerHorizontal="true"
@@ -207,9 +208,9 @@
         <ImageView
             android:id="@+id/imgPoint"
             android:contentDescription="@null"
-            android:src="@drawable/ic_point"
-            android:layout_height="20dp"
-            android:layout_width="20dp"
+            android:src="@drawable/ic_control_pointer"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:scaleType="centerCrop"
             android:layout_gravity="center"
             android:padding="0dp"

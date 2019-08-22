@@ -21,12 +21,20 @@ package com.edolfzoku.hayaemon2;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import java.lang.reflect.Field;
 import java.util.Locale;
 
 class PitchFragmentDialog extends BottomSheetDialog {
@@ -179,6 +187,75 @@ class PitchFragmentDialog extends BottomSheetDialog {
                 mActivity.controlFragment.clearFocus();
             }
         });
+
+        if(mActivity.isDarkMode()) {
+            RelativeLayout relativeDialogPitch = view.findViewById(R.id.relativeDialogPitch);
+            View viewSepDialogPitch = view.findViewById(R.id.viewSepDialogPitch);
+            TextView textViewPitchDot = view.findViewById(R.id.textViewPitchDot);
+
+            relativeDialogPitch.setBackgroundColor(view.getResources().getColor(R.color.darkModeBk));
+            viewSepDialogPitch.setBackgroundColor(view.getResources().getColor(R.color.darkModeSep));
+            btnSharp12.setTextColor(view.getResources().getColorStateList(R.color.btn_text_dark));
+            btnFlat12.setTextColor(view.getResources().getColorStateList(R.color.btn_text_dark));
+            btnResetDialogPitch.setTextColor(view.getResources().getColorStateList(R.color.btn_text_dark));
+            btnDoneDialogPitch.setTextColor(view.getResources().getColorStateList(R.color.btn_text_dark));
+            mIntNumberPicker1.setBackgroundColor(view.getResources().getColor(R.color.darkModeLightBk));
+            mIntNumberPicker2.setBackgroundColor(view.getResources().getColor(R.color.darkModeLightBk));
+            mIntNumberPicker3.setBackgroundColor(view.getResources().getColor(R.color.darkModeLightBk));
+            mDecNumberPicker.setBackgroundColor(view.getResources().getColor(R.color.darkModeLightBk));
+            setNumberPickerTextColor(mIntNumberPicker1, Color.WHITE);
+            setNumberPickerTextColor(mIntNumberPicker2, Color.WHITE);
+            setNumberPickerTextColor(mIntNumberPicker3, Color.WHITE);
+            setNumberPickerTextColor(mDecNumberPicker, Color.WHITE);
+            setDividerColor(mIntNumberPicker1, Color.rgb(38, 40, 44));
+            setDividerColor(mIntNumberPicker2, Color.rgb(38, 40, 44));
+            setDividerColor(mIntNumberPicker3, Color.rgb(38, 40, 44));
+            setDividerColor(mDecNumberPicker, Color.rgb(38, 40, 44));
+            textViewPitchDot.setTextColor(Color.WHITE);
+        }
+        else {
+            setDividerColor(mIntNumberPicker1, Color.rgb(192, 192, 192));
+            setDividerColor(mIntNumberPicker2, Color.rgb(192, 192, 192));
+            setDividerColor(mIntNumberPicker3, Color.rgb(192, 192, 192));
+            setDividerColor(mDecNumberPicker, Color.rgb(192, 192, 192));
+        }
+    }
+
+    private static void setNumberPickerTextColor(NumberPicker numberPicker, int color)
+    {
+        try{
+            Field selectorWheelPaintField = numberPicker.getClass()
+                    .getDeclaredField("mSelectorWheelPaint");
+            selectorWheelPaintField.setAccessible(true);
+            ((Paint)selectorWheelPaintField.get(numberPicker)).setColor(color);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        final int count = numberPicker.getChildCount();
+        for(int i = 0; i < count; i++){
+            View child = numberPicker.getChildAt(i);
+            if(child instanceof EditText)
+                ((EditText)child).setTextColor(color);
+        }
+        numberPicker.invalidate();
+    }
+
+    private void setDividerColor(NumberPicker picker, int color) {
+        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+        for (java.lang.reflect.Field pf : pickerFields) {
+            if (pf.getName().equals("mSelectionDivider")) {
+                pf.setAccessible(true);
+                try {
+                    ColorDrawable colorDrawable = new ColorDrawable(color);
+                    pf.set(picker, colorDrawable);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
     }
 
     public void setPitch(float fPitch) {

@@ -20,6 +20,7 @@ package com.edolfzoku.hayaemon2;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -43,6 +44,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
@@ -141,16 +143,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BroadcastReceiver mReceiver;
     private boolean mBound = false;
     private float mDensity;
+    private boolean mDarkMode = false;
 
     private AdView mAdView;
     private LinearLayout mLinearControl;
     private SeekBar mSeekCurPos;
-    private ImageView mImgViewDown;
+    private ImageView mImgViewDown, mImgViewArtworkInMenu;
     private TabLayout mTabLayout;
-    private View mViewSep1, mViewSep2;
-    private TextView mTextCurPos, mTextRemain, mTextTitle, mTextArtist, mTextRecordingTime;
-    private AnimationButton mBtnRewind, mBtnPlay, mBtnForward, mBtnShuffle, mBtnRepeat, mBtnRecord, mBtnPlayInPlayingBar, mBtnForwardInPlayingBar, mBtnRewindInPlayingBar, mBtnMoreInPlayingBar, mBtnShuffleInPlayingBar, mBtnRepeatInPlayingBar, mBtnCloseInPlayingBar, mBtnStopRecording, mBtnArtworkInPlayingBar;
-    private RelativeLayout mRelativeRecording, mRelativeSave, mRelativeLock, mRelativeAddSong, mRelativeItem, mRelativeReport, mRelativeReview, mRelativeHideAds, mRelativeInfo, mRelativePlayingWithShadow, mRelativePlaying;
+    private View mViewSep0, mViewSep1, mViewSep2, mViewSep3, mDividerMenu;
+    private TextView mTextCurPos, mTextRemain, mTextTitle, mTextArtist, mTextRecordingTime, mTextSave, mTextLock, mTextHideAds, mTextItemInMenu, mTextReport, mTextReview, mTextInfo, mTextAddSong, mTextPlaying, mTextTitleInMenu, mTextArtistInMenu;
+    private AnimationButton mBtnMenu, mBtnRewind, mBtnPlay, mBtnForward, mBtnShuffle, mBtnRepeat, mBtnRecord, mBtnPlayInPlayingBar, mBtnForwardInPlayingBar, mBtnRewindInPlayingBar, mBtnMoreInPlayingBar, mBtnShuffleInPlayingBar, mBtnRepeatInPlayingBar, mBtnCloseInPlayingBar, mBtnStopRecording, mBtnArtworkInPlayingBar, mBtnSetting, mBtnDarkMode;
+    private RelativeLayout mRelativeRecording, mRelativeSave, mRelativeLock, mRelativeAddSong, mRelativeItem, mRelativeReport, mRelativeReview, mRelativeHideAds, mRelativeInfo, mRelativePlayingWithShadow, mRelativePlaying, mRelativeLeftMenu;
 
     private GestureDetector mGestureDetector;
     private int mLastY = 0;
@@ -187,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public View getViewSep1() { return mViewSep1; }
     public TextView getTextRecordingTime() { return mTextRecordingTime; }
     public AnimationButton getBtnStopRecording() { return mBtnStopRecording; }
+    public boolean isDarkMode() { return mDarkMode; }
 
     public MainActivity() { }
 
@@ -216,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnPlayInPlayingBar = findViewById(R.id.btnPlayInPlayingBar);
         mBtnForward = findViewById(R.id.btnForward);
         mBtnForwardInPlayingBar = findViewById(R.id.btnForwardInPlayingBar);
+        mBtnMenu = findViewById(R.id.btnMenu);
         mBtnRewind = findViewById(R.id.btnRewind);
         mBtnRewindInPlayingBar = findViewById(R.id.btnRewindInPlayingBar);
         mBtnCloseInPlayingBar = findViewById(R.id.btnCloseInPlayingBar);
@@ -225,15 +230,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRelativePlaying = findViewById(R.id.relativePlaying);
         mSeekCurPos = findViewById(R.id.seekCurPos);
         mImgViewDown = findViewById(R.id.imgViewDown);
+        mImgViewArtworkInMenu = findViewById(R.id.imgViewArtworkInMenu);
         mBtnArtworkInPlayingBar = findViewById(R.id.btnArtworkInPlayingBar);
         mRelativePlayingWithShadow = findViewById(R.id.relativePlayingWithShadow);
         mTextCurPos = findViewById(R.id.textCurPos);
         mTextRemain = findViewById(R.id.textRemain);
         mTabLayout = findViewById(R.id.tabs);
+        mViewSep0 = findViewById(R.id.viewSep0);
         mViewSep1 = findViewById(R.id.viewSep1);
         mViewSep2 = findViewById(R.id.viewSep2);
+        mViewSep3 = findViewById(R.id.viewSep3);
+        mDividerMenu = findViewById(R.id.dividerMenu);
         mTextTitle = findViewById(R.id.textTitleInPlayingBar);
+        mTextTitleInMenu = findViewById(R.id.textTitleInMenu);
         mTextArtist = findViewById(R.id.textArtistInPlayingBar);
+        mTextArtistInMenu = findViewById(R.id.textArtistInMenu);
         mRelativeRecording = findViewById(R.id.relativeRecording);
         mLinearControl = findViewById(R.id.linearControl);
         mRelativeSave = findViewById(R.id.relativeSave);
@@ -246,7 +257,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRelativeInfo = findViewById(R.id.relativeInfo);
         mTextRecordingTime = findViewById(R.id.textRecordingTime);
         mBtnStopRecording = findViewById(R.id.btnStopRecording);
+        mRelativeLeftMenu = findViewById(R.id.relativeLeftMenu);
+        mTextSave = findViewById(R.id.textSave);
+        mTextLock = findViewById(R.id.textLock);
+        mTextHideAds = findViewById(R.id.textHideAds);
+        mTextItemInMenu = findViewById(R.id.textItemInMenu);
+        mTextReport = findViewById(R.id.textReport);
+        mTextReview = findViewById(R.id.textReview);
+        mTextInfo = findViewById(R.id.textInfo);
+        mTextAddSong = findViewById(R.id.textAddSong);
+        mTextPlaying = findViewById(R.id.textPlaying);
+        mBtnSetting = findViewById(R.id.btnSetting);
+        mBtnDarkMode = findViewById(R.id.btnDarkMode);
         AnimationButton btnSetting = findViewById(R.id.btnSetting);
+        AnimationButton btnDarkMode = findViewById(R.id.btnDarkMode);
 
         initialize(savedInstanceState);
         loadData();
@@ -328,6 +352,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRelativeInfo.setOnTouchListener(this);
         mRelativeInfo.setOnClickListener(this);
         btnSetting.setOnClickListener(this);
+        btnDarkMode.setOnClickListener(this);
 
         mBtnPlayInPlayingBar.setOnClickListener(this);
         mBtnForwardInPlayingBar.setOnClickListener(this);
@@ -340,7 +365,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnShuffleInPlayingBar.setOnClickListener(this);
         mBtnRepeatInPlayingBar.setOnClickListener(this);
         mBtnMoreInPlayingBar.setOnClickListener(this);
-        mSeekCurPos.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
         mSeekCurPos.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -373,8 +397,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static void setSystemBarTheme(final Activity pActivity, final boolean pIsDark) {
+        MainActivity activity = (MainActivity)pActivity;
         final int lFlags = pActivity.getWindow().getDecorView().getSystemUiVisibility();
-        pActivity.getWindow().getDecorView().setSystemUiVisibility(pIsDark ? (lFlags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (lFlags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
+        pActivity.getWindow().getDecorView().setSystemUiVisibility(activity.mDarkMode ? (lFlags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (lFlags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
     }
 
     @Override
@@ -453,14 +478,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         if(newState == DrawerLayout.STATE_IDLE)
         {
-            mRelativeSave.setBackgroundColor(Color.argb(255, 255, 255, 255));
-            mRelativeLock.setBackgroundColor(Color.argb(255, 255, 255, 255));
-            mRelativeAddSong.setBackgroundColor(Color.argb(255, 255, 255, 255));
-            mRelativeHideAds.setBackgroundColor(Color.argb(255, 255, 255, 255));
-            mRelativeItem.setBackgroundColor(Color.argb(255, 255, 255, 255));
-            mRelativeReport.setBackgroundColor(Color.argb(255, 255, 255, 255));
-            mRelativeReview.setBackgroundColor(Color.argb(255, 255, 255, 255));
-            mRelativeInfo.setBackgroundColor(Color.argb(255, 255, 255, 255));
+            int color = getResources().getColor(mDarkMode ? R.color.darkModeBk : R.color.lightModeBk);
+            mRelativeSave.setBackgroundColor(color);
+            mRelativeLock.setBackgroundColor(color);
+            mRelativeAddSong.setBackgroundColor(color);
+            mRelativeHideAds.setBackgroundColor(color);
+            mRelativeItem.setBackgroundColor(color);
+            mRelativeReport.setBackgroundColor(color);
+            mRelativeReview.setBackgroundColor(color);
+            mRelativeInfo.setBackgroundColor(color);
         }
     }
 
@@ -656,7 +682,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mShowUpdateLog = false;
 
             LayoutInflater inflater = getLayoutInflater();
-            final View layout = inflater.inflate(R.layout.updatelogdialog,
+            final View layout = inflater.inflate(mDarkMode ? R.layout.updatelogdialog_dark : R.layout.updatelogdialog,
                     (ViewGroup)findViewById(R.id.layout_root));
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             TextView textUpdatelogTitle = layout.findViewById(R.id.textUpdatelogTitle);
@@ -894,47 +920,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(nShuffle == 1)
         {
             mBtnShuffle.setContentDescription(getString(R.string.shuffleOn));
-            mBtnShuffle.setImageResource(R.drawable.ic_bar_button_mode_shuffle_on);
+            mBtnShuffle.setImageResource(mDarkMode ? R.drawable.ic_bar_button_mode_shuffle_on_dark : R.drawable.ic_bar_button_mode_shuffle_on);
             mBtnShuffleInPlayingBar.setContentDescription(getString(R.string.shuffleOn));
-            mBtnShuffleInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_shuffle_on);
+            mBtnShuffleInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_playing_large_mode_shuffle_on_dark : R.drawable.ic_playing_large_mode_shuffle_on);
         }
         else if(nShuffle == 2)
         {
             mBtnShuffle.setContentDescription(getString(R.string.singleOn));
-            mBtnShuffle.setImageResource(R.drawable.ic_bar_button_mode_single_on);
+            mBtnShuffle.setImageResource(mDarkMode ? R.drawable.ic_bar_button_mode_single_on_dark : R.drawable.ic_bar_button_mode_single_on);
             mBtnShuffleInPlayingBar.setContentDescription(getString(R.string.singleOn));
-            mBtnShuffleInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_single_on);
+            mBtnShuffleInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_playing_large_mode_single_on_dark : R.drawable.ic_playing_large_mode_single_on);
         }
         else
         {
             mBtnShuffle.setContentDescription(getString(R.string.shuffleOff));
-            mBtnShuffle.setImageResource(R.drawable.ic_bar_button_mode_shuffle);
+            mBtnShuffle.setImageResource(mDarkMode ? R.drawable.ic_bar_button_mode_shuffle_dark : R.drawable.ic_bar_button_mode_shuffle);
             mBtnShuffleInPlayingBar.setContentDescription(getString(R.string.shuffleOff));
-            mBtnShuffleInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_shuffle);
+            mBtnShuffleInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_playing_large_mode_shuffle_dark : R.drawable.ic_playing_large_mode_shuffle);
         }
 
         int nRepeat = preferences.getInt("repeatmode", 0);
         if(nRepeat == 1)
         {
             mBtnRepeat.setContentDescription(getString(R.string.repeatAllOn));
-            mBtnRepeat.setImageResource(R.drawable.ic_bar_button_mode_repeat_all_on);
+            mBtnRepeat.setImageResource(mDarkMode ? R.drawable.ic_bar_button_mode_repeat_all_on_dark : R.drawable.ic_bar_button_mode_repeat_all_on);
             mBtnRepeatInPlayingBar.setContentDescription(getString(R.string.repeatAllOn));
-            mBtnRepeatInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_repeat_all_on);
+            mBtnRepeatInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_playing_large_mode_repeat_all_on_dark : R.drawable.ic_playing_large_mode_repeat_all_on);
         }
         else if(nRepeat == 2)
         {
             mBtnRepeat.setContentDescription(getString(R.string.repeatSingleOn));
-            mBtnRepeat.setImageResource(R.drawable.ic_bar_button_mode_repeat_single_on);
+            mBtnRepeat.setImageResource(mDarkMode ? R.drawable.ic_bar_button_mode_repeat_single_on_dark : R.drawable.ic_bar_button_mode_repeat_single_on);
             mBtnRepeatInPlayingBar.setContentDescription(getString(R.string.repeatSingleOn));
-            mBtnRepeatInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_repeat_one_on);
+            mBtnRepeatInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_playing_large_mode_repeat_one_on_dark : R.drawable.ic_playing_large_mode_repeat_one_on);
         }
         else
         {
             mBtnRepeat.setContentDescription(getString(R.string.repeatOff));
-            mBtnRepeat.setImageResource(R.drawable.ic_bar_button_mode_repeat);
+            mBtnRepeat.setImageResource(mDarkMode ? R.drawable.ic_bar_button_mode_repeat_dark : R.drawable.ic_bar_button_mode_repeat);
             mBtnRepeatInPlayingBar.setContentDescription(getString(R.string.repeatOff));
-            mBtnRepeatInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_repeat_all);
+            mBtnRepeatInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_playing_large_mode_repeat_all_dark : R.drawable.ic_playing_large_mode_repeat_all);
         }
+
+        boolean darkMode = preferences.getBoolean("DarkMode", false);
+        if(darkMode) setDarkMode(false);
     }
 
     @Override
@@ -946,7 +975,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 playlistFragment.startRecord();
             else
             {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder;
+                if(mDarkMode)
+                    builder = new AlertDialog.Builder(this, R.style.DarkModeDialog);
+                else
+                    builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.permitMicError);
                 builder.setMessage(R.string.permitMicErrorDetail);
                 builder.setPositiveButton("OK", null);
@@ -1086,14 +1119,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(event.getAction() == MotionEvent.ACTION_UP)
         {
-            mRelativeSave.setBackgroundColor(Color.argb(255, 255, 255, 255));
-            mRelativeLock.setBackgroundColor(Color.argb(255, 255, 255, 255));
-            mRelativeAddSong.setBackgroundColor(Color.argb(255, 255, 255, 255));
-            mRelativeHideAds.setBackgroundColor(Color.argb(255, 255, 255, 255));
-            mRelativeItem.setBackgroundColor(Color.argb(255, 255, 255, 255));
-            mRelativeReport.setBackgroundColor(Color.argb(255, 255, 255, 255));
-            mRelativeReview.setBackgroundColor(Color.argb(255, 255, 255, 255));
-            mRelativeInfo.setBackgroundColor(Color.argb(255, 255, 255, 255));
+            int color = getResources().getColor(mDarkMode ? R.color.darkModeBk : R.color.lightModeBk);
+            mRelativeSave.setBackgroundColor(color);
+            mRelativeLock.setBackgroundColor(color);
+            mRelativeAddSong.setBackgroundColor(color);
+            mRelativeHideAds.setBackgroundColor(color);
+            mRelativeItem.setBackgroundColor(color);
+            mRelativeReport.setBackgroundColor(color);
+            mRelativeReview.setBackgroundColor(color);
+            mRelativeInfo.setBackgroundColor(color);
             if(v.getId() == R.id.btnRewind || v.getId() == R.id.btnRewindInPlayingBar)
             {
                 if(sStream == 0) return false;
@@ -1116,22 +1150,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(event.getAction() == MotionEvent.ACTION_DOWN)
         {
-            if(v.getId() == R.id.relativeSave)
-                mRelativeSave.setBackgroundColor(Color.argb(255, 229, 229, 229));
-            if(v.getId() == R.id.relativeLock)
-                mRelativeLock.setBackgroundColor(Color.argb(255, 229, 229, 229));
-            if(v.getId() == R.id.relativeAddSong)
-                mRelativeAddSong.setBackgroundColor(Color.argb(255, 229, 229, 229));
-            if(v.getId() == R.id.relativeHideAds)
-                mRelativeHideAds.setBackgroundColor(Color.argb(255, 229, 229, 229));
-            if(v.getId() == R.id.relativeItem)
-                mRelativeItem.setBackgroundColor(Color.argb(255, 229, 229, 229));
-            if(v.getId() == R.id.relativeReport)
-                mRelativeReport.setBackgroundColor(Color.argb(255, 229, 229, 229));
-            if(v.getId() == R.id.relativeReview)
-                mRelativeReview.setBackgroundColor(Color.argb(255, 229, 229, 229));
-            if(v.getId() == R.id.relativeInfo)
-                mRelativeInfo.setBackgroundColor(Color.argb(255, 229, 229, 229));
+            int color = mDarkMode ? getResources().getColor(R.color.darkModeLightBk) : Color.argb(255, 229, 229, 229);
+            if(v.getId() == R.id.relativeSave) mRelativeSave.setBackgroundColor(color);
+            if(v.getId() == R.id.relativeLock) mRelativeLock.setBackgroundColor(color);
+            if(v.getId() == R.id.relativeAddSong) mRelativeAddSong.setBackgroundColor(color);
+            if(v.getId() == R.id.relativeHideAds) mRelativeHideAds.setBackgroundColor(color);
+            if(v.getId() == R.id.relativeItem) mRelativeItem.setBackgroundColor(color);
+            if(v.getId() == R.id.relativeReport) mRelativeReport.setBackgroundColor(color);
+            if(v.getId() == R.id.relativeReview) mRelativeReview.setBackgroundColor(color);
+            if(v.getId() == R.id.relativeInfo) mRelativeInfo.setBackgroundColor(color);
         }
         return false;
     }
@@ -1165,7 +1192,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 playlistFragment.setSelectedItem(playlistFragment.getPlaying());
 
                 SongItem item = playlistFragment.getPlaylists().get(playlistFragment.getPlayingPlaylist()).get(playlistFragment.getPlaying());
-                ImageView imgViewArtworkInMenu = findViewById(R.id.imgViewArtworkInMenu);
                 Bitmap bitmap = null;
                 if(item.getPathArtwork() != null && !item.getPathArtwork().equals("")) {
                     bitmap = BitmapFactory.decodeFile(item.getPathArtwork());
@@ -1184,8 +1210,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         mmr.release();
                     }
                 }
-                if(bitmap != null) imgViewArtworkInMenu.setImageBitmap(bitmap);
-                else imgViewArtworkInMenu.setImageResource(R.drawable.ic_playing_large_artwork);
+                if(bitmap != null) mImgViewArtworkInMenu.setImageBitmap(bitmap);
+                else mImgViewArtworkInMenu.setImageResource(mDarkMode ? R.drawable.ic_playing_large_artwork_dark : R.drawable.ic_playing_large_artwork);
                 TextView textTitleInMenu = findViewById(R.id.textTitleInMenu);
                 textTitleInMenu.setText(item.getTitle());
                 TextView textArtistInMenu = findViewById(R.id.textArtistInMenu);
@@ -1219,23 +1245,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             if(mBtnShuffle.getContentDescription().toString().equals(getString(R.string.shuffleOff))) {
                 mBtnShuffle.setContentDescription(getString(R.string.shuffleOn));
-                mBtnShuffle.setImageResource(R.drawable.ic_bar_button_mode_shuffle_on);
+                mBtnShuffle.setImageResource(mDarkMode ? R.drawable.ic_bar_button_mode_shuffle_on_dark : R.drawable.ic_bar_button_mode_shuffle_on);
                 mBtnShuffleInPlayingBar.setContentDescription(getString(R.string.shuffleOn));
-                mBtnShuffleInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_shuffle_on);
+                mBtnShuffleInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_playing_large_mode_shuffle_on_dark : R.drawable.ic_playing_large_mode_shuffle_on);
                 sendAccessibilityEvent(getString(R.string.shuffleOn), v);
             }
             else if(mBtnShuffle.getContentDescription().toString().equals(getString(R.string.shuffleOn))) {
                 mBtnShuffle.setContentDescription(getString(R.string.singleOn));
-                mBtnShuffle.setImageResource(R.drawable.ic_bar_button_mode_single_on);
+                mBtnShuffle.setImageResource(mDarkMode ? R.drawable.ic_bar_button_mode_single_on_dark : R.drawable.ic_bar_button_mode_single_on);
                 mBtnShuffleInPlayingBar.setContentDescription(getString(R.string.singleOn));
-                mBtnShuffleInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_single_on);
+                mBtnShuffleInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_playing_large_mode_single_on_dark : R.drawable.ic_playing_large_mode_single_on);
                 sendAccessibilityEvent(getString(R.string.singleOn), v);
             }
             else {
                 mBtnShuffle.setContentDescription(getString(R.string.shuffleOff));
-                mBtnShuffle.setImageResource(R.drawable.ic_bar_button_mode_shuffle);
+                mBtnShuffle.setImageResource(mDarkMode ? R.drawable.ic_bar_button_mode_shuffle_dark : R.drawable.ic_bar_button_mode_shuffle);
                 mBtnShuffleInPlayingBar.setContentDescription(getString(R.string.shuffleOff));
-                mBtnShuffleInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_shuffle);
+                mBtnShuffleInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_playing_large_mode_shuffle_dark : R.drawable.ic_playing_large_mode_shuffle);
                 sendAccessibilityEvent(getString(R.string.shuffleOff), v);
             }
             playlistFragment.saveFiles(false, false, false, false, true);
@@ -1244,23 +1270,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             if(mBtnRepeat.getContentDescription().toString().equals(getString(R.string.repeatOff))) {
                 mBtnRepeat.setContentDescription(getString(R.string.repeatAllOn));
-                mBtnRepeat.setImageResource(R.drawable.ic_bar_button_mode_repeat_all_on);
+                mBtnRepeat.setImageResource(mDarkMode ? R.drawable.ic_bar_button_mode_repeat_all_on_dark : R.drawable.ic_bar_button_mode_repeat_all_on);
                 mBtnRepeatInPlayingBar.setContentDescription(getString(R.string.repeatAllOn));
-                mBtnRepeatInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_repeat_all_on);
+                mBtnRepeatInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_playing_large_mode_repeat_all_on_dark : R.drawable.ic_playing_large_mode_repeat_all_on);
                 sendAccessibilityEvent(getString(R.string.repeatAllOn), v);
             }
             else if(mBtnRepeat.getContentDescription().toString().equals(getString(R.string.repeatAllOn))) {
                 mBtnRepeat.setContentDescription(getString(R.string.repeatSingleOn));
-                mBtnRepeat.setImageResource(R.drawable.ic_bar_button_mode_repeat_single_on);
+                mBtnRepeat.setImageResource(mDarkMode ? R.drawable.ic_bar_button_mode_repeat_single_on_dark : R.drawable.ic_bar_button_mode_repeat_single_on);
                 mBtnRepeatInPlayingBar.setContentDescription(getString(R.string.repeatSingleOn));
-                mBtnRepeatInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_repeat_one_on);
+                mBtnRepeatInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_playing_large_mode_repeat_one_on_dark : R.drawable.ic_playing_large_mode_repeat_one_on);
                 sendAccessibilityEvent(getString(R.string.repeatSingleOn), v);
             }
             else {
                 mBtnRepeat.setContentDescription(getString(R.string.repeatOff));
-                mBtnRepeat.setImageResource(R.drawable.ic_bar_button_mode_repeat);
+                mBtnRepeat.setImageResource(mDarkMode ? R.drawable.ic_bar_button_mode_repeat_dark : R.drawable.ic_bar_button_mode_repeat);
                 mBtnRepeatInPlayingBar.setContentDescription(getString(R.string.repeatOff));
-                mBtnRepeatInPlayingBar.setImageResource(R.drawable.ic_playing_large_mode_repeat_all);
+                mBtnRepeatInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_playing_large_mode_repeat_all_dark : R.drawable.ic_playing_large_mode_repeat_all);
                 sendAccessibilityEvent(getString(R.string.repeatOff), v);
             }
             playlistFragment.saveFiles(false, false, false, false, true);
@@ -1293,7 +1319,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             final BottomMenu menu = new BottomMenu(this);
             menu.setTitle(getString(R.string.addSong));
-            menu.addMenu(getString(R.string.addFromLocal), R.drawable.ic_actionsheet_music, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.addFromLocal), mDarkMode ? R.drawable.ic_actionsheet_music_dark : R.drawable.ic_actionsheet_music, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
@@ -1301,7 +1327,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
             if(Build.VERSION.SDK_INT >= 18) {
-                menu.addMenu(getString(R.string.addFromVideo), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.addFromVideo), mDarkMode ? R.drawable.ic_actionsheet_film_dark : R.drawable.ic_actionsheet_film, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
@@ -1309,17 +1335,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
             }
-            final Activity activity = this;
-            menu.addMenu(getString(R.string.addURL), R.drawable.ic_actionsheet_globe, new View.OnClickListener() {
+            final MainActivity activity = this;
+            menu.addMenu(getString(R.string.addURL), mDarkMode ? R.drawable.ic_actionsheet_globe_dark : R.drawable.ic_actionsheet_globe, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                    AlertDialog.Builder builder;
+                    if(mDarkMode)
+                        builder = new AlertDialog.Builder(activity, R.style.DarkModeDialog);
+                    else
+                        builder = new AlertDialog.Builder(activity);
                     builder.setTitle(R.string.addURL);
                     LinearLayout linearLayout = new LinearLayout(activity);
                     linearLayout.setOrientation(LinearLayout.VERTICAL);
-                    final ClearableEditText editURL = new ClearableEditText(activity);
+                    final ClearableEditText editURL = new ClearableEditText(activity, activity.isDarkMode());
                     editURL.setHint(R.string.URL);
                     editURL.setText("");
                     linearLayout.addView(editURL);
@@ -1397,7 +1427,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             mDrawerLayout.closeDrawer(Gravity.START);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder;
+            if(mDarkMode)
+                builder = new AlertDialog.Builder(this, R.style.DarkModeDialog);
+            else
+                builder = new AlertDialog.Builder(this);
             try {
                 String strVersionName = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
                 builder.setMessage(String.format(Locale.getDefault(), "%s: Android ver.%s", getString(R.string.version), strVersionName));
@@ -1433,6 +1467,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mDrawerLayout.closeDrawer(Gravity.START);
             openSetting();
         }
+        else if(v.getId() == R.id.btnDarkMode) {
+            mDrawerLayout.closeDrawer(Gravity.START);
+            if(mDarkMode) setLightMode();
+            else setDarkMode(true);
+        }
         else if(v.getId() == R.id.btnPlayInPlayingBar)
             playlistFragment.onPlayBtnClick();
         else if(v.getId() == R.id.btnForwardInPlayingBar)
@@ -1451,21 +1490,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             playlistFragment.setSelectedItem(nPlaying);
             SongItem item = playlistFragment.getPlaylists().get(playlistFragment.getPlayingPlaylist()).get(nPlaying);
             menu.setTitle(item.getTitle());
-            menu.addMenu(getString(R.string.saveExport), R.drawable.ic_actionsheet_save, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.saveExport), mDarkMode ? R.drawable.ic_actionsheet_save_dark : R.drawable.ic_actionsheet_save, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
                     showSaveExportMenu();
                 }
             });
-            menu.addMenu(getString(R.string.changeTitleAndArtist), R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.changeTitleAndArtist), mDarkMode ? R.drawable.ic_actionsheet_edit_dark : R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
                     playlistFragment.changeTitleAndArtist(nPlaying);
                 }
             });
-            menu.addMenu(getString(R.string.showLyrics), R.drawable.ic_actionsheet_file_text, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.showLyrics), mDarkMode ? R.drawable.ic_actionsheet_file_text_dark : R.drawable.ic_actionsheet_file_text, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
@@ -1478,7 +1517,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             final EffectSaver saver = arEffectSavers.get(nPlaying);
             if(saver.isSave())
             {
-                menu.addMenu(getString(R.string.cancelRestoreEffect), R.drawable.ic_actionsheet_unlock, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.cancelRestoreEffect), mDarkMode ? R.drawable.ic_actionsheet_unlock_dark : R.drawable.ic_actionsheet_unlock, new View.OnClickListener() {
                     @Override
                     public void onClick(View view)
                     {
@@ -1492,7 +1531,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             else
             {
-                menu.addMenu(getString(R.string.restoreEffect), R.drawable.ic_actionsheet_lock, new View.OnClickListener() {
+                menu.addMenu(getString(R.string.restoreEffect), mDarkMode ? R.drawable.ic_actionsheet_lock_dark : R.drawable.ic_actionsheet_lock, new View.OnClickListener() {
                     @Override
                     public void onClick(View view)
                     {
@@ -1511,7 +1550,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             final SongItem item = playlistFragment.getPlaylists().get(playlistFragment.getPlayingPlaylist()).get(nPlaying);
             final BottomMenu menu = new BottomMenu(this);
             menu.setTitle(getString(R.string.changeArtwork));
-            menu.addMenu(getString(R.string.setImage), R.drawable.ic_actionsheet_image, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.setImage), mDarkMode ? R.drawable.ic_actionsheet_image_dark : R.drawable.ic_actionsheet_image, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
@@ -1532,11 +1571,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
             if(item.getPathArtwork() != null && !item.getPathArtwork().equals("")) {
                 final MainActivity activity = this;
-                menu.addDestructiveMenu(getString(R.string.resetArtwork), R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
+                menu.addDestructiveMenu(getString(R.string.resetArtwork), mDarkMode ? R.drawable.ic_actionsheet_initialize_dark : R.drawable.ic_actionsheet_initialize, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                        AlertDialog.Builder builder;
+                        if(mDarkMode)
+                            builder = new AlertDialog.Builder(activity, R.style.DarkModeDialog);
+                        else
+                            builder = new AlertDialog.Builder(activity);
                         builder.setTitle(R.string.resetArtwork);
                         builder.setMessage(R.string.askResetArtwork);
                         builder.setPositiveButton(getString(R.string.decideNot), null);
@@ -1557,7 +1600,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     alertDialog.getWindow().setAttributes(lp);
                                 }
                                 Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                                negativeButton.setTextColor(Color.argb(255, 255, 0, 0));
+                                negativeButton.setTextColor(mDarkMode ? getResources().getColor(R.color.darkModeRed) : Color.argb(255, 255, 0, 0));
                             }
                         });
                         alertDialog.show();
@@ -1578,7 +1621,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnArtworkInPlayingBar.setClickable(true);
         final long lDuration = 400;
         int nScreenWidth = getResources().getDisplayMetrics().widthPixels;
-        mRelativePlayingWithShadow.setBackgroundResource(R.drawable.playingview);
+        mRelativePlayingWithShadow.setBackgroundResource(mDarkMode ? R.drawable.playingview_dark : R.drawable.playingview);
         RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams) mViewPager.getLayoutParams();
         RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams) mRelativeRecording.getLayoutParams();
         if (MainActivity.sRecord != 0) {
@@ -1689,9 +1732,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnRepeatInPlayingBar.setVisibility(View.VISIBLE);
 
         if (BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PLAYING)
-            mBtnPlayInPlayingBar.setImageResource(R.drawable.ic_playing_large_play);
-        else mBtnPlayInPlayingBar.setImageResource(R.drawable.ic_playing_large_pause);
-        mBtnForwardInPlayingBar.setImageResource(R.drawable.ic_playing_large_forward);
+            mBtnPlayInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_playing_large_play_dark : R.drawable.ic_playing_large_play);
+        else mBtnPlayInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_playing_large_pause_dark : R.drawable.ic_playing_large_pause);
+        mBtnForwardInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_playing_large_forward_dark : R.drawable.ic_playing_large_forward);
 
         mImgViewDown.animate().alpha(1.0f).setDuration(lDuration);
         mSeekCurPos.animate().alpha(1.0f).setDuration(lDuration);
@@ -1711,7 +1754,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         final MainActivity activity = this;
         final long lDuration = 400;
-        mRelativePlayingWithShadow.setBackgroundResource(R.drawable.topshadow);
+        mRelativePlayingWithShadow.setBackgroundResource(mDarkMode ? R.drawable.topshadow_dark : R.drawable.topshadow);
 
         final RelativeLayout.LayoutParams paramArtwork = (RelativeLayout.LayoutParams) mBtnArtworkInPlayingBar.getLayoutParams();
         final RelativeLayout.LayoutParams paramTitle = (RelativeLayout.LayoutParams) mTextTitle.getLayoutParams();
@@ -1851,9 +1894,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         anim.setDuration(lDuration).start();
 
         if (BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PLAYING)
-            mBtnPlayInPlayingBar.setImageResource(R.drawable.ic_bar_button_play);
-        else mBtnPlayInPlayingBar.setImageResource(R.drawable.ic_bar_button_pause);
-        mBtnForwardInPlayingBar.setImageResource(R.drawable.ic_bar_button_forward);
+            mBtnPlayInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_bar_button_play_dark : R.drawable.ic_bar_button_play);
+        else mBtnPlayInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_bar_button_pause_dark : R.drawable.ic_bar_button_pause);
+        mBtnForwardInPlayingBar.setImageResource(mDarkMode ? R.drawable.ic_bar_button_forward_dark : R.drawable.ic_bar_button_forward);
 
         mImgViewDown.animate().alpha(0.0f).setDuration(lDuration);
         mSeekCurPos.animate().alpha(0.0f).setDuration(lDuration);
@@ -1873,7 +1916,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         final BottomMenu menu = new BottomMenu(this);
         menu.setTitle(getString(R.string.saveExport));
-        menu.addMenu(getString(R.string.saveToApp), R.drawable.ic_actionsheet_save, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.saveToApp), mDarkMode ? R.drawable.ic_actionsheet_save_dark : R.drawable.ic_actionsheet_save, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
@@ -1881,7 +1924,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         if(Build.VERSION.SDK_INT >= 18) {
-            menu.addMenu(getString(R.string.saveAsVideo), R.drawable.ic_actionsheet_film, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.saveAsVideo), mDarkMode ? R.drawable.ic_actionsheet_film_dark : R.drawable.ic_actionsheet_film, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     menu.dismiss();
@@ -1889,7 +1932,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
-        menu.addMenu(getString(R.string.export), R.drawable.ic_actionsheet_share, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.export), mDarkMode ? R.drawable.ic_actionsheet_share_dark : R.drawable.ic_actionsheet_share, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menu.dismiss();
@@ -2124,7 +2167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     TextView textView = (TextView)tab.getCustomView();
                     if(textView == null) continue;
                     if(i == position) {
-                        int color = Color.parseColor("#FF007AFF");
+                        int color = getResources().getColor(mDarkMode ? R.color.darkModeBlue : R.color.lightModeBlue);
                         textView.setTextColor(color);
                         for (Drawable drawable : textView.getCompoundDrawables()) {
                             if (drawable != null)
@@ -2205,14 +2248,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_UP) {
-                    findViewById(R.id.relativeSave).setBackgroundColor(Color.argb(255, 255, 255, 255));
-                    findViewById(R.id.relativeLock).setBackgroundColor(Color.argb(255, 255, 255, 255));
-                    findViewById(R.id.relativeAddSong).setBackgroundColor(Color.argb(255, 255, 255, 255));
-                    findViewById(R.id.relativeHideAds).setBackgroundColor(Color.argb(255, 255, 255, 255));
-                    findViewById(R.id.relativeItem).setBackgroundColor(Color.argb(255, 255, 255, 255));
-                    findViewById(R.id.relativeReport).setBackgroundColor(Color.argb(255, 255, 255, 255));
-                    findViewById(R.id.relativeReview).setBackgroundColor(Color.argb(255, 255, 255, 255));
-                    findViewById(R.id.relativeInfo).setBackgroundColor(Color.argb(255, 255, 255, 255));
+                    int color = getResources().getColor(mDarkMode ? R.color.darkModeBk : R.color.lightModeBk);
+                    findViewById(R.id.relativeSave).setBackgroundColor(color);
+                    findViewById(R.id.relativeLock).setBackgroundColor(color);
+                    findViewById(R.id.relativeAddSong).setBackgroundColor(color);
+                    findViewById(R.id.relativeHideAds).setBackgroundColor(color);
+                    findViewById(R.id.relativeItem).setBackgroundColor(color);
+                    findViewById(R.id.relativeReport).setBackgroundColor(color);
+                    findViewById(R.id.relativeReview).setBackgroundColor(color);
+                    findViewById(R.id.relativeInfo).setBackgroundColor(color);
                 }
                 return false;
             }
@@ -2563,4 +2607,410 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     };
+
+    public void setLightMode() {
+        SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        preferences.edit().putBoolean("DarkMode", false).apply();
+
+        mDarkMode = false;
+
+        boolean bNoArtwork = false;
+        Bitmap bitmap = null;
+        if(sStream != 0) {
+            SongItem item = playlistFragment.getPlaylists().get(playlistFragment.getPlayingPlaylist()).get(playlistFragment.getPlaying());
+            if (item.getPathArtwork() == null || item.getPathArtwork().equals("")) {
+                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                try {
+                    mmr.setDataSource(getApplicationContext(), Uri.parse(item.getPath()));
+                    byte[] data = mmr.getEmbeddedPicture();
+                    if (data != null) bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    mmr.release();
+                }
+            }
+            if (bitmap == null) bNoArtwork = true;
+        }
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+        final RelativeLayout relativeMain = findViewById(R.id.relativeMain);
+        final ArgbEvaluator eval = new ArgbEvaluator();
+        final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
+        final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
+        final int nLightModeText = getResources().getColor(android.R.color.black);
+        final int nDarkModeText = getResources().getColor(android.R.color.white);
+        final int nLightModeSep = getResources().getColor(R.color.lightModeSep);
+        final int nDarkModeSep = getResources().getColor(R.color.darkModeSep);
+        final int nLightModeBlue = getResources().getColor(R.color.lightModeBlue);
+        final int nDarkModeBlue = getResources().getColor(R.color.darkModeBlue);
+        final TabLayout.Tab tab = mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition());
+        final TextView textView = (tab == null) ? null : (TextView) tab.getCustomView();
+        int nColorBefore;
+        if(mTextArtist.getText() == null || mTextArtist.getText().equals(""))
+            nColorBefore = Color.argb(255, 147, 156, 160);
+        else nColorBefore = getResources().getColor(R.color.lightModeGray);
+        int nColorAfter;
+        if(mTextArtist.getText() == null || mTextArtist.getText().equals(""))
+            nColorAfter = getResources().getColor(R.color.darkModeTextDarkGray);
+        else nColorAfter = getResources().getColor(R.color.darkModeGray);
+        final int nLightModeArtist = nColorBefore;
+        final int nDarkModeArtist = nColorAfter;
+        final int nLightModeTextDarkGray = getResources().getColor(R.color.lightModeTextDarkGray);
+        final int nDarkModeTextDarkGray = getResources().getColor(R.color.darkModeTextDarkGray);
+
+        ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float fProgress = valueAnimator.getAnimatedFraction();
+                int nColorModeBk = (Integer)eval.evaluate(fProgress, nDarkModeBk, nLightModeBk);
+                int nColorModeSep = (Integer)eval.evaluate(fProgress, nDarkModeSep, nLightModeSep);
+                int nColorModeBlue = (Integer)eval.evaluate(fProgress, nDarkModeBlue, nLightModeBlue);
+                int nColorModeText = (Integer)eval.evaluate(fProgress, nDarkModeText, nLightModeText);
+                int nColorModeArtist = (Integer)eval.evaluate(fProgress, nDarkModeArtist, nLightModeArtist);
+                int nColorModeTextDarkGray = (Integer)eval.evaluate(fProgress, nDarkModeTextDarkGray, nLightModeTextDarkGray);
+                if (Build.VERSION.SDK_INT >= 23) getWindow().setStatusBarColor(nColorModeBk);
+                relativeMain.setBackgroundColor(nColorModeBk);
+                mTabLayout.setBackgroundColor(nColorModeBk);
+                mTabLayout.setSelectedTabIndicatorColor(nColorModeBk);
+                mAdView.setBackgroundColor(nColorModeBk);
+                mRelativeLeftMenu.setBackgroundColor(nColorModeBk);
+                mRelativeSave.setBackgroundColor(nColorModeBk);
+                mRelativeLock.setBackgroundColor(nColorModeBk);
+                mRelativeAddSong.setBackgroundColor(nColorModeBk);
+                mRelativeHideAds.setBackgroundColor(nColorModeBk);
+                mRelativeItem.setBackgroundColor(nColorModeBk);
+                mRelativeReport.setBackgroundColor(nColorModeBk);
+                mRelativeReview.setBackgroundColor(nColorModeBk);
+                mRelativeInfo.setBackgroundColor(nColorModeBk);
+                mRelativePlaying.setBackgroundColor(nColorModeBk);
+                mTextSave.setTextColor(nColorModeText);
+                mTextLock.setTextColor(nColorModeText);
+                mTextHideAds.setTextColor(nColorModeText);
+                mTextItemInMenu.setTextColor(nColorModeText);
+                mTextReport.setTextColor(nColorModeText);
+                mTextReview.setTextColor(nColorModeText);
+                mTextInfo.setTextColor(nColorModeText);
+                mTextAddSong.setTextColor(nColorModeText);
+                mTextTitle.setTextColor(nColorModeText);
+                mTextTitleInMenu.setTextColor(nColorModeText);
+                mTextArtist.setTextColor(nColorModeArtist);
+                mTextArtistInMenu.setTextColor(nColorModeArtist);
+                mTextCurPos.setTextColor(nColorModeTextDarkGray);
+                mTextRemain.setTextColor(nColorModeTextDarkGray);
+                mViewSep0.setBackgroundColor(nColorModeSep);
+                mViewSep1.setBackgroundColor(nColorModeSep);
+                mViewSep2.setBackgroundColor(nColorModeSep);
+                mViewSep3.setBackgroundColor(nColorModeSep);
+                mDividerMenu.setBackgroundColor(nColorModeSep);
+                if(textView != null) {
+                    textView.setTextColor(nColorModeBlue);
+                    for (Drawable drawable : textView.getCompoundDrawables()) {
+                        if (drawable != null)
+                            drawable.setColorFilter(new PorterDuffColorFilter(nColorModeBlue, PorterDuff.Mode.SRC_IN));
+                    }
+                }
+            }
+        });
+
+        TransitionDrawable tdBtnMenu = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_menu_dark), getResources().getDrawable(R.drawable.ic_bar_button_menu) });
+        TransitionDrawable tdBtnRewind = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_rewind_dark), getResources().getDrawable(R.drawable.ic_bar_button_rewind) });
+        TransitionDrawable tdBtnPlay, tdBtnPlayInPlayingBar;
+        if(BASS.BASS_ChannelIsActive(sStream) != BASS.BASS_ACTIVE_PLAYING) {
+            tdBtnPlay = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_play_dark), getResources().getDrawable(R.drawable.ic_bar_button_play)});
+            tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_play_dark), getResources().getDrawable(R.drawable.ic_bar_button_play)});
+        }
+        else {
+            tdBtnPlay = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_pause_dark), getResources().getDrawable(R.drawable.ic_bar_button_pause)});
+            tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_pause_dark), getResources().getDrawable(R.drawable.ic_bar_button_pause)});
+        }
+        TransitionDrawable tdBtnForward = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_forward_dark), getResources().getDrawable(R.drawable.ic_bar_button_forward) });
+        TransitionDrawable tdBtnShuffle, tdBtnShuffleInPlayingBar;
+        if(mBtnShuffle.getContentDescription().toString().equals(getString(R.string.shuffleOff))) {
+            tdBtnShuffle = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_mode_shuffle_dark), getResources().getDrawable(R.drawable.ic_bar_button_mode_shuffle)});
+            tdBtnShuffleInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_mode_shuffle_dark), getResources().getDrawable(R.drawable.ic_playing_large_mode_shuffle)});
+        }
+        else if(mBtnShuffle.getContentDescription().toString().equals(getString(R.string.shuffleOn))) {
+            tdBtnShuffle = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_mode_shuffle_on_dark), getResources().getDrawable(R.drawable.ic_bar_button_mode_shuffle_on)});
+            tdBtnShuffleInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_mode_shuffle_on_dark), getResources().getDrawable(R.drawable.ic_playing_large_mode_shuffle_on)});
+        }
+        else {
+            tdBtnShuffle = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_mode_single_on_dark), getResources().getDrawable(R.drawable.ic_bar_button_mode_single_on)});
+            tdBtnShuffleInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_mode_single_on_dark), getResources().getDrawable(R.drawable.ic_playing_large_mode_single_on)});
+        }
+        TransitionDrawable tdBtnRepeat, tdBtnRepeatInPlayingBar;
+        if(mBtnRepeat.getContentDescription().toString().equals(getString(R.string.repeatOff))) {
+            tdBtnRepeat = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat_dark), getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat)});
+            tdBtnRepeatInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_all_dark), getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_all)});
+        }
+        else if(mBtnRepeat.getContentDescription().toString().equals(getString(R.string.repeatAllOn))) {
+            tdBtnRepeat = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat_all_on_dark), getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat_all_on)});
+            tdBtnRepeatInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_all_on_dark), getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_all_on)});
+        }
+        else {
+            tdBtnRepeat = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat_single_on_dark), getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat_single_on)});
+            tdBtnRepeatInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_one_on_dark), getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_one_on)});
+        }
+        TransitionDrawable tdBtnRecord = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_rec_dark), getResources().getDrawable(R.drawable.ic_bar_button_rec) });
+        TransitionDrawable tdBtnSetting = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_leftmenu_settings_dark), getResources().getDrawable(R.drawable.ic_leftmenu_settings) });
+        TransitionDrawable tdBtnDarkMode = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_leftmenu_dark_dark), getResources().getDrawable(R.drawable.ic_leftmenu_dark) });
+        TransitionDrawable tdBtnRewindInPlayingBar = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_rewind_dark), getResources().getDrawable(R.drawable.ic_bar_button_rewind) });
+        TransitionDrawable tdBtnForwardInPlayingBar = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_forward_dark), getResources().getDrawable(R.drawable.ic_bar_button_forward) });
+        TransitionDrawable tdBtnImgViewArtwork = new TransitionDrawable(new Drawable[] { getResources().getDrawable(R.drawable.ic_playing_large_artwork_dark), getResources().getDrawable(R.drawable.ic_playing_large_artwork)});
+
+        mBtnMenu.setImageDrawable(tdBtnMenu);
+        mBtnRewind.setImageDrawable(tdBtnRewind);
+        mBtnPlay.setImageDrawable(tdBtnPlay);
+        mBtnForward.setImageDrawable(tdBtnForward);
+        mBtnShuffle.setImageDrawable(tdBtnShuffle);
+        mBtnShuffleInPlayingBar.setImageDrawable(tdBtnShuffleInPlayingBar);
+        mBtnRepeat.setImageDrawable(tdBtnRepeat);
+        mBtnRepeatInPlayingBar.setImageDrawable(tdBtnRepeatInPlayingBar);
+        mBtnRecord.setImageDrawable(tdBtnRecord);
+        mBtnSetting.setImageDrawable(tdBtnSetting);
+        mBtnDarkMode.setImageDrawable(tdBtnDarkMode);
+        mBtnRewindInPlayingBar.setImageDrawable(tdBtnRewindInPlayingBar);
+        mBtnPlayInPlayingBar.setImageDrawable(tdBtnPlayInPlayingBar);
+        mBtnForwardInPlayingBar.setImageDrawable(tdBtnForwardInPlayingBar);
+        mBtnArtworkInPlayingBar.setImageDrawable(tdBtnImgViewArtwork);
+
+        playlistFragment.setLightMode(mTabLayout.getSelectedTabPosition() == 0);
+        loopFragment.setLightMode(mTabLayout.getSelectedTabPosition() == 1);
+        controlFragment.setLightMode(mTabLayout.getSelectedTabPosition() == 2);
+        equalizerFragment.setLightMode(mTabLayout.getSelectedTabPosition() == 3);
+        effectFragment.setLightMode(mTabLayout.getSelectedTabPosition() == 4);
+
+        int duration = 300;
+        anim.setDuration(duration).start();
+        tdBtnMenu.startTransition(duration);
+        tdBtnRewind.startTransition(duration);
+        tdBtnPlay.startTransition(duration);
+        tdBtnForward.startTransition(duration);
+        tdBtnShuffle.startTransition(duration);
+        tdBtnShuffleInPlayingBar.startTransition(duration);
+        tdBtnRepeat.startTransition(duration);
+        tdBtnRepeatInPlayingBar.startTransition(duration);
+        tdBtnRecord.startTransition(duration);
+        tdBtnSetting.startTransition(duration);
+        tdBtnDarkMode.startTransition(duration);
+        tdBtnRewindInPlayingBar.startTransition(duration);
+        tdBtnPlayInPlayingBar.startTransition(duration);
+        tdBtnForwardInPlayingBar.startTransition(duration);
+        tdBtnImgViewArtwork.startTransition(duration);
+
+        if(mSeekCurPos.getVisibility() == View.VISIBLE)
+            mRelativePlayingWithShadow.setBackgroundResource(R.drawable.playingview);
+        else
+            mRelativePlayingWithShadow.setBackgroundResource(R.drawable.topshadow);
+        mImgViewArtworkInMenu.setBackgroundResource(R.drawable.frameborder);
+        mBtnArtworkInPlayingBar.setBackgroundResource(R.drawable.frameborder);
+        mTextPlaying.setTextColor(Color.parseColor("#808080"));
+        mSeekCurPos.setProgressDrawable(getResources().getDrawable(R.drawable.progress));
+        mSeekCurPos.setThumb(getResources().getDrawable(R.drawable.thumbplaying));
+    }
+
+    public void setDarkMode(boolean animated) {
+        SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        preferences.edit().putBoolean("DarkMode", true).apply();
+
+        mDarkMode = true;
+
+        boolean bNoArtwork = false;
+        Bitmap bitmap = null;
+        if(sStream != 0) {
+            SongItem item = playlistFragment.getPlaylists().get(playlistFragment.getPlayingPlaylist()).get(playlistFragment.getPlaying());
+            if (item.getPathArtwork() == null || item.getPathArtwork().equals("")) {
+                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                try {
+                    mmr.setDataSource(getApplicationContext(), Uri.parse(item.getPath()));
+                    byte[] data = mmr.getEmbeddedPicture();
+                    if (data != null) bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    mmr.release();
+                }
+            }
+            if (bitmap == null) bNoArtwork = true;
+        }
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            getWindow().setStatusBarColor(getResources().getColor(R.color.lightModeBk));
+        }
+        final RelativeLayout relativeMain = findViewById(R.id.relativeMain);
+        final ArgbEvaluator eval = new ArgbEvaluator();
+        final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
+        final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
+        final int nLightModeText = getResources().getColor(android.R.color.black);
+        final int nDarkModeText = getResources().getColor(android.R.color.white);
+        final int nLightModeSep = getResources().getColor(R.color.lightModeSep);
+        final int nDarkModeSep = getResources().getColor(R.color.darkModeSep);
+        final int nLightModeBlue = getResources().getColor(R.color.lightModeBlue);
+        final int nDarkModeBlue = getResources().getColor(R.color.darkModeBlue);
+        final TabLayout.Tab tab = mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition());
+        final TextView textView = (tab == null) ? null : (TextView) tab.getCustomView();
+        int nColorBefore;
+        if(mTextArtist.getText() == null || mTextArtist.getText().equals(""))
+            nColorBefore = Color.argb(255, 147, 156, 160);
+        else nColorBefore = getResources().getColor(R.color.lightModeGray);
+        int nColorAfter;
+        if(mTextArtist.getText() == null || mTextArtist.getText().equals(""))
+            nColorAfter = getResources().getColor(R.color.darkModeTextDarkGray);
+        else nColorAfter = getResources().getColor(R.color.darkModeGray);
+        final int nLightModeArtist = nColorBefore;
+        final int nDarkModeArtist = nColorAfter;
+        final int nLightModeTextDarkGray = getResources().getColor(R.color.lightModeTextDarkGray);
+        final int nDarkModeTextDarkGray = getResources().getColor(R.color.darkModeTextDarkGray);
+
+        ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float fProgress = valueAnimator.getAnimatedFraction();
+                int nColorModeBk = (Integer) eval.evaluate(fProgress, nLightModeBk, nDarkModeBk);
+                int nColorModeSep = (Integer) eval.evaluate(fProgress, nLightModeSep, nDarkModeSep);
+                int nColorModeBlue = (Integer) eval.evaluate(fProgress, nLightModeBlue, nDarkModeBlue);
+                int nColorModeText = (Integer) eval.evaluate(fProgress, nLightModeText, nDarkModeText);
+                int nColorModeArtist = (Integer) eval.evaluate(fProgress, nLightModeArtist, nDarkModeArtist);
+                int nColorModeTextDarkGray = (Integer) eval.evaluate(fProgress, nLightModeTextDarkGray, nDarkModeTextDarkGray);
+                if (Build.VERSION.SDK_INT >= 23) getWindow().setStatusBarColor(nColorModeBk);
+                relativeMain.setBackgroundColor(nColorModeBk);
+                mTabLayout.setBackgroundColor(nColorModeBk);
+                mTabLayout.setSelectedTabIndicatorColor(nColorModeBk);
+                mAdView.setBackgroundColor(nColorModeBk);
+                mRelativeLeftMenu.setBackgroundColor(nColorModeBk);
+                mRelativeSave.setBackgroundColor(nColorModeBk);
+                mRelativeLock.setBackgroundColor(nColorModeBk);
+                mRelativeAddSong.setBackgroundColor(nColorModeBk);
+                mRelativeHideAds.setBackgroundColor(nColorModeBk);
+                mRelativeItem.setBackgroundColor(nColorModeBk);
+                mRelativeReport.setBackgroundColor(nColorModeBk);
+                mRelativeReview.setBackgroundColor(nColorModeBk);
+                mRelativeInfo.setBackgroundColor(nColorModeBk);
+                mRelativePlaying.setBackgroundColor(nColorModeBk);
+                mTextSave.setTextColor(nColorModeText);
+                mTextLock.setTextColor(nColorModeText);
+                mTextHideAds.setTextColor(nColorModeText);
+                mTextItemInMenu.setTextColor(nColorModeText);
+                mTextReport.setTextColor(nColorModeText);
+                mTextReview.setTextColor(nColorModeText);
+                mTextInfo.setTextColor(nColorModeText);
+                mTextAddSong.setTextColor(nColorModeText);
+                mTextTitle.setTextColor(nColorModeText);
+                mTextTitleInMenu.setTextColor(nColorModeText);
+                mTextArtist.setTextColor(nColorModeArtist);
+                mTextArtistInMenu.setTextColor(nColorModeArtist);
+                mTextCurPos.setTextColor(nColorModeTextDarkGray);
+                mTextRemain.setTextColor(nColorModeTextDarkGray);
+                mViewSep0.setBackgroundColor(nColorModeSep);
+                mViewSep1.setBackgroundColor(nColorModeSep);
+                mViewSep2.setBackgroundColor(nColorModeSep);
+                mViewSep3.setBackgroundColor(nColorModeSep);
+                mDividerMenu.setBackgroundColor(nColorModeSep);
+                if (textView != null) {
+                    textView.setTextColor(nColorModeBlue);
+                    for (Drawable drawable : textView.getCompoundDrawables()) {
+                        if (drawable != null)
+                            drawable.setColorFilter(new PorterDuffColorFilter(nColorModeBlue, PorterDuff.Mode.SRC_IN));
+                    }
+                }
+            }
+        });
+
+        TransitionDrawable tdBtnMenu = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_menu), getResources().getDrawable(R.drawable.ic_bar_button_menu_dark)});
+        TransitionDrawable tdBtnRewind = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_rewind), getResources().getDrawable(R.drawable.ic_bar_button_rewind_dark)});
+        TransitionDrawable tdBtnPlay, tdBtnPlayInPlayingBar;
+        if (BASS.BASS_ChannelIsActive(sStream) != BASS.BASS_ACTIVE_PLAYING) {
+            tdBtnPlay = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_play), getResources().getDrawable(R.drawable.ic_bar_button_play_dark)});
+            tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_play), getResources().getDrawable(R.drawable.ic_bar_button_play_dark)});
+        } else {
+            tdBtnPlay = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_pause), getResources().getDrawable(R.drawable.ic_bar_button_pause_dark)});
+            tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_pause), getResources().getDrawable(R.drawable.ic_bar_button_pause_dark)});
+        }
+        TransitionDrawable tdBtnForward = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_forward), getResources().getDrawable(R.drawable.ic_bar_button_forward_dark)});
+        TransitionDrawable tdBtnShuffle, tdBtnShuffleInPlayingBar;
+        if (mBtnShuffle.getContentDescription().toString().equals(getString(R.string.shuffleOff))) {
+            tdBtnShuffle = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_mode_shuffle), getResources().getDrawable(R.drawable.ic_bar_button_mode_shuffle_dark)});
+            tdBtnShuffleInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_mode_shuffle), getResources().getDrawable(R.drawable.ic_playing_large_mode_shuffle_dark)});
+        } else if (mBtnShuffle.getContentDescription().toString().equals(getString(R.string.shuffleOn))) {
+            tdBtnShuffle = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_mode_shuffle_on), getResources().getDrawable(R.drawable.ic_bar_button_mode_shuffle_on_dark)});
+            tdBtnShuffleInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_mode_shuffle_on), getResources().getDrawable(R.drawable.ic_playing_large_mode_shuffle_on_dark)});
+        } else {
+            tdBtnShuffle = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_mode_single_on), getResources().getDrawable(R.drawable.ic_bar_button_mode_single_on_dark)});
+            tdBtnShuffleInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_mode_single_on), getResources().getDrawable(R.drawable.ic_playing_large_mode_single_on_dark)});
+        }
+        TransitionDrawable tdBtnRepeat, tdBtnRepeatInPlayingBar;
+        if (mBtnRepeat.getContentDescription().toString().equals(getString(R.string.repeatOff))) {
+            tdBtnRepeat = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat), getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat_dark)});
+            tdBtnRepeatInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_all), getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_all_dark)});
+        } else if (mBtnRepeat.getContentDescription().toString().equals(getString(R.string.repeatAllOn))) {
+            tdBtnRepeat = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat_all_on), getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat_all_on_dark)});
+            tdBtnRepeatInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_all_on), getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_all_on_dark)});
+        } else {
+            tdBtnRepeat = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat_single_on), getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat_single_on_dark)});
+            tdBtnRepeatInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_one_on), getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_one_on_dark)});
+        }
+        TransitionDrawable tdBtnRecord = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_rec), getResources().getDrawable(R.drawable.ic_bar_button_rec_dark)});
+        TransitionDrawable tdBtnSetting = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_leftmenu_settings), getResources().getDrawable(R.drawable.ic_leftmenu_settings_dark)});
+        TransitionDrawable tdBtnDarkMode = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_leftmenu_dark), getResources().getDrawable(R.drawable.ic_leftmenu_dark_dark)});
+        TransitionDrawable tdBtnRewindInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_rewind), getResources().getDrawable(R.drawable.ic_bar_button_rewind_dark)});
+        TransitionDrawable tdBtnForwardInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_forward), getResources().getDrawable(R.drawable.ic_bar_button_forward_dark)});
+        TransitionDrawable tdBtnImgViewArtwork = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_artwork), getResources().getDrawable(R.drawable.ic_playing_large_artwork_dark)});
+
+        mBtnMenu.setImageDrawable(tdBtnMenu);
+        mBtnRewind.setImageDrawable(tdBtnRewind);
+        mBtnPlay.setImageDrawable(tdBtnPlay);
+        mBtnForward.setImageDrawable(tdBtnForward);
+        mBtnShuffle.setImageDrawable(tdBtnShuffle);
+        mBtnShuffleInPlayingBar.setImageDrawable(tdBtnShuffleInPlayingBar);
+        mBtnRepeat.setImageDrawable(tdBtnRepeat);
+        mBtnRepeatInPlayingBar.setImageDrawable(tdBtnRepeatInPlayingBar);
+        mBtnRecord.setImageDrawable(tdBtnRecord);
+        mBtnSetting.setImageDrawable(tdBtnSetting);
+        mBtnDarkMode.setImageDrawable(tdBtnDarkMode);
+        mBtnRewindInPlayingBar.setImageDrawable(tdBtnRewindInPlayingBar);
+        mBtnPlayInPlayingBar.setImageDrawable(tdBtnPlayInPlayingBar);
+        mBtnForwardInPlayingBar.setImageDrawable(tdBtnForwardInPlayingBar);
+        mBtnArtworkInPlayingBar.setImageDrawable(tdBtnImgViewArtwork);
+
+        playlistFragment.setDarkMode(mTabLayout.getSelectedTabPosition() == 0);
+        loopFragment.setDarkMode(mTabLayout.getSelectedTabPosition() == 1);
+        controlFragment.setDarkMode(mTabLayout.getSelectedTabPosition() == 2);
+        equalizerFragment.setDarkMode(mTabLayout.getSelectedTabPosition() == 3);
+        effectFragment.setDarkMode(mTabLayout.getSelectedTabPosition() == 4);
+
+        int duration = animated ? 300 : 0;
+        anim.setDuration(duration).start();
+        tdBtnMenu.startTransition(duration);
+        tdBtnRewind.startTransition(duration);
+        tdBtnPlay.startTransition(duration);
+        tdBtnForward.startTransition(duration);
+        tdBtnShuffle.startTransition(duration);
+        tdBtnShuffleInPlayingBar.startTransition(duration);
+        tdBtnRepeat.startTransition(duration);
+        tdBtnRepeatInPlayingBar.startTransition(duration);
+        tdBtnRecord.startTransition(duration);
+        tdBtnSetting.startTransition(duration);
+        tdBtnDarkMode.startTransition(duration);
+        tdBtnPlayInPlayingBar.startTransition(duration);
+        tdBtnRewindInPlayingBar.startTransition(duration);
+        tdBtnForwardInPlayingBar.startTransition(duration);
+        tdBtnImgViewArtwork.startTransition(duration);
+
+        if(mSeekCurPos.getVisibility() == View.VISIBLE)
+            mRelativePlayingWithShadow.setBackgroundResource(R.drawable.playingview_dark);
+        else
+            mRelativePlayingWithShadow.setBackgroundResource(R.drawable.topshadow_dark);
+        mImgViewArtworkInMenu.setBackgroundResource(R.drawable.frameborder_dark);
+        mBtnArtworkInPlayingBar.setBackgroundResource(R.drawable.frameborder_dark);
+        mTextPlaying.setTextColor(getResources().getColor(R.color.darkModePlaying));
+        mSeekCurPos.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));
+        mSeekCurPos.setThumb(getResources().getDrawable(R.drawable.thumbplaying_dark));
+    }
 }

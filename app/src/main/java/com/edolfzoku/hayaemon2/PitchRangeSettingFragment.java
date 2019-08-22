@@ -3,6 +3,9 @@ package com.edolfzoku.hayaemon2;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,8 +16,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import java.lang.reflect.Field;
 import java.util.Locale;
 
 public class PitchRangeSettingFragment extends Fragment implements View.OnClickListener
@@ -134,6 +143,78 @@ public class PitchRangeSettingFragment extends Fragment implements View.OnClickL
                 }
             }
         });
+
+        if(mActivity.isDarkMode()) {
+            RelativeLayout relativePitchRangeScreen = mActivity.findViewById(R.id.relativePitchRangeScreen);
+            RelativeLayout relativePitchRangeSettingTitle = mActivity.findViewById(R.id.relativePitchRangeSettingTitle);
+            ImageView imgBackPitchRange = mActivity.findViewById(R.id.imgBackPitchRange);
+            TextView textPitchRangeSettingTitle = mActivity.findViewById(R.id.textPitchRangeSettingTitle);
+            View viewSepPitchRangeSetting = mActivity.findViewById(R.id.viewSepPitchRangeSetting);
+            LinearLayout linearPitchRangeSetting = mActivity.findViewById(R.id.linearPitchRangeSetting);
+            TextView textSharp = mActivity.findViewById(R.id.textSharp);
+            TextView textPitchRangeSign = mActivity.findViewById(R.id.textPitchRangeSign);
+            TextView textFlat = mActivity.findViewById(R.id.textFlat);
+            Button btnResetPitchRange = mActivity.findViewById(R.id.btnResetPitchRange);
+
+            relativePitchRangeScreen.setBackgroundColor(getResources().getColor(R.color.darkModeBk));
+            relativePitchRangeSettingTitle.setBackgroundColor(getResources().getColor(R.color.darkModeBk));
+            imgBackPitchRange.setImageDrawable(getResources().getDrawable(R.drawable.ic_button_back_dark));
+            btnReturnPitchRangeSetting.setTextColor(getResources().getColor(R.color.darkModeBlue));
+            btnClosePitchRangeSetting.setTextColor(getResources().getColor(R.color.darkModeBlue));
+            textPitchRangeSettingTitle.setTextColor(getResources().getColor(android.R.color.white));
+            viewSepPitchRangeSetting.setBackgroundColor(getResources().getColor(R.color.darkModeSep));
+            linearPitchRangeSetting.setBackgroundColor(getResources().getColor(R.color.darkModeLightBk));
+            setNumberPickerTextColor(intPitchRangeFromPicker, Color.WHITE);
+            setDividerColor(intPitchRangeFromPicker, Color.rgb(38, 40, 44));
+            setNumberPickerTextColor(intPitchRangeToPicker, Color.WHITE);
+            setDividerColor(intPitchRangeToPicker, Color.rgb(38, 40, 44));
+            textSharp.setTextColor(getResources().getColor(android.R.color.white));
+            textPitchRangeSign.setTextColor(getResources().getColor(android.R.color.white));
+            textFlat.setTextColor(getResources().getColor(android.R.color.white));
+            btnResetPitchRange.setTextColor(getResources().getColorStateList(R.color.btn_text_dark));
+            btnResetPitchRange.setBackgroundResource(R.drawable.resetbutton_dark);
+        }
+        else {
+            setDividerColor(intPitchRangeFromPicker, Color.rgb(192, 192, 192));
+            setDividerColor(intPitchRangeToPicker, Color.rgb(192, 192, 192));
+        }
+    }
+
+    private static void setNumberPickerTextColor(NumberPicker numberPicker, int color)
+    {
+        try{
+            Field selectorWheelPaintField = numberPicker.getClass()
+                    .getDeclaredField("mSelectorWheelPaint");
+            selectorWheelPaintField.setAccessible(true);
+            ((Paint)selectorWheelPaintField.get(numberPicker)).setColor(color);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        final int count = numberPicker.getChildCount();
+        for(int i = 0; i < count; i++){
+            View child = numberPicker.getChildAt(i);
+            if(child instanceof EditText)
+                ((EditText)child).setTextColor(color);
+        }
+        numberPicker.invalidate();
+    }
+
+    private void setDividerColor(NumberPicker picker, int color) {
+        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+        for (java.lang.reflect.Field pf : pickerFields) {
+            if (pf.getName().equals("mSelectionDivider")) {
+                pf.setAccessible(true);
+                try {
+                    ColorDrawable colorDrawable = new ColorDrawable(color);
+                    pf.set(picker, colorDrawable);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
     }
 
     @Override

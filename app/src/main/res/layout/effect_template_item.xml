@@ -30,13 +30,12 @@
         android:layout_toStartOf="@+id/imgEffectTemplateMenu"
         >
 
-        <ImageButton
+        <com.edolfzoku.hayaemon2.HighlightImageButton
             android:id="@+id/btnEffectTemplateDetail"
             android:contentDescription="@string/detail"
             android:layout_width="48dp"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_button_info"
-            android:background="@null"
+            android:background="@drawable/ic_button_info"
             android:scaleType="centerInside"
             android:clickable="true"
             android:focusable="true"
@@ -50,7 +49,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:background="@null"
-            android:src="@drawable/ic_listright"
+            android:src="@drawable/ic_button_listright"
             android:scaleType="centerInside"
             android:layout_marginLeft="-8dp"
             android:layout_marginStart="-8dp"
@@ -74,6 +73,7 @@
         />
 
     <View
+        android:id="@+id/viewSepEffectTemplate"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="#BFBFBF"

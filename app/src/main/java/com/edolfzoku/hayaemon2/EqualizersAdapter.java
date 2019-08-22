@@ -46,13 +46,15 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
         private TextView mTextEqualizer;
         private ImageButton mBtnEqualizerDetail;
         private ImageView mImgEqualizerRight;
-        private ImageView mImgEqualizerMenu;
+        private AnimationButton mBtnEqualizerMenu;
+        private View mViewSepEqualizer;
 
         RelativeLayout getEqualizerItem() { return mEqualizerItem; }
         TextView getTextEqualizer() { return mTextEqualizer; }
         ImageButton getBtnEqualizerDetail() { return mBtnEqualizerDetail; }
         ImageView getImgEqualizerRight() { return mImgEqualizerRight; }
-        ImageView getImgEqualizerMenu() { return mImgEqualizerMenu; }
+        AnimationButton getBtnEqualizerMenu() { return mBtnEqualizerMenu; }
+        View getViewSepEqualizer() { return mViewSepEqualizer; }
 
         ViewHolder(View view) {
             super(view);
@@ -60,7 +62,8 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
             mTextEqualizer = view.findViewById(R.id.textEqualizer);
             mBtnEqualizerDetail = view.findViewById(R.id.btnEqualizerDetail);
             mImgEqualizerRight = view.findViewById(R.id.imgEqualizerRight);
-            mImgEqualizerMenu = view.findViewById(R.id.imgEqualizerMenu);
+            mBtnEqualizerMenu = view.findViewById(R.id.btnEqualizerMenu);
+            mViewSepEqualizer = view.findViewById(R.id.viewSepEqualizer);
         }
     }
 
@@ -87,14 +90,19 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull final EqualizersAdapter.ViewHolder holder, int position)
     {
+        holder.getBtnEqualizerDetail().setBackgroundResource(mActivity.isDarkMode() ? R.drawable.ic_button_info_dark : R.drawable.ic_button_info);
+        holder.getImgEqualizerRight().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_button_listright_dark : R.drawable.ic_button_listright);
+        holder.getViewSepEqualizer().setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeSep : R.color.lightModeSep));
+        holder.getTextEqualizer().setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeGray : R.color.lightModeGray));
+
         EqualizerItem item = mItems.get(position);
         String name = item.getEqualizerName();
         holder.getTextEqualizer().setText(name);
 
         if(mActivity.equalizerFragment.isSelectedItem(position))
-            holder.itemView.setBackgroundColor(Color.argb(255, 224, 239, 255));
+            holder.itemView.setBackgroundColor(mActivity.isDarkMode() ? mActivity.getResources().getColor(R.color.darkModeSelect) : Color.argb(255, 224, 239, 255));
         else
-            holder.itemView.setBackgroundColor(Color.argb(255, 255, 255, 255));
+            holder.itemView.setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeBk : R.color.lightModeBk));
         holder.getEqualizerItem().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,8 +111,8 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
         });
 
         if(mActivity.equalizerFragment.isSorting()) {
-            holder.getImgEqualizerMenu().setOnClickListener(null);
-            holder.getImgEqualizerMenu().setOnTouchListener(new View.OnTouchListener() {
+            holder.getBtnEqualizerMenu().setOnClickListener(null);
+            holder.getBtnEqualizerMenu().setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
                 {
@@ -112,8 +120,8 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
                     return true;
                 }
             });
-            holder.getImgEqualizerMenu().setImageResource(R.drawable.ic_sort);
-            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.getImgEqualizerMenu().getLayoutParams();
+            holder.getBtnEqualizerMenu().setImageResource(R.drawable.ic_sort);
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.getBtnEqualizerMenu().getLayoutParams();
             param.leftMargin = param.rightMargin = (int) (8 * mActivity.getDensity());
             holder.getBtnEqualizerDetail().setVisibility(View.GONE);
             holder.getImgEqualizerRight().setVisibility(View.GONE);
@@ -121,34 +129,21 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
         else {
             holder.getBtnEqualizerDetail().setVisibility(View.VISIBLE);
             holder.getImgEqualizerRight().setVisibility(View.VISIBLE);
-            holder.getBtnEqualizerDetail().setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event)
-                {
-                    if(event.getAction() == MotionEvent.ACTION_DOWN)
-                        holder.getBtnEqualizerDetail().setColorFilter(new PorterDuffColorFilter(Color.parseColor("#ffcce4ff"), PorterDuff.Mode.SRC_IN));
-                    else if(event.getAction() == MotionEvent.ACTION_UP)
-                        holder.getBtnEqualizerDetail().setColorFilter(null);
-                    else if(event.getAction() == MotionEvent.ACTION_CANCEL)
-                        holder.getBtnEqualizerDetail().setColorFilter(null);
-                    return false;
-                }
-            });
             holder.getBtnEqualizerDetail().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mActivity.equalizerFragment.onEqualizerDetailClick(holder.getAdapterPosition());
                 }
             });
-            holder.getImgEqualizerMenu().setOnTouchListener(null);
-            holder.getImgEqualizerMenu().setOnClickListener(new View.OnClickListener() {
+            holder.getBtnEqualizerMenu().setOnTouchListener(null);
+            holder.getBtnEqualizerMenu().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mActivity.equalizerFragment.showMenu(holder.getAdapterPosition());
                 }
             });
-            holder.getImgEqualizerMenu().setImageResource(R.drawable.ic_button_more);
-            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.getImgEqualizerMenu().getLayoutParams();
+            holder.getBtnEqualizerMenu().setImageResource(R.drawable.ic_button_more);
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)holder.getBtnEqualizerMenu().getLayoutParams();
             param.leftMargin = param.rightMargin = 0;
         }
     }

@@ -18,10 +18,17 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -33,16 +40,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.un4seen.bass.BASS;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -54,14 +63,16 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     private WaveView mWaveView;
     private LinearLayout mABButton, mMarkerButton;
     private EditText mTextCurValue;
-    private View mViewCurPos, mViewMaskA, mViewMaskB;
+    private View mViewCurPos, mViewMaskA, mViewMaskB, mViewSep1Loop, mViewSep2Loop, mViewSep3Loop;
     private RadioGroup mRadioGroupLoopMode;
+    private RadioButton mRadioButtonABLoop, mRadioButtonMarkerPlay;
     private RelativeLayout mRelativeLoop, mRelativeWave;
-    private AnimationButton mBtnRewind5Sec, mBtnRewind5Sec2, mBtnForward5Sec, mBtnForward5Sec2, mBtnLoopmarker, mBtnA, mBtnB;
+    private AnimationButton mBtnRewind5Sec, mBtnRewind5Sec2, mBtnForward5Sec, mBtnForward5Sec2, mBtnLoopmarker, mBtnA, mBtnB, mBtnZoomIn, mBtnZoomOut, mBtnPrevmarker, mBtnDelmarker, mBtnAddmarker, mBtnNextmarker;
+    private TextView mTextA, mTextB;
     private EditText mTextAValue, mTextBValue;
 
     private ArrayList<Double> mMarkerTimes;
-    private final ArrayList<TextView> mMarkerTexts;
+    private final ArrayList<ImageView> mMarkerTexts;
     private boolean mContinue = false;
     private boolean mTouching = false;
 
@@ -80,21 +91,25 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             double dPos = markerTimes.get(i);
             mMarkerTimes.add(dPos);
 
-            TextView textView = new TextView(mActivity);
-            textView.setText("▼");
-            mRelativeLoop.addView(textView);
-            textView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-            int nLeft = (int) (mViewCurPos.getX() - nMaxWidth * dPos / dLength - textView.getMeasuredWidth() / 2.0f);
-            int nTop = mWaveView.getTop() - textView.getMeasuredHeight();
-            textView.setTranslationX(nLeft);
-            textView.setTranslationY(nTop);
-            textView.requestLayout();
-            mMarkerTexts.add(i, textView);
+            ImageView imgView = new ImageView(mActivity);
+            imgView.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_marker_dark : R.drawable.ic_abloop_marker);
+            mRelativeLoop.addView(imgView);
+            imgView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            int nLeft = (int) (mViewCurPos.getX() - nMaxWidth * dPos / dLength - imgView.getMeasuredWidth() / 2.0f);
+            int nTop = mWaveView.getTop() - imgView.getMeasuredHeight();
+            imgView.setTranslationX(nLeft);
+            imgView.setTranslationY(nTop);
+            imgView.requestLayout();
+            mMarkerTexts.add(i, imgView);
         }
     }
     public int getMarker() { return mMarker; }
     public void setMarker(int marker) { mMarker = marker; }
     public EditText getTextCurValue() { return mTextCurValue; }
+
+    public MainActivity getMainActivity() {
+        return mActivity;
+    }
 
     public LoopFragment()
     {
@@ -135,25 +150,32 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         mTextCurValue = mActivity.findViewById(R.id.textCurValue);
         mViewMaskA = mActivity.findViewById(R.id.viewMaskA);
         mViewMaskB = mActivity.findViewById(R.id.viewMaskB);
+        mViewSep1Loop = mActivity.findViewById(R.id.viewSep1Loop);
+        mViewSep2Loop = mActivity.findViewById(R.id.viewSep2Loop);
+        mViewSep3Loop = mActivity.findViewById(R.id.viewSep3Loop);
         mWaveView = mActivity.findViewById(R.id.waveView);
         mBtnLoopmarker = mActivity.findViewById(R.id.btnLoopmarker);
         mRadioGroupLoopMode = mActivity.findViewById(R.id.radioGroupLoopMode);
+        mRadioButtonABLoop = mActivity.findViewById(R.id.radioButtonABLoop);
+        mRadioButtonMarkerPlay = mActivity.findViewById(R.id.radioButtonMarkerPlay);
         mRelativeLoop = mActivity.findViewById(R.id.relativeLoop);
         mBtnRewind5Sec = mActivity.findViewById(R.id.btnRewind5Sec);
         mBtnRewind5Sec2 = mActivity.findViewById(R.id.btnRewind5Sec2);
         mBtnForward5Sec = mActivity.findViewById(R.id.btnForward5Sec);
         mBtnForward5Sec2 = mActivity.findViewById(R.id.btnForward5Sec2);
+        mTextA = mActivity.findViewById(R.id.textA);
+        mTextB = mActivity.findViewById(R.id.textB);
         mTextAValue = mActivity.findViewById(R.id.textAValue);
         mTextBValue  = mActivity.findViewById(R.id.textBValue);
         mBtnA = mActivity.findViewById(R.id.btnA);
         mBtnB = mActivity.findViewById(R.id.btnB);
         mRelativeWave = mActivity.findViewById(R.id.relativeWave);
-        AnimationButton btnDelmarker= mActivity.findViewById(R.id.btnDelmarker);
-        AnimationButton btnPrevmarker = mActivity.findViewById(R.id.btnPrevmarker);
-        RelativeLayout relativeZoomOut = mActivity.findViewById(R.id.relativeZoomOut);
-        RelativeLayout relativeZoomIn = mActivity.findViewById(R.id.relativeZoomIn);
-        AnimationButton btnAddmarker = mActivity.findViewById(R.id.btnAddmarker);
-        AnimationButton btnNextmarker = mActivity.findViewById(R.id.btnNextmarker);
+        mBtnDelmarker= mActivity.findViewById(R.id.btnDelmarker);
+        mBtnPrevmarker = mActivity.findViewById(R.id.btnPrevmarker);
+        mBtnZoomIn = mActivity.findViewById(R.id.btnZoomIn);
+        mBtnZoomOut = mActivity.findViewById(R.id.btnZoomOut);
+        mBtnAddmarker = mActivity.findViewById(R.id.btnAddmarker);
+        mBtnNextmarker = mActivity.findViewById(R.id.btnNextmarker);
         final LinearLayout ABLabel = mActivity.findViewById(R.id.ABLabel);
 
         mTextAValue.setText(getString(R.string.zeroHMS));
@@ -162,13 +184,13 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
         mWaveView.setLoopFragment(this);
         mWaveView.setOnTouchListener(this);
-        relativeZoomOut.setOnTouchListener(this);
-        relativeZoomOut.setOnLongClickListener(this);
-        relativeZoomIn.setOnTouchListener(this);
-        relativeZoomIn.setOnLongClickListener(this);
+        mBtnZoomOut.setOnTouchListener(this);
+        mBtnZoomOut.setOnLongClickListener(this);
+        mBtnZoomIn.setOnTouchListener(this);
+        mBtnZoomIn.setOnLongClickListener(this);
         mActivity.findViewById(R.id.viewBtnALeft).setOnTouchListener(this);
         mBtnA.setSelected(false);
-        mBtnA.setImageResource(R.drawable.ic_abloop_a);
+        mBtnA.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_a_dark : R.drawable.ic_abloop_a);
         mBtnA.setOnTouchListener(this);
         mActivity.findViewById(R.id.viewBtnARight).setOnTouchListener(this);
         mActivity.findViewById(R.id.viewBtnRewindLeft).setOnTouchListener(this);
@@ -183,19 +205,19 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         mActivity.findViewById(R.id.viewBtnForwardRight).setOnTouchListener(this);
         mActivity.findViewById(R.id.viewBtnBLeft).setOnTouchListener(this);
         mBtnB.setSelected(false);
-        mBtnB.setImageResource(R.drawable.ic_abloop_b);
+        mBtnB.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_b_dark : R.drawable.ic_abloop_b);
         mBtnB.setOnTouchListener(this);
         mActivity.findViewById(R.id.viewBtnBRight).setOnTouchListener(this);
 
         mBtnRewind5Sec2.setOnTouchListener(this);
         mBtnRewind5Sec2.setOnLongClickListener(this);
         mBtnRewind5Sec2.setTag(5);
-        btnPrevmarker.setOnTouchListener(this);
-        btnDelmarker.setOnTouchListener(this);
-        btnAddmarker.setOnTouchListener(this);
-        btnNextmarker.setOnTouchListener(this);
+        mBtnPrevmarker.setOnTouchListener(this);
+        mBtnDelmarker.setOnTouchListener(this);
+        mBtnAddmarker.setOnTouchListener(this);
+        mBtnNextmarker.setOnTouchListener(this);
         mBtnLoopmarker.setSelected(false);
-        mBtnLoopmarker.setImageResource(R.drawable.ic_abloop_marker_loop);
+        mBtnLoopmarker.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_marker_loop_dark : R.drawable.ic_abloop_marker_loop);
         mBtnLoopmarker.setOnTouchListener(this);
         mBtnForward5Sec2.setOnTouchListener(this);
         mBtnForward5Sec2.setOnLongClickListener(this);
@@ -215,16 +237,16 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     mMarkerButton.setVisibility(View.INVISIBLE);
                     for(int i = 0 ; i < mMarkerTexts.size(); i++)
                     {
-                        TextView textView = mMarkerTexts.get(i);
-                        textView.setVisibility(View.INVISIBLE);
+                        ImageView imgView = mMarkerTexts.get(i);
+                        imgView.setVisibility(View.INVISIBLE);
                     }
                 }
                 else {
                     mMarkerButton.setVisibility(View.VISIBLE);
                     for(int i = 0 ; i < mMarkerTexts.size(); i++)
                     {
-                        TextView textView = mMarkerTexts.get(i);
-                        textView.setVisibility(View.VISIBLE);
+                        ImageView imgView = mMarkerTexts.get(i);
+                        imgView.setVisibility(View.VISIBLE);
                     }
                     mActivity.setSync();
                     mActivity.playlistFragment.updateSavingEffect();
@@ -240,6 +262,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         mTextAValue.setOnFocusChangeListener(this);
         mTextBValue.setOnFocusChangeListener(this);
         mTextCurValue.setOnFocusChangeListener(this);
+
+        if(mActivity.isDarkMode()) setDarkMode(false);
     }
 
     private Runnable mRunnable = new Runnable() {
@@ -336,15 +360,15 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             }
             if (mMarkerButton.getVisibility() == View.VISIBLE) {
                 for (int i = 0; i < mMarkerTimes.size(); i++) {
-                    TextView textView = mMarkerTexts.get(i);
+                    ImageView imgView = mMarkerTexts.get(i);
                     double dMarkerPos = mMarkerTimes.get(i);
                     long mMarkerPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, dMarkerPos);
                     mMarkerPos = nPos - mMarkerPos;
-                    int mMarkerLeft = (int) (nLeft - nMaxWidth * mMarkerPos / (float) mActivity.getByteLength() - textView.getWidth() / 2.0f);
-                    if (mMarkerLeft < -textView.getWidth())
-                        mMarkerLeft = -textView.getWidth();
-                    textView.setTranslationX(mMarkerLeft);
-                    textView.requestLayout();
+                    int mMarkerLeft = (int) (nLeft - nMaxWidth * mMarkerPos / (float) mActivity.getByteLength() - imgView.getWidth() / 2.0f);
+                    if (mMarkerLeft < -imgView.getWidth())
+                        mMarkerLeft = -imgView.getWidth();
+                    imgView.setTranslationX(mMarkerLeft);
+                    imgView.requestLayout();
                 }
             }
         }
@@ -420,13 +444,13 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
     @Override
     public boolean onLongClick(View v) {
-        if (v.getId() == R.id.relativeZoomOut) {
+        if (v.getId() == R.id.btnZoomOut) {
             if(MainActivity.sStream == 0) return false;
             mContinue = true;
             mHandler.post(repeatZoomOut);
             return true;
         }
-        else if (v.getId() == R.id.relativeZoomIn) {
+        else if (v.getId() == R.id.btnZoomIn) {
             if(MainActivity.sStream == 0) return false;
             mContinue = true;
             mHandler.post(repeatZoomIn);
@@ -435,11 +459,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         else if(v.getId() == R.id.btnRewind5Sec || v.getId() == R.id.btnRewind5Sec2) {
             final BottomMenu menu = new BottomMenu(mActivity);
             menu.setTitle(getString(R.string.chooseRewindButton));
-            menu.addMenu(getString(R.string.rewind1Sec), R.drawable.ic_actionsheet_01sec_prev, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.rewind1Sec), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_01sec_prev_dark : R.drawable.ic_actionsheet_01sec_prev, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mBtnRewind5Sec.setImageResource(R.drawable.ic_abloop_01sec_prev);
-                    mBtnRewind5Sec2.setImageResource(R.drawable.ic_abloop_01sec_prev);
+                    mBtnRewind5Sec.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_01sec_prev_dark : R.drawable.ic_abloop_01sec_prev);
+                    mBtnRewind5Sec2.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_01sec_prev_dark : R.drawable.ic_abloop_01sec_prev);
                     mBtnRewind5Sec.setContentDescription(getString(R.string.rewind1Sec));
                     mBtnRewind5Sec2.setContentDescription(getString(R.string.rewind1Sec));
                     mBtnRewind5Sec.setTag(1);
@@ -447,11 +471,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu(getString(R.string.rewind2Sec), R.drawable.ic_actionsheet_02sec_prev, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.rewind2Sec), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_02sec_prev_dark : R.drawable.ic_actionsheet_02sec_prev, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mBtnRewind5Sec.setImageResource(R.drawable.ic_abloop_02sec_prev);
-                    mBtnRewind5Sec2.setImageResource(R.drawable.ic_abloop_02sec_prev);
+                    mBtnRewind5Sec.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_02sec_prev_dark : R.drawable.ic_abloop_02sec_prev);
+                    mBtnRewind5Sec2.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_02sec_prev_dark : R.drawable.ic_abloop_02sec_prev);
                     mBtnRewind5Sec.setContentDescription(getString(R.string.rewind2Sec));
                     mBtnRewind5Sec2.setContentDescription(getString(R.string.rewind2Sec));
                     mBtnRewind5Sec.setTag(2);
@@ -459,11 +483,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu(getString(R.string.rewind3Sec), R.drawable.ic_actionsheet_03sec_prev, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.rewind3Sec), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_03sec_prev_dark : R.drawable.ic_actionsheet_03sec_prev, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mBtnRewind5Sec.setImageResource(R.drawable.ic_abloop_03sec_prev);
-                    mBtnRewind5Sec2.setImageResource(R.drawable.ic_abloop_03sec_prev);
+                    mBtnRewind5Sec.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_03sec_prev_dark : R.drawable.ic_abloop_03sec_prev);
+                    mBtnRewind5Sec2.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_03sec_prev_dark : R.drawable.ic_abloop_03sec_prev);
                     mBtnRewind5Sec.setContentDescription(getString(R.string.rewind3Sec));
                     mBtnRewind5Sec2.setContentDescription(getString(R.string.rewind3Sec));
                     mBtnRewind5Sec.setTag(3);
@@ -471,11 +495,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu(getString(R.string.rewind5Sec), R.drawable.ic_actionsheet_05sec_prev, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.rewind5Sec), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_05sec_prev_dark : R.drawable.ic_actionsheet_05sec_prev, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mBtnRewind5Sec.setImageResource(R.drawable.ic_abloop_05sec_prev);
-                    mBtnRewind5Sec2.setImageResource(R.drawable.ic_abloop_05sec_prev);
+                    mBtnRewind5Sec.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_05sec_prev_dark : R.drawable.ic_abloop_05sec_prev);
+                    mBtnRewind5Sec2.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_05sec_prev_dark : R.drawable.ic_abloop_05sec_prev);
                     mBtnRewind5Sec.setContentDescription(getString(R.string.rewind5Sec));
                     mBtnRewind5Sec2.setContentDescription(getString(R.string.rewind5Sec));
                     mBtnRewind5Sec.setTag(5);
@@ -483,11 +507,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu(getString(R.string.rewind10Sec), R.drawable.ic_actionsheet_10sec_prev, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.rewind10Sec), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_10sec_prev_dark : R.drawable.ic_actionsheet_10sec_prev, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mBtnRewind5Sec.setImageResource(R.drawable.ic_abloop_10sec_prev);
-                    mBtnRewind5Sec2.setImageResource(R.drawable.ic_abloop_10sec_prev);
+                    mBtnRewind5Sec.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_10sec_prev_dark : R.drawable.ic_abloop_10sec_prev);
+                    mBtnRewind5Sec2.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_10sec_prev_dark : R.drawable.ic_abloop_10sec_prev);
                     mBtnRewind5Sec.setContentDescription(getString(R.string.rewind10Sec));
                     mBtnRewind5Sec2.setContentDescription(getString(R.string.rewind10Sec));
                     mBtnRewind5Sec.setTag(10);
@@ -501,11 +525,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         else if(v.getId() == R.id.btnForward5Sec || v.getId() == R.id.btnForward5Sec2) {
             final BottomMenu menu = new BottomMenu(mActivity);
             menu.setTitle(getString(R.string.chooseForwardButton));
-            menu.addMenu(getString(R.string.forward1Sec), R.drawable.ic_actionsheet_01sec_next, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.forward1Sec), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_01sec_next_dark : R.drawable.ic_actionsheet_01sec_next, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mBtnForward5Sec.setImageResource(R.drawable.ic_abloop_01sec_next);
-                    mBtnForward5Sec2.setImageResource(R.drawable.ic_abloop_01sec_next);
+                    mBtnForward5Sec.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_01sec_next_dark : R.drawable.ic_abloop_01sec_next);
+                    mBtnForward5Sec2.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_01sec_next_dark : R.drawable.ic_abloop_01sec_next);
                     mBtnForward5Sec.setContentDescription(getString(R.string.forward1Sec));
                     mBtnForward5Sec2.setContentDescription(getString(R.string.forward1Sec));
                     mBtnForward5Sec.setTag(1);
@@ -513,11 +537,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu(getString(R.string.forward2Sec), R.drawable.ic_actionsheet_02sec_next, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.forward2Sec), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_02sec_next_dark : R.drawable.ic_actionsheet_02sec_next, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mBtnForward5Sec.setImageResource(R.drawable.ic_abloop_02sec_next);
-                    mBtnForward5Sec2.setImageResource(R.drawable.ic_abloop_02sec_next);
+                    mBtnForward5Sec.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_02sec_next_dark : R.drawable.ic_abloop_02sec_next);
+                    mBtnForward5Sec2.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_02sec_next_dark : R.drawable.ic_abloop_02sec_next);
                     mBtnForward5Sec.setContentDescription(getString(R.string.forward2Sec));
                     mBtnForward5Sec2.setContentDescription(getString(R.string.forward2Sec));
                     mBtnForward5Sec.setTag(2);
@@ -525,11 +549,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu(getString(R.string.forward3Sec), R.drawable.ic_actionsheet_03sec_next, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.forward3Sec), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_03sec_next_dark : R.drawable.ic_actionsheet_03sec_next, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mBtnForward5Sec.setImageResource(R.drawable.ic_abloop_03sec_next);
-                    mBtnForward5Sec2.setImageResource(R.drawable.ic_abloop_03sec_next);
+                    mBtnForward5Sec.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_03sec_next_dark : R.drawable.ic_abloop_03sec_next);
+                    mBtnForward5Sec2.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_03sec_next_dark : R.drawable.ic_abloop_03sec_next);
                     mBtnForward5Sec.setContentDescription(getString(R.string.forward3Sec));
                     mBtnForward5Sec2.setContentDescription(getString(R.string.forward3Sec));
                     mBtnForward5Sec.setTag(3);
@@ -537,11 +561,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu(getString(R.string.forward5Sec), R.drawable.ic_actionsheet_05sec_next, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.forward5Sec), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_05sec_next_dark : R.drawable.ic_actionsheet_05sec_next, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mBtnForward5Sec.setImageResource(R.drawable.ic_abloop_05sec_next);
-                    mBtnForward5Sec2.setImageResource(R.drawable.ic_abloop_05sec_next);
+                    mBtnForward5Sec.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_05sec_next_dark : R.drawable.ic_abloop_05sec_next);
+                    mBtnForward5Sec2.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_05sec_next_dark : R.drawable.ic_abloop_05sec_next);
                     mBtnForward5Sec.setContentDescription(getString(R.string.forward5Sec));
                     mBtnForward5Sec2.setContentDescription(getString(R.string.forward5Sec));
                     mBtnForward5Sec.setTag(5);
@@ -549,11 +573,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     menu.dismiss();
                 }
             });
-            menu.addMenu(getString(R.string.forward10Sec), R.drawable.ic_actionsheet_10sec_next, new View.OnClickListener() {
+            menu.addMenu(getString(R.string.forward10Sec), mActivity.isDarkMode() ? R.drawable.ic_actionsheet_10sec_next_dark : R.drawable.ic_actionsheet_10sec_next, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mBtnForward5Sec.setImageResource(R.drawable.ic_abloop_10sec_next);
-                    mBtnForward5Sec2.setImageResource(R.drawable.ic_abloop_10sec_next);
+                    mBtnForward5Sec.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_10sec_next_dark : R.drawable.ic_abloop_10sec_next);
+                    mBtnForward5Sec2.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_10sec_next_dark : R.drawable.ic_abloop_10sec_next);
                     mBtnForward5Sec.setContentDescription(getString(R.string.forward10Sec));
                     mBtnForward5Sec2.setContentDescription(getString(R.string.forward10Sec));
                     mBtnForward5Sec.setTag(10);
@@ -606,6 +630,16 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         hourPicker.setDisplayedValues(arInts);
         hourPicker.setMinValue(0);
         hourPicker.setMaxValue(59);
+        if(mActivity.isDarkMode()) {
+            setNumberPickerTextColor(hourPicker, Color.WHITE);
+            setNumberPickerTextColor(minutePicker, Color.WHITE);
+            setNumberPickerTextColor(secondPicker, Color.WHITE);
+            setNumberPickerTextColor(decPicker, Color.WHITE);
+            setDividerColor(hourPicker, Color.rgb(38, 40, 44));
+            setDividerColor(minutePicker, Color.rgb(38, 40, 44));
+            setDividerColor(secondPicker, Color.rgb(38, 40, 44));
+            setDividerColor(decPicker, Color.rgb(38, 40, 44));
+        }
         for(int i = 0; i < arInts.length; i++)
         {
             if(arInts[i].equals(strHour))
@@ -639,7 +673,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 decPicker.setValue(i);
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        AlertDialog.Builder builder;
+        if(mActivity.isDarkMode())
+            builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+        else
+            builder = new AlertDialog.Builder(mActivity);
         if(bAPos) builder.setTitle(R.string.adjustAPos);
         else builder.setTitle(R.string.adjustBPos);
         final boolean f_bAPos = bAPos;
@@ -684,6 +722,43 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         alertDialog.show();
     }
 
+    private static void setNumberPickerTextColor(NumberPicker numberPicker, int color)
+    {
+        try{
+            Field selectorWheelPaintField = numberPicker.getClass()
+                    .getDeclaredField("mSelectorWheelPaint");
+            selectorWheelPaintField.setAccessible(true);
+            ((Paint)selectorWheelPaintField.get(numberPicker)).setColor(color);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        final int count = numberPicker.getChildCount();
+        for(int i = 0; i < count; i++){
+            View child = numberPicker.getChildAt(i);
+            if(child instanceof EditText)
+                ((EditText)child).setTextColor(color);
+        }
+        numberPicker.invalidate();
+    }
+
+    private void setDividerColor(NumberPicker picker, int color) {
+        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+        for (java.lang.reflect.Field pf : pickerFields) {
+            if (pf.getName().equals("mSelectionDivider")) {
+                pf.setAccessible(true);
+                try {
+                    ColorDrawable colorDrawable = new ColorDrawable(color);
+                    pf.set(picker, colorDrawable);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+    }
+
     private void showCurPicker() {
         LayoutInflater inflater = mActivity.getLayoutInflater();
         View view = inflater.inflate(R.layout.ablooppicker, (ViewGroup)mActivity.findViewById(R.id.layout_root), false);
@@ -704,6 +779,16 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         hourPicker.setDisplayedValues(arInts);
         hourPicker.setMinValue(0);
         hourPicker.setMaxValue(59);
+        if(mActivity.isDarkMode()) {
+            setNumberPickerTextColor(hourPicker, Color.WHITE);
+            setNumberPickerTextColor(minutePicker, Color.WHITE);
+            setNumberPickerTextColor(secondPicker, Color.WHITE);
+            setNumberPickerTextColor(decPicker, Color.WHITE);
+            setDividerColor(hourPicker, Color.rgb(38, 40, 44));
+            setDividerColor(minutePicker, Color.rgb(38, 40, 44));
+            setDividerColor(secondPicker, Color.rgb(38, 40, 44));
+            setDividerColor(decPicker, Color.rgb(38, 40, 44));
+        }
         hourPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
@@ -779,7 +864,11 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 decPicker.setValue(i);
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        AlertDialog.Builder builder;
+        if(mActivity.isDarkMode())
+            builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
+        else
+            builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(R.string.adjustCurPos);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
@@ -831,7 +920,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         mActivity.setLoopAPos(dLoopA);
         mActivity.setLoopA(true);
         mBtnA.setSelected(true);
-        mBtnA.setImageResource(R.drawable.ic_abloop_a_on);
+        mBtnA.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_a_on_dark : R.drawable.ic_abloop_a_on);
 
         long nLength = BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE);
         long nPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, dLoopA);
@@ -872,7 +961,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         mActivity.setLoopBPos(dLoopB);
         mActivity.setLoopB(true);
         mBtnB.setSelected(true);
-        mBtnB.setImageResource(R.drawable.ic_abloop_b_on);
+        mBtnB.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_b_on_dark : R.drawable.ic_abloop_b_on);
         long nLength = BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE);
         long nPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, dLoopB);
         int nScreenWidth = mWaveView.getWidth();
@@ -943,7 +1032,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     @Override
     public boolean onTouch(View v, MotionEvent event)
     {
-        if(v.getId() == R.id.relativeZoomOut) {
+        if(v.getId() == R.id.btnZoomOut) {
             if(event.getAction() == MotionEvent.ACTION_UP) {
                 if(MainActivity.sStream == 0) return false;
                 mContinue = false;
@@ -951,7 +1040,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 mWaveView.redrawWaveForm();
             }
         }
-        else if(v.getId() == R.id.relativeZoomIn) {
+        else if(v.getId() == R.id.btnZoomIn) {
             if(event.getAction() == MotionEvent.ACTION_UP) {
                 if(MainActivity.sStream == 0) return false;
                 mContinue = false;
@@ -1053,7 +1142,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         mActivity.setLoopAPos(0.0);
                         mActivity.setLoopA(false);
                         mBtnA.setSelected(false);
-                        mBtnA.setImageResource(R.drawable.ic_abloop_a);
+                        mBtnA.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_a_dark : R.drawable.ic_abloop_a);
                         mViewMaskA.setVisibility(View.INVISIBLE);
                         mTextAValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", 0, 0, 0, 0));
                     }
@@ -1061,7 +1150,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         mActivity.setLoopAPos(BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE)));
                         mActivity.setLoopA(true);
                         mBtnA.setSelected(true);
-                        mBtnA.setImageResource(R.drawable.ic_abloop_a_on);
+                        mBtnA.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_a_on_dark : R.drawable.ic_abloop_a_on);
                         long nLength = BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE);
                         long nPos = BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE);
                         int nBkWidth = mWaveView.getWidth();
@@ -1092,7 +1181,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         mActivity.setLoopBPos(0.0);
                         mActivity.setLoopB(false);
                         mBtnB.setSelected(false);
-                        mBtnB.setImageResource(R.drawable.ic_abloop_b);
+                        mBtnB.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_b_dark : R.drawable.ic_abloop_b);
                         mViewMaskB.setVisibility(View.INVISIBLE);
 
                         double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE));
@@ -1107,7 +1196,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         mActivity.setLoopBPos(BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE)));
                         mActivity.setLoopB(true);
                         mBtnB.setSelected(true);
-                        mBtnB.setImageResource(R.drawable.ic_abloop_b_on);
+                        mBtnB.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_b_on_dark : R.drawable.ic_abloop_b_on);
                         long nLength = BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE);
                         long nPos = BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE);
                         int nBkWidth = mWaveView.getWidth();
@@ -1192,15 +1281,15 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     int nMaxWidth = (int)(nScreenWidth * mWaveView.getZoom());
                     double dCurPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE));
                     double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE));
-                    TextView textView = new TextView(mActivity);
-                    textView.setText("▼");
-                    mRelativeLoop.addView(textView);
-                    textView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-                    int nLeft = (int) (mViewCurPos.getX() - nMaxWidth * dCurPos / dLength - textView.getMeasuredWidth() / 2.0f);
-                    int nTop = mRelativeWave.getTop() - textView.getMeasuredHeight();
-                    textView.setTranslationX(nLeft);
-                    textView.setTranslationY(nTop);
-                    textView.requestLayout();
+                    ImageView imgView = new ImageView(mActivity);
+                    imgView.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_marker_dark : R.drawable.ic_abloop_marker);
+                    mRelativeLoop.addView(imgView);
+                    imgView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                    int nLeft = (int) (mViewCurPos.getX() - nMaxWidth * dCurPos / dLength - imgView.getMeasuredWidth() / 2.0f);
+                    int nTop = mRelativeWave.getTop() - imgView.getMeasuredHeight();
+                    imgView.setTranslationX(nLeft);
+                    imgView.setTranslationY(nTop);
+                    imgView.requestLayout();
                     boolean bAdded = false;
                     int i = 0;
                     for( ; i < mMarkerTimes.size(); i++)
@@ -1210,14 +1299,14 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         {
                             bAdded = true;
                             mMarkerTimes.add(i, dCurPos);
-                            mMarkerTexts.add(i, textView);
+                            mMarkerTexts.add(i, imgView);
                             break;
                         }
                     }
                     if(!bAdded)
                     {
                         mMarkerTimes.add(dCurPos);
-                        mMarkerTexts.add(textView);
+                        mMarkerTexts.add(imgView);
                     }
                     mMarker = i;
 
@@ -1238,8 +1327,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         if(dCurPos >= dPos)
                         {
                             mMarkerTimes.remove(i);
-                            TextView textView = mMarkerTexts.get(i);
-                            mRelativeLoop.removeView(textView);
+                            ImageView imgView = mMarkerTexts.get(i);
+                            mRelativeLoop.removeView(imgView);
                             mMarkerTexts.remove(i);
                             break;
                         }
@@ -1255,12 +1344,12 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 if(mBtnLoopmarker.isSelected())
                 {
                     mBtnLoopmarker.setSelected(false);
-                    mBtnLoopmarker.setImageResource(R.drawable.ic_abloop_marker_loop);
+                    mBtnLoopmarker.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_marker_loop_dark : R.drawable.ic_abloop_marker_loop);
                 }
                 else
                 {
                     mBtnLoopmarker.setSelected(true);
-                    mBtnLoopmarker.setImageResource(R.drawable.ic_abloop_marker_loop_on);
+                    mBtnLoopmarker.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_marker_loop_on_dark : R.drawable.ic_abloop_marker_loop_on);
                 }
 
                 if(MainActivity.sStream != 0)
@@ -1307,7 +1396,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
         if(mBtnA != null) {
             mBtnA.setSelected(false);
-            mBtnA.setImageResource(R.drawable.ic_abloop_a);
+            mBtnA.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_a_dark : R.drawable.ic_abloop_a);
         }
 
         if(mViewMaskA != null) mViewMaskA.setVisibility(View.INVISIBLE);
@@ -1315,15 +1404,15 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         if(mBtnB != null)
         {
             mBtnB.setSelected(false);
-            mBtnB.setImageResource(R.drawable.ic_abloop_b);
+            mBtnB.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_b_dark : R.drawable.ic_abloop_b);
         }
 
         if(mViewMaskB != null) mViewMaskB.setVisibility(View.INVISIBLE);
 
         for(int i = 0; i < mMarkerTexts.size(); i++)
         {
-            TextView textView = mMarkerTexts.get(i);
-            mRelativeLoop.removeView(textView);
+            ImageView imgView = mMarkerTexts.get(i);
+            mRelativeLoop.removeView(imgView);
         }
 
         mTextAValue.setText(getString(R.string.zeroHMS));
@@ -1396,5 +1485,333 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             }
         }
         return dPos;
+    }
+
+    public void setLightMode(boolean animated) {
+        final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
+        final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
+        final int nLightModeSep = getResources().getColor(R.color.lightModeSep);
+        final int nDarkModeSep = getResources().getColor(R.color.darkModeSep);
+        final int nLightModeText = getResources().getColor(android.R.color.black);
+        final int nDarkModeText = getResources().getColor(android.R.color.white);
+        if(animated) {
+            final ArgbEvaluator eval = new ArgbEvaluator();
+            ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    float fProgress = valueAnimator.getAnimatedFraction();
+                    int nColorModeBk = (Integer) eval.evaluate(fProgress, nDarkModeBk, nLightModeBk);
+                    int nColorModeSep = (Integer) eval.evaluate(fProgress, nDarkModeSep, nLightModeSep);
+                    int nColorModeText = (Integer) eval.evaluate(fProgress, nDarkModeText, nLightModeText);
+                    mViewMaskA.setBackgroundColor(nColorModeBk);
+                    mViewMaskB.setBackgroundColor(nColorModeBk);
+                    mTextA.setTextColor(nColorModeText);
+                    mTextB.setTextColor(nColorModeText);
+                    mViewSep1Loop.setBackgroundColor(nColorModeSep);
+                    mViewSep2Loop.setBackgroundColor(nColorModeSep);
+                    mViewSep3Loop.setBackgroundColor(nColorModeSep);
+                    mTextAValue.setTextColor(nColorModeText);
+                    mTextBValue.setTextColor(nColorModeText);
+                    mTextCurValue.setTextColor(nColorModeText);
+                }
+            });
+
+            TransitionDrawable tdBtnZoomIn = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_zoom_in_dark), getResources().getDrawable(R.drawable.ic_abloop_zoom_in)});
+            TransitionDrawable tdBtnZoomOut = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_zoom_out_dark), getResources().getDrawable(R.drawable.ic_abloop_zoom_out)});
+            TransitionDrawable tdBtnA = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_a_dark), getResources().getDrawable(R.drawable.ic_abloop_a)});
+            TransitionDrawable tdBtnRewind5Sec, tdBtnRewind5Sec2;
+            if((Integer)mBtnRewind5Sec.getTag() == 1) {
+                tdBtnRewind5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_01sec_prev_dark), getResources().getDrawable(R.drawable.ic_abloop_01sec_prev)});
+                tdBtnRewind5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_01sec_prev_dark), getResources().getDrawable(R.drawable.ic_abloop_01sec_prev)});
+            }
+            else if((Integer)mBtnRewind5Sec.getTag() == 2) {
+                tdBtnRewind5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_02sec_prev_dark), getResources().getDrawable(R.drawable.ic_abloop_02sec_prev)});
+                tdBtnRewind5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_02sec_prev_dark), getResources().getDrawable(R.drawable.ic_abloop_02sec_prev)});
+            }
+            else if((Integer)mBtnRewind5Sec.getTag() == 3) {
+                tdBtnRewind5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_03sec_prev_dark), getResources().getDrawable(R.drawable.ic_abloop_03sec_prev)});
+                tdBtnRewind5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_03sec_prev_dark), getResources().getDrawable(R.drawable.ic_abloop_03sec_prev)});
+            }
+            else if((Integer)mBtnRewind5Sec.getTag() == 5) {
+                tdBtnRewind5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_05sec_prev_dark), getResources().getDrawable(R.drawable.ic_abloop_05sec_prev)});
+                tdBtnRewind5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_05sec_prev_dark), getResources().getDrawable(R.drawable.ic_abloop_05sec_prev)});
+            }
+            else {
+                tdBtnRewind5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_10sec_prev_dark), getResources().getDrawable(R.drawable.ic_abloop_10sec_prev)});
+                tdBtnRewind5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_10sec_prev_dark), getResources().getDrawable(R.drawable.ic_abloop_10sec_prev)});
+            }
+            TransitionDrawable tdBtnForward5Sec, tdBtnForward5Sec2;
+            if((Integer)mBtnForward5Sec.getTag() == 1) {
+                tdBtnForward5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_01sec_next_dark), getResources().getDrawable(R.drawable.ic_abloop_01sec_next)});
+                tdBtnForward5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_01sec_next_dark), getResources().getDrawable(R.drawable.ic_abloop_01sec_next)});
+            }
+            else if((Integer)mBtnForward5Sec.getTag() == 2) {
+                tdBtnForward5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_02sec_next_dark), getResources().getDrawable(R.drawable.ic_abloop_02sec_next)});
+                tdBtnForward5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_02sec_next_dark), getResources().getDrawable(R.drawable.ic_abloop_02sec_next)});
+            }
+            else if((Integer)mBtnForward5Sec.getTag() == 3) {
+                tdBtnForward5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_03sec_next_dark), getResources().getDrawable(R.drawable.ic_abloop_03sec_next)});
+                tdBtnForward5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_03sec_next_dark), getResources().getDrawable(R.drawable.ic_abloop_03sec_next)});
+            }
+            else if((Integer)mBtnForward5Sec.getTag() == 5) {
+                tdBtnForward5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_05sec_next_dark), getResources().getDrawable(R.drawable.ic_abloop_05sec_next)});
+                tdBtnForward5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_05sec_next_dark), getResources().getDrawable(R.drawable.ic_abloop_05sec_next)});
+            }
+            else {
+                tdBtnForward5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_10sec_next_dark), getResources().getDrawable(R.drawable.ic_abloop_10sec_next)});
+                tdBtnForward5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_10sec_next_dark), getResources().getDrawable(R.drawable.ic_abloop_10sec_next)});
+            }
+            TransitionDrawable tdBtnB = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_b_dark), getResources().getDrawable(R.drawable.ic_abloop_b)});
+            TransitionDrawable tdBtnPrevmarker = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_marker_lead_dark), getResources().getDrawable(R.drawable.ic_abloop_marker_lead)});
+            TransitionDrawable tdBtnDelmarker = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_marker_erase_dark), getResources().getDrawable(R.drawable.ic_abloop_marker_erase)});
+            TransitionDrawable tdBtnAddmarker = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_marker_add_dark), getResources().getDrawable(R.drawable.ic_abloop_marker_add)});
+            TransitionDrawable tdBtnNextmarker = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_marker_end_dark), getResources().getDrawable(R.drawable.ic_abloop_marker_end)});
+            TransitionDrawable tdBtnLoopmarker;
+            if(mBtnLoopmarker.isSelected())
+                tdBtnLoopmarker = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_marker_loop_on_dark), getResources().getDrawable(R.drawable.ic_abloop_marker_loop_on)});
+            else
+                tdBtnLoopmarker = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_marker_loop_dark), getResources().getDrawable(R.drawable.ic_abloop_marker_loop)});
+
+            mBtnZoomIn.setImageDrawable(tdBtnZoomIn);
+            mBtnZoomOut.setImageDrawable(tdBtnZoomOut);
+            mBtnA.setImageDrawable(tdBtnA);
+            mBtnRewind5Sec.setImageDrawable(tdBtnRewind5Sec);
+            mBtnForward5Sec.setImageDrawable(tdBtnForward5Sec);
+            mBtnB.setImageDrawable(tdBtnB);
+            mBtnRewind5Sec2.setImageDrawable(tdBtnRewind5Sec2);
+            mBtnForward5Sec2.setImageDrawable(tdBtnForward5Sec2);
+            mBtnPrevmarker.setImageDrawable(tdBtnPrevmarker);
+            mBtnDelmarker.setImageDrawable(tdBtnDelmarker);
+            mBtnAddmarker.setImageDrawable(tdBtnAddmarker);
+            mBtnNextmarker.setImageDrawable(tdBtnNextmarker);
+            mBtnLoopmarker.setImageDrawable(tdBtnLoopmarker);
+
+            int duration = 300;
+            anim.setDuration(duration).start();
+            tdBtnZoomIn.startTransition(duration);
+            tdBtnZoomOut.startTransition(duration);
+            tdBtnA.startTransition(duration);
+            tdBtnRewind5Sec.startTransition(duration);
+            tdBtnForward5Sec.startTransition(duration);
+            tdBtnB.startTransition(duration);
+            tdBtnRewind5Sec2.startTransition(duration);
+            tdBtnForward5Sec2.startTransition(duration);
+            tdBtnPrevmarker.startTransition(duration);
+            tdBtnDelmarker.startTransition(duration);
+            tdBtnAddmarker.startTransition(duration);
+            tdBtnNextmarker.startTransition(duration);
+            tdBtnLoopmarker.startTransition(duration);
+
+            if(MainActivity.sStream != 0) mWaveView.redrawWaveForm();
+        }
+        else {
+            mViewMaskA.setBackgroundColor(nLightModeBk);
+            mViewMaskB.setBackgroundColor(nLightModeBk);
+            mTextA.setTextColor(nLightModeText);
+            mTextB.setTextColor(nLightModeText);
+            mViewSep1Loop.setBackgroundColor(nLightModeSep);
+            mViewSep2Loop.setBackgroundColor(nLightModeSep);
+            mViewSep3Loop.setBackgroundColor(nLightModeSep);
+            mTextAValue.setTextColor(nLightModeText);
+            mTextBValue.setTextColor(nLightModeText);
+            mTextCurValue.setTextColor(nLightModeText);
+            mBtnZoomIn.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_zoom_in));
+            mBtnZoomOut.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_zoom_out));
+            mBtnA.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_a));
+            if((Integer)mBtnRewind5Sec.getTag() == 1) {
+                mBtnRewind5Sec.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_01sec_prev));
+                mBtnRewind5Sec2.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_01sec_prev));
+            }
+            else if((Integer)mBtnRewind5Sec.getTag() == 2) {
+                mBtnRewind5Sec.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_02sec_prev));
+                mBtnRewind5Sec2.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_02sec_prev));
+            }
+            else if((Integer)mBtnRewind5Sec.getTag() == 3) {
+                mBtnRewind5Sec.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_03sec_prev));
+                mBtnRewind5Sec2.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_03sec_prev));
+            }
+            else if((Integer)mBtnRewind5Sec.getTag() == 5) {
+                mBtnRewind5Sec.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_05sec_prev));
+                mBtnRewind5Sec2.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_05sec_prev));
+            }
+            else {
+                mBtnRewind5Sec.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_10sec_prev));
+                mBtnRewind5Sec2.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_10sec_prev));
+            }
+            if((Integer)mBtnForward5Sec.getTag() == 1) {
+                mBtnForward5Sec.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_01sec_next));
+                mBtnForward5Sec2.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_01sec_next));
+            }
+            else if((Integer)mBtnForward5Sec.getTag() == 2) {
+                mBtnForward5Sec.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_02sec_next));
+                mBtnForward5Sec2.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_02sec_next));
+            }
+            else if((Integer)mBtnForward5Sec.getTag() == 3) {
+                mBtnForward5Sec.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_03sec_next));
+                mBtnForward5Sec2.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_03sec_next));
+            }
+            else if((Integer)mBtnForward5Sec.getTag() == 5) {
+                mBtnForward5Sec.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_05sec_next));
+                mBtnForward5Sec2.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_05sec_next));
+            }
+            else {
+                mBtnForward5Sec.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_10sec_next));
+                mBtnForward5Sec2.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_10sec_next));
+            }
+            mBtnB.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_b));
+            mBtnPrevmarker.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_marker_lead));
+            mBtnDelmarker.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_marker_erase));
+            mBtnAddmarker.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_marker_add));
+            mBtnNextmarker.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_marker_end));
+            if(mBtnLoopmarker.isSelected())
+                mBtnLoopmarker.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_marker_loop_on));
+            else
+                mBtnLoopmarker.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_marker_loop));
+
+            if(MainActivity.sStream != 0) mWaveView.redrawWaveForm();
+        }
+        mRadioButtonABLoop.setTextColor(getResources().getColorStateList(R.color.radio_text_color));
+        mRadioButtonABLoop.setBackgroundResource(R.drawable.radio_left);
+        mRadioButtonMarkerPlay.setTextColor(getResources().getColorStateList(R.color.radio_text_color));
+        mRadioButtonMarkerPlay.setBackgroundResource(R.drawable.radio_right);
+        mTextAValue.setBackgroundResource(R.drawable.editborder);
+        mTextBValue.setBackgroundResource(R.drawable.editborder);
+        mTextCurValue.setBackgroundResource(R.drawable.editborder);
+        for(int i = 0; i < mMarkerTexts.size(); i++) {
+            ImageView imgView = mMarkerTexts.get(i);
+            imgView.setImageResource(R.drawable.ic_abloop_marker);
+        }
+    }
+
+    public void setDarkMode(boolean animated) {
+        if(mActivity == null) return;
+        final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
+        final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
+        final int nLightModeSep = getResources().getColor(R.color.lightModeSep);
+        final int nDarkModeSep = getResources().getColor(R.color.darkModeSep);
+        final int nLightModeText = getResources().getColor(android.R.color.black);
+        final int nDarkModeText = getResources().getColor(android.R.color.white);
+        final ArgbEvaluator eval = new ArgbEvaluator();
+        ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float fProgress = valueAnimator.getAnimatedFraction();
+                int nColorModeBk = (Integer) eval.evaluate(fProgress, nLightModeBk, nDarkModeBk);
+                int nColorModeSep = (Integer) eval.evaluate(fProgress, nLightModeSep, nDarkModeSep);
+                int nColorModeText = (Integer) eval.evaluate(fProgress, nLightModeText, nDarkModeText);
+                mViewMaskA.setBackgroundColor(nColorModeBk);
+                mViewMaskB.setBackgroundColor(nColorModeBk);
+                mTextA.setTextColor(nColorModeText);
+                mTextB.setTextColor(nColorModeText);
+                mViewSep1Loop.setBackgroundColor(nColorModeSep);
+                mViewSep2Loop.setBackgroundColor(nColorModeSep);
+                mViewSep3Loop.setBackgroundColor(nColorModeSep);
+                mTextAValue.setTextColor(nColorModeText);
+                mTextBValue.setTextColor(nColorModeText);
+                mTextCurValue.setTextColor(nColorModeText);
+            }
+        });
+
+        TransitionDrawable tdBtnZoomIn = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_zoom_in), getResources().getDrawable(R.drawable.ic_abloop_zoom_in_dark)});
+        TransitionDrawable tdBtnZoomOut = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_zoom_out), getResources().getDrawable(R.drawable.ic_abloop_zoom_out_dark)});
+        TransitionDrawable tdBtnA = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_a), getResources().getDrawable(R.drawable.ic_abloop_a_dark)});
+        TransitionDrawable tdBtnRewind5Sec, tdBtnRewind5Sec2;
+        if((Integer)mBtnRewind5Sec.getTag() == 1) {
+            tdBtnRewind5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_01sec_prev), getResources().getDrawable(R.drawable.ic_abloop_01sec_prev_dark)});
+            tdBtnRewind5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_01sec_prev), getResources().getDrawable(R.drawable.ic_abloop_01sec_prev_dark)});
+        }
+        else if((Integer)mBtnRewind5Sec.getTag() == 2) {
+            tdBtnRewind5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_02sec_prev), getResources().getDrawable(R.drawable.ic_abloop_02sec_prev_dark)});
+            tdBtnRewind5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_02sec_prev), getResources().getDrawable(R.drawable.ic_abloop_02sec_prev_dark)});
+        }
+        else if((Integer)mBtnRewind5Sec.getTag() == 3) {
+            tdBtnRewind5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_03sec_prev), getResources().getDrawable(R.drawable.ic_abloop_03sec_prev_dark)});
+            tdBtnRewind5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_03sec_prev), getResources().getDrawable(R.drawable.ic_abloop_03sec_prev_dark)});
+        }
+        else if((Integer)mBtnRewind5Sec.getTag() == 5) {
+            tdBtnRewind5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_05sec_prev), getResources().getDrawable(R.drawable.ic_abloop_05sec_prev_dark)});
+            tdBtnRewind5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_05sec_prev), getResources().getDrawable(R.drawable.ic_abloop_05sec_prev_dark)});
+        }
+        else {
+            tdBtnRewind5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_10sec_prev), getResources().getDrawable(R.drawable.ic_abloop_10sec_prev_dark)});
+            tdBtnRewind5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_10sec_prev), getResources().getDrawable(R.drawable.ic_abloop_10sec_prev_dark)});
+        }
+        TransitionDrawable tdBtnForward5Sec, tdBtnForward5Sec2;
+        if((Integer)mBtnForward5Sec.getTag() == 1) {
+            tdBtnForward5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_01sec_next), getResources().getDrawable(R.drawable.ic_abloop_01sec_next_dark)});
+            tdBtnForward5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_01sec_next), getResources().getDrawable(R.drawable.ic_abloop_01sec_next_dark)});
+        }
+        else if((Integer)mBtnForward5Sec.getTag() == 2) {
+            tdBtnForward5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_02sec_next), getResources().getDrawable(R.drawable.ic_abloop_02sec_next_dark)});
+            tdBtnForward5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_02sec_next), getResources().getDrawable(R.drawable.ic_abloop_02sec_next_dark)});
+        }
+        else if((Integer)mBtnForward5Sec.getTag() == 3) {
+            tdBtnForward5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_03sec_next), getResources().getDrawable(R.drawable.ic_abloop_03sec_next_dark)});
+            tdBtnForward5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_03sec_next), getResources().getDrawable(R.drawable.ic_abloop_03sec_next_dark)});
+        }
+        else if((Integer)mBtnForward5Sec.getTag() == 5) {
+            tdBtnForward5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_05sec_next), getResources().getDrawable(R.drawable.ic_abloop_05sec_next_dark)});
+            tdBtnForward5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_05sec_next), getResources().getDrawable(R.drawable.ic_abloop_05sec_next_dark)});
+        }
+        else {
+            tdBtnForward5Sec = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_10sec_next), getResources().getDrawable(R.drawable.ic_abloop_10sec_next_dark)});
+            tdBtnForward5Sec2 = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_10sec_next), getResources().getDrawable(R.drawable.ic_abloop_10sec_next_dark)});
+        }
+        TransitionDrawable tdBtnB = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_b), getResources().getDrawable(R.drawable.ic_abloop_b_dark)});
+        TransitionDrawable tdBtnPrevmarker = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_marker_lead), getResources().getDrawable(R.drawable.ic_abloop_marker_lead_dark)});
+        TransitionDrawable tdBtnDelmarker = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_marker_erase), getResources().getDrawable(R.drawable.ic_abloop_marker_erase_dark)});
+        TransitionDrawable tdBtnAddmarker = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_marker_add), getResources().getDrawable(R.drawable.ic_abloop_marker_add_dark)});
+        TransitionDrawable tdBtnNextmarker = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_marker_end), getResources().getDrawable(R.drawable.ic_abloop_marker_end_dark)});
+        TransitionDrawable tdBtnLoopmarker;
+        if(mBtnLoopmarker.isSelected())
+            tdBtnLoopmarker = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_marker_loop_on), getResources().getDrawable(R.drawable.ic_abloop_marker_loop_on_dark)});
+        else
+            tdBtnLoopmarker = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_abloop_marker_loop), getResources().getDrawable(R.drawable.ic_abloop_marker_loop_dark)});
+
+        mBtnZoomIn.setImageDrawable(tdBtnZoomIn);
+        mBtnZoomOut.setImageDrawable(tdBtnZoomOut);
+        mBtnA.setImageDrawable(tdBtnA);
+        mBtnRewind5Sec.setImageDrawable(tdBtnRewind5Sec);
+        mBtnForward5Sec.setImageDrawable(tdBtnForward5Sec);
+        mBtnB.setImageDrawable(tdBtnB);
+        mBtnRewind5Sec2.setImageDrawable(tdBtnRewind5Sec2);
+        mBtnForward5Sec2.setImageDrawable(tdBtnForward5Sec2);
+        mBtnPrevmarker.setImageDrawable(tdBtnPrevmarker);
+        mBtnDelmarker.setImageDrawable(tdBtnDelmarker);
+        mBtnAddmarker.setImageDrawable(tdBtnAddmarker);
+        mBtnNextmarker.setImageDrawable(tdBtnNextmarker);
+        mBtnLoopmarker.setImageDrawable(tdBtnLoopmarker);
+
+        int duration = animated ? 300 : 0;
+        anim.setDuration(duration).start();
+        tdBtnZoomIn.startTransition(duration);
+        tdBtnZoomOut.startTransition(duration);
+        tdBtnA.startTransition(duration);
+        tdBtnRewind5Sec.startTransition(duration);
+        tdBtnForward5Sec.startTransition(duration);
+        tdBtnB.startTransition(duration);
+        tdBtnRewind5Sec2.startTransition(duration);
+        tdBtnForward5Sec2.startTransition(duration);
+        tdBtnPrevmarker.startTransition(duration);
+        tdBtnDelmarker.startTransition(duration);
+        tdBtnAddmarker.startTransition(duration);
+        tdBtnNextmarker.startTransition(duration);
+        tdBtnLoopmarker.startTransition(duration);
+
+        if(MainActivity.sStream != 0) mWaveView.redrawWaveForm();
+
+        mRadioButtonABLoop.setTextColor(getResources().getColorStateList(R.color.radio_text_color_dark));
+        mRadioButtonABLoop.setBackgroundResource(R.drawable.radio_left_dark);
+        mRadioButtonMarkerPlay.setTextColor(getResources().getColorStateList(R.color.radio_text_color_dark));
+        mRadioButtonMarkerPlay.setBackgroundResource(R.drawable.radio_right_dark);
+        mTextAValue.setBackgroundResource(R.drawable.editborder_dark);
+        mTextBValue.setBackgroundResource(R.drawable.editborder_dark);
+        mTextCurValue.setBackgroundResource(R.drawable.editborder_dark);
+        for(int i = 0; i < mMarkerTexts.size(); i++) {
+            ImageView imgView = mMarkerTexts.get(i);
+            imgView.setImageResource(R.drawable.ic_abloop_marker_dark);
+        }
     }
 }
