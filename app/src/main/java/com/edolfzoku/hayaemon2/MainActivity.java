@@ -148,10 +148,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AdView mAdView;
     private LinearLayout mLinearControl;
     private SeekBar mSeekCurPos;
-    private ImageView mImgViewDown, mImgViewArtworkInMenu;
+    private ImageView mImgViewDown, mImgViewArtworkInMenu, mImgViewRecording;
     private TabLayout mTabLayout;
     private View mViewSep0, mViewSep1, mViewSep2, mViewSep3, mDividerMenu;
-    private TextView mTextCurPos, mTextRemain, mTextTitle, mTextArtist, mTextRecordingTime, mTextSave, mTextLock, mTextHideAds, mTextItemInMenu, mTextReport, mTextReview, mTextInfo, mTextAddSong, mTextPlaying, mTextTitleInMenu, mTextArtistInMenu;
+    private TextView mTextCurPos, mTextRemain, mTextTitle, mTextArtist, mTextRecordingTime, mTextSave, mTextLock, mTextHideAds, mTextItemInMenu, mTextReport, mTextReview, mTextInfo, mTextAddSong, mTextPlaying, mTextTitleInMenu, mTextArtistInMenu, mTextRecording;
     private AnimationButton mBtnMenu, mBtnRewind, mBtnPlay, mBtnForward, mBtnShuffle, mBtnRepeat, mBtnRecord, mBtnPlayInPlayingBar, mBtnForwardInPlayingBar, mBtnRewindInPlayingBar, mBtnMoreInPlayingBar, mBtnShuffleInPlayingBar, mBtnRepeatInPlayingBar, mBtnCloseInPlayingBar, mBtnStopRecording, mBtnArtworkInPlayingBar, mBtnSetting, mBtnDarkMode;
     private RelativeLayout mRelativeRecording, mRelativeSave, mRelativeLock, mRelativeAddSong, mRelativeItem, mRelativeReport, mRelativeReview, mRelativeHideAds, mRelativeInfo, mRelativePlayingWithShadow, mRelativePlaying, mRelativeLeftMenu;
 
@@ -231,6 +231,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mSeekCurPos = findViewById(R.id.seekCurPos);
         mImgViewDown = findViewById(R.id.imgViewDown);
         mImgViewArtworkInMenu = findViewById(R.id.imgViewArtworkInMenu);
+        mImgViewRecording = findViewById(R.id.imgViewRecording);
         mBtnArtworkInPlayingBar = findViewById(R.id.btnArtworkInPlayingBar);
         mRelativePlayingWithShadow = findViewById(R.id.relativePlayingWithShadow);
         mTextCurPos = findViewById(R.id.textCurPos);
@@ -269,6 +270,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTextPlaying = findViewById(R.id.textPlaying);
         mBtnSetting = findViewById(R.id.btnSetting);
         mBtnDarkMode = findViewById(R.id.btnDarkMode);
+        mTextRecording = findViewById(R.id.textRecording);
         AnimationButton btnSetting = findViewById(R.id.btnSetting);
         AnimationButton btnDarkMode = findViewById(R.id.btnDarkMode);
 
@@ -2746,6 +2748,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int nColorModeText = (Integer)eval.evaluate(fProgress, nDarkModeText, nLightModeText);
                 int nColorModeArtist = (Integer)eval.evaluate(fProgress, nDarkModeArtist, nLightModeArtist);
                 int nColorModeTextDarkGray = (Integer)eval.evaluate(fProgress, nDarkModeTextDarkGray, nLightModeTextDarkGray);
+                int nColorRecording = (Integer) eval.evaluate(fProgress, nDarkModeBk, Color.WHITE);
                 if (Build.VERSION.SDK_INT >= 23) getWindow().setStatusBarColor(nColorModeBk);
                 relativeMain.setBackgroundColor(nColorModeBk);
                 mTabLayout.setBackgroundColor(nColorModeBk);
@@ -2780,6 +2783,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mViewSep2.setBackgroundColor(nColorModeSep);
                 mViewSep3.setBackgroundColor(nColorModeSep);
                 mDividerMenu.setBackgroundColor(nColorModeSep);
+                mRelativeRecording.setBackgroundColor(nColorModeBlue);
+                mTextRecording.setTextColor(nColorRecording);
+                mTextRecordingTime.setTextColor(nColorRecording);
                 if(textView != null) {
                     textView.setTextColor(nColorModeBlue);
                     for (Drawable drawable : textView.getCompoundDrawables()) {
@@ -2845,6 +2851,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             tdBtnForwardInPlayingBar = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_forward_dark), getResources().getDrawable(R.drawable.ic_bar_button_forward) });
         TransitionDrawable tdBtnImgViewArtwork = new TransitionDrawable(new Drawable[] { getResources().getDrawable(R.drawable.ic_playing_large_artwork_dark), getResources().getDrawable(R.drawable.ic_playing_large_artwork)});
         TransitionDrawable tdImgViewDown = new TransitionDrawable(new Drawable[] { getResources().getDrawable(R.drawable.ic_playing_large_down_dark), getResources().getDrawable(R.drawable.ic_playing_large_down)});
+        TransitionDrawable tdImgViewRecording = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_rec_now_dark), getResources().getDrawable(R.drawable.ic_rec_now)});
+        TransitionDrawable tdBtnStopRecording = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_rec_stop_dark), getResources().getDrawable(R.drawable.ic_rec_stop)});
 
         mBtnMenu.setImageDrawable(tdBtnMenu);
         mBtnRewind.setImageDrawable(tdBtnRewind);
@@ -2862,6 +2870,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnForwardInPlayingBar.setImageDrawable(tdBtnForwardInPlayingBar);
         mBtnArtworkInPlayingBar.setImageDrawable(tdBtnImgViewArtwork);
         mImgViewDown.setImageDrawable(tdImgViewDown);
+        mImgViewRecording.setImageDrawable(tdImgViewRecording);
+        mBtnStopRecording.setImageDrawable(tdBtnStopRecording);
 
         playlistFragment.setLightMode(mTabLayout.getSelectedTabPosition() == 0);
         loopFragment.setLightMode(mTabLayout.getSelectedTabPosition() == 1);
@@ -2914,6 +2924,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tdBtnForwardInPlayingBar.startTransition(duration);
         tdBtnImgViewArtwork.startTransition(duration);
         tdImgViewDown.startTransition(duration);
+        tdImgViewRecording.startTransition(duration);
+        tdBtnStopRecording.startTransition(duration);
 
         if(mSeekCurPos.getVisibility() == View.VISIBLE)
             mRelativePlayingWithShadow.setBackgroundResource(R.drawable.playingview);
@@ -2992,6 +3004,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int nColorModeText = (Integer) eval.evaluate(fProgress, nLightModeText, nDarkModeText);
                 int nColorModeArtist = (Integer) eval.evaluate(fProgress, nLightModeArtist, nDarkModeArtist);
                 int nColorModeTextDarkGray = (Integer) eval.evaluate(fProgress, nLightModeTextDarkGray, nDarkModeTextDarkGray);
+                int nColorRecording = (Integer) eval.evaluate(fProgress, Color.WHITE, nDarkModeBk);
                 if (Build.VERSION.SDK_INT >= 23) getWindow().setStatusBarColor(nColorModeBk);
                 relativeMain.setBackgroundColor(nColorModeBk);
                 mTabLayout.setBackgroundColor(nColorModeBk);
@@ -3026,6 +3039,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mViewSep2.setBackgroundColor(nColorModeSep);
                 mViewSep3.setBackgroundColor(nColorModeSep);
                 mDividerMenu.setBackgroundColor(nColorModeSep);
+                mRelativeRecording.setBackgroundColor(nColorModeBlue);
+                mTextRecording.setTextColor(nColorRecording);
+                mTextRecordingTime.setTextColor(nColorRecording);
                 if (textView != null) {
                     textView.setTextColor(nColorModeBlue);
                     for (Drawable drawable : textView.getCompoundDrawables()) {
@@ -3086,6 +3102,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             tdBtnForwardInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_forward), getResources().getDrawable(R.drawable.ic_bar_button_forward_dark)});
         TransitionDrawable tdBtnImgViewArtwork = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_artwork), getResources().getDrawable(R.drawable.ic_playing_large_artwork_dark)});
         TransitionDrawable tdImgViewDown = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_down), getResources().getDrawable(R.drawable.ic_playing_large_down_dark)});
+        TransitionDrawable tdImgViewRecording = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_rec_now), getResources().getDrawable(R.drawable.ic_rec_now_dark)});
+        TransitionDrawable tdBtnStopRecording = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_rec_stop), getResources().getDrawable(R.drawable.ic_rec_stop_dark)});
 
         mBtnMenu.setImageDrawable(tdBtnMenu);
         mBtnRewind.setImageDrawable(tdBtnRewind);
@@ -3103,6 +3121,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnForwardInPlayingBar.setImageDrawable(tdBtnForwardInPlayingBar);
         mBtnArtworkInPlayingBar.setImageDrawable(tdBtnImgViewArtwork);
         mImgViewDown.setImageDrawable(tdImgViewDown);
+        mImgViewRecording.setImageDrawable(tdImgViewRecording);
+        mBtnStopRecording.setImageDrawable(tdBtnStopRecording);
 
         playlistFragment.setDarkMode(mTabLayout.getSelectedTabPosition() == 0);
         loopFragment.setDarkMode(mTabLayout.getSelectedTabPosition() == 1);
@@ -3155,6 +3175,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tdBtnForwardInPlayingBar.startTransition(duration);
         tdBtnImgViewArtwork.startTransition(duration);
         tdImgViewDown.startTransition(duration);
+        tdImgViewRecording.startTransition(duration);
+        tdBtnStopRecording.startTransition(duration);
 
         if(mSeekCurPos.getVisibility() == View.VISIBLE)
             mRelativePlayingWithShadow.setBackgroundResource(R.drawable.playingview_dark);

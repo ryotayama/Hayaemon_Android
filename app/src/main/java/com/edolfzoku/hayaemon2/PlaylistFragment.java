@@ -1352,7 +1352,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
         MainActivity.sRecord = BASS.BASS_RecordStart(44100, 2, 0, RecordingCallback, 0);
 
-        mActivity.getBtnRecord().setColorFilter(new PorterDuffColorFilter(Color.parseColor("#FF007AFF"), PorterDuff.Mode.SRC_IN));
+        mActivity.getBtnRecord().setColorFilter(new PorterDuffColorFilter(mActivity.isDarkMode() ? getResources().getColor(R.color.darkModeBlue) : getResources().getColor(R.color.lightModeBlue), PorterDuff.Mode.SRC_IN));
 
         final Handler handler = new Handler();
         Runnable timer=new Runnable() {
