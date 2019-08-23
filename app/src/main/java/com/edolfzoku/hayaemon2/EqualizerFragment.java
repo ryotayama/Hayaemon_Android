@@ -1332,6 +1332,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     for(int i = 0; i < mTextValues.size(); i++) {
                         mTextValues.get(i).setTextColor(nColorModeText);
                     }
+                    mTextFinishSortEqualizer.setBackgroundColor(nColorModeBlue);
+                    mTextFinishSortEqualizer.setTextColor(nColorModeBk);
                 }
             });
             TransitionDrawable tdBtnEqualizerMenu = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_button_more_blue_dark), getResources().getDrawable(R.drawable.ic_button_more_blue)});
@@ -1363,6 +1365,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             for(int i = 0; i < mTextValues.size(); i++) {
                 mTextValues.get(i).setTextColor(nLightModeText);
             }
+            mTextFinishSortEqualizer.setBackgroundColor(nLightModeBlue);
+            mTextFinishSortEqualizer.setTextColor(nLightModeBk);
             mBtnEqualizerMenu.setImageDrawable(getResources().getDrawable(R.drawable.ic_button_more_blue));
             mBtnAddEqualizerTemplate.setImageDrawable(getResources().getDrawable(R.drawable.button_big_equalizer));
             mImgBackEqualizer.setImageDrawable(getResources().getDrawable(R.drawable.ic_button_back));
@@ -1421,6 +1425,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 for(int i = 0; i < mTextValues.size(); i++) {
                     mTextValues.get(i).setTextColor(nColorModeText);
                 }
+                mTextFinishSortEqualizer.setBackgroundColor(nColorModeBlue);
+                mTextFinishSortEqualizer.setTextColor(nColorModeBk);
             }
         });
         TransitionDrawable tdBtnEqualizerMenu = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_button_more_blue), getResources().getDrawable(R.drawable.ic_button_more_blue_dark)});

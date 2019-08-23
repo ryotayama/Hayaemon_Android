@@ -5714,6 +5714,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     mBtnResetChorus.setTextColor(nColorModeBlue);
                     mBtnDistortionRandom.setTextColor(nColorModeBlue);
                     mBtnResetDistortion.setTextColor(nColorModeBlue);
+                    mTextFinishSortEffect.setBackgroundColor(nColorModeBlue);
+                    mTextFinishSortEffect.setTextColor(nColorModeBk);
                 }
             });
             TransitionDrawable tdImgEffectBack = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_button_back_dark), getResources().getDrawable(R.drawable.ic_button_back)});
@@ -5812,6 +5814,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnResetChorus.setTextColor(nLightModeBlue);
             mBtnDistortionRandom.setTextColor(nLightModeBlue);
             mBtnResetDistortion.setTextColor(nLightModeBlue);
+            mTextFinishSortEffect.setBackgroundColor(nLightModeBlue);
+            mTextFinishSortEffect.setTextColor(nLightModeBk);
             mImgEffectBack.setImageDrawable(getResources().getDrawable(R.drawable.ic_button_back));
             mBtnEffectTemplateMenu.setImageDrawable(getResources().getDrawable(R.drawable.ic_button_more_blue));
             mBtnAddEffectTemplate.setImageDrawable(getResources().getDrawable(R.drawable.button_big_add));
@@ -6061,6 +6065,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mBtnResetChorus.setTextColor(nColorModeBlue);
                 mBtnDistortionRandom.setTextColor(nColorModeBlue);
                 mBtnResetDistortion.setTextColor(nColorModeBlue);
+                mTextFinishSortEffect.setBackgroundColor(nColorModeBlue);
+                mTextFinishSortEffect.setTextColor(nColorModeBk);
             }
         });
         TransitionDrawable tdImgEffectBack = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_button_back), getResources().getDrawable(R.drawable.ic_button_back_dark)});

@@ -4539,6 +4539,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     mEditLyrics.setTextColor(nColorModeText);
                     mBtnSortPlaylist.setTextColor(nColorModeBlue);
                     mBtnFinishLyrics.setTextColor(nColorModeBlue);
+                    mTextFinishSort.setBackgroundColor(nColorModeBlue);
+                    mTextFinishSort.setTextColor(nColorModeBk);
                 }
             });
 
@@ -4579,6 +4581,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             mEditLyrics.setTextColor(nLightModeText);
             mBtnSortPlaylist.setTextColor(nLightModeBlue);
             mBtnFinishLyrics.setTextColor(nLightModeBlue);
+            mTextFinishSort.setBackgroundColor(nLightModeBlue);
+            mTextFinishSort.setTextColor(nLightModeBk);
 
             mBtnAddSong.setImageDrawable(getResources().getDrawable(R.drawable.button_big_add_music));
             mBtnAddPlaylist.setImageDrawable(getResources().getDrawable(R.drawable.button_big_add_folder));
@@ -4626,6 +4630,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             mEditLyrics.setTextColor(nColorModeText);
             mBtnSortPlaylist.setTextColor(nColorModeBlue);
             mBtnFinishLyrics.setTextColor(nColorModeBlue);
+            mTextFinishSort.setBackgroundColor(nColorModeBlue);
+            mTextFinishSort.setTextColor(nColorModeBk);
             }
         });
 
