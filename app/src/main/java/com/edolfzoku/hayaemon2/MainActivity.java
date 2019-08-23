@@ -2857,6 +2857,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         equalizerFragment.setLightMode(mTabLayout.getSelectedTabPosition() == 3);
         effectFragment.setLightMode(mTabLayout.getSelectedTabPosition() == 4);
 
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (mBtnShuffle.getContentDescription().toString().equals(getString(R.string.shuffleOff))) {
+                    mBtnShuffle.setImageDrawable(getResources().getDrawable(R.drawable.ic_bar_button_mode_shuffle));
+                    mBtnShuffleInPlayingBar.setImageDrawable(getResources().getDrawable(R.drawable.ic_playing_large_mode_shuffle));
+                } else if (mBtnShuffle.getContentDescription().toString().equals(getString(R.string.shuffleOn))) {
+                    mBtnShuffle.setImageDrawable(getResources().getDrawable(R.drawable.ic_bar_button_mode_shuffle_on));
+                    mBtnShuffleInPlayingBar.setImageDrawable(getResources().getDrawable(R.drawable.ic_playing_large_mode_shuffle_on));
+                } else {
+                    mBtnShuffle.setImageDrawable(getResources().getDrawable(R.drawable.ic_bar_button_mode_single_on));
+                    mBtnShuffleInPlayingBar.setImageDrawable(getResources().getDrawable(R.drawable.ic_playing_large_mode_single_on));
+                }
+                if (mBtnRepeat.getContentDescription().toString().equals(getString(R.string.repeatOff))) {
+                    mBtnRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat));
+                    mBtnRepeatInPlayingBar.setImageDrawable(getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_all));
+                } else if (mBtnRepeat.getContentDescription().toString().equals(getString(R.string.repeatAllOn))) {
+                    mBtnRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat_all_on));
+                    mBtnRepeatInPlayingBar.setImageDrawable(getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_all_on));
+                } else {
+                    mBtnRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat_single_on));
+                    mBtnRepeatInPlayingBar.setImageDrawable(getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_one_on));
+                }
+            }
+        });
+
         int duration = 300;
         anim.setDuration(duration).start();
         tdBtnMenu.startTransition(duration);
@@ -3057,6 +3084,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         controlFragment.setDarkMode(mTabLayout.getSelectedTabPosition() == 2);
         equalizerFragment.setDarkMode(mTabLayout.getSelectedTabPosition() == 3);
         effectFragment.setDarkMode(mTabLayout.getSelectedTabPosition() == 4);
+
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (mBtnShuffle.getContentDescription().toString().equals(getString(R.string.shuffleOff))) {
+                    mBtnShuffle.setImageDrawable(getResources().getDrawable(R.drawable.ic_bar_button_mode_shuffle_dark));
+                    mBtnShuffleInPlayingBar.setImageDrawable(getResources().getDrawable(R.drawable.ic_playing_large_mode_shuffle_dark));
+                } else if (mBtnShuffle.getContentDescription().toString().equals(getString(R.string.shuffleOn))) {
+                    mBtnShuffle.setImageDrawable(getResources().getDrawable(R.drawable.ic_bar_button_mode_shuffle_on_dark));
+                    mBtnShuffleInPlayingBar.setImageDrawable(getResources().getDrawable(R.drawable.ic_playing_large_mode_shuffle_on_dark));
+                } else {
+                    mBtnShuffle.setImageDrawable(getResources().getDrawable(R.drawable.ic_bar_button_mode_single_on_dark));
+                    mBtnShuffleInPlayingBar.setImageDrawable(getResources().getDrawable(R.drawable.ic_playing_large_mode_single_on_dark));
+                }
+                if (mBtnRepeat.getContentDescription().toString().equals(getString(R.string.repeatOff))) {
+                    mBtnRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat_dark));
+                    mBtnRepeatInPlayingBar.setImageDrawable(getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_all_dark));
+                } else if (mBtnRepeat.getContentDescription().toString().equals(getString(R.string.repeatAllOn))) {
+                    mBtnRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat_all_on_dark));
+                    mBtnRepeatInPlayingBar.setImageDrawable(getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_all_on_dark));
+                } else {
+                    mBtnRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_bar_button_mode_repeat_single_on_dark));
+                    mBtnRepeatInPlayingBar.setImageDrawable(getResources().getDrawable(R.drawable.ic_playing_large_mode_repeat_one_on_dark));
+                }
+            }
+        });
 
         int duration = animated ? 300 : 0;
         anim.setDuration(duration).start();
