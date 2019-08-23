@@ -2834,6 +2834,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TransitionDrawable tdBtnRewindInPlayingBar = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_rewind_dark), getResources().getDrawable(R.drawable.ic_bar_button_rewind) });
         TransitionDrawable tdBtnForwardInPlayingBar = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_forward_dark), getResources().getDrawable(R.drawable.ic_bar_button_forward) });
         TransitionDrawable tdBtnImgViewArtwork = new TransitionDrawable(new Drawable[] { getResources().getDrawable(R.drawable.ic_playing_large_artwork_dark), getResources().getDrawable(R.drawable.ic_playing_large_artwork)});
+        TransitionDrawable tdImgViewDown = new TransitionDrawable(new Drawable[] { getResources().getDrawable(R.drawable.ic_playing_large_down_dark), getResources().getDrawable(R.drawable.ic_playing_large_down)});
 
         mBtnMenu.setImageDrawable(tdBtnMenu);
         mBtnRewind.setImageDrawable(tdBtnRewind);
@@ -2850,6 +2851,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnPlayInPlayingBar.setImageDrawable(tdBtnPlayInPlayingBar);
         mBtnForwardInPlayingBar.setImageDrawable(tdBtnForwardInPlayingBar);
         mBtnArtworkInPlayingBar.setImageDrawable(tdBtnImgViewArtwork);
+        mImgViewDown.setImageDrawable(tdImgViewDown);
 
         playlistFragment.setLightMode(mTabLayout.getSelectedTabPosition() == 0);
         loopFragment.setLightMode(mTabLayout.getSelectedTabPosition() == 1);
@@ -2901,6 +2903,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tdBtnPlayInPlayingBar.startTransition(duration);
         tdBtnForwardInPlayingBar.startTransition(duration);
         tdBtnImgViewArtwork.startTransition(duration);
+        tdImgViewDown.startTransition(duration);
 
         if(mSeekCurPos.getVisibility() == View.VISIBLE)
             mRelativePlayingWithShadow.setBackgroundResource(R.drawable.playingview);
@@ -3062,6 +3065,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TransitionDrawable tdBtnRewindInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_rewind), getResources().getDrawable(R.drawable.ic_bar_button_rewind_dark)});
         TransitionDrawable tdBtnForwardInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_forward), getResources().getDrawable(R.drawable.ic_bar_button_forward_dark)});
         TransitionDrawable tdBtnImgViewArtwork = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_artwork), getResources().getDrawable(R.drawable.ic_playing_large_artwork_dark)});
+        TransitionDrawable tdImgViewDown = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_down), getResources().getDrawable(R.drawable.ic_playing_large_down_dark)});
 
         mBtnMenu.setImageDrawable(tdBtnMenu);
         mBtnRewind.setImageDrawable(tdBtnRewind);
@@ -3078,6 +3082,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnPlayInPlayingBar.setImageDrawable(tdBtnPlayInPlayingBar);
         mBtnForwardInPlayingBar.setImageDrawable(tdBtnForwardInPlayingBar);
         mBtnArtworkInPlayingBar.setImageDrawable(tdBtnImgViewArtwork);
+        mImgViewDown.setImageDrawable(tdImgViewDown);
 
         playlistFragment.setDarkMode(mTabLayout.getSelectedTabPosition() == 0);
         loopFragment.setDarkMode(mTabLayout.getSelectedTabPosition() == 1);
@@ -3129,6 +3134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tdBtnRewindInPlayingBar.startTransition(duration);
         tdBtnForwardInPlayingBar.startTransition(duration);
         tdBtnImgViewArtwork.startTransition(duration);
+        tdImgViewDown.startTransition(duration);
 
         if(mSeekCurPos.getVisibility() == View.VISIBLE)
             mRelativePlayingWithShadow.setBackgroundResource(R.drawable.playingview_dark);
