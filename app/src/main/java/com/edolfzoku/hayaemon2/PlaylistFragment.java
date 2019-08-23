@@ -4558,6 +4558,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             mBtnEdit.setImageDrawable(tdBtnEdit);
             mImgEdit.setImageDrawable(tdImgEdit);
 
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    mImgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_bg_edit));
+                }
+            });
+
             int duration = 300;
             anim.setDuration(duration).start();
             tdBtnAddSong.startTransition(duration);
@@ -4648,6 +4656,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mBtnAddPlaylist_small.setImageDrawable(tdBtnAddPlaylist_small);
         mBtnEdit.setImageDrawable(tdBtnEdit);
         mImgEdit.setImageDrawable(tdImgEdit);
+
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mImgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_bg_edit_dark));
+            }
+        });
 
         int duration = animated ? 300 : 0;
         anim.setDuration(duration).start();
