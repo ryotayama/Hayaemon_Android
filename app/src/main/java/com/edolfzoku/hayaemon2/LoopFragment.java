@@ -1494,6 +1494,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         final int nDarkModeSep = getResources().getColor(R.color.darkModeSep);
         final int nLightModeText = getResources().getColor(android.R.color.black);
         final int nDarkModeText = getResources().getColor(android.R.color.white);
+        final int nDarkModeGray = getResources().getColor(R.color.darkModeGray);
         if(animated) {
             final ArgbEvaluator eval = new ArgbEvaluator();
             ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
@@ -1504,6 +1505,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     int nColorModeBk = (Integer) eval.evaluate(fProgress, nDarkModeBk, nLightModeBk);
                     int nColorModeSep = (Integer) eval.evaluate(fProgress, nDarkModeSep, nLightModeSep);
                     int nColorModeText = (Integer) eval.evaluate(fProgress, nDarkModeText, nLightModeText);
+                    int nColorCurPos = (Integer) eval.evaluate(fProgress, nDarkModeGray, Color.BLACK);
                     mViewMaskA.setBackgroundColor(nColorModeBk);
                     mViewMaskB.setBackgroundColor(nColorModeBk);
                     mTextA.setTextColor(nColorModeText);
@@ -1514,6 +1516,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     mTextAValue.setTextColor(nColorModeText);
                     mTextBValue.setTextColor(nColorModeText);
                     mTextCurValue.setTextColor(nColorModeText);
+                    mViewCurPos.setBackgroundColor(nColorCurPos);
                 }
             });
 
@@ -1616,6 +1619,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             mTextAValue.setTextColor(nLightModeText);
             mTextBValue.setTextColor(nLightModeText);
             mTextCurValue.setTextColor(nLightModeText);
+            mViewCurPos.setBackgroundColor(Color.BLACK);
             mBtnZoomIn.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_zoom_in));
             mBtnZoomOut.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_zoom_out));
             mBtnA.setImageDrawable(getResources().getDrawable(R.drawable.ic_abloop_a));
@@ -1692,6 +1696,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         final int nDarkModeSep = getResources().getColor(R.color.darkModeSep);
         final int nLightModeText = getResources().getColor(android.R.color.black);
         final int nDarkModeText = getResources().getColor(android.R.color.white);
+        final int nDarkModeGray = getResources().getColor(R.color.darkModeGray);
         final ArgbEvaluator eval = new ArgbEvaluator();
         ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -1701,6 +1706,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 int nColorModeBk = (Integer) eval.evaluate(fProgress, nLightModeBk, nDarkModeBk);
                 int nColorModeSep = (Integer) eval.evaluate(fProgress, nLightModeSep, nDarkModeSep);
                 int nColorModeText = (Integer) eval.evaluate(fProgress, nLightModeText, nDarkModeText);
+                int nColorCurPos = (Integer) eval.evaluate(fProgress, Color.BLACK, nDarkModeGray);
                 mViewMaskA.setBackgroundColor(nColorModeBk);
                 mViewMaskB.setBackgroundColor(nColorModeBk);
                 mTextA.setTextColor(nColorModeText);
@@ -1711,6 +1717,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 mTextAValue.setTextColor(nColorModeText);
                 mTextBValue.setTextColor(nColorModeText);
                 mTextCurValue.setTextColor(nColorModeText);
+                mViewCurPos.setBackgroundColor(nColorCurPos);
             }
         });
 
