@@ -18,6 +18,8 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
@@ -35,6 +37,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -693,6 +696,15 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             mBtnSpeedUp.setImageDrawable(tdBtnSpeedUp);
             mBtnSpeedDown.setImageDrawable(tdBtnSpeedDown);
 
+            final boolean linkFlag = mLinkFlag;
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    mBtnLink.setImageDrawable(linkFlag ? getResources().getDrawable(R.drawable.ic_control_link_on) : getResources().getDrawable(R.drawable.ic_control_link_off));
+                }
+            });
+
             int duration = 300;
             anim.setDuration(duration).start();
             tdBtnLink.startTransition(duration);
@@ -803,6 +815,15 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         mBtnPitchDown.setImageDrawable(tdBtnPitchDown);
         mBtnSpeedUp.setImageDrawable(tdBtnSpeedUp);
         mBtnSpeedDown.setImageDrawable(tdBtnSpeedDown);
+
+        final boolean linkFlag = mLinkFlag;
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mBtnLink.setImageDrawable(linkFlag ? getResources().getDrawable(R.drawable.ic_control_link_on_dark) : getResources().getDrawable(R.drawable.ic_control_link_off_dark));
+            }
+        });
 
         int duration = animated ? 300 : 0;
         anim.setDuration(duration).start();
