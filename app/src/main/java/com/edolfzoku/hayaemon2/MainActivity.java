@@ -2795,11 +2795,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TransitionDrawable tdBtnPlay, tdBtnPlayInPlayingBar;
         if(BASS.BASS_ChannelIsActive(sStream) != BASS.BASS_ACTIVE_PLAYING) {
             tdBtnPlay = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_play_dark), getResources().getDrawable(R.drawable.ic_bar_button_play)});
-            tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_play_dark), getResources().getDrawable(R.drawable.ic_bar_button_play)});
+            if(mSeekCurPos.getVisibility() == View.VISIBLE)
+                tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_play_dark), getResources().getDrawable(R.drawable.ic_playing_large_play)});
+            else
+                tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_play_dark), getResources().getDrawable(R.drawable.ic_bar_button_play)});
         }
         else {
             tdBtnPlay = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_pause_dark), getResources().getDrawable(R.drawable.ic_bar_button_pause)});
-            tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_pause_dark), getResources().getDrawable(R.drawable.ic_bar_button_pause)});
+            if(mSeekCurPos.getVisibility() == View.VISIBLE)
+                tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_pause_dark), getResources().getDrawable(R.drawable.ic_playing_large_pause)});
+            else
+                tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_pause_dark), getResources().getDrawable(R.drawable.ic_bar_button_pause)});
         }
         TransitionDrawable tdBtnForward = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_forward_dark), getResources().getDrawable(R.drawable.ic_bar_button_forward) });
         TransitionDrawable tdBtnShuffle, tdBtnShuffleInPlayingBar;
@@ -2831,8 +2837,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TransitionDrawable tdBtnRecord = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_rec_dark), getResources().getDrawable(R.drawable.ic_bar_button_rec) });
         TransitionDrawable tdBtnSetting = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_leftmenu_settings_dark), getResources().getDrawable(R.drawable.ic_leftmenu_settings) });
         TransitionDrawable tdBtnDarkMode = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_leftmenu_dark_dark), getResources().getDrawable(R.drawable.ic_leftmenu_dark) });
-        TransitionDrawable tdBtnRewindInPlayingBar = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_rewind_dark), getResources().getDrawable(R.drawable.ic_bar_button_rewind) });
-        TransitionDrawable tdBtnForwardInPlayingBar = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_forward_dark), getResources().getDrawable(R.drawable.ic_bar_button_forward) });
+        TransitionDrawable tdBtnRewindInPlayingBar = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_playing_large_rewind_dark), getResources().getDrawable(R.drawable.ic_playing_large_rewind) });
+        TransitionDrawable tdBtnForwardInPlayingBar;
+        if(mSeekCurPos.getVisibility() == View.VISIBLE)
+            tdBtnForwardInPlayingBar = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_playing_large_forward_dark), getResources().getDrawable(R.drawable.ic_playing_large_forward) });
+        else
+            tdBtnForwardInPlayingBar = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_forward_dark), getResources().getDrawable(R.drawable.ic_bar_button_forward) });
         TransitionDrawable tdBtnImgViewArtwork = new TransitionDrawable(new Drawable[] { getResources().getDrawable(R.drawable.ic_playing_large_artwork_dark), getResources().getDrawable(R.drawable.ic_playing_large_artwork)});
         TransitionDrawable tdImgViewDown = new TransitionDrawable(new Drawable[] { getResources().getDrawable(R.drawable.ic_playing_large_down_dark), getResources().getDrawable(R.drawable.ic_playing_large_down)});
 
@@ -3031,10 +3041,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TransitionDrawable tdBtnPlay, tdBtnPlayInPlayingBar;
         if (BASS.BASS_ChannelIsActive(sStream) != BASS.BASS_ACTIVE_PLAYING) {
             tdBtnPlay = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_play), getResources().getDrawable(R.drawable.ic_bar_button_play_dark)});
-            tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_play), getResources().getDrawable(R.drawable.ic_bar_button_play_dark)});
+            if(mSeekCurPos.getVisibility() == View.VISIBLE)
+                tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_play), getResources().getDrawable(R.drawable.ic_playing_large_play_dark)});
+            else
+                tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_play), getResources().getDrawable(R.drawable.ic_bar_button_play_dark)});
         } else {
             tdBtnPlay = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_pause), getResources().getDrawable(R.drawable.ic_bar_button_pause_dark)});
-            tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_pause), getResources().getDrawable(R.drawable.ic_bar_button_pause_dark)});
+            if(mSeekCurPos.getVisibility() == View.VISIBLE)
+                tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_pause), getResources().getDrawable(R.drawable.ic_playing_large_pause_dark)});
+            else
+                tdBtnPlayInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_pause), getResources().getDrawable(R.drawable.ic_bar_button_pause_dark)});
         }
         TransitionDrawable tdBtnForward = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_forward), getResources().getDrawable(R.drawable.ic_bar_button_forward_dark)});
         TransitionDrawable tdBtnShuffle, tdBtnShuffleInPlayingBar;
@@ -3062,8 +3078,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TransitionDrawable tdBtnRecord = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_rec), getResources().getDrawable(R.drawable.ic_bar_button_rec_dark)});
         TransitionDrawable tdBtnSetting = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_leftmenu_settings), getResources().getDrawable(R.drawable.ic_leftmenu_settings_dark)});
         TransitionDrawable tdBtnDarkMode = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_leftmenu_dark), getResources().getDrawable(R.drawable.ic_leftmenu_dark_dark)});
-        TransitionDrawable tdBtnRewindInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_rewind), getResources().getDrawable(R.drawable.ic_bar_button_rewind_dark)});
-        TransitionDrawable tdBtnForwardInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_forward), getResources().getDrawable(R.drawable.ic_bar_button_forward_dark)});
+        TransitionDrawable tdBtnRewindInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_rewind), getResources().getDrawable(R.drawable.ic_playing_large_rewind_dark)});
+        TransitionDrawable tdBtnForwardInPlayingBar;
+        if(mSeekCurPos.getVisibility() == View.VISIBLE)
+            tdBtnForwardInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_forward), getResources().getDrawable(R.drawable.ic_playing_large_forward_dark)});
+        else
+            tdBtnForwardInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_forward), getResources().getDrawable(R.drawable.ic_bar_button_forward_dark)});
         TransitionDrawable tdBtnImgViewArtwork = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_artwork), getResources().getDrawable(R.drawable.ic_playing_large_artwork_dark)});
         TransitionDrawable tdImgViewDown = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_down), getResources().getDrawable(R.drawable.ic_playing_large_down_dark)});
 
