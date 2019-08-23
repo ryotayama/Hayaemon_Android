@@ -88,7 +88,7 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
         else if(mActivity.playlistFragment.getPlayingPlaylist() == position && mActivity.playlistFragment.getPlaying() != -1) {
             holder.textPlaylistTab.setContentDescription(item);
             holder.textPlaylistTab.setTypeface(Typeface.DEFAULT);
-            holder.relativePlaylistTab.setBackgroundResource(R.drawable.playlisttab_play);
+            holder.relativePlaylistTab.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.playlisttab_play_dark : R.drawable.playlisttab_play);
             holder.textPlaylistTab.setPadding(holder.textPlaylistTab.getPaddingLeft(), holder.textPlaylistTab.getPaddingTop(), (int) (16 * mActivity.getDensity()), holder.textPlaylistTab.getPaddingBottom());
             holder.btnPlaylistMenu.setVisibility(View.GONE);
         }
