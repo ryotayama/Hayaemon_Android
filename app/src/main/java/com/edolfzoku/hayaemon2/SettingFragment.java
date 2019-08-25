@@ -3,6 +3,7 @@ package com.edolfzoku.hayaemon2;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.AnimationDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -223,6 +224,13 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
             imgSpeedRangeRight.setImageResource(R.drawable.ic_button_listright_dark);
             imgPitchRangeRight.setImageResource(R.drawable.ic_button_listright_dark);
         }
+
+        AnimationDrawable anime = (AnimationDrawable)mActivity.findViewById(R.id.imgPinkCamperSetting).getBackground();
+        anime.start();
+        AnimationDrawable anime2 = (AnimationDrawable)mActivity.findViewById(R.id.imgBlueCamperSetting).getBackground();
+        anime2.start();
+        AnimationDrawable anime3 = (AnimationDrawable)mActivity.findViewById(R.id.imgOrangeCamperSetting).getBackground();
+        anime3.start();
     }
 
     @Override
@@ -270,14 +278,14 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
                 mSwitchPinkCamper.setChecked(false);
                 mSwitchBlueCamper.setChecked(false);
                 mSwitchOrangeCamper.setChecked(false);
-                imgPoint.setImageResource(R.drawable.control_pointer_uni_murasaki);
+                imgPoint.setBackgroundResource(R.drawable.control_pointer_uni_murasaki);
                 imgPoint.setTag(1);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 preferences.edit().putInt("imgPointTag", 1).apply();
             }
             else {
-                imgPoint.setImageResource(R.drawable.ic_control_pointer);
+                imgPoint.setBackgroundResource(R.drawable.ic_control_pointer);
                 imgPoint.setTag(0);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -292,14 +300,14 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
                 mSwitchPinkCamper.setChecked(false);
                 mSwitchBlueCamper.setChecked(false);
                 mSwitchOrangeCamper.setChecked(false);
-                imgPoint.setImageResource(R.drawable.control_pointer_uni_bafun);
+                imgPoint.setBackgroundResource(R.drawable.control_pointer_uni_bafun);
                 imgPoint.setTag(2);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 preferences.edit().putInt("imgPointTag", 2).apply();
             }
             else {
-                imgPoint.setImageResource(R.drawable.ic_control_pointer);
+                imgPoint.setBackgroundResource(R.drawable.ic_control_pointer);
                 imgPoint.setTag(0);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -314,14 +322,16 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
                 mSwitchElegant.setChecked(false);
                 mSwitchBlueCamper.setChecked(false);
                 mSwitchOrangeCamper.setChecked(false);
-                imgPoint.setImageResource(R.drawable.control_pointer_camper_pk);
+                imgPoint.setBackgroundResource(R.drawable.control_pointer_camper_pk);
                 imgPoint.setTag(3);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 preferences.edit().putInt("imgPointTag", 3).apply();
+                AnimationDrawable anime = (AnimationDrawable)imgPoint.getBackground();
+                anime.start();
             }
             else {
-                imgPoint.setImageResource(R.drawable.ic_control_pointer);
+                imgPoint.setBackgroundResource(R.drawable.ic_control_pointer);
                 imgPoint.setTag(0);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -336,14 +346,16 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
                 mSwitchElegant.setChecked(false);
                 mSwitchPinkCamper.setChecked(false);
                 mSwitchOrangeCamper.setChecked(false);
-                imgPoint.setImageResource(R.drawable.control_pointer_camper_bl);
+                imgPoint.setBackgroundResource(R.drawable.control_pointer_camper_bl);
                 imgPoint.setTag(4);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 preferences.edit().putInt("imgPointTag", 4).apply();
+                AnimationDrawable anime = (AnimationDrawable)imgPoint.getBackground();
+                anime.start();
             }
             else {
-                imgPoint.setImageResource(R.drawable.ic_control_pointer);
+                imgPoint.setBackgroundResource(R.drawable.ic_control_pointer);
                 imgPoint.setTag(0);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -358,14 +370,16 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
                 mSwitchElegant.setChecked(false);
                 mSwitchPinkCamper.setChecked(false);
                 mSwitchBlueCamper.setChecked(false);
-                imgPoint.setImageResource(R.drawable.control_pointer_camper_or);
+                imgPoint.setBackgroundResource(R.drawable.control_pointer_camper_or);
                 imgPoint.setTag(5);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 preferences.edit().putInt("imgPointTag", 5).apply();
+                AnimationDrawable anime = (AnimationDrawable)imgPoint.getBackground();
+                anime.start();
             }
             else {
-                imgPoint.setImageResource(R.drawable.ic_control_pointer);
+                imgPoint.setBackgroundResource(R.drawable.ic_control_pointer);
                 imgPoint.setTag(0);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;

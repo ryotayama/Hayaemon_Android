@@ -26,6 +26,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
@@ -144,24 +145,30 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         int nImgPointTag = preferences.getInt("imgPointTag", 0);
         if(nImgPointTag == 0) mImgPoint.setTag(0);
         else if(nImgPointTag == 1) {
-            mImgPoint.setImageResource(R.drawable.control_pointer_uni_murasaki);
+            mImgPoint.setBackgroundResource(R.drawable.control_pointer_uni_murasaki);
             mImgPoint.setTag(1);
         }
         else if(nImgPointTag == 2) {
-            mImgPoint.setImageResource(R.drawable.control_pointer_uni_bafun);
+            mImgPoint.setBackgroundResource(R.drawable.control_pointer_uni_bafun);
             mImgPoint.setTag(2);
         }
         else if(nImgPointTag == 3) {
-            mImgPoint.setImageResource(R.drawable.control_pointer_camper_pk);
+            mImgPoint.setBackgroundResource(R.drawable.control_pointer_camper_pk);
             mImgPoint.setTag(3);
+            AnimationDrawable anime = (AnimationDrawable)mImgPoint.getBackground();
+            anime.start();
         }
         else if(nImgPointTag == 4) {
-            mImgPoint.setImageResource(R.drawable.control_pointer_camper_bl);
+            mImgPoint.setBackgroundResource(R.drawable.control_pointer_camper_bl);
             mImgPoint.setTag(4);
+            AnimationDrawable anime = (AnimationDrawable)mImgPoint.getBackground();
+            anime.start();
         }
         else if(nImgPointTag == 5) {
-            mImgPoint.setImageResource(R.drawable.control_pointer_camper_or);
+            mImgPoint.setBackgroundResource(R.drawable.control_pointer_camper_or);
             mImgPoint.setTag(5);
+            AnimationDrawable anime = (AnimationDrawable)mImgPoint.getBackground();
+            anime.start();
         }
         mImgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
         mImgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;

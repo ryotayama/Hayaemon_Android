@@ -204,6 +204,13 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             viewOrangeCamperBorder.setBackgroundResource(R.drawable.camperborder_dark);
             relativeItems.setBackgroundColor(getResources().getColor(R.color.darkModeBk));
         }
+
+        AnimationDrawable anime = (AnimationDrawable)mActivity.findViewById(R.id.imgPinkCamper).getBackground();
+        anime.start();
+        AnimationDrawable anime2 = (AnimationDrawable)mActivity.findViewById(R.id.imgBlueCamper).getBackground();
+        anime2.start();
+        AnimationDrawable anime3 = (AnimationDrawable)mActivity.findViewById(R.id.imgOrangeCamper).getBackground();
+        anime3.start();
     }
 
     private void close()
@@ -356,7 +363,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             public void onClick(DialogInterface dialog, int id) {
                 SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 ImageView imgPoint = mActivity.findViewById(R.id.imgPoint);
-                imgPoint.setImageResource(R.drawable.control_pointer_uni_murasaki);
+                imgPoint.setBackgroundResource(R.drawable.control_pointer_uni_murasaki);
                 imgPoint.setTag(1);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -404,7 +411,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             public void onClick(DialogInterface dialog, int id) {
                 SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 ImageView imgPoint = mActivity.findViewById(R.id.imgPoint);
-                imgPoint.setImageResource(R.drawable.control_pointer_uni_bafun);
+                imgPoint.setBackgroundResource(R.drawable.control_pointer_uni_bafun);
                 imgPoint.setTag(2);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -452,11 +459,13 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             public void onClick(DialogInterface dialog, int id) {
                 SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 ImageView imgPoint = mActivity.findViewById(R.id.imgPoint);
-                imgPoint.setImageResource(R.drawable.control_pointer_camper_pk);
+                imgPoint.setBackgroundResource(R.drawable.control_pointer_camper_pk);
                 imgPoint.setTag(3);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 preferences.edit().putInt("imgPointTag", 3).apply();
+                AnimationDrawable anime = (AnimationDrawable)imgPoint.getBackground();
+                anime.start();
             }
         });
         builder.setNegativeButton(getString(R.string.NotYet), null);
@@ -500,11 +509,13 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             public void onClick(DialogInterface dialog, int id) {
                 SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 ImageView imgPoint = mActivity.findViewById(R.id.imgPoint);
-                imgPoint.setImageResource(R.drawable.control_pointer_camper_bl);
-                imgPoint.setTag(3);
+                imgPoint.setBackgroundResource(R.drawable.control_pointer_camper_bl);
+                imgPoint.setTag(4);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                preferences.edit().putInt("imgPointTag", 3).apply();
+                preferences.edit().putInt("imgPointTag", 4).apply();
+                AnimationDrawable anime = (AnimationDrawable)imgPoint.getBackground();
+                anime.start();
             }
         });
         builder.setNegativeButton(getString(R.string.NotYet), null);
@@ -548,11 +559,13 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             public void onClick(DialogInterface dialog, int id) {
                 SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 ImageView imgPoint = mActivity.findViewById(R.id.imgPoint);
-                imgPoint.setImageResource(R.drawable.control_pointer_camper_or);
-                imgPoint.setTag(3);
+                imgPoint.setBackgroundResource(R.drawable.control_pointer_camper_or);
+                imgPoint.setTag(5);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                preferences.edit().putInt("imgPointTag", 3).apply();
+                preferences.edit().putInt("imgPointTag", 5).apply();
+                AnimationDrawable anime = (AnimationDrawable)imgPoint.getBackground();
+                anime.start();
             }
         });
         builder.setNegativeButton(getString(R.string.NotYet), null);
