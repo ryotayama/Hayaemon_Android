@@ -395,6 +395,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             MainActivity.setSystemBarTheme(this, false);
+
+        updateDrawer();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -490,77 +492,79 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mRelativeReview.setBackgroundColor(color);
             mRelativeInfo.setBackgroundColor(color);
         }
-        else if(newState == DrawerLayout.STATE_DRAGGING) {
-            SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-            boolean bPinkCamperDisplayed = preferences.getBoolean("bPinkCamperDisplayed", false);
-            boolean bBlueCamperDisplayed = preferences.getBoolean("bBlueCamperDisplayed", false);
-            boolean bOrangeCamperDisplayed = preferences.getBoolean("bOrangeCamperDisplayed", false);
-            int nCount = 0;
-            if(!bPinkCamperDisplayed) nCount++;
-            if(!bBlueCamperDisplayed) nCount++;
-            if(!bOrangeCamperDisplayed) nCount++;
+        else if(newState == DrawerLayout.STATE_DRAGGING) updateDrawer();
+    }
 
-            findViewById(R.id.textPlaying).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
-            findViewById(R.id.relativePlayingInMenu).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
-            findViewById(R.id.relativeSave).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
-            findViewById(R.id.relativeLock).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
-            findViewById(R.id.dividerMenu).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
-            TextView textView = findViewById(R.id.textItemNew);
-            textView.setVisibility(nCount == 0 ? View.GONE : View.VISIBLE);
-            textView.setText(String.format(Locale.getDefault(), "%d", nCount));
+    public void updateDrawer() {
+        SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        boolean bPinkCamperDisplayed = preferences.getBoolean("bPinkCamperDisplayed", false);
+        boolean bBlueCamperDisplayed = preferences.getBoolean("bBlueCamperDisplayed", false);
+        boolean bOrangeCamperDisplayed = preferences.getBoolean("bOrangeCamperDisplayed", false);
+        int nCount = 0;
+        if(!bPinkCamperDisplayed) nCount++;
+        if(!bBlueCamperDisplayed) nCount++;
+        if(!bOrangeCamperDisplayed) nCount++;
 
-            if(!isAdsVisible()) findViewById(R.id.relativeHideAds).setVisibility(View.GONE);
-            if(sStream != 0) {
-                playlistFragment.selectPlaylist(playlistFragment.getPlayingPlaylist());
-                playlistFragment.setSelectedItem(playlistFragment.getPlaying());
+        findViewById(R.id.textPlaying).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
+        findViewById(R.id.relativePlayingInMenu).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
+        findViewById(R.id.relativeSave).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
+        findViewById(R.id.relativeLock).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
+        findViewById(R.id.dividerMenu).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
+        TextView textView = findViewById(R.id.textItemNew);
+        textView.setVisibility(nCount == 0 ? View.GONE : View.VISIBLE);
+        textView.setText(String.format(Locale.getDefault(), "%d", nCount));
 
-                SongItem item = playlistFragment.getPlaylists().get(playlistFragment.getPlayingPlaylist()).get(playlistFragment.getPlaying());
-                Bitmap bitmap = null;
-                if(item.getPathArtwork() != null && !item.getPathArtwork().equals("")) {
-                    bitmap = BitmapFactory.decodeFile(item.getPathArtwork());
-                }
-                else {
-                    MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                    try {
-                        mmr.setDataSource(getApplicationContext(), Uri.parse(item.getPath()));
-                        byte[] data = mmr.getEmbeddedPicture();
-                        if (data != null) bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    finally {
-                        mmr.release();
-                    }
-                }
-                if(bitmap != null) mImgViewArtworkInMenu.setImageBitmap(bitmap);
-                else mImgViewArtworkInMenu.setImageResource(mDarkMode ? R.drawable.ic_playing_large_artwork_dark : R.drawable.ic_playing_large_artwork);
-                TextView textTitleInMenu = findViewById(R.id.textTitleInMenu);
-                textTitleInMenu.setText(item.getTitle());
-                TextView textArtistInMenu = findViewById(R.id.textArtistInMenu);
-                if(item.getArtist() == null || item.getArtist().equals(""))
-                {
-                    textArtistInMenu.setTextColor(Color.argb(255, 147, 156, 160));
-                    textArtistInMenu.setText(R.string.unknownArtist);
-                }
-                else
-                {
-                    textArtistInMenu.setTextColor(Color.argb(255, 102, 102, 102));
-                    textArtistInMenu.setText(item.getArtist());
-                }
+        if(!isAdsVisible()) findViewById(R.id.relativeHideAds).setVisibility(View.GONE);
+        if(sStream != 0) {
+            playlistFragment.selectPlaylist(playlistFragment.getPlayingPlaylist());
+            playlistFragment.setSelectedItem(playlistFragment.getPlaying());
 
-                ArrayList<EffectSaver> arEffectSavers = playlistFragment.getEffects().get(playlistFragment.getPlayingPlaylist());
-                EffectSaver saver = arEffectSavers.get(playlistFragment.getPlaying());
-                ImageView imgLock = findViewById(R.id.imgLockInMenu);
-                TextView textLock = findViewById(R.id.textLock);
-                if(saver.isSave()) {
-                    imgLock.setImageResource(R.drawable.ic_leftmenu_playing_unlock);
-                    textLock.setText(R.string.cancelRestoreEffect);
+            SongItem item = playlistFragment.getPlaylists().get(playlistFragment.getPlayingPlaylist()).get(playlistFragment.getPlaying());
+            Bitmap bitmap = null;
+            if(item.getPathArtwork() != null && !item.getPathArtwork().equals("")) {
+                bitmap = BitmapFactory.decodeFile(item.getPathArtwork());
+            }
+            else {
+                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                try {
+                    mmr.setDataSource(getApplicationContext(), Uri.parse(item.getPath()));
+                    byte[] data = mmr.getEmbeddedPicture();
+                    if (data != null) bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
                 }
-                else {
-                    imgLock.setImageResource(R.drawable.ic_leftmenu_playing_lock);
-                    textLock.setText(R.string.restoreEffect);
+                catch (Exception e) {
+                    e.printStackTrace();
                 }
+                finally {
+                    mmr.release();
+                }
+            }
+            if(bitmap != null) mImgViewArtworkInMenu.setImageBitmap(bitmap);
+            else mImgViewArtworkInMenu.setImageResource(mDarkMode ? R.drawable.ic_playing_large_artwork_dark : R.drawable.ic_playing_large_artwork);
+            TextView textTitleInMenu = findViewById(R.id.textTitleInMenu);
+            textTitleInMenu.setText(item.getTitle());
+            TextView textArtistInMenu = findViewById(R.id.textArtistInMenu);
+            if(item.getArtist() == null || item.getArtist().equals(""))
+            {
+                textArtistInMenu.setTextColor(Color.argb(255, 147, 156, 160));
+                textArtistInMenu.setText(R.string.unknownArtist);
+            }
+            else
+            {
+                textArtistInMenu.setTextColor(Color.argb(255, 102, 102, 102));
+                textArtistInMenu.setText(item.getArtist());
+            }
+
+            ArrayList<EffectSaver> arEffectSavers = playlistFragment.getEffects().get(playlistFragment.getPlayingPlaylist());
+            EffectSaver saver = arEffectSavers.get(playlistFragment.getPlaying());
+            ImageView imgLock = findViewById(R.id.imgLockInMenu);
+            TextView textLock = findViewById(R.id.textLock);
+            if(saver.isSave()) {
+                imgLock.setImageResource(R.drawable.ic_leftmenu_playing_unlock);
+                textLock.setText(R.string.cancelRestoreEffect);
+            }
+            else {
+                imgLock.setImageResource(R.drawable.ic_leftmenu_playing_lock);
+                textLock.setText(R.string.restoreEffect);
             }
         }
     }
@@ -1241,79 +1245,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v)
     {
-        if(v.getId() == R.id.btnMenu)
-        {
-            SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-            boolean bPinkCamperDisplayed = preferences.getBoolean("bPinkCamperDisplayed", false);
-            boolean bBlueCamperDisplayed = preferences.getBoolean("bBlueCamperDisplayed", false);
-            boolean bOrangeCamperDisplayed = preferences.getBoolean("bOrangeCamperDisplayed", false);
-            int nCount = 0;
-            if(!bPinkCamperDisplayed) nCount++;
-            if(!bBlueCamperDisplayed) nCount++;
-            if(!bOrangeCamperDisplayed) nCount++;
-
-            findViewById(R.id.textPlaying).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
-            findViewById(R.id.relativePlayingInMenu).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
-            findViewById(R.id.relativeSave).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
-            findViewById(R.id.relativeLock).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
-            findViewById(R.id.dividerMenu).setVisibility(sStream == 0 ? View.GONE : View.VISIBLE);
-            TextView textView = findViewById(R.id.textItemNew);
-            textView.setVisibility(nCount == 0 ? View.GONE : View.VISIBLE);
-            textView.setText(String.format(Locale.getDefault(), "%d", nCount));
-
-            if(!isAdsVisible()) findViewById(R.id.relativeHideAds).setVisibility(View.GONE);
-            if(sStream != 0) {
-                playlistFragment.selectPlaylist(playlistFragment.getPlayingPlaylist());
-                playlistFragment.setSelectedItem(playlistFragment.getPlaying());
-
-                SongItem item = playlistFragment.getPlaylists().get(playlistFragment.getPlayingPlaylist()).get(playlistFragment.getPlaying());
-                Bitmap bitmap = null;
-                if(item.getPathArtwork() != null && !item.getPathArtwork().equals("")) {
-                    bitmap = BitmapFactory.decodeFile(item.getPathArtwork());
-                }
-                else {
-                    MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                    try {
-                        mmr.setDataSource(getApplicationContext(), Uri.parse(item.getPath()));
-                        byte[] data = mmr.getEmbeddedPicture();
-                        if (data != null) bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    finally {
-                        mmr.release();
-                    }
-                }
-                if(bitmap != null) mImgViewArtworkInMenu.setImageBitmap(bitmap);
-                else mImgViewArtworkInMenu.setImageResource(mDarkMode ? R.drawable.ic_playing_large_artwork_dark : R.drawable.ic_playing_large_artwork);
-                TextView textTitleInMenu = findViewById(R.id.textTitleInMenu);
-                textTitleInMenu.setText(item.getTitle());
-                TextView textArtistInMenu = findViewById(R.id.textArtistInMenu);
-                if(item.getArtist() == null || item.getArtist().equals(""))
-                {
-                    textArtistInMenu.setTextColor(Color.argb(255, 147, 156, 160));
-                    textArtistInMenu.setText(R.string.unknownArtist);
-                }
-                else
-                {
-                    textArtistInMenu.setTextColor(Color.argb(255, 102, 102, 102));
-                    textArtistInMenu.setText(item.getArtist());
-                }
-
-                ArrayList<EffectSaver> arEffectSavers = playlistFragment.getEffects().get(playlistFragment.getPlayingPlaylist());
-                EffectSaver saver = arEffectSavers.get(playlistFragment.getPlaying());
-                ImageView imgLock = findViewById(R.id.imgLockInMenu);
-                TextView textLock = findViewById(R.id.textLock);
-                if(saver.isSave()) {
-                    imgLock.setImageResource(R.drawable.ic_leftmenu_playing_unlock);
-                    textLock.setText(R.string.cancelRestoreEffect);
-                }
-                else {
-                    imgLock.setImageResource(R.drawable.ic_leftmenu_playing_lock);
-                    textLock.setText(R.string.restoreEffect);
-                }
-            }
+        if(v.getId() == R.id.btnMenu) {
+            updateDrawer();
             mDrawerLayout.openDrawer(Gravity.START);
         }
         else if(v.getId() == R.id.btnShuffle || v.getId() == R.id.btnShuffleInPlayingBar)
