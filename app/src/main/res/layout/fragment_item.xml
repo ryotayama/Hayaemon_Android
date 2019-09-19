@@ -5,7 +5,7 @@
     android:background="#EFEFF4"
     android:clickable="true"
     android:focusable="true"
-    android:paddingBottom="32dp"
+    android:paddingBottom="0dp"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:paddingTop="0dp">
@@ -63,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:paddingBottom="16dp"
+        android:paddingBottom="48dp"
         >
 
         <TextView
