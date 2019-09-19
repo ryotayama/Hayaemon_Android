@@ -159,6 +159,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             Button btnCloseItem = mActivity.findViewById(R.id.btnCloseItem);
             View viewSepItem = mActivity.findViewById(R.id.viewSepItem);
             View viewSepItemHeader = mActivity.findViewById(R.id.viewSepItemHeader);
+            View viewSepItemBottom = mActivity.findViewById(R.id.viewSepItemBottom);
             View viewPurpleBorder = mActivity.findViewById(R.id.viewPurpleBorder);
             View viewElegantBorder = mActivity.findViewById(R.id.viewElegantBorder);
             View viewPinkCamperBorder = mActivity.findViewById(R.id.viewPinkCamperBorder);
@@ -200,6 +201,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             btnOrangeCamperSet.setTextColor(getResources().getColor(R.color.darkModeBlue));
             viewSepItem.setBackgroundColor(getResources().getColor(R.color.darkModeSep));
             viewSepItemHeader.setBackgroundColor(getResources().getColor(R.color.darkModeSep));
+            viewSepItemBottom.setBackgroundColor(getResources().getColor(R.color.darkModeSep));
             viewPurpleBorder.setBackgroundResource(R.drawable.seaurchinborder_dark);
             viewElegantBorder.setBackgroundResource(R.drawable.seaurchinborder_dark);
             viewPinkCamperBorder.setBackgroundResource(R.drawable.camperborder_dark);
