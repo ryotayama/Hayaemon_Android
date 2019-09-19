@@ -153,19 +153,19 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             mImgPoint.setTag(2);
         }
         else if(nImgPointTag == 3) {
-            mImgPoint.setBackgroundResource(R.drawable.control_pointer_camper_pk);
+            mImgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.control_pointer_camper_pk_dark : R.drawable.control_pointer_camper_pk);
             mImgPoint.setTag(3);
             AnimationDrawable anime = (AnimationDrawable)mImgPoint.getBackground();
             anime.start();
         }
         else if(nImgPointTag == 4) {
-            mImgPoint.setBackgroundResource(R.drawable.control_pointer_camper_bl);
+            mImgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.control_pointer_camper_bl_dark : R.drawable.control_pointer_camper_bl);
             mImgPoint.setTag(4);
             AnimationDrawable anime = (AnimationDrawable)mImgPoint.getBackground();
             anime.start();
         }
         else if(nImgPointTag == 5) {
-            mImgPoint.setBackgroundResource(R.drawable.control_pointer_camper_or);
+            mImgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.control_pointer_camper_or_dark : R.drawable.control_pointer_camper_or);
             mImgPoint.setTag(5);
             AnimationDrawable anime = (AnimationDrawable)mImgPoint.getBackground();
             anime.start();
@@ -763,6 +763,23 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         mTextPitchValue.setBackgroundResource(R.drawable.editborder);
         mBtnResetSpeed.setBackgroundResource(R.drawable.resetbutton);
         mBtnResetPitch.setBackgroundResource(R.drawable.resetbutton);
+        if((Integer)mImgPoint.getTag() == 0)
+            mImgPoint.setBackgroundResource(R.drawable.ic_control_pointer);
+        else if((Integer)mImgPoint.getTag() == 3) {
+            mImgPoint.setBackgroundResource(R.drawable.control_pointer_camper_pk);
+            AnimationDrawable anime = (AnimationDrawable)mImgPoint.getBackground();
+            anime.start();
+        }
+        else if((Integer)mImgPoint.getTag() == 4) {
+            mImgPoint.setBackgroundResource(R.drawable.control_pointer_camper_bl);
+            AnimationDrawable anime = (AnimationDrawable)mImgPoint.getBackground();
+            anime.start();
+        }
+        else if((Integer)mImgPoint.getTag() == 5) {
+            mImgPoint.setBackgroundResource(R.drawable.control_pointer_camper_or);
+            AnimationDrawable anime = (AnimationDrawable)mImgPoint.getBackground();
+            anime.start();
+        }
     }
 
     public void setDarkMode(boolean animated) {
@@ -841,15 +858,27 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         tdBtnPitchDown.startTransition(duration);
         tdBtnSpeedUp.startTransition(duration);
         tdBtnSpeedDown.startTransition(duration);
-        if((Integer)mImgPoint.getTag() == 0) {
-            TransitionDrawable tdImgPoint = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_pointer), getResources().getDrawable(R.drawable.ic_control_pointer_dark)});
-            mImgPoint.setImageDrawable(tdImgPoint);
-            tdImgPoint.startTransition(duration);
-        }
 
         mTextSpeedValue.setBackgroundResource(R.drawable.editborder_dark);
         mTextPitchValue.setBackgroundResource(R.drawable.editborder_dark);
         mBtnResetSpeed.setBackgroundResource(R.drawable.resetbutton_dark);
         mBtnResetPitch.setBackgroundResource(R.drawable.resetbutton_dark);
+        if((Integer)mImgPoint.getTag() == 0)
+            mImgPoint.setBackgroundResource(R.drawable.ic_control_pointer_dark);
+        else if((Integer)mImgPoint.getTag() == 3) {
+            mImgPoint.setBackgroundResource(R.drawable.control_pointer_camper_pk_dark);
+            AnimationDrawable anime = (AnimationDrawable)mImgPoint.getBackground();
+            anime.start();
+        }
+        else if((Integer)mImgPoint.getTag() == 4) {
+            mImgPoint.setBackgroundResource(R.drawable.control_pointer_camper_bl_dark);
+            AnimationDrawable anime = (AnimationDrawable)mImgPoint.getBackground();
+            anime.start();
+        }
+        else if((Integer)mImgPoint.getTag() == 5) {
+            mImgPoint.setBackgroundResource(R.drawable.control_pointer_camper_or_dark);
+            AnimationDrawable anime = (AnimationDrawable)mImgPoint.getBackground();
+            anime.start();
+        }
     }
 }

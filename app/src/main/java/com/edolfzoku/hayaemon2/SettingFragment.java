@@ -66,6 +66,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
         mSwitchPinkCamper = mActivity.findViewById(R.id.switchPinkCamper);
         mSwitchBlueCamper = mActivity.findViewById(R.id.switchBlueCamper);
         mSwitchOrangeCamper = mActivity.findViewById(R.id.switchOrangeCamper);
+        ImageView imgPinkCamperSetting = mActivity.findViewById(R.id.imgPinkCamperSetting);
+        ImageView imgBlueCamperSetting = mActivity.findViewById(R.id.imgBlueCamperSetting);
+        ImageView imgOrangeCamperSetting = mActivity.findViewById(R.id.imgOrangeCamperSetting);
 
         Button btnCloseSetting = mActivity.findViewById(R.id.btnCloseSetting);
         btnCloseSetting.setOnClickListener(this);
@@ -223,13 +226,16 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
             viewSepPurchasedFooter.setBackgroundColor(getResources().getColor(R.color.darkModeSep));
             imgSpeedRangeRight.setImageResource(R.drawable.ic_button_listright_dark);
             imgPitchRangeRight.setImageResource(R.drawable.ic_button_listright_dark);
+            imgPinkCamperSetting.setBackgroundResource(R.drawable.control_pointer_camper_pk_dark);
+            imgBlueCamperSetting.setBackgroundResource(R.drawable.control_pointer_camper_bl_dark);
+            imgOrangeCamperSetting.setBackgroundResource(R.drawable.control_pointer_camper_or_dark);
         }
 
-        AnimationDrawable anime = (AnimationDrawable)mActivity.findViewById(R.id.imgPinkCamperSetting).getBackground();
+        AnimationDrawable anime = (AnimationDrawable)imgPinkCamperSetting.getBackground();
         anime.start();
-        AnimationDrawable anime2 = (AnimationDrawable)mActivity.findViewById(R.id.imgBlueCamperSetting).getBackground();
+        AnimationDrawable anime2 = (AnimationDrawable)imgBlueCamperSetting.getBackground();
         anime2.start();
-        AnimationDrawable anime3 = (AnimationDrawable)mActivity.findViewById(R.id.imgOrangeCamperSetting).getBackground();
+        AnimationDrawable anime3 = (AnimationDrawable)imgOrangeCamperSetting.getBackground();
         anime3.start();
     }
 
@@ -285,7 +291,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
                 preferences.edit().putInt("imgPointTag", 1).apply();
             }
             else {
-                imgPoint.setBackgroundResource(R.drawable.ic_control_pointer);
+                imgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.ic_control_pointer_dark : R.drawable.ic_control_pointer);
                 imgPoint.setTag(0);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -307,7 +313,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
                 preferences.edit().putInt("imgPointTag", 2).apply();
             }
             else {
-                imgPoint.setBackgroundResource(R.drawable.ic_control_pointer);
+                imgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.ic_control_pointer_dark : R.drawable.ic_control_pointer);
                 imgPoint.setTag(0);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -322,7 +328,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
                 mSwitchElegant.setChecked(false);
                 mSwitchBlueCamper.setChecked(false);
                 mSwitchOrangeCamper.setChecked(false);
-                imgPoint.setBackgroundResource(R.drawable.control_pointer_camper_pk);
+                imgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.control_pointer_camper_pk_dark : R.drawable.control_pointer_camper_pk);
                 imgPoint.setTag(3);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -331,7 +337,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
                 anime.start();
             }
             else {
-                imgPoint.setBackgroundResource(R.drawable.ic_control_pointer);
+                imgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.ic_control_pointer_dark : R.drawable.ic_control_pointer);
                 imgPoint.setTag(0);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -346,7 +352,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
                 mSwitchElegant.setChecked(false);
                 mSwitchPinkCamper.setChecked(false);
                 mSwitchOrangeCamper.setChecked(false);
-                imgPoint.setBackgroundResource(R.drawable.control_pointer_camper_bl);
+                imgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.control_pointer_camper_bl_dark : R.drawable.control_pointer_camper_bl);
                 imgPoint.setTag(4);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -355,7 +361,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
                 anime.start();
             }
             else {
-                imgPoint.setBackgroundResource(R.drawable.ic_control_pointer);
+                imgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.ic_control_pointer_dark : R.drawable.ic_control_pointer);
                 imgPoint.setTag(0);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -370,7 +376,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
                 mSwitchElegant.setChecked(false);
                 mSwitchPinkCamper.setChecked(false);
                 mSwitchBlueCamper.setChecked(false);
-                imgPoint.setBackgroundResource(R.drawable.control_pointer_camper_or);
+                imgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.control_pointer_camper_or_dark : R.drawable.control_pointer_camper_or);
                 imgPoint.setTag(5);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -379,7 +385,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
                 anime.start();
             }
             else {
-                imgPoint.setBackgroundResource(R.drawable.ic_control_pointer);
+                imgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.ic_control_pointer_dark : R.drawable.ic_control_pointer);
                 imgPoint.setTag(0);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;

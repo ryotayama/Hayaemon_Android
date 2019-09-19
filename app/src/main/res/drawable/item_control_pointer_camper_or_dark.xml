@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" android:oneshot="false">
+    <item android:drawable="@drawable/item_control_pointer_camper_or1_dark" android:duration="150" />
+    <item android:drawable="@drawable/item_control_pointer_camper_or2_dark" android:duration="75" />
+    <item android:drawable="@drawable/item_control_pointer_camper_or3_dark" android:duration="75" />
+</animation-list>

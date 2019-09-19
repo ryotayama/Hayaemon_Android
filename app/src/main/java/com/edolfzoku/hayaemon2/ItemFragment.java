@@ -135,6 +135,9 @@ public class ItemFragment extends Fragment implements View.OnClickListener
         mActivity.findViewById(R.id.btnPinkCamperSet).setOnClickListener(this);
         mActivity.findViewById(R.id.btnBlueCamperSet).setOnClickListener(this);
         mActivity.findViewById(R.id.btnOrangeCamperSet).setOnClickListener(this);
+        ImageView imgPinkCamper = mActivity.findViewById(R.id.imgPinkCamper);
+        ImageView imgBlueCamper = mActivity.findViewById(R.id.imgBlueCamper);
+        ImageView imgOrangeCamper = mActivity.findViewById(R.id.imgOrangeCamper);
 
         if(mActivity.isDarkMode()) {
             RelativeLayout relativeItemScreen = mActivity.findViewById(R.id.relativeItemScreen);
@@ -203,13 +206,16 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             viewBlueCamperBorder.setBackgroundResource(R.drawable.camperborder_dark);
             viewOrangeCamperBorder.setBackgroundResource(R.drawable.camperborder_dark);
             relativeItems.setBackgroundColor(getResources().getColor(R.color.darkModeBk));
+            imgPinkCamper.setBackgroundResource(R.drawable.item_control_pointer_camper_pk_dark);
+            imgBlueCamper.setBackgroundResource(R.drawable.item_control_pointer_camper_bl_dark);
+            imgOrangeCamper.setBackgroundResource(R.drawable.item_control_pointer_camper_or_dark);
         }
 
-        AnimationDrawable anime = (AnimationDrawable)mActivity.findViewById(R.id.imgPinkCamper).getBackground();
+        AnimationDrawable anime = (AnimationDrawable)imgPinkCamper.getBackground();
         anime.start();
-        AnimationDrawable anime2 = (AnimationDrawable)mActivity.findViewById(R.id.imgBlueCamper).getBackground();
+        AnimationDrawable anime2 = (AnimationDrawable)imgBlueCamper.getBackground();
         anime2.start();
-        AnimationDrawable anime3 = (AnimationDrawable)mActivity.findViewById(R.id.imgOrangeCamper).getBackground();
+        AnimationDrawable anime3 = (AnimationDrawable)imgOrangeCamper.getBackground();
         anime3.start();
     }
 
@@ -459,7 +465,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             public void onClick(DialogInterface dialog, int id) {
                 SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 ImageView imgPoint = mActivity.findViewById(R.id.imgPoint);
-                imgPoint.setBackgroundResource(R.drawable.control_pointer_camper_pk);
+                imgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.control_pointer_camper_pk_dark : R.drawable.control_pointer_camper_pk);
                 imgPoint.setTag(3);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -509,7 +515,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             public void onClick(DialogInterface dialog, int id) {
                 SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 ImageView imgPoint = mActivity.findViewById(R.id.imgPoint);
-                imgPoint.setBackgroundResource(R.drawable.control_pointer_camper_bl);
+                imgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.control_pointer_camper_bl_dark : R.drawable.control_pointer_camper_bl);
                 imgPoint.setTag(4);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -559,7 +565,7 @@ public class ItemFragment extends Fragment implements View.OnClickListener
             public void onClick(DialogInterface dialog, int id) {
                 SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 ImageView imgPoint = mActivity.findViewById(R.id.imgPoint);
-                imgPoint.setBackgroundResource(R.drawable.control_pointer_camper_or);
+                imgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.control_pointer_camper_or_dark : R.drawable.control_pointer_camper_or);
                 imgPoint.setTag(5);
                 imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
