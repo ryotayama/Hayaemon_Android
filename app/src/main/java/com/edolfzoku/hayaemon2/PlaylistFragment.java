@@ -1297,6 +1297,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mBtnAddPlaylist.setVisibility(View.INVISIBLE);
         mBtnAddSong.clearAnimation();
         mBtnAddSong.setVisibility(View.INVISIBLE);
+        mBtnEdit.clearAnimation();
         mBtnEdit.setVisibility(View.INVISIBLE);
         mActivity.getRelativeRecording().setTranslationY((int)(64 * mActivity.getDensity()));
         mActivity.getRelativeRecording().setVisibility(View.VISIBLE);
@@ -2913,6 +2914,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(strLyrics == null || strLyrics.equals("")) {
             mTextNoLyrics.setVisibility(View.VISIBLE);
             mTextLyrics.setVisibility(View.INVISIBLE);
+            mBtnEdit.clearAnimation();
             mBtnEdit.setVisibility(View.INVISIBLE);
             mImgEdit.setVisibility(View.VISIBLE);
             mTextTapEdit.setVisibility(View.VISIBLE);
