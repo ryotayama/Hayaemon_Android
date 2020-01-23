@@ -634,6 +634,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mSongsAdapter.notifyDataSetChanged();
 
         mTextPlaylistInMultipleSelection.setText(mPlaylistNames.get(mSelectedPlaylist));
+        mBtnAddSong.clearAnimation();
+        mBtnAddSong.setVisibility(View.GONE);
 
         int nTabHeight = mRecyclerTab.getHeight();
         int nDuration = 200;
@@ -665,6 +667,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mSongsAdapter.notifyDataSetChanged();
 
         mActivity.getViewSep1().setVisibility(View.INVISIBLE);
+        mBtnAddSong.setVisibility(View.VISIBLE);
 
         int nDuration = 200;
         mRecyclerTab.animate().translationY(0).setDuration(nDuration).start();
