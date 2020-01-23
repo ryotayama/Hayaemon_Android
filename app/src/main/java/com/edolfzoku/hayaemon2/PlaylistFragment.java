@@ -2539,6 +2539,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     menu.dismiss();
                     mRecyclerSongs.setPadding(0, 0, 0, (int) (64 * mActivity.getDensity()));
                     mTextFinishSort.setVisibility(View.VISIBLE);
+                    mBtnAddSong.clearAnimation();
                     mBtnAddSong.setVisibility(View.GONE);
                     mSorting = true;
                     menu.dismiss();
