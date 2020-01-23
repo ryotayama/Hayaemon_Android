@@ -1293,6 +1293,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             else paramRecording.bottomMargin = (int) (-22 * mActivity.getDensity());
         }
 
+        mBtnAddPlaylist.clearAnimation();
         mBtnAddPlaylist.setVisibility(View.INVISIBLE);
         mBtnAddSong.clearAnimation();
         mBtnAddSong.setVisibility(View.INVISIBLE);
