@@ -1243,6 +1243,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     public void startRecord()
     {
+        if(MainActivity.sRecord != 0) {
+            stopRecord();
+            return;
+        }
+        if(Build.VERSION.SDK_INT >= 23) {
+            if (mActivity.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                mActivity.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 1);
+                return;
+            }
+        }
         StatFs sf = new StatFs(mActivity.getFilesDir().toString());
         long nFreeSpace;
         if(Build.VERSION.SDK_INT >= 18)
@@ -1345,16 +1355,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 return true;
             }
         };
-        if(MainActivity.sRecord != 0) {
-            stopRecord();
-            return;
-        }
-        if(Build.VERSION.SDK_INT >= 23) {
-            if (mActivity.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                mActivity.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 1);
-                return;
-            }
-        }
         MainActivity.sRecord = BASS.BASS_RecordStart(44100, 2, 0, RecordingCallback, 0);
 
         mActivity.getBtnRecord().setColorFilter(new PorterDuffColorFilter(mActivity.isDarkMode() ? getResources().getColor(R.color.darkModeBlue) : getResources().getColor(R.color.lightModeBlue), PorterDuff.Mode.SRC_IN));
