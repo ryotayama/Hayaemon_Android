@@ -291,7 +291,7 @@
                 android:layout_below="@+id/btnEffectTemplateOff"
                 />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerEffectTemplates"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
@@ -2934,7 +2934,7 @@
         android:layout_below="@+id/btnEffectOff"
         />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerEffects"
         android:layout_height="match_parent"
         android:layout_width="match_parent"

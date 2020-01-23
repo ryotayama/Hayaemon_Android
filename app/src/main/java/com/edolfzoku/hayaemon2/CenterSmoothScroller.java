@@ -1,7 +1,7 @@
 package com.edolfzoku.hayaemon2;
 
 import android.content.Context;
-import android.support.v7.widget.LinearSmoothScroller;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 
 public class CenterSmoothScroller extends LinearSmoothScroller {
 

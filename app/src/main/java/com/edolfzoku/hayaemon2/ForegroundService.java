@@ -12,8 +12,8 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import com.un4seen.bass.BASS;
 
@@ -134,7 +134,7 @@ public class ForegroundService extends IntentService {
                 builder.addAction(actionRewind);
                 builder.addAction(actionPlayPause);
                 builder.addAction(actionForward);
-                builder.setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
+                builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
                 builder.setSmallIcon(R.drawable.ic_statusbar);
                 builder.setLargeIcon(bitmap);
                 builder.setContentTitle(strTitle);

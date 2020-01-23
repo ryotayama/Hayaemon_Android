@@ -63,7 +63,7 @@
             </intent-filter>
         </activity>
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="com.edolfzoku.hayaemon2"
             android:exported="false"
             android:grantUriPermissions="true">

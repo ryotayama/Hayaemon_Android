@@ -1,7 +1,7 @@
 package com.edolfzoku.hayaemon2;
 
 import android.os.AsyncTask;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

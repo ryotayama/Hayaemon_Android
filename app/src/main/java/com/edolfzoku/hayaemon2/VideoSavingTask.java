@@ -28,7 +28,7 @@ import android.media.MediaMuxer;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 
 import org.jcodec.api.android.AndroidSequenceEncoder;
 import org.jcodec.common.io.NIOUtils;

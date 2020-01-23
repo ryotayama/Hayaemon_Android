@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 
-public class AnimationButton extends android.support.v7.widget.AppCompatImageButton
+public class AnimationButton extends androidx.appcompat.widget.AppCompatImageButton
 {
     private boolean mAnimationFlag = true;
 

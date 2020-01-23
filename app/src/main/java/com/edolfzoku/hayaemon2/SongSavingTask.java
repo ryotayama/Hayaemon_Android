@@ -19,7 +19,7 @@
 package com.edolfzoku.hayaemon2;
 
 import android.os.AsyncTask;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASSenc;

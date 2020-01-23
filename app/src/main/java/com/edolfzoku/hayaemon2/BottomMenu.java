@@ -5,9 +5,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -77,7 +77,7 @@ class BottomMenu extends BottomSheetDialog {
     private void setDialogBorder(Dialog dialog) {
         Window window = dialog.getWindow();
         if(window != null) {
-            FrameLayout bottomSheet = window.findViewById(android.support.design.R.id.design_bottom_sheet);
+            FrameLayout bottomSheet = window.findViewById(R.id.design_bottom_sheet);
             setMargins(bottomSheet, (int) (16 * mActivity.getDensity()), (int) (16 * mActivity.getDensity()));
         }
     }

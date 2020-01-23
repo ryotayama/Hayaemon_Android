@@ -3,7 +3,7 @@ package com.edolfzoku.hayaemon2;
 import android.content.Context;
 import android.util.AttributeSet;
 
-public class HighlightImageButton extends android.support.v7.widget.AppCompatImageButton {
+public class HighlightImageButton extends androidx.appcompat.widget.AppCompatImageButton {
     public HighlightImageButton(Context context, AttributeSet attr)
     {
         super(context, attr);
