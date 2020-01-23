@@ -1294,6 +1294,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
 
         mBtnAddPlaylist.setVisibility(View.INVISIBLE);
+        mBtnAddSong.clearAnimation();
         mBtnAddSong.setVisibility(View.INVISIBLE);
         mBtnEdit.setVisibility(View.INVISIBLE);
         mActivity.getRelativeRecording().setTranslationY((int)(64 * mActivity.getDensity()));
