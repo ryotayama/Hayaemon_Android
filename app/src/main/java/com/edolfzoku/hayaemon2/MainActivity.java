@@ -18,6 +18,7 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
@@ -64,6 +65,8 @@ import androidx.core.view.accessibility.AccessibilityEventCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.provider.Settings;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
@@ -1051,30 +1054,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 playlistFragment.startRecord();
-            else
-            {
-                AlertDialog.Builder builder;
-                if(mDarkMode)
-                    builder = new AlertDialog.Builder(this, R.style.DarkModeDialog);
-                else
-                    builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.permitMicError);
-                builder.setMessage(R.string.permitMicErrorDetail);
-                builder.setPositiveButton("OK", null);
-                final AlertDialog alertDialog = builder.create();
-                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
-                {
-                    @Override
-                    public void onShow(DialogInterface arg0)
-                    {
-                        if(alertDialog.getWindow() != null) {
-                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
-                            lp.dimAmount = 0.4f;
-                            alertDialog.getWindow().setAttributes(lp);
+            else if(Build.VERSION.SDK_INT >= 23) {
+                if(!shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+                    AlertDialog.Builder builder;
+                    if (mDarkMode)
+                        builder = new AlertDialog.Builder(this, R.style.DarkModeDialog);
+                    else
+                        builder = new AlertDialog.Builder(this);
+                    builder.setTitle(R.string.permitMicError);
+                    builder.setMessage("");
+                    builder.setNeutralButton(R.string.NotYet, null);
+                    builder.setPositiveButton(R.string.set, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            String uriString = "package:" + getPackageName();
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse(uriString));
+                            startActivity(intent);
                         }
-                    }
-                });
-                alertDialog.show();
+                    });
+                    final AlertDialog alertDialog = builder.create();
+                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface arg0) {
+                            if (alertDialog.getWindow() != null) {
+                                WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                                lp.dimAmount = 0.4f;
+                                alertDialog.getWindow().setAttributes(lp);
+                            }
+                        }
+                    });
+                    alertDialog.show();
+                }
             }
         }
     }

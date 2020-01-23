@@ -301,7 +301,6 @@
     <string name="adjustBPos">Adjust B Position</string>
     <string name="adjustCurPos">Adjust Current Position</string>
     <string name="permitMicError">Access to the mic is not permitted.</string>
-    <string name="permitMicErrorDetail">Hello.\nI\'m Ryota, Hayaemon developer.\n\nAccess to the mic is not permitted.\n\nPlease set the settings.\n\nSo Let\'s Enjoy Your Music with Hayaemon!!</string>
     <string name="changeArtwork">Change the Artwork Image</string>
     <string name="resetArtwork">Reset the Artwork Image</string>
     <string name="purpleSeaUrchinPointer">Sea Urchin Pointer (Purple)</string>

@@ -301,7 +301,6 @@
     <string name="adjustBPos">B위치 조절</string>
     <string name="adjustCurPos">재생위치 조절</string>
     <string name="permitMicError">마이크의 접근이 허용되지 않았습니다.</string>
-    <string name="permitMicErrorDetail"> 안녕하세요~♪\n\n하야에몽 개발자 료타입니다!\n\n마이크의 접근이 허용되어있지 않았네요.\n\n수고를 끼칩니다만, [설정-애플리케이션-하야에몽(Hayaemon)-권한]에서 권한을 허용해주세요. (권한을 설정하는 위치는 사용하시는 환경에 따라 다를 수 있습니다.)(해당 안내는 Galaxy One UI Pie기준입니다.)\n\n그럼 앞으로도 Enjoy "Your" Music with Hayaemon!!</string>
     <string name="changeArtwork">아트워크 변경</string>
     <string name="resetArtwork">아트워크 초기화</string>
     <string name="purpleSeaUrchinPointer">성게 포인터【보라】</string>

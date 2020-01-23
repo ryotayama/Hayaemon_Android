@@ -300,8 +300,7 @@
     <string name="adjustAPos">A位置の調整</string>
     <string name="adjustBPos">B位置の調整</string>
     <string name="adjustCurPos">再生位置の調整</string>
-    <string name="permitMicError">マイクへのアクセスが許可されていません</string>
-    <string name="permitMicErrorDetail">こんにちは♪\n\nハヤえもん開発者のりょーたです！\n\nマイクへのアクセスが許可されていません。\n\nお手数をおかけしますが、設定→アプリと通知→アプリの権限→マイク（環境によって、メニューの場所は異なります）などからハヤえもんのアクセスを許可してください。\n\nそれでは引き続き、Enjoy "Your" Music with Hayaemon!!</string>
+    <string name="permitMicError">マイクへのアクセスが許可されていません。設定しますか？</string>
     <string name="changeArtwork">アートワークを変更</string>
     <string name="resetArtwork">アートワークをリセット</string>
     <string name="purpleSeaUrchinPointer">【謹製】お布施ウニポインター【むらさき】</string>
