@@ -77,6 +77,8 @@ class SpeedFragmentDialog extends BottomSheetDialog {
         mDecNumberPicker = view.findViewById(R.id.decSpeedPicker);
         Button btnMinus10 = view.findViewById(R.id.btnMinus10);
         Button btnPlus10 = view.findViewById(R.id.btnPlus10);
+        Button btnMinus5 = view.findViewById(R.id.btnMinus5);
+        Button btnPlus5 = view.findViewById(R.id.btnPlus5);
         Button btnResetDialogSpeed = view.findViewById(R.id.btnResetDialogSpeed);
         Button btnDoneDialogSpeed = view.findViewById(R.id.btnDoneDialogSpeed);
 
@@ -133,6 +135,24 @@ class SpeedFragmentDialog extends BottomSheetDialog {
             public void onClick(View view) {
                 float fSpeed = mActivity.controlFragment.getSpeed() + 100;
                 fSpeed += 10.0f;
+                if(fSpeed > 5000.0f) fSpeed = 5000.0f;
+                setSpeed(fSpeed);
+            }
+        });
+        btnMinus5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float fSpeed = mActivity.controlFragment.getSpeed() + 100;
+                fSpeed -= 5.0f;
+                if(fSpeed < 10.0f) fSpeed = 10.0f;
+                setSpeed(fSpeed);
+            }
+        });
+        btnPlus5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float fSpeed = mActivity.controlFragment.getSpeed() + 100;
+                fSpeed += 5.0f;
                 if(fSpeed > 5000.0f) fSpeed = 5000.0f;
                 setSpeed(fSpeed);
             }
@@ -295,6 +315,10 @@ class SpeedFragmentDialog extends BottomSheetDialog {
         for(int i = 0; i < arInts3.length; i++) {
             if(arInts3[i].equals(strInt3))
                 mIntNumberPicker3.setValue(i);
+        }
+        for(int i = 0; i < arInts4.length; i++) {
+            if(arInts4[i].equals(strInt4))
+                mIntNumberPicker4.setValue(i);
         }
         for(int i = 0; i < arDecs.length; i++) {
             if(arDecs[i].equals(strDec))
