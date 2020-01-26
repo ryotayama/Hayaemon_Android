@@ -3815,18 +3815,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             if(saverBefore.isSave() && !saverAfter.isSave()) {
                 mActivity.controlFragment.setSpeed(0.0f, false);
                 mActivity.controlFragment.setPitch(0.0f, false);
-                mActivity.equalizerFragment.setVol(0, false);
-                for (int i = 1; i <= 31; i++) {
-                    mActivity.equalizerFragment.setEQ(i, 0, false);
-                }
-                ArrayList<EqualizerItem> arEqualizerItems = mActivity.equalizerFragment.getArEqualizerItems();
-                for(int i = 0; i < arEqualizerItems.size(); i++) {
-                    EqualizerItem item = arEqualizerItems.get(i);
-                    item.setSelected(false);
-                }
-                mActivity.equalizerFragment.getEqualizersAdapter().notifyDataSetChanged();
+                mActivity.equalizerFragment.resetEQ(false);
                 mPlaying = nSong;
-                mActivity.effectFragment.resetEffect();
+                mActivity.effectFragment.resetEffect(false);
             }
         }
         mPlaying = nSong;
@@ -4127,6 +4118,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     });
         }
 
+        if(mPlayingPlaylist < 0) mPlayingPlaylist = 0;
+        else if(mPlayingPlaylist >= mEffects.size()) mPlayingPlaylist = mEffects.size() - 1;
+        ArrayList<EffectSaver> arEffectSavers = mEffects.get(mPlayingPlaylist);
+        if(0 <= mPlaying && mPlaying < arEffectSavers.size()) {
+            EffectSaver saverBefore = arEffectSavers.get(mPlaying);
+            if(saverBefore.isSave()) {
+                mActivity.controlFragment.setSpeed(0.0f, false);
+                mActivity.controlFragment.setPitch(0.0f, false);
+                mActivity.equalizerFragment.resetEQ(false);
+                mActivity.effectFragment.resetEffect(false);
+            }
+        }
         mPlaying = -1;
         BASS.BASS_ChannelStop(MainActivity.sStream);
         BASS.BASS_StreamFree(MainActivity.sStream);

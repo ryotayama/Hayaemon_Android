@@ -2825,17 +2825,21 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     public void resetEffect() {
+        resetEffect(true);
+    }
+
+    public void resetEffect(boolean save) {
         mBtnEffectOff.setSelected(true);
         for (int i = 0; i < mEffectItems.size(); i++) {
             if (mEffectItems.get(i).isSelected() && (i == EFFECTTYPE_RANDOM || i == EFFECTTYPE_TRANSCRIBESIDEGUITAR || i == EFFECTTYPE_OLDRECORD || i == EFFECTTYPE_LOWBATTERY || i == EFFECTTYPE_EARTRAINING))
-                mActivity.equalizerFragment.resetEQ();
+                mActivity.equalizerFragment.resetEQ(save);
             if (mEffectItems.get(i).isSelected() && (i == EFFECTTYPE_RANDOM || i == EFFECTTYPE_NOSENSE_STRONG || i == EFFECTTYPE_NOSENSE_MIDDLE || i == EFFECTTYPE_NOSENSE_WEAK)) {
-                mActivity.controlFragment.setSpeed(0.0f);
-                mActivity.controlFragment.setPitch(0.0f);
+                mActivity.controlFragment.setSpeed(0.0f, save);
+                mActivity.controlFragment.setPitch(0.0f, save);
             }
             if (mEffectItems.get(i).isSelected() && (i == EFFECTTYPE_TRANSCRIBEBASS)) {
-                mActivity.controlFragment.setPitch(0.0f);
-                mActivity.equalizerFragment.resetEQ();
+                mActivity.controlFragment.setPitch(0.0f, save);
+                mActivity.equalizerFragment.resetEQ(save);
             }
             mEffectItems.get(i).setSelected(false);
             mEffectsAdapter.notifyItemChanged(i);
@@ -2846,12 +2850,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setIncreaseSpeed(0.1f);
         setTimeOfDecreaseSpeed(1.0f);
         setDecreaseSpeed(0.1f);
-        resetComp();
-        resetEcho();
-        resetReverb();
-        resetChorus();
-        resetDistortion();
-        resetSoundEffect();
+        resetComp(save);
+        resetEcho(save);
+        resetReverb(save);
+        resetChorus(save);
+        resetDistortion(save);
+        resetSoundEffect(save);
     }
 
     private void setCompRandom() {
@@ -2864,6 +2868,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     private void resetComp() {
+        resetComp(true);
+    }
+
+    private void resetComp(boolean save) {
         mEffectItems.get(EFFECTTYPE_COMP).setSelected(false);
         boolean bSelected = false;
         for (int i = 0; i < mEffectItems.size(); i++) {
@@ -2880,7 +2888,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         BASS.BASS_ChannelRemoveFX(MainActivity.sStream, mFxComp);
         mFxComp = 0;
 
-        setComp(200, 4000, 900, 119, 39999, true);
+        setComp(200, 4000, 900, 119, 39999, save);
     }
 
     private void setEchoRandom() {
@@ -2895,6 +2903,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     private void resetEcho() {
+        resetEcho(true);
+    }
+
+    private void resetEcho(boolean save) {
         mEffectItems.get(EFFECTTYPE_ECHO).setSelected(false);
         boolean bSelected = false;
         for (int i = 0; i < mEffectItems.size(); i++) {
@@ -2911,7 +2923,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         BASS.BASS_ChannelRemoveFX(MainActivity.sStream, mFxEcho);
         mFxEcho = 0;
 
-        setEcho(100, 30, 60, 8, true);
+        setEcho(100, 30, 60, 8, save);
     }
 
     private int getRandomValue(int nMin, int nMax) {
@@ -2930,6 +2942,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     private void resetReverb() {
+        resetReverb(true);
+    }
+
+    private void resetReverb(boolean save) {
         mEffectItems.get(EFFECTTYPE_REVERB).setSelected(false);
         boolean bSelected = false;
         for (int i = 0; i < mEffectItems.size(); i++) {
@@ -2946,7 +2962,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         BASS.BASS_ChannelRemoveFX(MainActivity.sStream, mFxReverb);
         mFxReverb = 0;
 
-        setReverb(70, 100, 85, 50, 90, true);
+        setReverb(70, 100, 85, 50, 90, save);
     }
 
     private void setChorusRandom() {
@@ -2961,6 +2977,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     private void resetChorus() {
+        resetChorus(true);
+    }
+
+    private void resetChorus(boolean save) {
         mEffectItems.get(EFFECTTYPE_CHORUS).setSelected(false);
         boolean bSelected = false;
         for (int i = 0; i < mEffectItems.size(); i++) {
@@ -2977,7 +2997,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         BASS.BASS_ChannelRemoveFX(MainActivity.sStream, mFxChorus);
         mFxChorus = 0;
 
-        setChorus(100, 10, 50, 100, 200, 1000, true);
+        setChorus(100, 10, 50, 100, 200, 1000, save);
     }
 
     private void setDistortionRandom() {
@@ -2993,6 +3013,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     private void resetDistortion() {
+        resetDistortion(true);
+    }
+
+    private void resetDistortion(boolean save) {
         mEffectItems.get(EFFECTTYPE_DISTORTION).setSelected(false);
         boolean bSelected = false;
         for (int i = 0; i < mEffectItems.size(); i++) {
@@ -3010,10 +3034,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         BASS.BASS_ChannelRemoveFX(MainActivity.sStream, mFxDistortion);
         mFxDistortion = 0;
 
-        setDistortion(20, 95, 5, 10, 100, true);
+        setDistortion(20, 95, 5, 10, 100, save);
     }
 
     private void resetSoundEffect() {
+        resetSoundEffect(true);
+    }
+
+    private void resetSoundEffect(boolean save) {
         mEffectItems.get(EFFECTTYPE_SOUNDEFFECT).setSelected(false);
         boolean bSelected = false;
         for (int i = 0; i < mEffectItems.size(); i++) {
@@ -3041,7 +3069,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mHandler = null;
         }
 
-        setSoundEffect(100, true);
+        setSoundEffect(100, save);
     }
 
     public void onEffectDetailClick(int nEffect) {

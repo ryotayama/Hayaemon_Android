@@ -868,7 +868,6 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         saveData();
         mEqualizersAdapter.notifyDataSetChanged();
 
-        mBtnEqualizerOff.setSelected(true);
         resetEQ();
     }
 
@@ -1000,8 +999,17 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         mActivity.playlistFragment.updateSavingEffect();
     }
 
-    public void resetEQ()
-    {
+    public void resetEQ() {
+        resetEQ(true);
+    }
+
+    public void resetEQ(boolean save) {
+        resetEQ(save, true);
+    }
+
+    public void resetEQ(boolean save, boolean btnOffSelected) {
+        if(btnOffSelected) mBtnEqualizerOff.setSelected(true);
+
         int nLevel = 0;
         float fLevel = 1.0f;
         if(MainActivity.sStream != 0)
@@ -1035,7 +1043,12 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             textView = mTextValues.get(i + 1);
             textView.setText(String.valueOf(nLevel));
         }
-        mActivity.playlistFragment.updateSavingEffect();
+        for(int i = 0; i < mEqualizerItems.size(); i++) {
+            EqualizerItem item = mEqualizerItems.get(i);
+            item.setSelected(false);
+        }
+        mEqualizersAdapter.notifyDataSetChanged();
+        if(save) mActivity.playlistFragment.updateSavingEffect();
     }
 
     public void setVol(int nLevel)
@@ -1283,10 +1296,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
     private void removeItem(int nItem)
     {
-        if(isSelectedItem(nItem)) {
-            mBtnEqualizerOff.setSelected(true);
-            resetEQ();
-        }
+        if(isSelectedItem(nItem)) resetEQ();
         mEqualizerItems.remove(nItem);
         mEqualizersAdapter.notifyItemRemoved(nItem);
         saveData();
