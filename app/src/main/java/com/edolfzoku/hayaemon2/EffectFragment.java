@@ -4171,11 +4171,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     public void applyEffect() {
         int nPlayingPlaylist = mActivity.playlistFragment.getPlayingPlaylist();
-        if (nPlayingPlaylist < 0 || nPlayingPlaylist >= mActivity.playlistFragment.getPlaylists().size())
+        if (nPlayingPlaylist < 0 || nPlayingPlaylist >= mActivity.playlistFragment.getPlaylists().size()) {
+            applyEffect(MainActivity.sStream, null);
             return;
+        }
         ArrayList<SongItem> arSongs = mActivity.playlistFragment.getPlaylists().get(nPlayingPlaylist);
         int nPlaying = mActivity.playlistFragment.getPlaying();
-        if (nPlaying < 0 || nPlaying >= arSongs.size()) return;
+        if (nPlaying < 0 || nPlaying >= arSongs.size()) {
+            applyEffect(MainActivity.sStream, null);
+            return;
+        }
         SongItem song = arSongs.get(nPlaying);
         applyEffect(MainActivity.sStream, song);
     }
@@ -4318,11 +4323,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 if (info.chans != 1)
                     mDspPan = BASS.BASS_ChannelSetDSP(sStream, panDSP, this, 0);
             } else if (strEffect.equals(getString(R.string.normalize))) {
-                if (song.getPeak() == 0.0f) {
-                    if (sStream != MainActivity.sStream) getPeak(song);
-                    else mPeak = 1.0f;
-                } else mPeak = song.getPeak();
-                mDspNormalize = BASS.BASS_ChannelSetDSP(sStream, normalizeDSP, this, 0);
+                if(song != null) {
+                    if (song.getPeak() == 0.0f) {
+                        if (sStream != MainActivity.sStream) getPeak(song);
+                        else mPeak = 1.0f;
+                    } else mPeak = song.getPeak();
+                    mDspNormalize = BASS.BASS_ChannelSetDSP(sStream, normalizeDSP, this, 0);
+                }
             } else if (strEffect.equals(getString(R.string.comp))) {
                 mFxComp = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_COMPRESSOR2, 2);
                 BASS_FX.BASS_BFX_COMPRESSOR2 p = new BASS_FX.BASS_BFX_COMPRESSOR2();
