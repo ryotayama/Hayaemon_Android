@@ -393,7 +393,6 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
     private void setZoomOut() {
         mWaveView.setZoom(mWaveView.getZoom() * 0.99f);
-        System.out.println(mWaveView.getZoom());
         if(mWaveView.getZoom() <= 1.0f) {
             mBtnZoomOut.setColorFilter(new PorterDuffColorFilter(Color.parseColor(mActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
             mBtnZoomOut.setEnabled(false);
@@ -404,7 +403,6 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
     private void setZoomIn() {
         mWaveView.setZoom(mWaveView.getZoom() * 1.01f);
-        System.out.println(mWaveView.getZoom());
         if(mWaveView.getZoom() >= 10.0f) {
             mBtnZoomIn.setColorFilter(new PorterDuffColorFilter(Color.parseColor(mActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
             mBtnZoomIn.setEnabled(false);
@@ -418,8 +416,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         @Override
         public void run()
         {
-            if(!mContinue)
-                return;
+            if(!mContinue) return;
             setZoomOut();
             long nLength = BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE);
             long nPos = BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE);
@@ -442,8 +439,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         @Override
         public void run()
         {
-            if(!mContinue)
-                return;
+            if(!mContinue) return;
             setZoomIn();
             long nLength = BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE);
             long nPos = BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE);
