@@ -25,6 +25,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -180,6 +182,10 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         mTextAValue.setText(getString(R.string.zeroHMS));
         mTextBValue.setText(getString(R.string.zeroHMS));
         mTextCurValue.setText(getString(R.string.zeroHMS));
+        mBtnZoomIn.setColorFilter(new PorterDuffColorFilter(Color.parseColor(mActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
+        mBtnZoomIn.setEnabled(false);
+        mBtnZoomOut.setColorFilter(new PorterDuffColorFilter(Color.parseColor(mActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
+        mBtnZoomOut.setEnabled(false);
 
         mWaveView.setLoopFragment(this);
         mWaveView.setOnTouchListener(this);
@@ -387,10 +393,24 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
 
     private void setZoomOut() {
         mWaveView.setZoom(mWaveView.getZoom() * 0.99f);
+        System.out.println(mWaveView.getZoom());
+        if(mWaveView.getZoom() <= 1.0f) {
+            mBtnZoomOut.setColorFilter(new PorterDuffColorFilter(Color.parseColor(mActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
+            mBtnZoomOut.setEnabled(false);
+        }
+        mBtnZoomIn.setColorFilter(null);
+        mBtnZoomIn.setEnabled(true);
     }
 
     private void setZoomIn() {
         mWaveView.setZoom(mWaveView.getZoom() * 1.01f);
+        System.out.println(mWaveView.getZoom());
+        if(mWaveView.getZoom() >= 10.0f) {
+            mBtnZoomIn.setColorFilter(new PorterDuffColorFilter(Color.parseColor(mActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
+            mBtnZoomIn.setEnabled(false);
+        }
+        mBtnZoomOut.setColorFilter(null);
+        mBtnZoomOut.setEnabled(true);
     }
 
     private final Runnable repeatZoomOut = new Runnable()
@@ -1423,10 +1443,31 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         mWaveView.clearWaveForm(true);
 
         if(bSave) mActivity.playlistFragment.updateSavingEffect();
+
+        mBtnZoomIn.setColorFilter(new PorterDuffColorFilter(Color.parseColor(mActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
+        mBtnZoomIn.setEnabled(false);
+        mBtnZoomOut.setColorFilter(new PorterDuffColorFilter(Color.parseColor(mActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
+        mBtnZoomOut.setEnabled(false);
     }
 
     public void drawWaveForm(String strPath)
     {
+        if(mWaveView.getZoom() >= 10.0f) {
+            mBtnZoomIn.setColorFilter(new PorterDuffColorFilter(Color.parseColor(mActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
+            mBtnZoomIn.setEnabled(false);
+        }
+        else {
+            mBtnZoomIn.setColorFilter(null);
+            mBtnZoomIn.setEnabled(true);
+        }
+        if(mWaveView.getZoom() <= 1.0f) {
+            mBtnZoomOut.setColorFilter(new PorterDuffColorFilter(Color.parseColor(mActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
+            mBtnZoomOut.setEnabled(false);
+        }
+        else {
+            mBtnZoomOut.setColorFilter(null);
+            mBtnZoomOut.setEnabled(true);
+        }
         double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE));
         int nMinute = (int)(dLength / 60);
         int nSecond = (int)(dLength % 60);
@@ -1588,6 +1629,23 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             mBtnAddmarker.setImageDrawable(tdBtnAddmarker);
             mBtnNextmarker.setImageDrawable(tdBtnNextmarker);
             mBtnLoopmarker.setImageDrawable(tdBtnLoopmarker);
+
+            if(mWaveView.getZoom() >= 10.0f) {
+                mBtnZoomIn.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
+                mBtnZoomIn.setEnabled(false);
+            }
+            else {
+                mBtnZoomIn.setColorFilter(null);
+                mBtnZoomIn.setEnabled(true);
+            }
+            if(mWaveView.getZoom() <= 1.0f) {
+                mBtnZoomOut.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
+                mBtnZoomOut.setEnabled(false);
+            }
+            else {
+                mBtnZoomOut.setColorFilter(null);
+                mBtnZoomOut.setEnabled(true);
+            }
 
             int duration = 300;
             anim.setDuration(duration).start();
@@ -1789,6 +1847,22 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         mBtnAddmarker.setImageDrawable(tdBtnAddmarker);
         mBtnNextmarker.setImageDrawable(tdBtnNextmarker);
         mBtnLoopmarker.setImageDrawable(tdBtnLoopmarker);
+        if(mWaveView.getZoom() >= 10.0f) {
+            mBtnZoomIn.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#FF939CA0"), PorterDuff.Mode.SRC_IN));
+            mBtnZoomIn.setEnabled(false);
+        }
+        else {
+            mBtnZoomIn.setColorFilter(null);
+            mBtnZoomIn.setEnabled(true);
+        }
+        if(mWaveView.getZoom() <= 1.0f) {
+            mBtnZoomOut.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#FF939CA0"), PorterDuff.Mode.SRC_IN));
+            mBtnZoomOut.setEnabled(false);
+        }
+        else {
+            mBtnZoomOut.setColorFilter(null);
+            mBtnZoomOut.setEnabled(true);
+        }
 
         int duration = animated ? 300 : 0;
         anim.setDuration(duration).start();
