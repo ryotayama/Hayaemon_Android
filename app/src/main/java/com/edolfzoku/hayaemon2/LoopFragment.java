@@ -321,7 +321,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             int nDec = (int) ((dPos * 100) % 100);
 
             if (mActivity.getViewPager().getCurrentItem() == 1) {
-                String strCurValue = String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec);
+                String strCurValue = (nHour < 10 ? "0" : "") + nHour + (nMinute < 10 ? ":0" : ":") + nMinute + (nSecond < 10 ? ":0" : ":") + nSecond + (nDec < 10 ? ".0" : ".") + nDec;
                 if (!mTextCurValue.getText().toString().equals(strCurValue))
                     mTextCurValue.setText(strCurValue);
             }
@@ -952,7 +952,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         int nHour = nMinute / 60;
         nMinute = nMinute % 60;
         int nDec = (int)((mActivity.getLoopAPos() * 100) % 100);
-        mTextAValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
+        mTextAValue.setText((nHour < 10 ? "0" : "") + nHour + (nMinute < 10 ? ":0" : ":") + nMinute + (nSecond < 10 ? ":0" : ":") + nSecond + (nDec < 10 ? ".0" : ".") + nDec);
 
         if(bSave) mActivity.playlistFragment.updateSavingEffect();
     }
@@ -995,7 +995,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         int nHour = nMinute / 60;
         nMinute = nMinute % 60;
         int nDec = (int)((mActivity.getLoopBPos() * 100) % 100);
-        mTextBValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
+        mTextBValue.setText((nHour < 10 ? "0" : "") + nHour + (nMinute < 10 ? ":0" : ":") + nMinute + (nSecond < 10 ? ":0" : ":") + nSecond + (nDec < 10 ? ".0" : ".") + nDec);
 
         mActivity.setSync();
 
@@ -1159,7 +1159,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         mBtnA.setSelected(false);
                         mBtnA.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_abloop_a_dark : R.drawable.ic_abloop_a);
                         mViewMaskA.setVisibility(View.INVISIBLE);
-                        mTextAValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", 0, 0, 0, 0));
+                        mTextAValue.setText("00:00:00.00");
                     }
                     else {
                         mActivity.setLoopAPos(BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE)));
@@ -1180,7 +1180,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         int nHour = nMinute / 60;
                         nMinute = nMinute % 60;
                         int nDec = (int)((mActivity.getLoopAPos() * 100) % 100);
-                        mTextAValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
+                        mTextAValue.setText((nHour < 10 ? "0" : "") + nHour + (nMinute < 10 ? ":0" : ":") + nMinute + (nSecond < 10 ? ":0" : ":") + nSecond + (nDec < 10 ? ".0" : ".") + nDec);
                     }
                     mActivity.playlistFragment.updateSavingEffect();
                 }
@@ -1205,7 +1205,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         int nHour = nMinute / 60;
                         nMinute = nMinute % 60;
                         int nDec = (int)((dLength * 100) % 100);
-                        mTextBValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
+                        mTextBValue.setText((nHour < 10 ? "0" : "") + nHour + (nMinute < 10 ? ":0" : ":") + nMinute + (nSecond < 10 ? ":0" : ":") + nSecond + (nDec < 10 ? ".0" : ".") + nDec);
                     }
                     else {
                         mActivity.setLoopBPos(BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE)));
@@ -1228,7 +1228,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                         int nHour = nMinute / 60;
                         nMinute = nMinute % 60;
                         int nDec = (int)((mActivity.getLoopBPos() * 100) % 100);
-                        mTextBValue.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d.%02d", nHour, nMinute, nSecond, nDec));
+                        mTextBValue.setText((nHour < 10 ? "0" : "") + nHour + (nMinute < 10 ? ":0" : ":") + nMinute + (nSecond < 10 ? ":0" : ":") + nSecond + (nDec < 10 ? ".0" : ".") + nDec);
                     }
                     mActivity.setSync();
 
