@@ -91,6 +91,7 @@ import com.un4seen.bass.BASSenc;
 import com.un4seen.bass.BASSenc_MP3;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -3843,8 +3844,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 if(params.assetFileDescriptor == null) return;
                 params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
                 MainActivity.sStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_PRESCAN | BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
-            } catch (Exception e) {
+            }
+            catch (FileNotFoundException e) {
+                e.printStackTrace();
                 removeSong(mPlayingPlaylist, mPlaying);
+                if(mPlaying >= mPlaylists.get(mPlayingPlaylist).size())
+                    mPlaying = 0;
+                if(mPlaylists.get(mPlayingPlaylist).size() != 0)
+                    playSong(mPlaying, true);
+                return;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                mPlaying++;
                 if(mPlaying >= mPlaylists.get(mPlayingPlaylist).size())
                     mPlaying = 0;
                 if(mPlaylists.get(mPlayingPlaylist).size() != 0)

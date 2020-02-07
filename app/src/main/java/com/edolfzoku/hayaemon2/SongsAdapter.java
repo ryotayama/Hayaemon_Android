@@ -98,8 +98,15 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
         holder.getViewSepSong().setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeSep : R.color.lightModeSep));
 
         ArrayList<SongItem> arSongs = mActivity.playlistFragment.getPlaylists ().get(mActivity.playlistFragment.getSelectedPlaylist());
-        SongItem item = arSongs.get(position);
-        if(item.getTime() == null) mActivity.playlistFragment.updateSongTime(item);
+        final SongItem item = arSongs.get(position);
+        if(item.getTime() == null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mActivity.playlistFragment.updateSongTime(item);
+                }
+            }).start();
+        }
         final int nItem = Integer.parseInt(item.getNumber()) - 1;
         boolean bLock = mActivity.playlistFragment.isLock(nItem);
         boolean bSelected = mActivity.playlistFragment.isSelected(nItem);
