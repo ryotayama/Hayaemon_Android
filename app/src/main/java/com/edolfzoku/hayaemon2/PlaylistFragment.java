@@ -1615,11 +1615,26 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             {
                 if(Build.VERSION.SDK_INT < 19) addSong(mActivity, data.getData());
                 else {
-                    if(data.getClipData() == null) addSong(mActivity, data.getData());
+                    if(data.getClipData() == null) {
+                        addSong(mActivity, data.getData());
+                        Uri uri = data.getData();
+                        if(uri != null) {
+                            try {
+                                mActivity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                            } catch (SecurityException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
                     else {
                         for(int i = 0; i < data.getClipData().getItemCount(); i++) {
                             Uri uri = data.getClipData().getItemAt(i).getUri();
                             addSong(mActivity, uri);
+                            try {
+                                mActivity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                            } catch (SecurityException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -3811,8 +3826,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         Uri uri = Uri.parse(strPath);
         if(uri.getScheme() != null && uri.getScheme().equals("content")) {
-            if(Build.VERSION.SDK_INT >= 19)
-                mActivity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            if(Build.VERSION.SDK_INT >= 19) {
+                try {
+                    mActivity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                }
+                catch (SecurityException e) {
+                    e.printStackTrace();
+                }
+            }
             ContentResolver cr = mActivity.getApplicationContext().getContentResolver();
             try {
                 MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
