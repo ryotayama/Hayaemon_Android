@@ -1613,29 +1613,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         {
             if(resultCode == RESULT_OK)
             {
-                final int takeFlags = data.getFlags()
-                        & (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                if(Build.VERSION.SDK_INT < 19)
-                {
-                    addSong(mActivity, data.getData());
-                }
-                else
-                {
-                    if(data.getClipData() == null)
-                    {
-                        addSong(mActivity, data.getData());
-                        Uri uri = data.getData();
-                        if(uri != null)
-                            mActivity.getContentResolver().takePersistableUriPermission(uri, takeFlags);
-                    }
-                    else
-                    {
-                        for(int i = 0; i < data.getClipData().getItemCount(); i++)
-                        {
+                if(Build.VERSION.SDK_INT < 19) addSong(mActivity, data.getData());
+                else {
+                    if(data.getClipData() == null) addSong(mActivity, data.getData());
+                    else {
+                        for(int i = 0; i < data.getClipData().getItemCount(); i++) {
                             Uri uri = data.getClipData().getItemAt(i).getUri();
                             addSong(mActivity, uri);
-                            mActivity.getContentResolver().takePersistableUriPermission(uri, takeFlags);
                         }
                     }
                 }
@@ -1648,24 +1632,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 final int takeFlags = data.getFlags()
                         & (Intent.FLAG_GRANT_READ_URI_PERMISSION
                         | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                if(Build.VERSION.SDK_INT < 19)
-                    addVideo(mActivity, data.getData());
-                else
-                {
+                if(Build.VERSION.SDK_INT < 19) addVideo(mActivity, data.getData());
+                else {
                     if(data.getClipData() == null)
-                    {
                         addVideo(mActivity, data.getData());
-                        Uri uri = data.getData();
-                        if(uri != null)
-                            mActivity.getContentResolver().takePersistableUriPermission(uri, takeFlags);
-                    }
-                    else
-                    {
-                        for(int i = 0; i < data.getClipData().getItemCount(); i++)
-                        {
+                    else {
+                        for(int i = 0; i < data.getClipData().getItemCount(); i++) {
                             Uri uri = data.getClipData().getItemAt(i).getUri();
                             addVideo(mActivity, uri);
-                            mActivity.getContentResolver().takePersistableUriPermission(uri, takeFlags);
                         }
                     }
                 }
@@ -3837,6 +3811,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         Uri uri = Uri.parse(strPath);
         if(uri.getScheme() != null && uri.getScheme().equals("content")) {
+            if(Build.VERSION.SDK_INT >= 19)
+                mActivity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             ContentResolver cr = mActivity.getApplicationContext().getContentResolver();
             try {
                 MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
