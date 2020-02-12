@@ -88,6 +88,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private ArrayList<EffectTemplateItem> mCompItems;
     private ArrayList<EffectTemplateItem> mSoundEffectItems;
     private ItemTouchHelper mEffectTemplateTouchHelper;
+    private Metronome mMetronome;
     private int mDspVocalCancel = 0;
     private int mDspMonoral = 0;
     private int mDspLeft = 0;
@@ -1959,7 +1960,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_METRONOME).getEffectName())) {
             mBpm = nProgress + 10;
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", mBpm));
-            applyEffect();
+            mMetronome.setBpm(mBpm);
         }
         mActivity.playlistFragment.updateSavingEffect();
     }
@@ -1980,7 +1981,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_METRONOME).getEffectName())) {
             mBpm = nProgress + 10;
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", mBpm));
-            applyEffect();
+            mMetronome.setBpm(mBpm);
         }
         mActivity.playlistFragment.updateSavingEffect();
     }
@@ -1996,6 +1997,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     @Override
     public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        mMetronome = new Metronome(mActivity);
 
         mTextEffectName = mActivity.findViewById(R.id.textEffectName);
         mEditSpeedEffectDetail = mActivity.findViewById(R.id.editSpeedEffectDetail);
@@ -3344,7 +3347,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             } else if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_METRONOME).getEffectName())) {
                 mBpm = progress + 10;
                 mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", mBpm));
-                applyEffect();
+                mMetronome.setBpm(mBpm);
             }
             mActivity.playlistFragment.updateSavingEffect();
         } else if (seekBar.getId() == R.id.seekCompGain)
@@ -4108,7 +4111,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-
+        if (seekBar.getId() == R.id.seekEffectDetail) {
+            if (mTextEffectName.getText().toString().equals(mEffectItems.get(EFFECTTYPE_METRONOME).getEffectName()))
+                mMetronome.play();
+        }
     }
 
     private void checkDuplicate(int nSelect) {
@@ -4249,6 +4255,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mTimer.cancel();
             mTimer = null;
         }
+        mMetronome.stop();
         for (int i = 0; i < mEffectItems.size(); i++) {
             if (!mEffectItems.get(i).isSelected())
                 continue;
@@ -4460,10 +4467,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mHandler = new Handler();
                 mHandler.post(onTimer);
             } else if (strEffect.equals(getString(R.string.metronome))) {
-                mTimer = new Timer();
-                MetronomeTask metronomeTask = new MetronomeTask(this);
-                long lPeriod = (long) ((60.0 / mBpm) * 1000);
-                mTimer.schedule(metronomeTask, lPeriod, lPeriod);
+                mMetronome.setBpm(mBpm);
+                mMetronome.play();
             } else if (strEffect.equals(getString(R.string.soundEffect))) {
                 if (mSoundEffectSelected == SOUNDEFFECTTYPE_RECORDNOISE) {
                     if (mSEStream == 0) {
@@ -6259,5 +6264,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mEditTimeEffectDetail.setBackgroundResource(R.drawable.editborder_dark);
         mEffectsAdapter.notifyDataSetChanged();
         mEffectTemplatesAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        mMetronome.stop();
     }
 }
