@@ -3128,8 +3128,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mTextEffectLabel.setVisibility(View.VISIBLE);
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", mBpm));
             mSeekEffectDetail.setProgress(0);
-            // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、最大値に290を設定（本来は10～300にしたい）
-            mSeekEffectDetail.setMax(290);
+            // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、最大値に290を設定（本来は10～400にしたい）
+            mSeekEffectDetail.setMax(390);
             mSeekEffectDetail.setProgress(mBpm - 10);
         } else mTextEffectLabel.setVisibility(View.INVISIBLE);
 
