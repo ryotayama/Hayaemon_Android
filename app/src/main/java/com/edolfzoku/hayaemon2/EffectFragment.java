@@ -2678,6 +2678,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mActivity.equalizerFragment.resetEQ();
             mActivity.controlFragment.setPitch(0.0f);
         }
+        if (!item.isSelected() && nEffect == EFFECTTYPE_METRONOME) mMetronome.stop();
         checkDuplicate(nEffect);
         if (mSEStream != 0) {
             BASS.BASS_StreamFree(mSEStream);
@@ -2847,6 +2848,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mEffectItems.get(i).setSelected(false);
             mEffectsAdapter.notifyItemChanged(i);
         }
+        mMetronome.stop();
         mPan = 0.0f;
         mFreq = 1.0f;
         setTimeOfIncreaseSpeed(1.0f);
@@ -4139,14 +4141,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             if (nSelect != EFFECTTYPE_DISTORTION) deselectEffect(EFFECTTYPE_DISTORTION);
             if (nSelect != EFFECTTYPE_LOWBATTERY) deselectEffect(EFFECTTYPE_LOWBATTERY);
         }
-        if (EFFECTTYPE_INCREASESPEED <= nSelect && nSelect <= EFFECTTYPE_METRONOME) {
-            for (int i = EFFECTTYPE_INCREASESPEED; i <= EFFECTTYPE_METRONOME; i++)
+        if (EFFECTTYPE_INCREASESPEED <= nSelect && nSelect <= EFFECTTYPE_EARTRAINING) {
+            for (int i = EFFECTTYPE_INCREASESPEED; i <= EFFECTTYPE_EARTRAINING; i++)
                 if (i != nSelect) deselectEffect(i);
         }
-        if (nSelect == EFFECTTYPE_OLDRECORD || (EFFECTTYPE_METRONOME <= nSelect && nSelect <= SOUNDEFFECTTYPE_CONCERTHALL)) {
+        if (nSelect == EFFECTTYPE_OLDRECORD || nSelect == EFFECTTYPE_SOUNDEFFECT) {
             if (nSelect != EFFECTTYPE_OLDRECORD) deselectEffect(EFFECTTYPE_OLDRECORD);
-            for (int i = EFFECTTYPE_METRONOME; i <= SOUNDEFFECTTYPE_CONCERTHALL; i++)
-                if (i != nSelect) deselectEffect(i);
+            if (nSelect != EFFECTTYPE_SOUNDEFFECT) deselectEffect(EFFECTTYPE_SOUNDEFFECT);
         }
         mActivity.playlistFragment.updateSavingEffect();
     }
@@ -4255,7 +4256,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mTimer.cancel();
             mTimer = null;
         }
-        mMetronome.stop();
         for (int i = 0; i < mEffectItems.size(); i++) {
             if (!mEffectItems.get(i).isSelected())
                 continue;
@@ -4468,7 +4468,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mHandler.post(onTimer);
             } else if (strEffect.equals(getString(R.string.metronome))) {
                 mMetronome.setBpm(mBpm);
-                mMetronome.play();
+                if(!mMetronome.isPlaying()) mMetronome.play();
             } else if (strEffect.equals(getString(R.string.soundEffect))) {
                 if (mSoundEffectSelected == SOUNDEFFECTTYPE_RECORDNOISE) {
                     if (mSEStream == 0) {

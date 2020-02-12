@@ -17,6 +17,7 @@ public class Metronome {
     private Thread mThread;
 
     public void setBpm(int bpm) { mBpm = bpm; }
+    public boolean isPlaying() { return mPlaying; }
 
     public Metronome(Context context) {
         InputStream is = context.getResources().openRawResource(R.raw.click);
