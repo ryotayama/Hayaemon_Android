@@ -200,7 +200,7 @@ public class WaveView extends View {
             try {
                 Bitmap bitmap = Bitmap.createBitmap(nWidth, getHeight(), Bitmap.Config.RGB_565);
                 Canvas canvas = new Canvas(bitmap);
-                canvas.drawColor(mLoopFragment.getMainActivity().isDarkMode() ? getResources().getColor(R.color.darkModeBk) : getResources().getColor(R.color.lightModeBk));
+                canvas.drawColor(LoopFragment.sActivity.isDarkMode() ? getResources().getColor(R.color.darkModeBk) : getResources().getColor(R.color.lightModeBk));
                 mBitmaps.add(bitmap);
                 mCanvases.add(canvas);
                 nTotalWidth += nWidth;
@@ -210,8 +210,8 @@ public class WaveView extends View {
                 break;
             }
         }
-        int colorBk = mLoopFragment.getMainActivity().isDarkMode() ? getResources().getColor(R.color.darkModeBk) : getResources().getColor(R.color.lightModeBk);
-        int colorWave = mLoopFragment.getMainActivity().isDarkMode() ? Color.argb(255, 47, 86, 119) : Color.argb(255, 128, 166, 199);
+        int colorBk = LoopFragment.sActivity.isDarkMode() ? getResources().getColor(R.color.darkModeBk) : getResources().getColor(R.color.lightModeBk);
+        int colorWave = LoopFragment.sActivity.isDarkMode() ? Color.argb(255, 47, 86, 119) : Color.argb(255, 128, 166, 199);
         mTask = new WaveViewTask(this, mTempStream, getWidth(), getHeight(), mZoom, mBitmaps, mCanvases, colorBk, colorWave);
         mTask.execute(0);
     }
@@ -357,7 +357,7 @@ public class WaveView extends View {
             try {
                 Bitmap bitmap = Bitmap.createBitmap(nWidth, getHeight(), Bitmap.Config.RGB_565);
                 Canvas canvas = new Canvas(bitmap);
-                canvas.drawColor(mLoopFragment.getMainActivity().isDarkMode() ? getResources().getColor(R.color.darkModeBk) : getResources().getColor(R.color.lightModeBk));
+                canvas.drawColor(LoopFragment.sActivity.isDarkMode() ? getResources().getColor(R.color.darkModeBk) : getResources().getColor(R.color.lightModeBk));
                 mBitmaps.add(bitmap);
                 mCanvases.add(canvas);
                 nTotalWidth += nWidth;
@@ -367,8 +367,8 @@ public class WaveView extends View {
                 break;
             }
         }
-        int colorBk = mLoopFragment.getMainActivity().isDarkMode() ? getResources().getColor(R.color.darkModeBk) : getResources().getColor(R.color.lightModeBk);
-        int colorWave = mLoopFragment.getMainActivity().isDarkMode() ? Color.argb(255, 47, 86, 119) : Color.argb(255, 128, 166, 199);
+        int colorBk = LoopFragment.sActivity.isDarkMode() ? getResources().getColor(R.color.darkModeBk) : getResources().getColor(R.color.lightModeBk);
+        int colorWave = LoopFragment.sActivity.isDarkMode() ? Color.argb(255, 47, 86, 119) : Color.argb(255, 128, 166, 199);
         mTask = new WaveViewTask(this, mTempStream, getWidth(), getHeight(), mZoom, mBitmaps, mCanvases, colorBk, colorWave);
         mTask.execute(0);
     }

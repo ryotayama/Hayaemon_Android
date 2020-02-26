@@ -71,7 +71,7 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
 
         holder.textPlaylistTab.setText(item);
         holder.textPlaylistTab.setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? android.R.color.white : android.R.color.black));
-        if(position == mActivity.playlistFragment.getSelectedPlaylist()) {
+        if(position == PlaylistFragment.sSelectedPlaylist) {
             holder.textPlaylistTab.setContentDescription(item + "、選択ずみ");
             holder.textPlaylistTab.setTypeface(Typeface.DEFAULT_BOLD);
             holder.relativePlaylistTab.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.playlisttab_select_dark : R.drawable.playlisttab_select);
@@ -85,7 +85,7 @@ public class PlaylistTabAdapter extends RecyclerView.Adapter<PlaylistTabAdapter.
                 }
             });
         }
-        else if(mActivity.playlistFragment.getPlayingPlaylist() == position && mActivity.playlistFragment.getPlaying() != -1) {
+        else if(PlaylistFragment.sPlayingPlaylist == position && PlaylistFragment.sPlaying != -1) {
             holder.textPlaylistTab.setContentDescription(item);
             holder.textPlaylistTab.setTypeface(Typeface.DEFAULT);
             holder.relativePlaylistTab.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.playlisttab_play_dark : R.drawable.playlisttab_play);

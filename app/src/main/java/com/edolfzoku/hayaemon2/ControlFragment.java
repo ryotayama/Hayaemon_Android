@@ -29,6 +29,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.annotation.NonNull;
@@ -38,6 +39,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -48,21 +50,12 @@ import com.un4seen.bass.BASS_FX;
 
 import java.util.Locale;
 
-public class ControlFragment extends Fragment implements View.OnTouchListener, View.OnLongClickListener, View.OnFocusChangeListener
-{
-    private MainActivity mActivity = null;
-    private float mSpeed = 0.0f;
-    private float mPitch = 0.0f;
-    private boolean mTouchingFlag = false;
-    private boolean mLinkFlag = false;
-    private boolean mLockSpeedFlag = false;
-    private boolean mLockPitchFlag = false;
-    private boolean mSnapFlag = false;
-    private int mMinSpeed = 10;
-    private int mMaxSpeed = 400;
-    private int mMinPitch = -12;
-    private int mMaxPitch = 12;
-    private boolean mContinueFlag = true;
+public class ControlFragment extends Fragment implements View.OnTouchListener, View.OnLongClickListener, View.OnFocusChangeListener {
+    static MainActivity sActivity;
+    static float sSpeed, sPitch;
+    private static boolean sLinkFlag, sLockSpeedFlag, sLockPitchFlag, sTouchingFlag;
+    private boolean mSnapFlag, mContinueFlag = true;
+    private int mMinSpeed = 10, mMaxSpeed = 400, mMinPitch = -12, mMaxPitch = 12;
     private final Handler mHandler;
 
     private ImageView mImgPoint;
@@ -72,23 +65,21 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     private TextView mTextSpeed, mTextPitch;
     private EditText mTextSpeedValue, mTextPitchValue;
 
-    public float getSpeed() { return mSpeed; }
-    public float getPitch() { return mPitch; }
-    public boolean isSnap() { return mSnapFlag; }
-    public void setSnap(boolean snapFlag) { mSnapFlag = snapFlag; }
-    public int getMinSpeed() { return mMinSpeed; }
-    public void setMinSpeed(int minSpeed) { mMinSpeed = minSpeed; }
-    public int getMaxSpeed() { return mMaxSpeed; }
-    public void setMaxSpeed(int maxSpeed) { mMaxSpeed = maxSpeed; }
-    public int getMinPitch() { return mMinPitch; }
-    public void setMinPitch(int minPitch) { mMinPitch = minPitch; }
-    public int getMaxPitch() { return mMaxPitch; }
-    public void setMaxPitch(int maxPitch) { mMaxPitch = maxPitch; }
+    boolean isSnap() { return mSnapFlag; }
+    void setSnap(boolean snapFlag) { mSnapFlag = snapFlag; }
+    int getMinSpeed() { return mMinSpeed; }
+    void setMinSpeed(int minSpeed) { mMinSpeed = minSpeed; }
+    int getMaxSpeed() { return mMaxSpeed; }
+    void setMaxSpeed(int maxSpeed) { mMaxSpeed = maxSpeed; }
+    int getMinPitch() { return mMinPitch; }
+    void setMinPitch(int minPitch) { mMinPitch = minPitch; }
+    int getMaxPitch() { return mMaxPitch; }
+    void setMaxPitch(int maxPitch) { mMaxPitch = maxPitch; }
 
-    public ImageView getImgPoint() { return mImgPoint; }
+    ImageView getImgPoint() { return mImgPoint; }
+    private EditText getTextSpeedValue() { return mTextSpeedValue; }
 
-    public ControlFragment()
-    {
+    public ControlFragment() {
         mHandler = new Handler();
     }
 
@@ -96,51 +87,47 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof MainActivity) {
-            mActivity = (MainActivity) context;
-        }
+        if (context instanceof MainActivity) sActivity = (MainActivity) context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
 
-        mActivity = null;
+        sActivity = null;
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_control, container, false);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState)
-    {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mImgPoint = mActivity.findViewById(R.id.imgPoint);
-        mViewBk = mActivity.findViewById(R.id.imgBack);
-        mViewSepBelowSpeed = mActivity.findViewById(R.id.viewSepBelowSpeed);
-        mViewSepBelowPitch = mActivity.findViewById(R.id.viewSepBelowPitch);
-        mViewLineHorizontal = mActivity.findViewById(R.id.viewLineHorizontal);
-        mViewLineVertical = mActivity.findViewById(R.id.viewLineVertical);
-        mBtnLink = mActivity.findViewById(R.id.btnLink);
-        mBtnLockSpeed = mActivity.findViewById(R.id.btnLockSpeed);
-        mBtnLockPitch = mActivity.findViewById(R.id.btnLockPitch);
-        mTextSpeed = mActivity.findViewById(R.id.textSpeed);
-        mTextSpeedValue = mActivity.findViewById(R.id.textSpeedValue);
-        mTextPitch = mActivity.findViewById(R.id.textPitch);
-        mTextPitchValue = mActivity.findViewById(R.id.textPitchValue);
-        mBtnResetSpeed = mActivity.findViewById(R.id.btnResetSpeed);
-        mBtnResetPitch = mActivity.findViewById(R.id.btnResetPitch);
-        mBtnSpeedUp = mActivity.findViewById(R.id.btnSpeedUp);
-        mBtnSpeedDown = mActivity.findViewById(R.id.btnSpeedDown);
-        mBtnPitchUp = mActivity.findViewById(R.id.btnPitchUp);
-        mBtnPitchDown = mActivity.findViewById(R.id.btnPitchDown);
+        mImgPoint = sActivity.findViewById(R.id.imgPoint);
+        mViewBk = sActivity.findViewById(R.id.imgBack);
+        mViewSepBelowSpeed = sActivity.findViewById(R.id.viewSepBelowSpeed);
+        mViewSepBelowPitch = sActivity.findViewById(R.id.viewSepBelowPitch);
+        mViewLineHorizontal = sActivity.findViewById(R.id.viewLineHorizontal);
+        mViewLineVertical = sActivity.findViewById(R.id.viewLineVertical);
+        mBtnLink = sActivity.findViewById(R.id.btnLink);
+        mBtnLockSpeed = sActivity.findViewById(R.id.btnLockSpeed);
+        mBtnLockPitch = sActivity.findViewById(R.id.btnLockPitch);
+        mTextSpeed = sActivity.findViewById(R.id.textSpeed);
+        mTextSpeedValue = sActivity.findViewById(R.id.textSpeedValue);
+        mTextPitch = sActivity.findViewById(R.id.textPitch);
+        mTextPitchValue = sActivity.findViewById(R.id.textPitchValue);
+        mBtnResetSpeed = sActivity.findViewById(R.id.btnResetSpeed);
+        mBtnResetPitch = sActivity.findViewById(R.id.btnResetPitch);
+        mBtnSpeedUp = sActivity.findViewById(R.id.btnSpeedUp);
+        mBtnSpeedDown = sActivity.findViewById(R.id.btnSpeedDown);
+        mBtnPitchUp = sActivity.findViewById(R.id.btnPitchUp);
+        mBtnPitchDown = sActivity.findViewById(R.id.btnPitchDown);
 
-        SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        SharedPreferences preferences = sActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         int nImgPointTag = preferences.getInt("imgPointTag", 0);
         if(nImgPointTag == 0) mImgPoint.setTag(0);
         else if(nImgPointTag == 1) {
@@ -152,19 +139,19 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             mImgPoint.setTag(2);
         }
         else if(nImgPointTag == 3) {
-            mImgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.control_pointer_camper_pk_dark : R.drawable.control_pointer_camper_pk);
+            mImgPoint.setBackgroundResource(sActivity.isDarkMode() ? R.drawable.control_pointer_camper_pk_dark : R.drawable.control_pointer_camper_pk);
             mImgPoint.setTag(3);
             AnimationDrawable anime = (AnimationDrawable)mImgPoint.getBackground();
             anime.start();
         }
         else if(nImgPointTag == 4) {
-            mImgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.control_pointer_camper_bl_dark : R.drawable.control_pointer_camper_bl);
+            mImgPoint.setBackgroundResource(sActivity.isDarkMode() ? R.drawable.control_pointer_camper_bl_dark : R.drawable.control_pointer_camper_bl);
             mImgPoint.setTag(4);
             AnimationDrawable anime = (AnimationDrawable)mImgPoint.getBackground();
             anime.start();
         }
         else if(nImgPointTag == 5) {
-            mImgPoint.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.control_pointer_camper_or_dark : R.drawable.control_pointer_camper_or);
+            mImgPoint.setBackgroundResource(sActivity.isDarkMode() ? R.drawable.control_pointer_camper_or_dark : R.drawable.control_pointer_camper_or);
             mImgPoint.setTag(5);
             AnimationDrawable anime = (AnimationDrawable)mImgPoint.getBackground();
             anime.start();
@@ -189,14 +176,27 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         mTextSpeedValue.setOnFocusChangeListener(this);
         mTextPitchValue.setOnFocusChangeListener(this);
 
-        if(mActivity.isDarkMode()) setDarkMode(false);
+        if(sActivity.isDarkMode()) setDarkMode(false);
+
+        if(MainActivity.sStream != 0) {
+            mImgPoint.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    if(Build.VERSION.SDK_INT >= 16) mImgPoint.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    else mImgPoint.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    updateSpeed(false);
+                    updatePitch(false);
+                }
+            });
+            if(sLinkFlag) setLink(true);
+            if(sLockSpeedFlag) setLockSpeed(true);
+            if(sLockPitchFlag) setLockPitch(true);
+        }
     }
 
     @Override
-    public void onFocusChange(View v, boolean hasFocus)
-    {
-        if(hasFocus)
-        {
+    public void onFocusChange(View v, boolean hasFocus) {
+        if(hasFocus) {
             if(v.getId() == R.id.textSpeedValue) {
                 mTextSpeedValue.clearFocus();
                 mTextSpeedValue.setCursorVisible(true);
@@ -212,53 +212,54 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         }
     }
 
-    private void showSpeedDialog()
-    {
-        SpeedFragmentDialog dialog = new SpeedFragmentDialog(mActivity);
+    private void showSpeedDialog() {
+        SpeedFragmentDialog dialog = new SpeedFragmentDialog(sActivity);
         dialog.show();
     }
 
-    private void showPitchDialog()
-    {
-        PitchFragmentDialog dialog = new PitchFragmentDialog(mActivity);
+    private void showPitchDialog() {
+        PitchFragmentDialog dialog = new PitchFragmentDialog(sActivity);
         dialog.show();
     }
 
-    private void setSpeedUp()
-    {
+    private void setSpeedUp() {
         float fMaxSpeed = 50.0f;
         fMaxSpeed = (fMaxSpeed - 1.0f) * 100.0f;
-        mSpeed += 1.0;
-        if(mSpeed >= fMaxSpeed) mSpeed = fMaxSpeed;
-            setSpeed(mSpeed);
+        sSpeed += 1.0;
+        if(sSpeed >= fMaxSpeed) sSpeed = fMaxSpeed;
+            setSpeed(sSpeed);
     }
 
-    private void setSpeedDown()
-    {
+    private void setSpeedDown() {
         float fMinSpeed = 0.1f;
         fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
-        mSpeed -= 1.0;
-        if(mSpeed <= fMinSpeed) mSpeed = fMinSpeed;
-            setSpeed(mSpeed);
+        sSpeed -= 1.0;
+        if(sSpeed <= fMinSpeed) sSpeed = fMinSpeed;
+            setSpeed(sSpeed);
     }
 
-    public void setSpeed(float speed)
-    {
-        if(mTouchingFlag) setSpeed(speed, false);
+    public static void setSpeed(float speed) {
+        if(sTouchingFlag) setSpeed(speed, false);
         else setSpeed(speed, true);
     }
 
-    public void setSpeed(float speed, boolean bSave)
-    {
-        mSpeed = speed;
+    public static void setSpeed(float speed, boolean bSave) {
+        sSpeed = speed;
         if(MainActivity.sStream != 0)
-            BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, mSpeed);
+            BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, sSpeed);
+
+        if(bSave) PlaylistFragment.updateSavingEffect();
+
+        if(sActivity != null) sActivity.controlFragment.updateSpeed(bSave);
+    }
+
+    private void updateSpeed(boolean bSave) {
         mTextSpeedValue.clearFocus();
-        float tempSpeed = mSpeed + 100;
+        float tempSpeed = sSpeed + 100;
         int speedInt = (int)tempSpeed;
         int speedDec = (int)((tempSpeed * 10) % 10);
         String strSpeed = speedInt + "." + speedDec + "%";
-        mTextSpeedValue.setText(strSpeed);
+        sActivity.controlFragment.getTextSpeedValue().setText(strSpeed);
 
         int nPtWidth = mImgPoint.getWidth();
         int nPtHeight = mImgPoint.getHeight();
@@ -269,28 +270,26 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         float fMinSpeed = mMinSpeed / 100.0f;
         fMaxSpeed = (fMaxSpeed - 1.0f) * 100.0f;
         fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
-        float fDummySpeed = mSpeed;
+        float fDummySpeed = sSpeed;
         if(fDummySpeed > fMaxSpeed) fDummySpeed = fMaxSpeed;
         else if(fDummySpeed < fMinSpeed) fDummySpeed = fMinSpeed;
         float fX;
-        if(mSpeed >= 0.0)
+        if(sSpeed >= 0.0)
             fX = nBkLeft + fCenter + (fDummySpeed / fMaxSpeed) * (fCenter - nPtWidth / 2.0f);
         else
             fX = nBkLeft + fCenter - (fDummySpeed / fMinSpeed) * (fCenter - nPtWidth / 2.0f);
         float fY = mImgPoint.getY() + nPtHeight / 2.0f;
         mImgPoint.animate()
-            .x(fX - nPtWidth / 2.0f)
-            .y(fY - nPtHeight / 2.0f)
-            .setDuration(0)
-            .start();
+                .x(fX - nPtWidth / 2.0f)
+                .y(fY - nPtHeight / 2.0f)
+                .setDuration(0)
+                .start();
 
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-
-        if(mLinkFlag) {
-            mLinkFlag = false;
-            if(mSpeed == 0.0f) setPitch(0, bSave);
-            else if(mSpeed > 0.0f) {
-                double dSpeed = ((double)mSpeed + 100.0) / 100.0;
+        if(sLinkFlag) {
+            sLinkFlag = false;
+            if(sSpeed == 0.0f) setPitch(0, bSave);
+            else if(sSpeed > 0.0f) {
+                double dSpeed = ((double)sSpeed + 100.0) / 100.0;
                 double dSemitone = 0.1;
                 double dMinimum = Math.pow(2.0, 0.09 / 12.0);
                 while(true) {
@@ -303,7 +302,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 setPitch((float)dSemitone, bSave);
             }
             else {
-                double dSpeed = ((double)mSpeed + 100.0) / 100.0;
+                double dSpeed = ((double)sSpeed + 100.0) / 100.0;
                 double dSemitone = -0.1;
                 double dMaximum = Math.pow(2.0, -0.09 / 12.0);
                 while(true) {
@@ -313,43 +312,46 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
                 }
                 setPitch((float)dSemitone, bSave);
             }
-            mLinkFlag = true;
+            sLinkFlag = true;
         }
     }
 
-    private void setPitchUp()
-    {
+    private void setPitchUp() {
         float fMaxPitch = 60.0f;
-        mPitch += 1.0;
-        if(mPitch >= fMaxPitch) mPitch = fMaxPitch;
-            setPitch(mPitch);
+        sPitch += 1.0;
+        if(sPitch >= fMaxPitch) sPitch = fMaxPitch;
+            setPitch(sPitch);
     }
 
-    private void setPitchDown()
-    {
+    private void setPitchDown() {
         float fMinPitch = -60.0f;
-        mPitch -= 1.0;
-        if(mPitch <= fMinPitch) mPitch = fMinPitch;
-            setPitch(mPitch);
+        sPitch -= 1.0;
+        if(sPitch <= fMinPitch) sPitch = fMinPitch;
+            setPitch(sPitch);
     }
 
-    public void setPitch(float pitchValue)
-    {
+    public static void setPitch(float pitchValue) {
         setPitch(pitchValue, true);
     }
 
-    public void setPitch(float pitchValue, boolean bSave)
-    {
-        mPitch = pitchValue;
+    public static void setPitch(float pitchValue, boolean bSave) {
+        sPitch = pitchValue;
         if(MainActivity.sStream != 0)
-            BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, mPitch);
+            BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, sPitch);
+
+        if(bSave) PlaylistFragment.updateSavingEffect();
+
+        if(sActivity != null) sActivity.controlFragment.updatePitch(bSave);
+    }
+
+    private void updatePitch(boolean bSave) {
         mTextPitchValue.clearFocus();
-        float fTempPitch = mPitch < 0.0f ? mPitch * -1 : mPitch;
+        float fTempPitch = sPitch < 0.0f ? sPitch * -1 : sPitch;
         int pitchInt = (int)fTempPitch;
         int pitchDec = (int)((fTempPitch * 10) % 10);
         String strPitch;
-        if(mPitch > 0.05) strPitch = "♯" + pitchInt + "." + pitchDec;
-        else if(mPitch < -0.05) strPitch = "♭" + pitchInt + "." + pitchDec;
+        if(sPitch > 0.05) strPitch = "♯" + pitchInt + "." + pitchDec;
+        else if(sPitch < -0.05) strPitch = "♭" + pitchInt + "." + pitchDec;
         else strPitch = "　" + pitchInt + "." + pitchDec;
         mTextPitchValue.setText(strPitch);
 
@@ -361,108 +363,88 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         float fHalfHeight = fBkHeight / 2.0f;
         float fMaxPitch = mMaxPitch;
         float fMinPitch = mMinPitch;
-        float fDummyPitch = mPitch;
+        float fDummyPitch = sPitch;
         if(fDummyPitch > fMaxPitch) fDummyPitch = fMaxPitch;
         else if(fDummyPitch < fMinPitch) fDummyPitch = fMinPitch;
         float fX = mImgPoint.getX() + nPtWidth / 2.0f;
         float fY;
-        if(mPitch > 0.0f) fY = nBkTop + fHalfHeight - (fDummyPitch / fMaxPitch) * fHalfHeight;
+        if(sPitch > 0.0f) fY = nBkTop + fHalfHeight - (fDummyPitch / fMaxPitch) * fHalfHeight;
         else fY = nBkTop + fHalfHeight - (fDummyPitch / -fMinPitch) * fHalfHeight;
         mImgPoint.animate()
-            .x(fX - nPtWidth / 2.0f)
-            .y(fY)
-            .setDuration(0)
-            .start();
+                .x(fX - nPtWidth / 2.0f)
+                .y(fY)
+                .setDuration(0)
+                .start();
 
-        if(bSave) mActivity.playlistFragment.updateSavingEffect();
-
-        if(mLinkFlag) {
-            mLinkFlag = false;
-            if(Math.pow(2.0, mPitch / 12.0) < 0.1) setSpeed(-90.0f, bSave);
-            else setSpeed((float)(Math.pow(2.0, mPitch / 12.0) * 100.0f - 100.0f), bSave);
-            mLinkFlag = true;
+        if(sLinkFlag) {
+            sLinkFlag = false;
+            if(Math.pow(2.0, sPitch / 12.0) < 0.1) setSpeed(-90.0f, bSave);
+            else setSpeed((float)(Math.pow(2.0, sPitch / 12.0) * 100.0f - 100.0f), bSave);
+            sLinkFlag = true;
         }
     }
 
-    public void clearFocus()
-    {
+    public void clearFocus() {
         mTextSpeedValue.clearFocus();
         mTextPitchValue.clearFocus();
         mTextSpeedValue.setCursorVisible(false);
         mTextPitchValue.setCursorVisible(false);
     }
 
-    private final Runnable repeatSpeedUp = new Runnable()
-    {
+    private final Runnable repeatSpeedUp = new Runnable() {
         @Override
-        public void run()
-        {
-            if(!mContinueFlag)
-                return;
+        public void run() {
+            if(!mContinueFlag) return;
             setSpeedUp();
             mHandler.postDelayed(this, 100);
         }
     };
 
-    private final Runnable repeatSpeedDown = new Runnable()
-    {
+    private final Runnable repeatSpeedDown = new Runnable() {
         @Override
-        public void run()
-        {
-            if(!mContinueFlag)
-                return;
+        public void run() {
+            if(!mContinueFlag) return;
             setSpeedDown();
             mHandler.postDelayed(this, 100);
         }
     };
 
-    private final Runnable repeatPitchUp = new Runnable()
-    {
+    private final Runnable repeatPitchUp = new Runnable() {
         @Override
-        public void run()
-        {
-            if(!mContinueFlag)
-                return;
+        public void run() {
+            if(!mContinueFlag) return;
             setPitchUp();
             mHandler.postDelayed(this, 200);
         }
     };
 
-    private final Runnable repeatPitchDown = new Runnable()
-    {
+    private final Runnable repeatPitchDown = new Runnable() {
         @Override
-        public void run()
-        {
-            if(!mContinueFlag)
-                return;
+        public void run() {
+            if(!mContinueFlag) return;
             setPitchDown();
             mHandler.postDelayed(this, 200);
         }
     };
 
     @Override
-    public boolean onLongClick(View v)
-    {
-        if(v.getId() == R.id.btnSpeedUp)
-        {
+    public boolean onLongClick(View v) {
+        if(v.getId() == R.id.btnSpeedUp) {
             mContinueFlag = true;
             mHandler.post(repeatSpeedUp);
             return true;
         }
-        else if(v.getId() == R.id.btnSpeedDown)
-        {
+        else if(v.getId() == R.id.btnSpeedDown) {
             mContinueFlag = true;
             mHandler.post(repeatSpeedDown);
             return true;
         }
-        else if(v.getId() == R.id.btnPitchUp)
-        {
+        else if(v.getId() == R.id.btnPitchUp) {
             mContinueFlag = true;
             mHandler.post(repeatPitchUp);
             return true;
         }
-        else if(v.getId() == R.id.btnPitchDown)
-        {
+        else if(v.getId() == R.id.btnPitchDown) {
             mContinueFlag = true;
             mHandler.post(repeatPitchDown);
             return true;
@@ -470,106 +452,85 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         return false;
     }
 
-    public void setLink(boolean linkFrag)
-    {
-        mLinkFlag = linkFrag;
-        if(mLinkFlag) {
-            mBtnLink.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_link_on_dark : R.drawable.ic_control_link_on);
-            mLockSpeedFlag = mLockPitchFlag = false;
-            mBtnLockSpeed.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_unlock_dark : R.drawable.ic_control_unlock);
-            mBtnLockPitch.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_unlock_dark : R.drawable.ic_control_unlock);
+    void setLink(boolean linkFrag) {
+        sLinkFlag = linkFrag;
+        if(sLinkFlag) {
+            mBtnLink.setImageResource(sActivity.isDarkMode() ? R.drawable.ic_control_link_on_dark : R.drawable.ic_control_link_on);
+            sLockSpeedFlag = sLockPitchFlag = false;
+            mBtnLockSpeed.setImageResource(sActivity.isDarkMode() ? R.drawable.ic_control_unlock_dark : R.drawable.ic_control_unlock);
+            mBtnLockPitch.setImageResource(sActivity.isDarkMode() ? R.drawable.ic_control_unlock_dark : R.drawable.ic_control_unlock);
         }
-        else mBtnLink.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_link_off_dark : R.drawable.ic_control_link_off);
+        else mBtnLink.setImageResource(sActivity.isDarkMode() ? R.drawable.ic_control_link_off_dark : R.drawable.ic_control_link_off);
+    }
+
+    void setLockSpeed(boolean lockFlag) {
+        sLockSpeedFlag = lockFlag;
+        if(sLockSpeedFlag) {
+            mBtnLockSpeed.setImageResource(sActivity.isDarkMode() ? R.drawable.ic_control_lock_dark : R.drawable.ic_control_lock);
+            sLinkFlag = false;
+            mBtnLink.setImageResource(sActivity.isDarkMode() ? R.drawable.ic_control_link_off_dark : R.drawable.ic_control_link_off);
+        }
+        else mBtnLockSpeed.setImageResource(sActivity.isDarkMode() ? R.drawable.ic_control_unlock_dark : R.drawable.ic_control_unlock);
+    }
+
+    void setLockPitch(boolean lockFlag) {
+        sLockPitchFlag = lockFlag;
+        if(sLockPitchFlag) {
+            mBtnLockPitch.setImageResource(sActivity.isDarkMode() ? R.drawable.ic_control_lock_dark : R.drawable.ic_control_lock);
+            sLinkFlag = false;
+            mBtnLink.setImageResource(sActivity.isDarkMode() ? R.drawable.ic_control_link_off_dark : R.drawable.ic_control_link_off);
+        }
+        else mBtnLockPitch.setImageResource(sActivity.isDarkMode() ? R.drawable.ic_control_unlock_dark : R.drawable.ic_control_unlock);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public boolean onTouch(View v, MotionEvent event)
-    {
-        if(v.getId() == R.id.btnLink)
-        {
+    public boolean onTouch(View v, MotionEvent event) {
+        if(v.getId() == R.id.btnLink) {
             if(event.getAction() == MotionEvent.ACTION_UP)
-                setLink(!mLinkFlag);
+                setLink(!sLinkFlag);
             return false;
         }
-        else if(v.getId() == R.id.btnLockSpeed)
-        {
+        else if(v.getId() == R.id.btnLockSpeed) {
+            if(event.getAction() == MotionEvent.ACTION_UP) setLockSpeed(!sLockSpeedFlag);
+            return false;
+        }
+        else if(v.getId() == R.id.btnLockPitch) {
             if(event.getAction() == MotionEvent.ACTION_UP)
-            {
-                mLockSpeedFlag = !mLockSpeedFlag;
-                if(mLockSpeedFlag) {
-                    mBtnLockSpeed.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_lock_dark : R.drawable.ic_control_lock);
-                    mLinkFlag = false;
-                    mBtnLink.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_link_off_dark : R.drawable.ic_control_link_off);
-                }
-                else mBtnLockSpeed.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_unlock_dark : R.drawable.ic_control_unlock);
-            }
+                setLockPitch(!sLockPitchFlag);
             return false;
         }
-        else if(v.getId() == R.id.btnLockPitch)
-        {
-            if(event.getAction() == MotionEvent.ACTION_UP)
-            {
-                mLockPitchFlag = !mLockPitchFlag;
-                if(mLockPitchFlag) {
-                    mBtnLockPitch.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_lock_dark : R.drawable.ic_control_lock);
-                    mLinkFlag = false;
-                    mBtnLink.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_link_off_dark : R.drawable.ic_control_link_off);
-                }
-                else mBtnLockPitch.setImageResource(mActivity.isDarkMode() ? R.drawable.ic_control_unlock_dark : R.drawable.ic_control_unlock);
-            }
+        else if(v.getId() == R.id.btnResetSpeed) {
+            if(event.getAction() == MotionEvent.ACTION_UP) setSpeed(0.0f);
             return false;
         }
-        else if(v.getId() == R.id.btnResetSpeed)
-        {
-            if(event.getAction() == MotionEvent.ACTION_UP)
-            {
-                setSpeed(0.0f);
-            }
+        else if(v.getId() == R.id.btnResetPitch) {
+            if(event.getAction() == MotionEvent.ACTION_UP) setPitch(0.0f);
             return false;
         }
-        else if(v.getId() == R.id.btnResetPitch)
-        {
-            if(event.getAction() == MotionEvent.ACTION_UP)
-                setPitch(0.0f);
+        else if(v.getId() == R.id.btnSpeedUp) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) setSpeedUp();
+            else if (event.getAction() == MotionEvent.ACTION_UP) mContinueFlag = false;
             return false;
         }
-        else if(v.getId() == R.id.btnSpeedUp)
-        {
-            if (event.getAction() == MotionEvent.ACTION_DOWN)
-                setSpeedUp();
-            else if (event.getAction() == MotionEvent.ACTION_UP)
-                mContinueFlag = false;
+        else if(v.getId() == R.id.btnSpeedDown) {
+            if(event.getAction() == MotionEvent.ACTION_DOWN) setSpeedDown();
+            else if (event.getAction() == MotionEvent.ACTION_UP) mContinueFlag = false;
             return false;
         }
-        else if(v.getId() == R.id.btnSpeedDown)
-        {
-            if(event.getAction() == MotionEvent.ACTION_DOWN)
-                setSpeedDown();
-            else if (event.getAction() == MotionEvent.ACTION_UP)
-                mContinueFlag = false;
+        else if(v.getId() == R.id.btnPitchUp) {
+            if(event.getAction() == MotionEvent.ACTION_DOWN) setPitchUp();
+            else if (event.getAction() == MotionEvent.ACTION_UP) mContinueFlag = false;
             return false;
         }
-        else if(v.getId() == R.id.btnPitchUp)
-        {
-            if(event.getAction() == MotionEvent.ACTION_DOWN)
-                setPitchUp();
-            else if (event.getAction() == MotionEvent.ACTION_UP)
-                mContinueFlag = false;
+        else if(v.getId() == R.id.btnPitchDown) {
+            if(event.getAction() == MotionEvent.ACTION_DOWN) setPitchDown();
+            else if (event.getAction() == MotionEvent.ACTION_UP) mContinueFlag = false;
             return false;
         }
-        else if(v.getId() == R.id.btnPitchDown)
-        {
-            if(event.getAction() == MotionEvent.ACTION_DOWN)
-                setPitchDown();
-            else if (event.getAction() == MotionEvent.ACTION_UP)
-                mContinueFlag = false;
-            return false;
-        }
-        else if(v.getId() == R.id.imgBack)
-        {
-            if(event.getAction() == MotionEvent.ACTION_DOWN) mTouchingFlag = true;
-            else if(event.getAction() == MotionEvent.ACTION_UP) mTouchingFlag = false;
+        else if(v.getId() == R.id.imgBack) {
+            if(event.getAction() == MotionEvent.ACTION_DOWN) sTouchingFlag = true;
+            else if(event.getAction() == MotionEvent.ACTION_UP) sTouchingFlag = false;
 
             boolean bSave = event.getAction() == MotionEvent.ACTION_UP;
             int nPtWidth = mImgPoint.getWidth();
@@ -581,62 +542,61 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             float fX = mImgPoint.getX();
             float fY = mImgPoint.getY();
 
-            if(!mLockSpeedFlag)
-            {
+            if(!sLockSpeedFlag) {
                 fX = nBkLeft + event.getX();
-                if(fX < nBkLeft + nPtWidth / 2) fX = nBkLeft + nPtWidth / 2.0f;
-                else if(fX > nBkLeft + nBkWidth - nPtWidth / 2) fX = nBkLeft + nBkWidth - nPtWidth / 2.0f;
+                if(fX < nBkLeft + nPtWidth / 2f) fX = nBkLeft + nPtWidth / 2.0f;
+                else if(fX > nBkLeft + nBkWidth - nPtWidth / 2f) fX = nBkLeft + nBkWidth - nPtWidth / 2f;
 
-                float fBkHalfWidth = nBkWidth / 2.0f - nPtWidth / 2.0f;
-                float fDX = fX - (nBkLeft + nBkWidth / 2.0f);
-                fX -= nPtWidth / 2.0f;
-                float fMaxSpeed = mMaxSpeed / 100.0f;
-                float fMinSpeed = mMinSpeed / 100.0f;
-                fMaxSpeed = (fMaxSpeed - 1.0f) * 100.0f;
-                fMinSpeed = (1.0f - fMinSpeed) * -100.0f;
-                if(fX >= nBkLeft + nBkWidth / 2) mSpeed = (fDX / fBkHalfWidth) * fMaxSpeed;
-                else mSpeed = (fDX / fBkHalfWidth) * -fMinSpeed;
-                if(mSnapFlag) mSpeed = Math.round(mSpeed);
-                setSpeed(mSpeed, bSave);
+                float fBkHalfWidth = nBkWidth / 2f - nPtWidth / 2f;
+                float fDX = fX - (nBkLeft + nBkWidth / 2f);
+                fX -= nPtWidth / 2f;
+                float fMaxSpeed = mMaxSpeed / 100f;
+                float fMinSpeed = mMinSpeed / 100f;
+                fMaxSpeed = (fMaxSpeed - 1f) * 100f;
+                fMinSpeed = (1f - fMinSpeed) * -100f;
+                if(fX >= nBkLeft + nBkWidth / 2f) sSpeed = (fDX / fBkHalfWidth) * fMaxSpeed;
+                else sSpeed = (fDX / fBkHalfWidth) * -fMinSpeed;
+                if(mSnapFlag) sSpeed = Math.round(sSpeed);
+                setSpeed(sSpeed, bSave);
             }
 
-            if(!mLockPitchFlag && !mLinkFlag)
+            if(!sLockPitchFlag && !sLinkFlag)
             {
                 fY = nBkTop + event.getY();
-                if(fY < nBkTop + nPtHeight / 2) fY = nBkTop + nPtHeight / 2.0f;
-                else if(fY > nBkTop + nBkHeight - nPtHeight / 2) fY = nBkTop + nBkHeight - nPtHeight / 2.0f;
+                if(fY < nBkTop + nPtHeight / 2f) fY = nBkTop + nPtHeight / 2f;
+                else if(fY > nBkTop + nBkHeight - nPtHeight / 2f) fY = nBkTop + nBkHeight - nPtHeight / 2f;
                 float fBkHeight = nBkHeight - nPtHeight;
-                float fHalfHeight = fBkHeight / 2.0f;
-                float fDY = fY - (nBkTop + nPtHeight / 2.0f);
-                fY -= nPtHeight / 2.0f;
+                float fHalfHeight = fBkHeight / 2f;
+                float fDY = fY - (nBkTop + nPtHeight / 2f);
+                fY -= nPtHeight / 2f;
                 float fMaxPitch = mMaxPitch;
                 float fMinPitch = mMinPitch;
-                if(fDY <= fHalfHeight) mPitch = ((fHalfHeight - fDY) / fHalfHeight) * fMaxPitch;
-                else mPitch = ((fDY - fHalfHeight) / fHalfHeight) * fMinPitch;
-                if(mSnapFlag) mPitch = Math.round(mPitch);
+                if(fDY <= fHalfHeight) sPitch = ((fHalfHeight - fDY) / fHalfHeight) * fMaxPitch;
+                else sPitch = ((fDY - fHalfHeight) / fHalfHeight) * fMinPitch;
+                if(mSnapFlag) sPitch = Math.round(sPitch);
                 if(MainActivity.sStream != 0)
-                    BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, mPitch);
+                    BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, sPitch);
 
-                if(mPitch > 0.05)
-                    mTextPitchValue.setText(String.format(Locale.getDefault(), "♯%.1f", mPitch));
-                else if(mPitch < -0.05)
-                    mTextPitchValue.setText(String.format(Locale.getDefault(), "♭%.1f", mPitch * -1));
+                if(sPitch > 0.05)
+                    mTextPitchValue.setText(String.format(Locale.getDefault(), "♯%.1f", sPitch));
+                else if(sPitch < -0.05)
+                    mTextPitchValue.setText(String.format(Locale.getDefault(), "♭%.1f", sPitch * -1));
                 else
                 {
-                    mTextPitchValue.setText(String.format(Locale.getDefault(), "　%.1f", mPitch));
+                    mTextPitchValue.setText(String.format(Locale.getDefault(), "　%.1f", sPitch));
                     if(mTextPitchValue.getText().toString().equals("　-0.0"))
                         mTextPitchValue.setText("　0.0");
                 }
             }
 
-            if(!mLinkFlag) {
+            if(!sLinkFlag) {
                 mImgPoint.animate()
                         .x(fX)
                         .y(fY)
                         .setDuration(0)
                         .start();
 
-                if(bSave) mActivity.playlistFragment.updateSavingEffect();
+                if(bSave) PlaylistFragment.updateSavingEffect();
             }
 
             return true;
@@ -675,17 +635,17 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             });
 
             TransitionDrawable tdBtnLink;
-            if(mLinkFlag)
+            if(sLinkFlag)
                 tdBtnLink = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_link_on_dark), getResources().getDrawable(R.drawable.ic_control_link_on)});
             else
                 tdBtnLink = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_link_off_dark), getResources().getDrawable(R.drawable.ic_control_link_off)});
             TransitionDrawable tdBtnLockSpeed;
-            if(mLockSpeedFlag)
+            if(sLockSpeedFlag)
                 tdBtnLockSpeed = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_lock_dark), getResources().getDrawable(R.drawable.ic_control_lock)});
             else
                 tdBtnLockSpeed = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_unlock_dark), getResources().getDrawable(R.drawable.ic_control_unlock)});
             TransitionDrawable tdBtnLockPitch;
-            if(mLockPitchFlag)
+            if(sLockPitchFlag)
                 tdBtnLockPitch = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_lock_dark), getResources().getDrawable(R.drawable.ic_control_lock)});
             else
                 tdBtnLockPitch = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_unlock_dark), getResources().getDrawable(R.drawable.ic_control_unlock)});
@@ -702,7 +662,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             mBtnSpeedUp.setImageDrawable(tdBtnSpeedUp);
             mBtnSpeedDown.setImageDrawable(tdBtnSpeedDown);
 
-            final boolean linkFlag = mLinkFlag;
+            final boolean linkFlag = sLinkFlag;
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -738,15 +698,15 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             mBtnResetSpeed.setTextColor(nLightModeBlue);
             mBtnResetPitch.setTextColor(nLightModeBlue);
 
-            if(mLinkFlag)
+            if(sLinkFlag)
                 mBtnLink.setImageDrawable(getResources().getDrawable(R.drawable.ic_control_link_on));
             else
                 mBtnLink.setImageDrawable(getResources().getDrawable(R.drawable.ic_control_link_off));
-            if(mLockSpeedFlag)
+            if(sLockSpeedFlag)
                 mBtnLockSpeed.setImageDrawable(getResources().getDrawable(R.drawable.ic_control_lock));
             else
                 mBtnLockSpeed.setImageDrawable(getResources().getDrawable(R.drawable.ic_control_unlock));
-            if(mLockPitchFlag)
+            if(sLockPitchFlag)
                 mBtnLockPitch.setImageDrawable(getResources().getDrawable(R.drawable.ic_control_lock));
             else
                 mBtnLockPitch.setImageDrawable(getResources().getDrawable(R.drawable.ic_control_unlock));
@@ -782,7 +742,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     }
 
     public void setDarkMode(boolean animated) {
-        if(mActivity == null) return;
+        if(sActivity == null) return;
         final int nDarkModeSep = getResources().getColor(R.color.darkModeSep);
         final int nLightModeSep = getResources().getColor(R.color.lightModeSep);
         final int nLightModeText = getResources().getColor(android.R.color.black);
@@ -812,17 +772,17 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         });
 
         TransitionDrawable tdBtnLink;
-        if(mLinkFlag)
+        if(sLinkFlag)
             tdBtnLink = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_link_on), getResources().getDrawable(R.drawable.ic_control_link_on_dark)});
         else
             tdBtnLink = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_link_off), getResources().getDrawable(R.drawable.ic_control_link_off_dark)});
         TransitionDrawable tdBtnLockSpeed;
-        if(mLockSpeedFlag)
+        if(sLockSpeedFlag)
             tdBtnLockSpeed = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_lock), getResources().getDrawable(R.drawable.ic_control_lock_dark)});
         else
             tdBtnLockSpeed = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_unlock), getResources().getDrawable(R.drawable.ic_control_unlock_dark)});
         TransitionDrawable tdBtnLockPitch;
-        if(mLockPitchFlag)
+        if(sLockPitchFlag)
             tdBtnLockPitch = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_lock), getResources().getDrawable(R.drawable.ic_control_lock_dark)});
         else
             tdBtnLockPitch = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_control_unlock), getResources().getDrawable(R.drawable.ic_control_unlock_dark)});
@@ -839,7 +799,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         mBtnSpeedUp.setImageDrawable(tdBtnSpeedUp);
         mBtnSpeedDown.setImageDrawable(tdBtnSpeedDown);
 
-        final boolean linkFlag = mLinkFlag;
+        final boolean linkFlag = sLinkFlag;
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

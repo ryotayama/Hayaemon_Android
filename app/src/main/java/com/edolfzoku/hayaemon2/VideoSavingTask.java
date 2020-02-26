@@ -87,8 +87,8 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
             encoder.finish();
             NIOUtils.closeQuietly(out);
 
-            ArrayList<SongItem> arSongs = mPlaylistFragment.getPlaylists().get(mPlaylistFragment.getSelectedPlaylist());
-            SongItem item = arSongs.get(mPlaylistFragment.getSelectedItem());
+            ArrayList<SongItem> arSongs = PlaylistFragment.sPlaylists.get(PlaylistFragment.sSelectedPlaylist);
+            SongItem item = arSongs.get(PlaylistFragment.sSelectedItem);
             String strTitle = item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_");
             mMP4Path = Environment.getExternalStorageDirectory() + "/" + strTitle + ".mp4";
             File outputFile = new File(mMP4Path);
@@ -139,10 +139,10 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
             int videoTrackIdx = 0;
             int totalBytesRead = 0;
             do {
-                if(mPlaylistFragment.isFinish()) break;
+                if(PlaylistFragment.sFinish) break;
                 int inputBufIndex = 0;
                 while (inputBufIndex != -1 && hasMoreData) {
-                    if(mPlaylistFragment.isFinish()) break;
+                    if(PlaylistFragment.sFinish) break;
                     inputBufIndex = codec.dequeueInputBuffer(5000);
 
                     if (inputBufIndex >= 0) {
@@ -166,7 +166,7 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
                 }
                 int outputBufIndex = 0;
                 while (outputBufIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
-                    if(mPlaylistFragment.isFinish()) break;
+                    if(PlaylistFragment.sFinish) break;
                     outputBufIndex = codec.dequeueOutputBuffer(outBuffInfo, 5000);
                     if (outputBufIndex >= 0) {
                         ByteBuffer encodedData;
@@ -206,7 +206,7 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
             long videoPresentationTimeUs = 0;
             long lastEndVideoTimeUs = 0;
             while (true) {
-                if(mPlaylistFragment.isFinish()) break;
+                if(PlaylistFragment.sFinish) break;
                 videoBufferInfo.offset = offset;
                 int readVideoSampleSize = videoExtractor.readSampleData(videoBuf, offset);
                 if ((videoBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0) {

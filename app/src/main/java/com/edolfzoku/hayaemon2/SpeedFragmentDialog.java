@@ -61,7 +61,7 @@ class SpeedFragmentDialog extends BottomSheetDialog {
         mActivity = (MainActivity)context;
         View view = getLayoutInflater().inflate(R.layout.dialog_speed, null);
 
-        float fSpeed = mActivity.controlFragment.getSpeed() + 100;
+        float fSpeed = ControlFragment.sSpeed + 100;
 
         String strTemp = String.format(Locale.getDefault(), "%06.1f", fSpeed >= 0.0f ? fSpeed : -fSpeed);
         String strInt1 = strTemp.substring(0, 1);
@@ -124,7 +124,7 @@ class SpeedFragmentDialog extends BottomSheetDialog {
         btnMinus10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float fSpeed = mActivity.controlFragment.getSpeed() + 100;
+                float fSpeed = ControlFragment.sSpeed + 100;
                 fSpeed -= 10.0f;
                 if(fSpeed < 10.0f) fSpeed = 10.0f;
                 setSpeed(fSpeed);
@@ -133,7 +133,7 @@ class SpeedFragmentDialog extends BottomSheetDialog {
         btnPlus10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float fSpeed = mActivity.controlFragment.getSpeed() + 100;
+                float fSpeed = ControlFragment.sSpeed + 100;
                 fSpeed += 10.0f;
                 if(fSpeed > 5000.0f) fSpeed = 5000.0f;
                 setSpeed(fSpeed);
@@ -142,7 +142,7 @@ class SpeedFragmentDialog extends BottomSheetDialog {
         btnMinus5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float fSpeed = mActivity.controlFragment.getSpeed() + 100;
+                float fSpeed = ControlFragment.sSpeed + 100;
                 fSpeed -= 5.0f;
                 if(fSpeed < 10.0f) fSpeed = 10.0f;
                 setSpeed(fSpeed);
@@ -151,7 +151,7 @@ class SpeedFragmentDialog extends BottomSheetDialog {
         btnPlus5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float fSpeed = mActivity.controlFragment.getSpeed() + 100;
+                float fSpeed = ControlFragment.sSpeed + 100;
                 fSpeed += 5.0f;
                 if(fSpeed > 5000.0f) fSpeed = 5000.0f;
                 setSpeed(fSpeed);

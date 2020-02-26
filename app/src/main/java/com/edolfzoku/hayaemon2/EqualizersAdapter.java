@@ -66,14 +66,12 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
         }
     }
 
-    EqualizersAdapter(Context context, List<EqualizerItem> items)
-    {
+    EqualizersAdapter(Context context, List<EqualizerItem> items) {
         mActivity = (MainActivity)context;
         mItems = items;
     }
 
-    void changeItems(List<EqualizerItem> items)
-    {
+    void changeItems(List<EqualizerItem> items) {
         mItems = items;
     }
 
@@ -87,8 +85,7 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onBindViewHolder(@NonNull final EqualizersAdapter.ViewHolder holder, int position)
-    {
+    public void onBindViewHolder(@NonNull final EqualizersAdapter.ViewHolder holder, int position) {
         holder.getBtnEqualizerDetail().setBackgroundResource(mActivity.isDarkMode() ? R.drawable.ic_button_info_dark : R.drawable.ic_button_info);
         holder.getImgEqualizerRight().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_button_listright_dark : R.drawable.ic_button_listright);
         holder.getViewSepEqualizer().setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeSep : R.color.lightModeSep));
@@ -98,7 +95,7 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
         String name = item.getEqualizerName();
         holder.getTextEqualizer().setText(name);
 
-        if(mActivity.equalizerFragment.isSelectedItem(position))
+        if(EqualizerFragment.isSelectedItem(position))
             holder.itemView.setBackgroundColor(mActivity.isDarkMode() ? mActivity.getResources().getColor(R.color.darkModeSelect) : Color.argb(255, 224, 239, 255));
         else
             holder.itemView.setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeBk : R.color.lightModeBk));
@@ -148,8 +145,7 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
     }
 
     @Override
-    public int getItemCount()
-    {
+    public int getItemCount() {
         return mItems.size();
     }
 }

@@ -25,14 +25,15 @@ public class ForegroundService extends IntentService {
     private Notification notification;
     private NotificationCompat.Builder builder;
 
-    public ForegroundService()
-    {
+    public ForegroundService() {
         super("ForegroundService");
+        MainActivity.sService = this;
     }
 
     @Override
     public void onDestroy() {
         stopForeground(true);
+        MainActivity.sService = null;
 
         super.onDestroy();
     }
@@ -159,7 +160,13 @@ public class ForegroundService extends IntentService {
             }
             bitmap.recycle();
         }
-        else getBaseContext().sendBroadcast(new Intent(intent.getAction()));
+        else {
+            if (intent.getAction().equals("action_rewind")) PlaylistFragment.onRewindBtnClick();
+            else if(intent.getAction().equals("action_playpause")) PlaylistFragment.onPlayBtnClick();
+            else if (intent.getAction().equals("action_forward")) PlaylistFragment.onForwardBtnClick();
+            else getBaseContext().sendBroadcast(new Intent(intent.getAction()));
+        }
+
         return START_STICKY_COMPATIBILITY;
     }
 

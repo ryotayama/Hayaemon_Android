@@ -50,8 +50,8 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
         float fTime;
         TextView textEffectName = mActivity.findViewById(R.id.textEffectName);
         if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
-            fTime = mActivity.effectFragment.getTimeOfIncreaseSpeed();
-        else fTime = mActivity.effectFragment.getTimeOfDecreaseSpeed();
+            fTime = EffectFragment.sTimeOfIncreaseSpeed;
+        else fTime = EffectFragment.sTimeOfDecreaseSpeed;
         int nInt = (int)fTime;
         int nDec = (int)((fTime - (float)nInt) * 10.0f + 0.05f);
         String strInt;

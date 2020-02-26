@@ -55,7 +55,7 @@ class PitchFragmentDialog extends BottomSheetDialog {
         mActivity = (MainActivity)context;
         View view = getLayoutInflater().inflate(R.layout.dialog_pitch, null);
 
-        float fPitch = mActivity.controlFragment.getPitch();
+        float fPitch = ControlFragment.sPitch;
 
         String flag;
         if(fPitch >= 0.0f) flag = "♯";
@@ -111,7 +111,7 @@ class PitchFragmentDialog extends BottomSheetDialog {
         btnSharp12.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float fPitch = mActivity.controlFragment.getPitch();
+                float fPitch = ControlFragment.sPitch;
                 fPitch += 12.0f;
                 if(fPitch > 60.0f) fPitch = 60.0f;
                 setPitch(fPitch);
@@ -120,7 +120,7 @@ class PitchFragmentDialog extends BottomSheetDialog {
         btnFlat12.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float fPitch = mActivity.controlFragment.getPitch();
+                float fPitch = ControlFragment.sPitch;
                 fPitch -= 12.0f;
                 if(fPitch < -60.0f) fPitch = -60.0f;
                 setPitch(fPitch);

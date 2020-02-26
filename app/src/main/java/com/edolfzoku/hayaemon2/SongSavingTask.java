@@ -55,7 +55,7 @@ class SongSavingTask extends AsyncTask<Integer, Integer, Integer> {
             BASS.BASS_ChannelGetData(mTempStream, buffer, 10000 | BASS.BASS_DATA_FLOAT);
             double dPos = BASS.BASS_ChannelBytes2Seconds(mTempStream, BASS.BASS_ChannelGetPosition(mTempStream, BASS.BASS_POS_BYTE));
             if(dPos >= mEnd) break;
-            if(mPlaylistFragment.isFinish()) break;
+            if(PlaylistFragment.sFinish) break;
 
             MainActivity activity = (MainActivity)mPlaylistFragment.getActivity();
             if(activity == null) return 0;

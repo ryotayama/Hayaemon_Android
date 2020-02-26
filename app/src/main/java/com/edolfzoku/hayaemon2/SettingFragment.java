@@ -82,7 +82,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
         textPitchRangeValue.setText(String.format(Locale.getDefault(), "♯%d ～ ♭%d", mActivity.controlFragment.getMaxPitch(), mActivity.controlFragment.getMinPitch() * -1));
 
         Switch switchRepeat = mActivity.findViewById(R.id.switchRepeat);
-        switchRepeat.setChecked(!mActivity.isPlayNextByBPos());
+        switchRepeat.setChecked(!MainActivity.sPlayNextByBPos);
         switchRepeat.setOnCheckedChangeListener(this);
 
         Switch switchSnap = mActivity.findViewById(R.id.switchSnap);
@@ -270,8 +270,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener, C
     {
         SharedPreferences preferences = mActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         if(compoundButton.getId() == R.id.switchRepeat) {
-            mActivity.setPlayNextByBPos(!b);
-            preferences.edit().putBoolean("bPlayNextByBPos", mActivity.isPlayNextByBPos()).apply();
+            MainActivity.sPlayNextByBPos = !b;
+            preferences.edit().putBoolean("bPlayNextByBPos", MainActivity.sPlayNextByBPos).apply();
         }
         else if(compoundButton.getId() == R.id.switchSnap) {
             mActivity.controlFragment.setSnap(b);

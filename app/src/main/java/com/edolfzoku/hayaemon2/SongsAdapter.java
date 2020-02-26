@@ -97,7 +97,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
     {
         holder.getViewSepSong().setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeSep : R.color.lightModeSep));
 
-        ArrayList<SongItem> arSongs = mActivity.playlistFragment.getPlaylists ().get(mActivity.playlistFragment.getSelectedPlaylist());
+        ArrayList<SongItem> arSongs = PlaylistFragment.sPlaylists.get(PlaylistFragment.sSelectedPlaylist);
         final SongItem item = arSongs.get(position);
         if(item.getTime() == null) {
             new Thread(new Runnable() {
@@ -108,8 +108,8 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             }).start();
         }
         final int nItem = Integer.parseInt(item.getNumber()) - 1;
-        boolean bLock = mActivity.playlistFragment.isLock(nItem);
-        boolean bSelected = mActivity.playlistFragment.isSelected(nItem);
+        boolean bLock = PlaylistFragment.isLock(nItem);
+        boolean bSelected = PlaylistFragment.isSelected(nItem);
 
         holder.itemView.setLongClickable(true);
 
@@ -128,7 +128,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             holder.getTextArtist().setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeGray : R.color.lightModeGray));
             holder.getTextArtist().setText(item.getArtist());
         }
-        if(mActivity.playlistFragment.getPlayingPlaylist() == mActivity.playlistFragment.getSelectedPlaylist() && nItem == mActivity.playlistFragment.getPlaying()) {
+        if(PlaylistFragment.sPlayingPlaylist == PlaylistFragment.sSelectedPlaylist && nItem == PlaylistFragment.sPlaying) {
             if(BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_PLAYING)
                 holder.getImgStatus().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_icon_playlist_playing_dark : R.drawable.ic_icon_playlist_playing);
             else
@@ -226,16 +226,15 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder>
             param.leftMargin = param.rightMargin = 0;
         }
 
-        if(mActivity.playlistFragment.getPlayingPlaylist() == mActivity.playlistFragment.getSelectedPlaylist() && nItem == mActivity.playlistFragment.getPlaying())
+        if(PlaylistFragment.sPlayingPlaylist == PlaylistFragment.sSelectedPlaylist && nItem == PlaylistFragment.sPlaying)
             holder.getSongItem().setBackgroundColor(mActivity.isDarkMode() ? mActivity.getResources().getColor(R.color.darkModeSelect) : Color.argb(255, 224, 239, 255));
         else
             holder.getSongItem().setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeBk : R.color.lightModeBk));
     }
 
     @Override
-    public int getItemCount()
-    {
-        ArrayList<SongItem> arSongs = mActivity.playlistFragment.getPlaylists ().get(mActivity.playlistFragment.getSelectedPlaylist());
+    public int getItemCount() {
+        ArrayList<SongItem> arSongs = PlaylistFragment.sPlaylists.get(PlaylistFragment.sSelectedPlaylist);
         return arSongs.size();
     }
 }

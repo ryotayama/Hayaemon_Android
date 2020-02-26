@@ -146,7 +146,7 @@ public class EffectTemplatesAdapter extends RecyclerView.Adapter<EffectTemplates
                     mActivity.effectFragment.showMenu(holder.getAdapterPosition());
                 }
             });
-            if(mActivity.effectFragment.getEffectDetail() == EffectFragment.EFFECTTYPE_SOUNDEFFECT) {
+            if(EffectFragment.sEffectDetail == EffectFragment.EFFECTTYPE_SOUNDEFFECT) {
                 holder.getImgEffectTemplateMenu().setVisibility(View.GONE);
                 paramRelative.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
             }

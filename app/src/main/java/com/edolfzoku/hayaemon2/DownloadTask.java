@@ -47,7 +47,7 @@ class DownloadTask extends AsyncTask<Integer, Integer, Integer>
 
                 while((readByte = dataInput.read(buffer)) != -1)
                 {
-                    if(mPlaylistFragment.isFinish()) break;
+                    if(PlaylistFragment.sFinish) break;
                     totalReatByte += readByte;
                     if(contentLength != 0)
                         publishProgress((int)(totalReatByte / contentLength * 100.0));

@@ -195,11 +195,10 @@
             <RelativeLayout
                 android:id="@+id/relativePlaying"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#FFF"
+                android:layout_height="60dp"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
                 >
 
                 <com.edolfzoku.hayaemon2.AnimationButton

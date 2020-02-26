@@ -82,7 +82,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
 
         holder.textName.setText(item);
         holder.textName.setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? android.R.color.white : android.R.color.black));
-        holder.textSongCount.setText(String.format(Locale.getDefault(), "%d曲", mActivity.playlistFragment.getSongCount(position)));
+        holder.textSongCount.setText(String.format(Locale.getDefault(), "%d曲", PlaylistFragment.getSongCount(position)));
         holder.textSongCount.setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeGray : R.color.lightModeGray));
 
         holder.playlistItem.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +128,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             param.leftMargin = param.rightMargin = 0;
         }
 
-        if(mActivity.playlistFragment.getPlayingPlaylist() == position && mActivity.playlistFragment.getPlaying() != -1)
+        if(PlaylistFragment.sPlayingPlaylist == position && PlaylistFragment.sPlaying != -1)
             holder.playlistItem.setBackgroundColor(mActivity.isDarkMode() ? mActivity.getResources().getColor(R.color.darkModeSelect) : Color.argb(255, 224, 239, 255));
         else
             holder.playlistItem.setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeBk : R.color.lightModeBk));
