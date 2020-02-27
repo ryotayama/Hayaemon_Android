@@ -468,6 +468,12 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
         loadData();
 
+        boolean selected = false;
+        for(int i = 0; i < sEqualizerItems.size(); i++) {
+            if(sEqualizerItems.get(i).isSelected()) selected = true;
+        }
+        mBtnEqualizerOff.setSelected(!selected);
+
         if(sActivity.isDarkMode()) setDarkMode(false);
     }
 
