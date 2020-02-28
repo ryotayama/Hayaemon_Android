@@ -1035,6 +1035,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (mGestureDetector.onTouchEvent(event)) return false;
             if(mSeekCurPos.getVisibility() != View.VISIBLE) {
                 if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    RelativeLayout.LayoutParams paramRelativePlaying = (RelativeLayout.LayoutParams) mRelativePlaying.getLayoutParams();
                     RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams) mViewPager.getLayoutParams();
                     RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams) mRelativeRecording.getLayoutParams();
                     if (MainActivity.sRecord != 0) {
@@ -1052,6 +1053,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     int nMaxHeight = (int) (142.0 * mDensity);
                     if (nHeight < nMinHeight) nHeight = nMinHeight;
                     else if (nHeight > nMaxHeight) nHeight = nMaxHeight;
+                    paramRelativePlaying.bottomMargin = nHeight - nMinHeight;
                     param.height = nHeight;
                     mRelativePlayingWithShadow.setLayoutParams(param);
                 }
@@ -1524,6 +1526,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             paramContainer.bottomMargin = (int) (60.0 * mDensity);
         }
 
+        final RelativeLayout.LayoutParams paramRelativePlaying = (RelativeLayout.LayoutParams) mRelativePlaying.getLayoutParams();
         final RelativeLayout.LayoutParams paramTitle = (RelativeLayout.LayoutParams) mTextTitle.getLayoutParams();
         final RelativeLayout.LayoutParams paramArtist = (RelativeLayout.LayoutParams) mTextArtist.getLayoutParams();
         final RelativeLayout.LayoutParams paramBtnPlay = (RelativeLayout.LayoutParams) mBtnPlayInPlayingBar.getLayoutParams();
@@ -1542,6 +1545,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final int nTranslationY = (int) (8.0 * mDensity);
         final int nRelativePlayingHeightFrom = mRelativePlayingWithShadow.getHeight();
         final int nRelativePlayingHeight = getResources().getDisplayMetrics().heightPixels - mLinearControl.getHeight() - getStatusBarHeight() + (int) (16.0 * mDensity);
+        final int nRelativePlayingBottomMarginFrom = paramRelativePlaying.bottomMargin;
+        final int nRelativePlayingBottomMargin = 0;
         final int nArtworkWidthFrom = mBtnArtworkInPlayingBar.getWidth();
         final int nArtworkWidth = nScreenWidth / 2;
         final int nArtworkMarginFrom = (int) (8.0 * mDensity);
@@ -1584,6 +1589,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 advanceAnimation(mRelativePlayingWithShadow, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
                 advanceAnimation(mRelativePlayingWithShadow, "bottomMargin", 0, -mTabLayout.getHeight(), fProgress);
                 advanceAnimation(mRelativePlaying, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
+                advanceAnimation(mRelativePlaying, "bottomMargin", nRelativePlayingBottomMarginFrom, nRelativePlayingBottomMargin, fProgress);
                 advanceAnimation(mBtnArtworkInPlayingBar, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
                 advanceAnimation(mBtnArtworkInPlayingBar, "height", nArtworkWidthFrom, nArtworkWidth, fProgress);
                 advanceAnimation(mBtnArtworkInPlayingBar, "leftMargin", nArtworkMarginFrom, nArtworkLeftMargin, fProgress);
