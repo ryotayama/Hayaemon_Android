@@ -32,6 +32,7 @@ public class ForegroundService extends IntentService {
 
     @Override
     public void onDestroy() {
+        PlaylistFragment.stop();
         stopForeground(true);
         MainActivity.sService = null;
 

@@ -71,7 +71,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <service android:name=".ForegroundService"/>
+        <service android:name=".ForegroundService" android:stopWithTask="true" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-9499594730627438~9516019647"/>
