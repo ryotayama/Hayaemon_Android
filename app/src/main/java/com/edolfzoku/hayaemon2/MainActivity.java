@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     static ForegroundService sService;
     static int sStream, sRecord, sFxVol, sSync, sShuffle, sRepeat;
     static boolean sLoopA, sLoopB, sPlayNextByBPos, sWaitEnd;
-    static double sLoopAPos, sLoopBPos, sLength;
+    static double sLoopAPos, sLoopBPos, sLength, sPervVersion;
     static long sByteLength;
     static Handler sHandler;
     PlaylistFragment playlistFragment;
@@ -872,6 +872,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         String strVersionName = preferences.getString("versionname", null);
+        if (strVersionName != null) sPervVersion = Float.parseFloat(strVersionName);
         boolean bHideUpdateLogNext = preferences.getBoolean("hideupdatelognext", false);
         String strCurrentVersionName;
         try {

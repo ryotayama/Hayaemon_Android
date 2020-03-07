@@ -2440,7 +2440,24 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         ArrayList<EffectTemplateItem> soundEffectItems = gson.fromJson(preferences.getString("sSoundEffectItems", ""), new TypeToken<ArrayList<EffectTemplateItem>>() {
         }.getType());
 
-        if (reverbItems != null) setReverbItems(reverbItems);
+        if (reverbItems != null) {
+            setReverbItems(reverbItems);
+            System.out.println(MainActivity.sPervVersion);
+            if (MainActivity.sPervVersion != 0.0f && MainActivity.sPervVersion < 2.23f) {
+                boolean added = false;
+                for (int i = reverbItems.size() - 1; i >= 0; i--) {
+                    if (reverbItems.get(i).getEffectTemplateName().equals(getString(R.string.church))) {
+                        added = true;
+                        sReverbItems.add(i, new EffectTemplateItem(getString(R.string.concertHall), new ArrayList<>(Arrays.asList(0.55f, 1.0f, 0.87f, 0.5f, 0.95f))));
+                        break;
+                    }
+                }
+                if (!added)
+                    sReverbItems.add(new EffectTemplateItem(getString(R.string.concertHall), new ArrayList<>(Arrays.asList(0.55f, 1.0f, 0.87f, 0.5f, 0.95f))));
+                saveData();
+                mEffectTemplatesAdapter.notifyDataSetChanged();
+            }
+        }
         else resetReverbs();
         if (echoItems != null) setEchoItems(echoItems);
         else resetEchos();
@@ -2487,6 +2504,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         sReverbItems.add(new EffectTemplateItem(getString(R.string.smallRoom), new ArrayList<>(Arrays.asList(0.95f, 0.99f, 0.3f, 0.5f, 1.0f))));
         sReverbItems.add(new EffectTemplateItem(getString(R.string.mediumRoom), new ArrayList<>(Arrays.asList(0.95f, 0.99f, 0.75f, 0.5f, 0.7f))));
         sReverbItems.add(new EffectTemplateItem(getString(R.string.largeRoom), new ArrayList<>(Arrays.asList(0.7f, 1.0f, 0.85f, 0.5f, 0.9f))));
+        sReverbItems.add(new EffectTemplateItem(getString(R.string.concertHall), new ArrayList<>(Arrays.asList(0.55f, 1.0f, 0.87f, 0.5f, 0.95f))));
         sReverbItems.add(new EffectTemplateItem(getString(R.string.church), new ArrayList<>(Arrays.asList(0.4f, 1.0f, 0.9f, 0.5f, 1.0f))));
         sReverbItems.add(new EffectTemplateItem(getString(R.string.cathedral), new ArrayList<>(Arrays.asList(0.0f, 1.0f, 0.9f, 0.5f, 1.0f))));
 
@@ -2553,7 +2571,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         sSoundEffectItems.add(new EffectTemplateItem(getString(R.string.river), new ArrayList<>(Arrays.asList(100.0f))));
         sSoundEffectItems.add(new EffectTemplateItem(getString(R.string.war), new ArrayList<>(Arrays.asList(100.0f))));
         sSoundEffectItems.add(new EffectTemplateItem(getString(R.string.fire), new ArrayList<>(Arrays.asList(100.0f))));
-        sSoundEffectItems.add(new EffectTemplateItem(getString(R.string.concertHall), new ArrayList<>(Arrays.asList(100.0f))));
+        sSoundEffectItems.add(new EffectTemplateItem(getString(R.string.concertVenue), new ArrayList<>(Arrays.asList(100.0f))));
 
         mEffectTemplatesAdapter.notifyDataSetChanged();
         resetSoundEffect();

@@ -47,6 +47,7 @@
     <string name="smallRoom">좁은 방</string>
     <string name="mediumRoom">보통 방</string>
     <string name="largeRoom">넓은 방</string>
+    <string name="concertHall">콘서트홀</string>
     <string name="church">교회</string>
     <string name="cathedral">대성당</string>
     <string name="reverbDryMix">원음</string>
@@ -92,7 +93,7 @@
     <string name="river">냇물소리</string>
     <string name="war">전투음</string>
     <string name="fire">모닥불</string>
-    <string name="concertHall">콘서트홀</string>
+    <string name="concertVenue">콘서트홀</string>
     <string name="transcribeBass">베이스 음따기</string>
     <string name="VocalBoost">보컬 강조</string>
     <string name="VocalReducer">보컬 억제</string>

@@ -47,6 +47,7 @@
     <string name="smallRoom">狭い部屋</string>
     <string name="mediumRoom">普通の部屋</string>
     <string name="largeRoom">広い部屋</string>
+    <string name="concertHall">コンサートホール</string>
     <string name="church">教会</string>
     <string name="cathedral">大聖堂</string>
     <string name="reverbDryMix">原音</string>
@@ -92,7 +93,7 @@
     <string name="river">川の音</string>
     <string name="war">戦の音</string>
     <string name="fire">焚き火</string>
-    <string name="concertHall">コンサート会場</string>
+    <string name="concertVenue">コンサート会場</string>
     <string name="transcribeBass">ベースの耳コピ</string>
     <string name="VocalBoost">ボーカル強調</string>
     <string name="VocalReducer">ボーカル抑制</string>

@@ -47,6 +47,7 @@
     <string name="smallRoom">Small room</string>
     <string name="mediumRoom">Medium room</string>
     <string name="largeRoom">Large room</string>
+    <string name="concertHall">Concert hall</string>
     <string name="church">Church</string>
     <string name="cathedral">Cathedral</string>
     <string name="reverbDryMix">Dry mix</string>
@@ -92,7 +93,7 @@
     <string name="river">River</string>
     <string name="war">War</string>
     <string name="fire">Fire</string>
-    <string name="concertHall">Concert Hall</string>
+    <string name="concertVenue">Concert Hall</string>
     <string name="transcribeBass">Transcribe Bass</string>
     <string name="VocalBoost">Vocal Boost</string>
     <string name="VocalReducer">Vocal Reducer</string>
