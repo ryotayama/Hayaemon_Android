@@ -2442,7 +2442,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         if (reverbItems != null) {
             setReverbItems(reverbItems);
-            System.out.println(MainActivity.sPervVersion);
             if (MainActivity.sPervVersion != 0.0f && MainActivity.sPervVersion < 2.23f) {
                 boolean added = false;
                 for (int i = reverbItems.size() - 1; i >= 0; i--) {
