@@ -135,7 +135,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     private ProgressBar mProgress;
     private RecyclerView mRecyclerPlaylists, mRecyclerTab, mRecyclerSongs;
     private Button mBtnSortPlaylist, mBtnFinishLyrics;
-    private AnimationButton mBtnAddPlaylist, mBtnArtworkInPlayingBar, mBtnAddSong, mBtnEdit;
+    private AnimationButton mBtnAddPlaylist, mBtnArtworkInPlayingBar, mBtnAddSong, mBtnEdit, mBtnCopyInMultipleSelection, mBtnMoveInMultipleSelection, mBtnDeleteInMultipleSelection, mBtnMoreInMultipleSelection;
     private TextView mTextTitleInPlayingBar, mTextArtistInPlayingBar, mTextFinishSort, mTextLyricsTitle, mTextNoLyrics, mTextLyrics, mTextTapEdit, mTextPlaylistInMultipleSelection, mTextPlaylist;
     private RelativeLayout mRelativeSongs, mRelativePlaylists, mRelativeLyrics, mRelativeLyricsTitle;
     private ImageView mImgEdit, mImgSelectAllInMultipleSelection;
@@ -1410,6 +1410,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mTextNoLyrics = sActivity.findViewById(R.id.textNoLyrics);
         mTextLyrics = sActivity.findViewById(R.id.textLyrics);
         mBtnEdit = sActivity.findViewById(R.id.btnEdit);
+        mBtnCopyInMultipleSelection = sActivity.findViewById(R.id.btnCopyInMultipleSelection);
+        mBtnMoveInMultipleSelection = sActivity.findViewById(R.id.btnMoveInMultipleSelection);
+        mBtnDeleteInMultipleSelection = sActivity.findViewById(R.id.btnDeleteInMultipleSelection);
+        mBtnMoreInMultipleSelection = sActivity.findViewById(R.id.btnMoreInMultipleSelection);
         mImgEdit = sActivity.findViewById(R.id.imgEdit);
         mTextTapEdit = sActivity.findViewById(R.id.textTapEdit);
         mRelativeLyrics = sActivity.findViewById(R.id.relativeLyrics);
@@ -1430,10 +1434,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         AnimationButton btnForward = sActivity.findViewById(R.id.btnForward);
         AnimationButton btnRecord = sActivity.findViewById(R.id.btnRecord);
         AnimationButton btnCloseInMultipleSelection = sActivity.findViewById(R.id.btnCloseInMultipleSelection);
-        AnimationButton btnDeleteInMultipleSelection = sActivity.findViewById(R.id.btnDeleteInMultipleSelection);
-        AnimationButton btnCopyInMultipleSelection = sActivity.findViewById(R.id.btnCopyInMultipleSelection);
-        AnimationButton btnMoveInMultipleSelection = sActivity.findViewById(R.id.btnMoveInMultipleSelection);
-        AnimationButton btnMoreInMultipleSelection = sActivity.findViewById(R.id.btnMoreInMultipleSelection);
 
         mTabAdapter = new PlaylistTabAdapter(sActivity, sPlaylistNames);
         mPlaylistsAdapter = new PlaylistsAdapter(sActivity, sPlaylistNames);
@@ -1478,10 +1478,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mTextNoLyrics.setOnClickListener(this);
         mImgSelectAllInMultipleSelection.setOnClickListener(this);
         btnCloseInMultipleSelection.setOnClickListener(this);
-        btnDeleteInMultipleSelection.setOnClickListener(this);
-        btnCopyInMultipleSelection.setOnClickListener(this);
-        btnMoveInMultipleSelection.setOnClickListener(this);
-        btnMoreInMultipleSelection.setOnClickListener(this);
+        mBtnDeleteInMultipleSelection.setOnClickListener(this);
+        mBtnCopyInMultipleSelection.setOnClickListener(this);
+        mBtnMoveInMultipleSelection.setOnClickListener(this);
+        mBtnMoreInMultipleSelection.setOnClickListener(this);
 
         SharedPreferences preferences = sActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         int nSelectedPlaylist = preferences.getInt("SelectedPlaylist", 0);
@@ -4376,6 +4376,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     mTextLyricsTitle.setTextColor(nColorModeText);
                     mTextLyrics.setTextColor(nColorModeText);
                     mEditLyrics.setTextColor(nColorModeText);
+                    mTextPlaylistInMultipleSelection.setTextColor(nColorModeText);
                     mBtnSortPlaylist.setTextColor(nColorModeBlue);
                     mBtnFinishLyrics.setTextColor(nColorModeBlue);
                     mTextFinishSort.setBackgroundColor(nColorModeBlue);
@@ -4441,6 +4442,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mSongsAdapter.notifyDataSetChanged();
         mPlaylistsAdapter.notifyDataSetChanged();
         mTabAdapter.notifyDataSetChanged();
+
+        mViewMultipleSelection.setBackgroundResource(R.drawable.bottomshadow);
+        mImgSelectAllInMultipleSelection.setImageResource(R.drawable.ic_button_check_off);
+        mBtnCopyInMultipleSelection.setImageResource(R.drawable.ic_bar_button_copy);
+        mBtnMoveInMultipleSelection.setImageResource(R.drawable.ic_bar_button_folder_move);
+        mBtnDeleteInMultipleSelection.setImageResource(R.drawable.ic_bar_button_delete);
     }
 
     public void setDarkMode(boolean animated) {
@@ -4475,6 +4482,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             mTextLyricsTitle.setTextColor(nColorModeText);
             mTextLyrics.setTextColor(nColorModeText);
             mEditLyrics.setTextColor(nColorModeText);
+            mTextPlaylistInMultipleSelection.setTextColor(nColorModeText);
             mBtnSortPlaylist.setTextColor(nColorModeBlue);
             mBtnFinishLyrics.setTextColor(nColorModeBlue);
             mTextFinishSort.setBackgroundColor(nColorModeBlue);
@@ -4516,5 +4524,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mSongsAdapter.notifyDataSetChanged();
         mPlaylistsAdapter.notifyDataSetChanged();
         mTabAdapter.notifyDataSetChanged();
+
+        mViewMultipleSelection.setBackgroundResource(R.drawable.bottomshadow_dark);
+        mImgSelectAllInMultipleSelection.setImageResource(R.drawable.ic_button_check_off_dark);
+        mBtnCopyInMultipleSelection.setImageResource(R.drawable.ic_bar_button_copy_dark);
+        mBtnMoveInMultipleSelection.setImageResource(R.drawable.ic_bar_button_folder_move_dark);
+        mBtnDeleteInMultipleSelection.setImageResource(R.drawable.ic_bar_button_delete_dark);
     }
 }
