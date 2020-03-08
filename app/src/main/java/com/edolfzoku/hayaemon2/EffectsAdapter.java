@@ -81,7 +81,7 @@ public class EffectsAdapter extends RecyclerView.Adapter<EffectsAdapter.ViewHold
         holder.getButtonEffectDetail().setBackgroundResource(mActivity.isDarkMode() ? R.drawable.ic_button_info_dark : R.drawable.ic_button_info);
         holder.getImgRight().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_button_listright_dark : R.drawable.ic_button_listright);
         holder.getViewSepEffect().setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeSep : R.color.lightModeSep));
-        holder.getTextEffect().setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeGray : R.color.lightModeGray));
+        holder.getTextEffect().setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? android.R.color.white : android.R.color.black));
 
         EffectItem item = mItems.get(position);
         String name = item.getEffectName();

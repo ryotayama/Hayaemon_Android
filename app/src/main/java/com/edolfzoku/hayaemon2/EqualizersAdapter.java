@@ -89,7 +89,7 @@ public class EqualizersAdapter extends RecyclerView.Adapter<EqualizersAdapter.Vi
         holder.getBtnEqualizerDetail().setBackgroundResource(mActivity.isDarkMode() ? R.drawable.ic_button_info_dark : R.drawable.ic_button_info);
         holder.getImgEqualizerRight().setImageResource(mActivity.isDarkMode() ? R.drawable.ic_button_listright_dark : R.drawable.ic_button_listright);
         holder.getViewSepEqualizer().setBackgroundColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeSep : R.color.lightModeSep));
-        holder.getTextEqualizer().setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeGray : R.color.lightModeGray));
+        holder.getTextEqualizer().setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? android.R.color.white : android.R.color.black));
 
         EqualizerItem item = mItems.get(position);
         String name = item.getEqualizerName();
