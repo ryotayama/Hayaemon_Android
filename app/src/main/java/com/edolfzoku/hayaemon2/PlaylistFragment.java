@@ -4271,7 +4271,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-    void updateSongTime(SongItem item) {
+    void updateSongTime(final SongItem item) {
         String strPath = item.getPath();
         int hTempStream = 0;
 
@@ -4286,6 +4286,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 long lMinutes = duration / 60;
                 long lSeconds = duration % 60;
                 item.setTime(String.format(Locale.getDefault(), "%d:%02d", lMinutes, lSeconds));
+                sActivity.runOnUiThread(new Runnable() {
+                    public void run() {
+                        mSongsAdapter.notifyItemChanged(Integer.parseInt(item.getNumber()) - 1);
+                    }
+                });
                 saveFiles(true, false, false, false, false);
                 return;
             }
@@ -4314,6 +4319,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         int nMinutes = (int)(dLength / 60);
         int nSeconds = (int)(dLength % 60);
         item.setTime(String.format(Locale.getDefault(), "%d:%02d", nMinutes, nSeconds));
+        sActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                mSongsAdapter.notifyItemChanged(Integer.parseInt(item.getNumber()) - 1);
+            }
+        });
         saveFiles(true, false, false, false, false);
     }
 
