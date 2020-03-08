@@ -127,6 +127,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static final int EFFECTTYPE_EARTRAINING = 26;
     private static final int EFFECTTYPE_METRONOME = 27;
     static final int EFFECTTYPE_SOUNDEFFECT = 28;
+    private static final int EFFECTTYPE_8BITSOUND = 29;
     private static final int SOUNDEFFECTTYPE_RECORDNOISE = 0;
     private static final int SOUNDEFFECTTYPE_ROAROFWAVES = 1;
     private static final int SOUNDEFFECTTYPE_RAIN = 2;
@@ -2202,6 +2203,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             sEffectItems.add(item);
             item = new EffectItem(getString(R.string.soundEffect), true);
             sEffectItems.add(item);
+            item = new EffectItem(getString(R.string.eightBitSound), false);
+            sEffectItems.add(item);
         }
 
         loadData();
@@ -2442,7 +2445,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         if (reverbItems != null) {
             setReverbItems(reverbItems);
-            if (MainActivity.sPervVersion != 0.0f && MainActivity.sPervVersion < 2.23f) {
+            if (MainActivity.sPrevVersion != 0.0f && MainActivity.sPrevVersion < 2.23f) {
                 boolean added = false;
                 for (int i = reverbItems.size() - 1; i >= 0; i--) {
                     if (reverbItems.get(i).getEffectTemplateName().equals(getString(R.string.church))) {
@@ -2606,6 +2609,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             EqualizerFragment.resetEQ();
             ControlFragment.setPitch(0.0f);
         }
+        if (!item.isSelected() && nEffect == EFFECTTYPE_8BITSOUND) ControlFragment.setSpeed(0.0f);
         if (!item.isSelected() && nEffect == EFFECTTYPE_METRONOME) sMetronome.stop();
         checkDuplicate(nEffect);
         if (sSEStream != 0) {
@@ -2773,6 +2777,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 ControlFragment.setPitch(0.0f, save);
                 EqualizerFragment.resetEQ(save);
             }
+            if (sEffectItems.get(i).isSelected() && (i == EFFECTTYPE_8BITSOUND))
+                ControlFragment.setSpeed(0.0f, save);
             sEffectItems.get(i).setSelected(false);
             if(sActivity != null) sActivity.effectFragment.getEffectsAdapter().notifyItemChanged(i);
         }
@@ -4065,7 +4071,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if (sEffectItems.get(EFFECTTYPE_FREQUENCY).isSelected() && MainActivity.sStream != 0) {
             BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
             BASS.BASS_ChannelGetInfo(MainActivity.sStream, info);
-            BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * sFreq);
+            BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * freq);
         }
         if (bSave) PlaylistFragment.updateSavingEffect();
     }
@@ -4080,9 +4086,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     private void checkDuplicate(int nSelect) {
         mBtnEffectOff.setSelected(false);
-        if (EFFECTTYPE_VOCALCANCEL <= nSelect && nSelect <= EFFECTTYPE_TRANSCRIBESIDEGUITAR) {
+        if (EFFECTTYPE_VOCALCANCEL <= nSelect && nSelect <= EFFECTTYPE_TRANSCRIBESIDEGUITAR || nSelect == EFFECTTYPE_8BITSOUND) {
             for (int i = EFFECTTYPE_VOCALCANCEL; i <= EFFECTTYPE_TRANSCRIBESIDEGUITAR; i++)
                 if (i != nSelect) deselectEffect(i);
+            if (nSelect != EFFECTTYPE_8BITSOUND) deselectEffect(EFFECTTYPE_8BITSOUND);
+        }
+        if (nSelect == EFFECTTYPE_FREQUENCY || nSelect == EFFECTTYPE_8BITSOUND) {
+            if (nSelect != EFFECTTYPE_FREQUENCY) deselectEffect(EFFECTTYPE_FREQUENCY);
+            if (nSelect != EFFECTTYPE_8BITSOUND) deselectEffect(EFFECTTYPE_8BITSOUND);
         }
         if (nSelect == EFFECTTYPE_RANDOM || nSelect == EFFECTTYPE_TRANSCRIBESIDEGUITAR || nSelect == EFFECTTYPE_TRANSCRIBEBASS || nSelect == EFFECTTYPE_OLDRECORD || nSelect == EFFECTTYPE_LOWBATTERY || nSelect == EFFECTTYPE_EARTRAINING || nSelect == EFFECTTYPE_NOSENSE_STRONG || nSelect == EFFECTTYPE_NOSENSE_MIDDLE || nSelect == EFFECTTYPE_NOSENSE_WEAK) {
             if (nSelect != EFFECTTYPE_RANDOM) deselectEffect(EFFECTTYPE_RANDOM);
@@ -4120,13 +4131,15 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if (nEffect == EFFECTTYPE_RANDOM || nEffect == EFFECTTYPE_TRANSCRIBESIDEGUITAR || nEffect == EFFECTTYPE_OLDRECORD || nEffect == EFFECTTYPE_LOWBATTERY || nEffect == EFFECTTYPE_EARTRAINING)
             EqualizerFragment.resetEQ();
         if (nEffect == EFFECTTYPE_RANDOM || nEffect == EFFECTTYPE_NOSENSE_STRONG || nEffect == EFFECTTYPE_NOSENSE_MIDDLE || nEffect == EFFECTTYPE_NOSENSE_WEAK) {
-            sActivity.controlFragment.setSpeed(0.0f);
-            sActivity.controlFragment.setPitch(0.0f);
+            ControlFragment.setSpeed(0.0f);
+            ControlFragment.setPitch(0.0f);
         }
         if (nEffect == EFFECTTYPE_TRANSCRIBEBASS) {
-            sActivity.controlFragment.setPitch(0.0f);
+            ControlFragment.setPitch(0.0f);
             EqualizerFragment.resetEQ();
         }
+        if (nEffect == EFFECTTYPE_8BITSOUND)
+            ControlFragment.setSpeed(0.0f);
         if (nEffect == EFFECTTYPE_REVERB) sReverbSelected = -1;
         if (nEffect == EFFECTTYPE_ECHO) sEchoSelected = -1;
         if (nEffect == EFFECTTYPE_CHORUS) sChorusSelected = -1;
@@ -4151,64 +4164,64 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         applyEffect(MainActivity.sStream, song);
     }
 
-    public static void applyEffect(int sStream, SongItem song) {
+    public static void applyEffect(int stream, SongItem song) {
         if (sDspVocalCancel != 0) {
-            BASS.BASS_ChannelRemoveDSP(sStream, sDspVocalCancel);
+            BASS.BASS_ChannelRemoveDSP(stream, sDspVocalCancel);
             sDspVocalCancel = 0;
         }
         if (sDspMonoral != 0) {
-            BASS.BASS_ChannelRemoveDSP(sStream, sDspMonoral);
+            BASS.BASS_ChannelRemoveDSP(stream, sDspMonoral);
             sDspMonoral = 0;
         }
         if (sDspLeft != 0) {
-            BASS.BASS_ChannelRemoveDSP(sStream, sDspLeft);
+            BASS.BASS_ChannelRemoveDSP(stream, sDspLeft);
             sDspLeft = 0;
         }
         if (sDspRight != 0) {
-            BASS.BASS_ChannelRemoveDSP(sStream, sDspRight);
+            BASS.BASS_ChannelRemoveDSP(stream, sDspRight);
             sDspRight = 0;
         }
         if (sDspExchange != 0) {
-            BASS.BASS_ChannelRemoveDSP(sStream, sDspExchange);
+            BASS.BASS_ChannelRemoveDSP(stream, sDspExchange);
             sDspExchange = 0;
         }
         if (sDspDoubling != 0) {
-            BASS.BASS_ChannelRemoveDSP(sStream, sDspDoubling);
+            BASS.BASS_ChannelRemoveDSP(stream, sDspDoubling);
             sDspDoubling = 0;
         }
         if (sDspPan != 0) {
-            BASS.BASS_ChannelRemoveDSP(sStream, sDspPan);
+            BASS.BASS_ChannelRemoveDSP(stream, sDspPan);
             sDspPan = 0;
         }
         if (sDspNormalize != 0) {
-            BASS.BASS_ChannelRemoveDSP(sStream, sDspNormalize);
+            BASS.BASS_ChannelRemoveDSP(stream, sDspNormalize);
             sDspNormalize = 0;
         }
         if (sFxComp != 0) {
-            BASS.BASS_ChannelRemoveFX(sStream, sFxComp);
+            BASS.BASS_ChannelRemoveFX(stream, sFxComp);
             sFxComp = 0;
         }
         if (sDspPhaseReversal != 0) {
-            BASS.BASS_ChannelRemoveDSP(sStream, sDspPhaseReversal);
+            BASS.BASS_ChannelRemoveDSP(stream, sDspPhaseReversal);
             sDspPhaseReversal = 0;
         }
         BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
-        BASS.BASS_ChannelGetInfo(sStream, info);
-        BASS.BASS_ChannelSetAttribute(sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq);
+        BASS.BASS_ChannelGetInfo(stream, info);
+        BASS.BASS_ChannelSetAttribute(stream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq);
         if (sFxEcho != 0) {
-            BASS.BASS_ChannelRemoveFX(sStream, sFxEcho);
+            BASS.BASS_ChannelRemoveFX(stream, sFxEcho);
             sFxEcho = 0;
         }
         if (sFxReverb != 0) {
-            BASS.BASS_ChannelRemoveFX(sStream, sFxReverb);
+            BASS.BASS_ChannelRemoveFX(stream, sFxReverb);
             sFxReverb = 0;
         }
         if (sFxChorus != 0) {
-            BASS.BASS_ChannelRemoveFX(sStream, sFxChorus);
+            BASS.BASS_ChannelRemoveFX(stream, sFxChorus);
             sFxChorus = 0;
         }
         if (sFxDistortion != 0) {
-            BASS.BASS_ChannelRemoveFX(sStream, sFxDistortion);
+            BASS.BASS_ChannelRemoveFX(stream, sFxDistortion);
             sFxDistortion = 0;
         }
         if (sTimer != null) {
@@ -4241,19 +4254,19 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 EqualizerFragment.setEQRandom();
             } else if (strEffect.equals(context.getString(R.string.vocalCancel))) {
                 if (info.chans != 1)
-                    sDspVocalCancel = BASS.BASS_ChannelSetDSP(sStream, vocalCancelDSP, null, 0);
+                    sDspVocalCancel = BASS.BASS_ChannelSetDSP(stream, vocalCancelDSP, null, 0);
             } else if (strEffect.equals(context.getString(R.string.monoral))) {
                 if (info.chans != 1)
-                    sDspMonoral = BASS.BASS_ChannelSetDSP(sStream, monoralDSP, null, 0);
+                    sDspMonoral = BASS.BASS_ChannelSetDSP(stream, monoralDSP, null, 0);
             } else if (strEffect.equals(context.getString(R.string.leftOnly))) {
                 if (info.chans != 1)
-                    sDspLeft = BASS.BASS_ChannelSetDSP(sStream, leftDSP, null, 0);
+                    sDspLeft = BASS.BASS_ChannelSetDSP(stream, leftDSP, null, 0);
             } else if (strEffect.equals(context.getString(R.string.rightOnly))) {
                 if (info.chans != 1)
-                    sDspRight = BASS.BASS_ChannelSetDSP(sStream, rightDSP, null, 0);
+                    sDspRight = BASS.BASS_ChannelSetDSP(stream, rightDSP, null, 0);
             } else if (strEffect.equals(context.getString(R.string.leftAndRightReplace))) {
                 if (info.chans != 1)
-                    sDspExchange = BASS.BASS_ChannelSetDSP(sStream, exchangeDSP, null, 0);
+                    sDspExchange = BASS.BASS_ChannelSetDSP(stream, exchangeDSP, null, 0);
             } else if (strEffect.equals(context.getString(R.string.doubling))) {
                 if (info.chans != 1) {
                     for (int j = 0; j < ECHBUFLEN; j++) {
@@ -4261,11 +4274,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                         echbuf[j][1] = 0;
                     }
                     echpos = 0;
-                    sDspDoubling = BASS.BASS_ChannelSetDSP(sStream, doublingDSP, null, 0);
+                    sDspDoubling = BASS.BASS_ChannelSetDSP(stream, doublingDSP, null, 0);
                 }
             } else if (strEffect.equals(context.getString(R.string.transcribeSideGuitar))) {
                 if (info.chans != 1)
-                    sDspVocalCancel = BASS.BASS_ChannelSetDSP(sStream, vocalCancelDSP, null, 0);
+                    sDspVocalCancel = BASS.BASS_ChannelSetDSP(stream, vocalCancelDSP, null, 0);
                 array = new int[]{0, -30, -20, -12, -7, -4, -3, -2, -1, 0, 0, 0, 0, 0, -1, -2, -3, -4, -7, -12, -20, -24, -27, -28, -29, -30, -30, -30, -30, -30, -30, -30};
                 for (int j = 0; j < 32; j++) {
                     int nLevel = array[j];
@@ -4287,17 +4300,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 }
             } else if (strEffect.equals(context.getString(R.string.pan))) {
                 if (info.chans != 1)
-                    sDspPan = BASS.BASS_ChannelSetDSP(sStream, panDSP, null, 0);
+                    sDspPan = BASS.BASS_ChannelSetDSP(stream, panDSP, null, 0);
             } else if (strEffect.equals(context.getString(R.string.normalize))) {
                 if(song != null) {
                     if (song.getPeak() == 0.0f) {
-                        if (sStream != MainActivity.sStream) getPeak(song);
+                        if (stream != MainActivity.sStream) getPeak(song);
                         else sPeak = 1.0f;
                     } else sPeak = song.getPeak();
-                    sDspNormalize = BASS.BASS_ChannelSetDSP(sStream, normalizeDSP, null, 0);
+                    sDspNormalize = BASS.BASS_ChannelSetDSP(stream, normalizeDSP, null, 0);
                 }
             } else if (strEffect.equals(context.getString(R.string.comp))) {
-                sFxComp = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_COMPRESSOR2, 2);
+                sFxComp = BASS.BASS_ChannelSetFX(stream, BASS_FX.BASS_FX_BFX_COMPRESSOR2, 2);
                 BASS_FX.BASS_BFX_COMPRESSOR2 p = new BASS_FX.BASS_BFX_COMPRESSOR2();
                 p.fGain = 2.0f;
                 p.fThreshold = -20.0f;
@@ -4307,11 +4320,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 p.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(sFxComp, p);
             } else if (strEffect.equals(context.getString(R.string.frequency)))
-                BASS.BASS_ChannelSetAttribute(sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * sFreq);
+                BASS.BASS_ChannelSetAttribute(stream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * sFreq);
             else if (strEffect.equals(context.getString(R.string.phaseReversal)))
-                sDspPhaseReversal = BASS.BASS_ChannelSetDSP(sStream, phaseReversalDSP, null, 0);
+                sDspPhaseReversal = BASS.BASS_ChannelSetDSP(stream, phaseReversalDSP, null, 0);
             else if (strEffect.equals(context.getString(R.string.echo))) {
-                sFxEcho = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_ECHO4, 2);
+                sFxEcho = BASS.BASS_ChannelSetFX(stream, BASS_FX.BASS_FX_BFX_ECHO4, 2);
                 echo = new BASS_FX.BASS_BFX_ECHO4();
                 echo.fDryMix = sEchoDry;
                 echo.fWetMix = sEchoWet;
@@ -4321,7 +4334,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 echo.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(sFxEcho, echo);
             } else if (strEffect.equals(context.getString(R.string.reverb))) {
-                sFxReverb = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
+                sFxReverb = BASS.BASS_ChannelSetFX(stream, BASS_FX.BASS_FX_BFX_FREEVERB, 2);
                 reverb = new BASS_FX.BASS_BFX_FREEVERB();
                 reverb.fDryMix = sReverbDry;
                 reverb.fWetMix = sReverbWet;
@@ -4332,7 +4345,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 reverb.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(sFxReverb, reverb);
             } else if (strEffect.equals(context.getString(R.string.chorus))) {
-                sFxChorus = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_CHORUS, 2);
+                sFxChorus = BASS.BASS_ChannelSetFX(stream, BASS_FX.BASS_FX_BFX_CHORUS, 2);
                 chorus = new BASS_FX.BASS_BFX_CHORUS();
                 chorus.fDryMix = sChorusDry;
                 chorus.fWetMix = sChorusWet;
@@ -4343,7 +4356,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 chorus.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(sFxChorus, chorus);
             } else if (strEffect.equals(context.getString(R.string.distortion))) {
-                sFxDistortion = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
+                sFxDistortion = BASS.BASS_ChannelSetFX(stream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
                 distortion = new BASS_FX.BASS_BFX_DISTORTION();
                 distortion.fDrive = sDistortionDrive;
                 distortion.fDryMix = sDistortionDry;
@@ -4353,8 +4366,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 distortion.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(sFxDistortion, distortion);
             } else if (strEffect.equals(context.getString(R.string.reverse))) {
-                if (sStream != 0) {
-                    int chan = BASS_FX.BASS_FX_TempoGetSource(sStream);
+                if (stream != 0) {
+                    int chan = BASS_FX.BASS_FX_TempoGetSource(stream);
                     BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
                     MainActivity.setSync();
                 }
@@ -4394,7 +4407,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 sHandler = new Handler();
                 sHandler.post(onTimer);
             } else if (strEffect.equals(context.getString(R.string.lowBattery))) {
-                sFxDistortion = BASS.BASS_ChannelSetFX(sStream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
+                sFxDistortion = BASS.BASS_ChannelSetFX(stream, BASS_FX.BASS_FX_BFX_DISTORTION, 2);
                 distortion = new BASS_FX.BASS_BFX_DISTORTION();
                 distortion.fDrive = (float) 0.2;
                 distortion.fDryMix = (float) 0.9;
@@ -4502,6 +4515,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                         sHandler.post(onTimer);
                     }
                 }
+            } else if (strEffect.equals(context.getString(R.string.eightBitSound))) {
+                BASS.BASS_ChannelSetAttribute(stream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * 4.0f);
+                ControlFragment.setSpeed(25 - 100, false);
+                if (info.chans != 1)
+                    sDspVocalCancel = BASS.BASS_ChannelSetDSP(stream, vocalCancelDSP, null, 0);
             }
         }
     }

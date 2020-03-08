@@ -87,6 +87,7 @@
     <string name="earTraining">Ear Training</string>
     <string name="metronome">Metronome</string>
     <string name="soundEffect">Sound effect</string>
+    <string name="eightBitSound">8-bit sound simulator</string>
     <string name="recordNoise">Record Noise</string>
     <string name="wave">Roar of Waves</string>
     <string name="rain">Rain</string>

@@ -87,6 +87,7 @@
     <string name="earTraining">聴覚トレーニング</string>
     <string name="metronome">メトロノーム</string>
     <string name="soundEffect">効果音</string>
+    <string name="eightBitSound">8bit音源風</string>
     <string name="recordNoise">レコードノイズ</string>
     <string name="wave">波の音</string>
     <string name="rain">雨の音</string>

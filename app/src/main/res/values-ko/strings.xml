@@ -87,6 +87,7 @@
     <string name="earTraining">청각 트레이닝</string>
     <string name="metronome">메트로놈</string>
     <string name="soundEffect">효과음</string>
+    <string name="eightBitSound">8-bit sound simulator</string>
     <string name="recordNoise">레코드 노이즈</string>
     <string name="wave">파도소리</string>
     <string name="rain">빗소리</string>
