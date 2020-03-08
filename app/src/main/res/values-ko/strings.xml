@@ -55,6 +55,7 @@
     <string name="reverbRoomSize">방의 크기</string>
     <string name="reverbDamping">감쇠</string>
     <string name="reverbStereoWidth">스테레오 강도 조절</string>
+    <string name="chorusFlanger">합창/플랜저</string>
     <string name="chorus">코러스</string>
     <string name="flanger">플랜저</string>
     <string name="newChorus">새로운 코러스</string>

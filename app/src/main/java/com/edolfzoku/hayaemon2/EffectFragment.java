@@ -2177,7 +2177,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             sEffectItems.add(item);
             item = new EffectItem(getString(R.string.reverb), true);
             sEffectItems.add(item);
-            item = new EffectItem(getString(R.string.chorus), true);
+            item = new EffectItem(getString(R.string.chorusFlanger), true);
             sEffectItems.add(item);
             item = new EffectItem(getString(R.string.distortion), true);
             sEffectItems.add(item);
@@ -4344,7 +4344,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 reverb.lMode = 0;
                 reverb.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(sFxReverb, reverb);
-            } else if (strEffect.equals(context.getString(R.string.chorus))) {
+            } else if (strEffect.equals(context.getString(R.string.chorusFlanger))) {
                 sFxChorus = BASS.BASS_ChannelSetFX(stream, BASS_FX.BASS_FX_BFX_CHORUS, 2);
                 chorus = new BASS_FX.BASS_BFX_CHORUS();
                 chorus.fDryMix = sChorusDry;

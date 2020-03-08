@@ -55,6 +55,7 @@
     <string name="reverbRoomSize">Room size</string>
     <string name="reverbDamping">Damping</string>
     <string name="reverbStereoWidth">Stereo width</string>
+    <string name="chorusFlanger">Chorus / Flanger</string>
     <string name="chorus">Chorus</string>
     <string name="flanger">Flanger</string>
     <string name="newChorus">New chorus</string>

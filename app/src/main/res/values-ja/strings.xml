@@ -55,6 +55,7 @@
     <string name="reverbRoomSize">部屋の大きさ</string>
     <string name="reverbDamping">減衰</string>
     <string name="reverbStereoWidth">ステレオ度合い</string>
+    <string name="chorusFlanger">コーラス／フランジャー</string>
     <string name="chorus">コーラス</string>
     <string name="flanger">フランジャー</string>
     <string name="newChorus">新規コーラス</string>
