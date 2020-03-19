@@ -326,7 +326,7 @@ public class WaveView extends View {
                 params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(mPath), "r");
                 if(params.assetFileDescriptor != null) {
                     params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
-                    mTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                    mTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
