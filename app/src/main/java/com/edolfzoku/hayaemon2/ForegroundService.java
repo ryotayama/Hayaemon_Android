@@ -48,7 +48,9 @@ public class ForegroundService extends IntentService {
             String strPathArtwork = intent.getStringExtra("strPathArtwork");
             String strPath = intent.getStringExtra("strPath");
             Bitmap bitmap = null;
-            if(strPathArtwork != null && !strPathArtwork.equals("")) {
+            if (strPathArtwork != null && strPathArtwork.equals("potatoboy"))
+                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.potatoboy);
+            else if(strPathArtwork != null && !strPathArtwork.equals("")) {
                 bitmap = BitmapFactory.decodeFile(strPathArtwork);
             }
             else {

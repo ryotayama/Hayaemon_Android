@@ -45,6 +45,8 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
+import static com.edolfzoku.hayaemon2.MainActivity.sActivity;
+
 /**
  * Created by yamauchiryouta on 2017/10/03.
  */
@@ -267,69 +269,70 @@ public class WaveView extends View {
             mTempStream = 0;
         }
 
-        File file = new File(mPath);
-        if(file.getParent().equals(getContext().getFilesDir().toString()))
-        {
-            mTempStream = BASS.BASS_StreamCreateFile(mPath, 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
-        }
-        else
-        {
-            BASS.BASS_FILEPROCS fileprocs=new BASS.BASS_FILEPROCS() {
-                @Override
-                public boolean FILESEEKPROC(long offset, Object user) {
-                    FileChannel fc=(FileChannel)user;
-                    try {
-                        fc.position(offset);
-                        return true;
-                    } catch (IOException e) {
-                        e.printStackTrace();
+        if (mPath.equals("potatoboy.m4a"))
+            mTempStream = BASS.BASS_StreamCreateFile(new BASS.Asset(sActivity.getAssets(), mPath), 0, 0, BASS.BASS_STREAM_PRESCAN | BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+        else {
+            File file = new File(mPath);
+            if (file.getParent().equals(getContext().getFilesDir().toString())) {
+                mTempStream = BASS.BASS_StreamCreateFile(mPath, 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+            } else {
+                BASS.BASS_FILEPROCS fileprocs = new BASS.BASS_FILEPROCS() {
+                    @Override
+                    public boolean FILESEEKPROC(long offset, Object user) {
+                        FileChannel fc = (FileChannel) user;
+                        try {
+                            fc.position(offset);
+                            return true;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return false;
                     }
-                    return false;
-                }
 
-                @Override
-                public int FILEREADPROC(ByteBuffer buffer, int length, Object user) {
-                    FileChannel fc=(FileChannel)user;
-                    try {
-                        return fc.read(buffer);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    @Override
+                    public int FILEREADPROC(ByteBuffer buffer, int length, Object user) {
+                        FileChannel fc = (FileChannel) user;
+                        try {
+                            return fc.read(buffer);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return 0;
                     }
-                    return 0;
-                }
 
-                @Override
-                public long FILELENPROC(Object user) {
-                    FileChannel fc=(FileChannel)user;
-                    try {
-                        return fc.size();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    @Override
+                    public long FILELENPROC(Object user) {
+                        FileChannel fc = (FileChannel) user;
+                        try {
+                            return fc.size();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return 0;
                     }
-                    return 0;
-                }
 
-                @Override
-                public void FILECLOSEPROC(Object user) {
-                    FileChannel fc=(FileChannel)user;
-                    try {
-                        fc.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    @Override
+                    public void FILECLOSEPROC(Object user) {
+                        FileChannel fc = (FileChannel) user;
+                        try {
+                            fc.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            };
+                };
 
-            ContentResolver cr = getContext().getContentResolver();
-            try {
-                MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
-                params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(mPath), "r");
-                if(params.assetFileDescriptor != null) {
-                    params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
-                    mTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                ContentResolver cr = getContext().getContentResolver();
+                try {
+                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                    params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(mPath), "r");
+                    if (params.assetFileDescriptor != null) {
+                        params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
+                        mTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }

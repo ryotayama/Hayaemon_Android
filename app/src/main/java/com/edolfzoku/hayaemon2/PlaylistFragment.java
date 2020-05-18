@@ -1498,7 +1498,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             MainActivity.sLength = length;
             sActivity.getSeekCurPos().setMax((int)length);
             Bitmap bitmap = null;
-            if(item.getPathArtwork() != null && !item.getPathArtwork().equals(""))
+            if (item.getPathArtwork() != null && item.getPathArtwork().equals("potatoboy"))
+                bitmap = BitmapFactory.decodeResource(sActivity.getResources(), R.drawable.potatoboy);
+            else if(item.getPathArtwork() != null && !item.getPathArtwork().equals(""))
                 bitmap = BitmapFactory.decodeFile(item.getPathArtwork());
             else {
                 MediaMetadataRetriever mmr = new MediaMetadataRetriever();
@@ -3623,6 +3625,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     private static void playSong(int nSong, boolean bPlay) {
+        System.out.println("◆playSong 001");
         MainActivity.sWaitEnd = false;
         MainActivity.clearLoop(false);
 
@@ -3663,7 +3666,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         Uri uri = Uri.parse(strPath);
         Context context = sActivity != null ? sActivity : MainActivity.sService;
+        System.out.println("◆playSong 002");
         if(uri.getScheme() != null && uri.getScheme().equals("content")) {
+            System.out.println("◆playSong 003");
             if(Build.VERSION.SDK_INT >= 19) {
                 try {
                     context.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
@@ -3700,8 +3705,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 return;
             }
         }
-        else
-            MainActivity.sStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_PRESCAN | BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+        else {
+            if (strPath.equals("potatoboy.m4a"))
+                MainActivity.sStream = BASS.BASS_StreamCreateFile(new BASS.Asset(sActivity.getAssets(), strPath), 0, 0, BASS.BASS_STREAM_PRESCAN | BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+            else
+                MainActivity.sStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_PRESCAN | BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+        }
         if(MainActivity.sStream == 0) return;
         long byteLength = BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE);
         MainActivity.sByteLength = byteLength;
@@ -3710,9 +3719,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(sActivity != null) sActivity.getSeekCurPos().setMax((int)length);
 
         Bitmap bitmap = null;
-        if(item.getPathArtwork() != null && !item.getPathArtwork().equals("")) {
+        if (item.getPathArtwork() != null && item.getPathArtwork().equals("potatoboy"))
+            bitmap = BitmapFactory.decodeResource(sActivity.getResources(), R.drawable.potatoboy);
+        else if(item.getPathArtwork() != null && !item.getPathArtwork().equals(""))
             bitmap = BitmapFactory.decodeFile(item.getPathArtwork());
-        }
         else {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
             try {

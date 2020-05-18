@@ -120,6 +120,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static com.edolfzoku.hayaemon2.PlaylistFragment.sEffects;
+import static com.edolfzoku.hayaemon2.PlaylistFragment.sLyrics;
+import static com.edolfzoku.hayaemon2.PlaylistFragment.sPlayingPlaylist;
+import static com.edolfzoku.hayaemon2.PlaylistFragment.sPlaylists;
+import static com.edolfzoku.hayaemon2.PlaylistFragment.sSelectedPlaylist;
 import static com.un4seen.bass.BASS_AAC.BASS_CONFIG_AAC_MP4;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
@@ -285,9 +290,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     playlistFragment.getSongsAdapter().notifyDataSetChanged();
                 SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
                 Gson gson = new Gson();
-                preferences.edit().putString("arPlaylists", gson.toJson(PlaylistFragment.sPlaylists)).apply();
-                preferences.edit().putString("arEffects", gson.toJson(PlaylistFragment.sEffects)).apply();
-                preferences.edit().putString("arLyrics", gson.toJson(PlaylistFragment.sLyrics)).apply();
+                preferences.edit().putString("arPlaylists", gson.toJson(sPlaylists)).apply();
+                preferences.edit().putString("arEffects", gson.toJson(sEffects)).apply();
+                preferences.edit().putString("arLyrics", gson.toJson(sLyrics)).apply();
                 preferences.edit().putString("arPlaylistNames", gson.toJson(PlaylistFragment.sPlaylistNames)).apply();
             }
         }
@@ -480,12 +485,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(!isAdsVisible()) findViewById(R.id.relativeHideAds).setVisibility(View.GONE);
         if(sStream != 0) {
-            playlistFragment.selectPlaylist(PlaylistFragment.sPlayingPlaylist);
+            playlistFragment.selectPlaylist(sPlayingPlaylist);
             PlaylistFragment.sSelectedItem = PlaylistFragment.sPlaying;
 
-            SongItem item = PlaylistFragment.sPlaylists.get(PlaylistFragment.sPlayingPlaylist).get(PlaylistFragment.sPlaying);
+            SongItem item = sPlaylists.get(sPlayingPlaylist).get(PlaylistFragment.sPlaying);
             Bitmap bitmap = null;
-            if(item.getPathArtwork() != null && !item.getPathArtwork().equals(""))
+            if (item.getPathArtwork() != null && item.getPathArtwork().equals("potatoboy"))
+                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.potatoboy);
+            else if(item.getPathArtwork() != null && !item.getPathArtwork().equals(""))
                 bitmap = BitmapFactory.decodeFile(item.getPathArtwork());
             else {
                 MediaMetadataRetriever mmr = new MediaMetadataRetriever();
@@ -515,7 +522,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 textArtistInMenu.setText(item.getArtist());
             }
 
-            ArrayList<EffectSaver> arEffectSavers = PlaylistFragment.sEffects.get(PlaylistFragment.sPlayingPlaylist);
+            ArrayList<EffectSaver> arEffectSavers = sEffects.get(sPlayingPlaylist);
             EffectSaver saver = arEffectSavers.get(PlaylistFragment.sPlaying);
             ImageView imgLock = findViewById(R.id.imgLockInMenu);
             TextView textLock = findViewById(R.id.textLock);
@@ -669,9 +676,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public static void startNotification() {
-        if(PlaylistFragment.sPlayingPlaylist < 0 || PlaylistFragment.sPlaylists.size() <= PlaylistFragment.sPlayingPlaylist)
+        if(sPlayingPlaylist < 0 || sPlaylists.size() <= sPlayingPlaylist)
             return;
-        ArrayList<SongItem> arSongs = PlaylistFragment.sPlaylists.get(PlaylistFragment.sPlayingPlaylist);
+        ArrayList<SongItem> arSongs = sPlaylists.get(sPlayingPlaylist);
         if(PlaylistFragment.sPlaying < 0 || arSongs.size() <= PlaylistFragment.sPlaying) return;
         int playing = PlaylistFragment.sPlaying;
         SongItem item = arSongs.get(playing);
@@ -826,13 +833,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         List<String> arSongsPath = gson.fromJson(preferences.getString("arSongsPath",""), new TypeToken<List<String>>(){}.getType());
         if(arPlaylists != null && arPlaylistNames != null) {
             for(int i = 0; i < arPlaylists.size(); i++) {
-                PlaylistFragment.sPlaylists = arPlaylists;
+                sPlaylists = arPlaylists;
                 PlaylistFragment.sPlaylistNames = arPlaylistNames;
             }
             if(arEffects != null && arPlaylists.size() == arEffects.size())
-                PlaylistFragment.sEffects = arEffects;
+                sEffects = arEffects;
             else {
-                arEffects = PlaylistFragment.sEffects;
+                arEffects = sEffects;
                 for(int i = 0; i < arPlaylists.size(); i++) {
                     ArrayList<EffectSaver> arEffectSavers = new ArrayList<>();
                     ArrayList<SongItem> arSongs = arPlaylists.get(i);
@@ -844,9 +851,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
             if(arLyrics != null && arPlaylists.size() == arLyrics.size())
-                PlaylistFragment.sLyrics = arLyrics;
+                sLyrics = arLyrics;
             else {
-                arLyrics = PlaylistFragment.sLyrics;
+                arLyrics = sLyrics;
                 for(int i = 0; i < arPlaylists.size(); i++) {
                     ArrayList<String> arTempLyrics = new ArrayList<>();
                     ArrayList<SongItem> arSongs = arPlaylists.get(i);
@@ -869,6 +876,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             playlistFragment.addPlaylist(String.format(Locale.getDefault(), "%s 2", getString(R.string.playlist)));
             playlistFragment.addPlaylist(String.format(Locale.getDefault(), "%s 3", getString(R.string.playlist)));
             playlistFragment.selectPlaylist(0);
+            ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
+            SongItem item = new SongItem(String.format(Locale.getDefault(), "%d", arSongs.size()+1), "POTATOBOY", "airch", "potatoboy.m4a");
+            item.setTime("4:30");
+            item.setPathArtwork("potatoboy");
+            arSongs.add(item);
+            ArrayList<EffectSaver> arEffectSavers = sEffects.get(sSelectedPlaylist);
+            EffectSaver saver = new EffectSaver();
+            arEffectSavers.add(saver);
+            ArrayList<String> arTempLyrics = sLyrics.get(sSelectedPlaylist);
+            arTempLyrics.add("lonely lonely lonely,,yeah yeah\nlove me,,, yeah,yeah\n\n僕はロボット\n店の隅に置かれているよ\nコインを入れたら\n3分で君を笑顔にする\n\n楽しいリズムで\n踊ったら  これを食べればいいよ\n暖かくて  少し懐かしい？\n僕はロボット\n\n小さな君が恐る恐る\n僕を覗きこんだ\nボタンを早く早く押して？\n君を笑顔にしたい！！\n\nねえ、\n愛し愛されることなんて\n僕にはきっと分からないけど\n嫌なこと全部投げ出して\nほら、さあ、踊ろうよ！\n\nねえ、\n君がいつかこの街を\n誰かと抜け出してしまってもね\n嫌なことあった時にはさ\nほら、さあ、オモイダシテ！ \n\n僕はロボット\n寂しさなんて知らないはずさ\nだけどこの頃 \n仕上がりが少し冷めてるんだ\n\n君が来なくなって\n何度目の冬になるのだろうか\nコインを入れる所も少し錆びてきた\n\n大きくなった君はもう\n僕の背を抜かしたのかな\nこんな冷えた体じゃ\n君を笑顔にできないかな\n\nねえ、\n愛し愛されることなんて\n僕は望んじゃいけない事も\n忘れるくらいに踊りたい\nほら、さあ、動け体！\nねえ、\nいつか君がこの街に\n帰ってくると信じたいのは\n僕の愚かなバグデータかな？\nほら、さあ、踊ろうか\n\nやがて光も消えてこの街の\n明けない夜も\n冷えた床の温度も蹴散らすくらいに あああ\n僕のラストダンスだと錆だらけの\nロボットが\n動きだしたステップ踏んで あああ\n\nねえ\nとうとう君はこの街に\n帰ってこない わかってるけど\n暖かいポテトをどうぞ\nほら、さあ、召し上がれ\n抱いたバグデータもて余し\nもうすぐ僕は止まるんだろう\n嫌なこと全部投げ出して\nほら、さあ、踊ろうよ");
         }
 
         String strVersionName = preferences.getString("versionname", null);
@@ -1222,7 +1239,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(v.getId() == R.id.relativeLock) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
 
-            ArrayList<EffectSaver> arEffectSavers = PlaylistFragment.sEffects.get(PlaylistFragment.sPlayingPlaylist);
+            ArrayList<EffectSaver> arEffectSavers = sEffects.get(sPlayingPlaylist);
             EffectSaver saver = arEffectSavers.get(PlaylistFragment.sPlaying);
             if(saver.isSave()) {
                 saver.setSave(false);
@@ -1391,7 +1408,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             final BottomMenu menu = new BottomMenu(this);
             final int nPlaying = PlaylistFragment.sPlaying;
             PlaylistFragment.sSelectedItem = nPlaying;
-            SongItem item = PlaylistFragment.sPlaylists.get(PlaylistFragment.sPlayingPlaylist).get(nPlaying);
+            SongItem item = sPlaylists.get(sPlayingPlaylist).get(nPlaying);
             menu.setTitle(item.getTitle());
             menu.addMenu(getString(R.string.saveExport), mDarkMode ? R.drawable.ic_actionsheet_save_dark : R.drawable.ic_actionsheet_save, new View.OnClickListener() {
                 @Override
@@ -1416,7 +1433,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mViewPager.setCurrentItem(0);
                 }
             });
-            ArrayList<EffectSaver> arEffectSavers = PlaylistFragment.sEffects.get(PlaylistFragment.sSelectedPlaylist);
+            ArrayList<EffectSaver> arEffectSavers = sEffects.get(sSelectedPlaylist);
             final EffectSaver saver = arEffectSavers.get(nPlaying);
             if(saver.isSave()) {
                 menu.addMenu(getString(R.string.cancelRestoreEffect), mDarkMode ? R.drawable.ic_actionsheet_unlock_dark : R.drawable.ic_actionsheet_unlock, new View.OnClickListener() {
@@ -1446,7 +1463,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(v.getId() == R.id.btnArtworkInPlayingBar) {
             final int nPlaying = PlaylistFragment.sPlaying;
             PlaylistFragment.sSelectedItem = nPlaying;
-            final SongItem item = PlaylistFragment.sPlaylists.get(PlaylistFragment.sPlayingPlaylist).get(nPlaying);
+            final SongItem item = sPlaylists.get(sPlayingPlaylist).get(nPlaying);
             final BottomMenu menu = new BottomMenu(this);
             menu.setTitle(getString(R.string.changeArtwork));
             menu.addMenu(getString(R.string.setImage), mDarkMode ? R.drawable.ic_actionsheet_image_dark : R.drawable.ic_actionsheet_image, new View.OnClickListener() {
@@ -1507,7 +1524,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void upViewPlaying() {
-        playlistFragment.selectPlaylist(PlaylistFragment.sPlayingPlaylist);
+        playlistFragment.selectPlaylist(sPlayingPlaylist);
         mRelativePlaying.setOnClickListener(null);
         mBtnArtworkInPlayingBar.setOnClickListener(this);
         mBtnArtworkInPlayingBar.setAnimation(true);
@@ -2325,7 +2342,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         return true;
                     }
                     else { // 通常の再生リスト整理画面
-                        playlistFragment.onPlaylistItemClick(PlaylistFragment.sSelectedPlaylist);
+                        playlistFragment.onPlaylistItemClick(sSelectedPlaylist);
                         return true;
                     }
                 }
