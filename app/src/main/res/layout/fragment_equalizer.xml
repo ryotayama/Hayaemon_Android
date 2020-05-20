@@ -275,7 +275,7 @@
                     android:contentDescription="@string/plus"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:background="@drawable/ic_button_minus"
+                    android:background="@drawable/ic_button_plus"
                     android:scaleType="centerInside"
                     android:padding="2dp"
                     android:layout_alignParentRight="true"
