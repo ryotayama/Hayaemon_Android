@@ -69,6 +69,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Timer;
@@ -2206,6 +2207,23 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             item = new EffectItem(getString(R.string.eightBitSound), false);
             sEffectItems.add(item);
         }
+
+        new SwipeHelper(sActivity, mRecyclerEffectTemplates) {
+            @Override
+            public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
+                underlayButtons.add(new SwipeHelper.UnderlayButton(
+                        getString(R.string.delete),
+                        0,
+                        Color.parseColor("#FE3B30"),
+                        new SwipeHelper.UnderlayButtonClickListener() {
+                            @Override
+                            public void onClick(int pos) {
+                                askDeletePreset(pos);
+                            }
+                        }
+                ));
+            }
+        };
 
         loadData();
 
@@ -5438,51 +5456,55 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder;
-                if(sActivity.isDarkMode())
-                    builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-                else
-                    builder = new AlertDialog.Builder(sActivity);
-                if (sEffectDetail == EFFECTTYPE_REVERB)
-                    builder.setTitle(sReverbItems.get(nItem).getEffectTemplateName());
-                else if (sEffectDetail == EFFECTTYPE_ECHO)
-                    builder.setTitle(sEchoItems.get(nItem).getEffectTemplateName());
-                else if (sEffectDetail == EFFECTTYPE_CHORUS)
-                    builder.setTitle(sChorusItems.get(nItem).getEffectTemplateName());
-                else if (sEffectDetail == EFFECTTYPE_DISTORTION)
-                    builder.setTitle(sDistortionItems.get(nItem).getEffectTemplateName());
-                else if (sEffectDetail == EFFECTTYPE_COMP)
-                    builder.setTitle(sCompItems.get(nItem).getEffectTemplateName());
-                builder.setMessage(R.string.askDeleteTemplate);
-                builder.setPositiveButton(R.string.decideNot, null);
-                builder.setNegativeButton(R.string.doDelete, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (sEffectDetail == EFFECTTYPE_REVERB) removeReverbItem(nItem);
-                        else if (sEffectDetail == EFFECTTYPE_ECHO) removeEchoItem(nItem);
-                        else if (sEffectDetail == EFFECTTYPE_CHORUS) removeChorusItem(nItem);
-                        else if (sEffectDetail == EFFECTTYPE_DISTORTION)
-                            removeDistortionItem(nItem);
-                        else if (sEffectDetail == EFFECTTYPE_COMP) removeCompItem(nItem);
-                    }
-                });
-                final AlertDialog alertDialog = builder.create();
-                alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                    @Override
-                    public void onShow(DialogInterface arg0) {
-                        if (alertDialog.getWindow() != null) {
-                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
-                            lp.dimAmount = 0.4f;
-                            alertDialog.getWindow().setAttributes(lp);
-                        }
-                        Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        positiveButton.setTextColor(getResources().getColor(sActivity.isDarkMode() ? R.color.darkModeRed : R.color.lightModeRed));
-                    }
-                });
-                alertDialog.show();
+                askDeletePreset(nItem);
             }
         });
         menu.setCancelMenu();
         menu.show();
+    }
+
+    private void askDeletePreset(final int item) {
+        AlertDialog.Builder builder;
+        if(sActivity.isDarkMode())
+            builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
+        else
+            builder = new AlertDialog.Builder(sActivity);
+        if (sEffectDetail == EFFECTTYPE_REVERB)
+            builder.setTitle(sReverbItems.get(item).getEffectTemplateName());
+        else if (sEffectDetail == EFFECTTYPE_ECHO)
+            builder.setTitle(sEchoItems.get(item).getEffectTemplateName());
+        else if (sEffectDetail == EFFECTTYPE_CHORUS)
+            builder.setTitle(sChorusItems.get(item).getEffectTemplateName());
+        else if (sEffectDetail == EFFECTTYPE_DISTORTION)
+            builder.setTitle(sDistortionItems.get(item).getEffectTemplateName());
+        else if (sEffectDetail == EFFECTTYPE_COMP)
+            builder.setTitle(sCompItems.get(item).getEffectTemplateName());
+        builder.setMessage(R.string.askDeleteTemplate);
+        builder.setPositiveButton(R.string.decideNot, null);
+        builder.setNegativeButton(R.string.doDelete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (sEffectDetail == EFFECTTYPE_REVERB) removeReverbItem(item);
+                else if (sEffectDetail == EFFECTTYPE_ECHO) removeEchoItem(item);
+                else if (sEffectDetail == EFFECTTYPE_CHORUS) removeChorusItem(item);
+                else if (sEffectDetail == EFFECTTYPE_DISTORTION)
+                    removeDistortionItem(item);
+                else if (sEffectDetail == EFFECTTYPE_COMP) removeCompItem(item);
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                if (alertDialog.getWindow() != null) {
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
+                Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                positiveButton.setTextColor(getResources().getColor(sActivity.isDarkMode() ? R.color.darkModeRed : R.color.lightModeRed));
+            }
+        });
+        alertDialog.show();
     }
 
     private void removeReverbItem(int nItem) {
