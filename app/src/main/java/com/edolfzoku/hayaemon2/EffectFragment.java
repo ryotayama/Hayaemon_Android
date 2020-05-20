@@ -5245,6 +5245,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
                     @Override
                     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) { }
+
+                    @Override
+                    public boolean isLongPressDragEnabled() {
+                        return false;
+                    }
                 });
                 mEffectTemplateTouchHelper.attachToRecyclerView(mRecyclerEffectTemplates);
             }

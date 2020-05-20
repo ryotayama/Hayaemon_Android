@@ -253,7 +253,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     }
 
                     @Override
-                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) { }
+
+                    @Override
+                    public boolean isLongPressDragEnabled() {
+                        return false;
                     }
                 });
                 mPlaylistTouchHelper.attachToRecyclerView(mRecyclerPlaylists);
@@ -2772,6 +2776,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) { }
+
+            @Override
+            public boolean isLongPressDragEnabled() {
+                return false;
+            }
         });
         mSongTouchHelper.attachToRecyclerView(mRecyclerSongs);
     }

@@ -1129,7 +1129,11 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     }
 
                     @Override
-                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) { }
+
+                    @Override
+                    public boolean isLongPressDragEnabled() {
+                        return false;
                     }
                 });
                 mEqualizerTouchHelper.attachToRecyclerView(mRecyclerEqualizers);
