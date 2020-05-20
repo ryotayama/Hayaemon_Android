@@ -3625,7 +3625,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     private static void playSong(int nSong, boolean bPlay) {
-        System.out.println("◆playSong 001");
         MainActivity.sWaitEnd = false;
         MainActivity.clearLoop(false);
 
@@ -3666,15 +3665,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         Uri uri = Uri.parse(strPath);
         Context context = sActivity != null ? sActivity : MainActivity.sService;
-        System.out.println("◆playSong 002");
         if(uri.getScheme() != null && uri.getScheme().equals("content")) {
-            System.out.println("◆playSong 003");
+            boolean lostPermission = false;
             if(Build.VERSION.SDK_INT >= 19) {
                 try {
                     context.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 }
                 catch (SecurityException e) {
                     e.printStackTrace();
+                    lostPermission = true;
                 }
             }
             ContentResolver cr = context.getApplicationContext().getContentResolver();
@@ -3684,7 +3683,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 if(params.assetFileDescriptor == null) return;
                 params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
                 MainActivity.sStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_PRESCAN | BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
-                // MainActivity.sStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_PRESCAN | BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
             }
             catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -3697,7 +3695,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
             catch (Exception e) {
                 e.printStackTrace();
-                sPlaying++;
+                if (lostPermission) removeSong(sPlayingPlaylist, sPlaying);
+                else sPlaying++;
                 if(sPlaying >= sPlaylists.get(sPlayingPlaylist).size())
                     sPlaying = 0;
                 if(sPlaylists.get(sPlayingPlaylist).size() != 0)
