@@ -2218,6 +2218,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                         new SwipeHelper.UnderlayButtonClickListener() {
                             @Override
                             public void onClick(int pos) {
+                                mEffectTemplatesAdapter.notifyDataSetChanged();
                                 askDeletePreset(pos);
                             }
                         }

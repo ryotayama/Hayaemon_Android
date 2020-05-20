@@ -327,6 +327,7 @@
     <string name="stop">停止</string>
     <string name="saveToApp">アプリ内に保存</string>
     <string name="showLyrics">歌詞を表示</string>
+    <string name="lyrics">歌詞</string>
     <string name="selectSongs">曲を選択</string>
     <string name="sortSongs">曲順の並べ替え</string>
     <string name="setImage">画像を設定</string>

@@ -1497,7 +1497,22 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         new SwipeHelper.UnderlayButtonClickListener() {
                             @Override
                             public void onClick(int pos) {
+                                mSongsAdapter.notifyDataSetChanged();
                                 askDeleteSong(pos);
+                            }
+                        }
+                ));
+
+                underlayButtons.add(new SwipeHelper.UnderlayButton(
+                        getString(R.string.lyrics),
+                        0,
+                        Color.parseColor("#5856D6"),
+                        new SwipeHelper.UnderlayButtonClickListener() {
+                            @Override
+                            public void onClick(int pos) {
+                                mSongsAdapter.notifyDataSetChanged();
+                                sSelectedItem = pos;
+                                showLyrics();
                             }
                         }
                 ));

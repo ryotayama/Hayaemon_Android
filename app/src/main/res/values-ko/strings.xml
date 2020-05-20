@@ -327,6 +327,7 @@
     <string name="stop">정지</string>
     <string name="saveToApp">앱 내에 저장</string>
     <string name="showLyrics">가사표시</string>
+    <string name="lyrics">가사</string>
     <string name="selectSongs">곡 선택</string>
     <string name="sortSongs">곡 순서 정렬</string>
     <string name="setImage">이미지 설정</string>

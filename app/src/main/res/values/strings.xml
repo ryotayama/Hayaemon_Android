@@ -327,6 +327,7 @@
     <string name="stop">Stop</string>
     <string name="saveToApp">Save the Song to the App</string>
     <string name="showLyrics">Display Lyrics</string>
+    <string name="lyrics">Lyrics</string>
     <string name="selectSongs">Select Songs</string>
     <string name="sortSongs">Sort</string>
     <string name="setImage">Set image</string>

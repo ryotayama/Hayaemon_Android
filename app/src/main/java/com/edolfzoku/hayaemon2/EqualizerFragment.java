@@ -478,6 +478,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                         new SwipeHelper.UnderlayButtonClickListener() {
                             @Override
                             public void onClick(int pos) {
+                                mEqualizersAdapter.notifyDataSetChanged();
                                 askDeletePreset(pos);
                             }
                         }
