@@ -1504,6 +1504,23 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
         };
 
+        new SwipeHelper(sActivity, mRecyclerPlaylists) {
+            @Override
+            public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
+                underlayButtons.add(new SwipeHelper.UnderlayButton(
+                        getString(R.string.delete),
+                        0,
+                        Color.parseColor("#FE3B30"),
+                        new SwipeHelper.UnderlayButtonClickListener() {
+                            @Override
+                            public void onClick(int pos) {
+                                askDeletePlaylist(pos);
+                            }
+                        }
+                ));
+            }
+        };
+
         SharedPreferences preferences = sActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         int nSelectedPlaylist = preferences.getInt("SelectedPlaylist", 0);
         selectPlaylist(nSelectedPlaylist);
@@ -2001,6 +2018,57 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         menu.show();
     }
 
+    private void askDeletePlaylist(final int item) {
+        AlertDialog.Builder builder;
+        if(sActivity.isDarkMode())
+            builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
+        else builder = new AlertDialog.Builder(sActivity);
+        builder.setTitle(R.string.deletePlaylist);
+        builder.setMessage(R.string.askDeletePlaylist);
+        builder.setPositiveButton(getString(R.string.decideNot), null);
+        builder.setNegativeButton(getString(R.string.doDelete), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if(item == sPlayingPlaylist) stop();
+                else if(item < sPlayingPlaylist) sPlayingPlaylist--;
+                ArrayList<SongItem> arSongs = sPlaylists.get(item);
+                for(int i = 0; i < arSongs.size(); i++) {
+                    SongItem song = arSongs.get(i);
+                    File file = new File(song.getPath());
+                    if(file.getParent().equals(sActivity.getFilesDir().toString())) {
+                        if(!file.delete()) System.out.println("ファイルが削除できませんでした");
+                    }
+                }
+                sPlaylists.remove(item);
+                sEffects.remove(item);
+                sPlaylistNames.remove(item);
+                sLyrics.remove(item);
+                if(sPlaylists.size() == 0)
+                    addPlaylist(String.format(Locale.getDefault(), "%s 1", getString(R.string.playlist)));
+
+                int nSelect = item;
+                if(nSelect >= sPlaylists.size()) nSelect = sPlaylists.size() - 1;
+
+                selectPlaylist(nSelect);
+
+                saveFiles(true, true, true, true, false);
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                if(alertDialog.getWindow() != null) {
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
+                Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                positiveButton.setTextColor(getResources().getColor(sActivity.isDarkMode() ? R.color.darkModeRed : R.color.lightModeRed));
+            }
+        });
+        alertDialog.show();
+    }
+
     private void askDeleteSong(final int item) {
         ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
         final SongItem songItem = arSongs.get(item);
@@ -2369,54 +2437,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder;
-                if(sActivity.isDarkMode())
-                    builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-                else builder = new AlertDialog.Builder(sActivity);
-                builder.setTitle(R.string.deletePlaylist);
-                builder.setMessage(R.string.askDeletePlaylist);
-                builder.setPositiveButton(getString(R.string.decideNot), null);
-                builder.setNegativeButton(getString(R.string.doDelete), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if(nPosition == sPlayingPlaylist) stop();
-                        else if(nPosition < sPlayingPlaylist) sPlayingPlaylist--;
-                        ArrayList<SongItem> arSongs = sPlaylists.get(nPosition);
-                        for(int i = 0; i < arSongs.size(); i++) {
-                            SongItem song = arSongs.get(i);
-                            File file = new File(song.getPath());
-                            if(file.getParent().equals(sActivity.getFilesDir().toString())) {
-                                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
-                            }
-                        }
-                        sPlaylists.remove(nPosition);
-                        sEffects.remove(nPosition);
-                        sPlaylistNames.remove(nPosition);
-                        sLyrics.remove(nPosition);
-                        if(sPlaylists.size() == 0)
-                            addPlaylist(String.format(Locale.getDefault(), "%s 1", getString(R.string.playlist)));
-
-                        int nSelect = nPosition;
-                        if(nSelect >= sPlaylists.size()) nSelect = sPlaylists.size() - 1;
-
-                        selectPlaylist(nSelect);
-
-                        saveFiles(true, true, true, true, false);
-                    }
-                });
-                final AlertDialog alertDialog = builder.create();
-                alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                    @Override
-                    public void onShow(DialogInterface arg0) {
-                        if(alertDialog.getWindow() != null) {
-                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
-                            lp.dimAmount = 0.4f;
-                            alertDialog.getWindow().setAttributes(lp);
-                        }
-                        Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        positiveButton.setTextColor(getResources().getColor(sActivity.isDarkMode() ? R.color.darkModeRed : R.color.lightModeRed));
-                    }
-                });
-                alertDialog.show();
+                askDeletePlaylist(nPosition);
             }
         });
         menu.setCancelMenu();
