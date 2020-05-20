@@ -1487,6 +1487,23 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mBtnMoveInMultipleSelection.setOnClickListener(this);
         mBtnMoreInMultipleSelection.setOnClickListener(this);
 
+        new SwipeHelper(sActivity, mRecyclerSongs) {
+            @Override
+            public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
+                underlayButtons.add(new SwipeHelper.UnderlayButton(
+                        getString(R.string.delete),
+                        0,
+                        Color.parseColor("#FE3B30"),
+                        new SwipeHelper.UnderlayButtonClickListener() {
+                            @Override
+                            public void onClick(int pos) {
+                                askDeleteSong(pos);
+                            }
+                        }
+                ));
+            }
+        };
+
         SharedPreferences preferences = sActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         int nSelectedPlaylist = preferences.getInt("SelectedPlaylist", 0);
         selectPlaylist(nSelectedPlaylist);
@@ -1977,52 +1994,58 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder;
-                if(sActivity.isDarkMode())
-                    builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-                else
-                    builder = new AlertDialog.Builder(sActivity);
-                String strTitle = songItem.getTitle();
-                builder.setTitle(strTitle);
-                builder.setMessage(R.string.askDeleteSong);
-                builder.setPositiveButton(getString(R.string.decideNot), null);
-                builder.setNegativeButton(getString(R.string.doDelete), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        boolean bDeletePlaying = false; // 再生中の曲を削除したか
-                        if(sSelectedPlaylist == sPlayingPlaylist && nItem == sPlaying)
-                            bDeletePlaying = true;
-                        removeSong(sSelectedPlaylist, nItem);
-                        if(bDeletePlaying) {
-                            ArrayList<SongItem> arSongs = sPlaylists.get(sPlayingPlaylist);
-                            if(sPlaying < arSongs.size())
-                                playSong(sPlaying, true);
-                            else if(sPlaying > 0 && sPlaying == arSongs.size())
-                                playSong(sPlaying-1, true);
-                            else
-                                stop();
-                        }
-                    }
-                });
-                final AlertDialog alertDialog = builder.create();
-                alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
-                {
-                    @Override
-                    public void onShow(DialogInterface arg0)
-                    {
-                        if(alertDialog.getWindow() != null) {
-                            WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
-                            lp.dimAmount = 0.4f;
-                            alertDialog.getWindow().setAttributes(lp);
-                        }
-                        Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        positiveButton.setTextColor(getResources().getColor(sActivity.isDarkMode() ? R.color.darkModeRed : R.color.lightModeRed));
-                    }
-                });
-                alertDialog.show();
+                askDeleteSong(nItem);
             }
         });
         menu.setCancelMenu();
         menu.show();
+    }
+
+    private void askDeleteSong(final int item) {
+        ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
+        final SongItem songItem = arSongs.get(item);
+        AlertDialog.Builder builder;
+        if(sActivity.isDarkMode())
+            builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
+        else
+            builder = new AlertDialog.Builder(sActivity);
+        String strTitle = songItem.getTitle();
+        builder.setTitle(strTitle);
+        builder.setMessage(R.string.askDeleteSong);
+        builder.setPositiveButton(getString(R.string.decideNot), null);
+        builder.setNegativeButton(getString(R.string.doDelete), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                boolean bDeletePlaying = false; // 再生中の曲を削除したか
+                if(sSelectedPlaylist == sPlayingPlaylist && item == sPlaying)
+                    bDeletePlaying = true;
+                removeSong(sSelectedPlaylist, item);
+                if(bDeletePlaying) {
+                    ArrayList<SongItem> arSongs = sPlaylists.get(sPlayingPlaylist);
+                    if(sPlaying < arSongs.size())
+                        playSong(sPlaying, true);
+                    else if(sPlaying > 0 && sPlaying == arSongs.size())
+                        playSong(sPlaying-1, true);
+                    else
+                        stop();
+                }
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+        {
+            @Override
+            public void onShow(DialogInterface arg0)
+            {
+                if(alertDialog.getWindow() != null) {
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
+                Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                positiveButton.setTextColor(getResources().getColor(sActivity.isDarkMode() ? R.color.darkModeRed : R.color.lightModeRed));
+            }
+        });
+        alertDialog.show();
     }
 
     private void copySong(int nPlaylistFrom, int nItem, int nPlaylistTo) {
