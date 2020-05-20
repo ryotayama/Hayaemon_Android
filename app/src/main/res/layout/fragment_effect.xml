@@ -129,6 +129,7 @@
                 android:layout_toStartOf="@id/textEffectDetail"
                 android:thumb="@drawable/thumbplaying"
                 android:progressDrawable="@drawable/progress"
+                android:splitTrack="false"
                 />
 
             <TextView
@@ -412,6 +413,7 @@
                         android:layout_toStartOf="@id/textCompGain"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -496,6 +498,7 @@
                         android:layout_toStartOf="@id/textCompThreshold"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -580,6 +583,7 @@
                         android:layout_toStartOf="@id/textCompRatio"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -664,6 +668,7 @@
                         android:layout_toStartOf="@id/textCompAttack"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -749,6 +754,7 @@
                         android:layout_toStartOf="@id/textCompRelease"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -909,6 +915,7 @@
                         android:layout_toStartOf="@id/textEchoDry"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -993,6 +1000,7 @@
                         android:layout_toStartOf="@id/textEchoWet"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -1077,6 +1085,7 @@
                         android:layout_toStartOf="@id/textEchoFeedback"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -1162,6 +1171,7 @@
                         android:layout_toStartOf="@id/textEchoDelay"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -1322,6 +1332,7 @@
                         android:layout_toStartOf="@id/textReverbDry"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -1406,6 +1417,7 @@
                         android:layout_toStartOf="@id/textReverbWet"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -1490,6 +1502,7 @@
                         android:layout_toStartOf="@id/textReverbRoomSize"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -1574,6 +1587,7 @@
                         android:layout_toStartOf="@id/textReverbDamp"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -1659,6 +1673,7 @@
                         android:layout_toStartOf="@id/textReverbWidth"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -1819,6 +1834,7 @@
                         android:layout_toStartOf="@id/textChorusDry"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -1903,6 +1919,7 @@
                         android:layout_toStartOf="@id/textChorusWet"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -1987,6 +2004,7 @@
                         android:layout_toStartOf="@id/textChorusFeedback"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -2071,6 +2089,7 @@
                         android:layout_toStartOf="@id/textChorusMinSweep"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -2155,6 +2174,7 @@
                         android:layout_toStartOf="@id/textChorusMaxSweep"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -2240,6 +2260,7 @@
                         android:layout_toStartOf="@id/textChorusRate"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -2400,6 +2421,7 @@
                         android:layout_toStartOf="@id/textDistortionDrive"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -2484,6 +2506,7 @@
                         android:layout_toStartOf="@id/textDistortionDry"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -2568,6 +2591,7 @@
                         android:layout_toStartOf="@id/textDistortionWet"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -2652,6 +2676,7 @@
                         android:layout_toStartOf="@id/textDistortionFeedback"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -2737,6 +2762,7 @@
                         android:layout_toStartOf="@id/textDistortionVolume"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView
@@ -2858,6 +2884,7 @@
                         android:layout_toStartOf="@id/textSoundEffectVolume"
                         android:thumb="@drawable/thumbplaying"
                         android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
                         />
 
                     <TextView

@@ -243,6 +243,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -317,6 +318,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -391,6 +393,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -465,6 +468,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -540,6 +544,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -614,6 +619,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -688,6 +694,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -762,6 +769,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -836,6 +844,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -910,6 +919,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
                 <TextView
                     android:id="@+id/text3_15KValue"
@@ -983,6 +993,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -1057,6 +1068,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -1131,6 +1143,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -1205,6 +1218,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -1279,6 +1293,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -1291,6 +1306,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/btn1KMinus"
                     android:layout_toStartOf="@+id/btn1KMinus"
+                    android:splitTrack="false"
                     />
 
                 <com.edolfzoku.hayaemon2.HighlightImageButton
@@ -1353,6 +1369,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -1427,6 +1444,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -1501,6 +1519,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -1575,6 +1594,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -1649,6 +1669,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -1723,6 +1744,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -1797,6 +1819,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -1871,6 +1894,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -1945,6 +1969,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -2019,6 +2044,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -2093,6 +2119,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -2167,6 +2194,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -2241,6 +2269,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -2315,6 +2344,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -2389,6 +2419,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -2463,6 +2494,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView
@@ -2537,6 +2569,7 @@
                     android:progress="30"
                     android:thumb="@drawable/thumbplaying"
                     android:progressDrawable="@drawable/progress"
+                    android:splitTrack="false"
                     />
 
                 <TextView

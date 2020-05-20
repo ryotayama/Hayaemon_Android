@@ -351,6 +351,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_below="@+id/btnArtworkInPlayingBar"
                     android:visibility="gone"
+                    android:splitTrack="false"
                     />
 
                 <TextView
