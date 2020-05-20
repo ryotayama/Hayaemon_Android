@@ -5376,13 +5376,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     sEchoItems.add(nItem + 1, new EffectTemplateItem(item.getEffectTemplateName(), new ArrayList<>(Arrays.asList(item.getArPresets().get(0), item.getArPresets().get(1), item.getArPresets().get(2), item.getArPresets().get(3)))));
                 } else if (sEffectDetail == EFFECTTYPE_CHORUS) {
                     item = sChorusItems.get(nItem);
-                    sChorusItems.add(nItem + 1, new EffectTemplateItem(item.getEffectTemplateName(), new ArrayList<>(Arrays.asList(item.getArPresets().get(0), item.getArPresets().get(1), item.getArPresets().get(2), item.getArPresets().get(3)))));
+                    sChorusItems.add(nItem + 1, new EffectTemplateItem(item.getEffectTemplateName(), new ArrayList<>(Arrays.asList(item.getArPresets().get(0), item.getArPresets().get(1), item.getArPresets().get(2), item.getArPresets().get(3), item.getArPresets().get(4), item.getArPresets().get(5)))));
                 } else if (sEffectDetail == EFFECTTYPE_DISTORTION) {
                     item = sDistortionItems.get(nItem);
-                    sDistortionItems.add(nItem + 1, new EffectTemplateItem(item.getEffectTemplateName(), new ArrayList<>(Arrays.asList(item.getArPresets().get(0), item.getArPresets().get(1), item.getArPresets().get(2), item.getArPresets().get(3)))));
+                    sDistortionItems.add(nItem + 1, new EffectTemplateItem(item.getEffectTemplateName(), new ArrayList<>(Arrays.asList(item.getArPresets().get(0), item.getArPresets().get(1), item.getArPresets().get(2), item.getArPresets().get(3), item.getArPresets().get(4)))));
                 } else if (sEffectDetail == EFFECTTYPE_COMP) {
                     item = sCompItems.get(nItem);
-                    sCompItems.add(nItem + 1, new EffectTemplateItem(item.getEffectTemplateName(), new ArrayList<>(Arrays.asList(item.getArPresets().get(0), item.getArPresets().get(1), item.getArPresets().get(2), item.getArPresets().get(3)))));
+                    sCompItems.add(nItem + 1, new EffectTemplateItem(item.getEffectTemplateName(), new ArrayList<>(Arrays.asList(item.getArPresets().get(0), item.getArPresets().get(1), item.getArPresets().get(2), item.getArPresets().get(3), item.getArPresets().get(4)))));
                 } else return;
                 mEffectTemplatesAdapter.notifyItemInserted(nItem + 1);
 
