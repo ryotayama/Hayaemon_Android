@@ -3198,6 +3198,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 e.printStackTrace();
                 return;
             }
+            if(_hTempStream == 0) {
+                try {
+                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                    params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+                    if(params.assetFileDescriptor == null) return;
+                    params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
+                    _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return;
+                }
+            }
         }
         else _hTempStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
         if(_hTempStream == 0) return;
@@ -3770,6 +3782,34 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 if(sPlaylists.get(sPlayingPlaylist).size() != 0)
                     playSong(sPlaying, true);
                 return;
+            }
+            if(MainActivity.sStream == 0) {
+                try {
+                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                    params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+                    if (params.assetFileDescriptor == null) return;
+                    params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
+                    MainActivity.sStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_PRESCAN | BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                }
+                catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    removeSong(sPlayingPlaylist, sPlaying);
+                    if(sPlaying >= sPlaylists.get(sPlayingPlaylist).size())
+                        sPlaying = 0;
+                    if(sPlaylists.get(sPlayingPlaylist).size() != 0)
+                        playSong(sPlaying, true);
+                    return;
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    if (lostPermission) removeSong(sPlayingPlaylist, sPlaying);
+                    else sPlaying++;
+                    if(sPlaying >= sPlaylists.get(sPlayingPlaylist).size())
+                        sPlaying = 0;
+                    if(sPlaylists.get(sPlayingPlaylist).size() != 0)
+                        playSong(sPlaying, true);
+                    return;
+                }
             }
         }
         else {
@@ -4389,6 +4429,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 } catch (Exception e) {
                     e.printStackTrace();
                     return;
+                }
+                if (hTempStream == 0) {
+                    try {
+                        MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                        params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+                        if (params.assetFileDescriptor == null) return;
+                        params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
+                        hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return;
+                    }
                 }
             }
         }

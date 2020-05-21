@@ -333,6 +333,18 @@ public class WaveView extends View {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                if (mTempStream == 0) {
+                    try {
+                        MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                        params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(mPath), "r");
+                        if (params.assetFileDescriptor != null) {
+                            params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
+                            mTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
