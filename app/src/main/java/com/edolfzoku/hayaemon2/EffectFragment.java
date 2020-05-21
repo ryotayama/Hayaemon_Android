@@ -494,7 +494,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mBtnEffectBack.setText(R.string.back);
                 mImgEffectBack.setVisibility(View.VISIBLE);
                 mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
-                mBtnAddEffectTemplate.setAlpha(1.0f);
+                if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                    mBtnAddEffectTemplate.setAlpha(1.0f);
             } else if (mScrollEchoCustomize.getVisibility() == View.VISIBLE) {
                 if (sEchoSelected != -1) {
                     ArrayList<Float> arFloats = sEchoItems.get(sEchoSelected).getArPresets();
@@ -507,7 +508,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mBtnEffectBack.setText(R.string.back);
                 mImgEffectBack.setVisibility(View.VISIBLE);
                 mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
-                mBtnAddEffectTemplate.setAlpha(1.0f);
+                if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                    mBtnAddEffectTemplate.setAlpha(1.0f);
             } else if (mScrollChorusCustomize.getVisibility() == View.VISIBLE) {
                 if (sChorusSelected != -1) {
                     ArrayList<Float> arFloats = sChorusItems.get(sChorusSelected).getArPresets();
@@ -520,7 +522,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mBtnEffectBack.setText(R.string.back);
                 mImgEffectBack.setVisibility(View.VISIBLE);
                 mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
-                mBtnAddEffectTemplate.setAlpha(1.0f);
+                if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                    mBtnAddEffectTemplate.setAlpha(1.0f);
             } else if (mScrollDistortionCustomize.getVisibility() == View.VISIBLE) {
                 if (sDistortionSelected != -1) {
                     ArrayList<Float> arFloats = sDistortionItems.get(sDistortionSelected).getArPresets();
@@ -533,7 +536,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mBtnEffectBack.setText(R.string.back);
                 mImgEffectBack.setVisibility(View.VISIBLE);
                 mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
-                mBtnAddEffectTemplate.setAlpha(1.0f);
+                if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                    mBtnAddEffectTemplate.setAlpha(1.0f);
             } else if (mScrollCompCustomize.getVisibility() == View.VISIBLE) {
                 if (sCompSelected != -1) {
                     ArrayList<Float> arFloats = sCompItems.get(sCompSelected).getArPresets();
@@ -546,7 +550,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mBtnEffectBack.setText(R.string.back);
                 mImgEffectBack.setVisibility(View.VISIBLE);
                 mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
-                mBtnAddEffectTemplate.setAlpha(1.0f);
+                if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                    mBtnAddEffectTemplate.setAlpha(1.0f);
             } else if (mScrollSoundEffectCustomize.getVisibility() == View.VISIBLE) {
                 if (sSoundEffectSelected != -1) {
                     ArrayList<Float> arFloats = sSoundEffectItems.get(sSoundEffectSelected).getArPresets();
@@ -559,7 +564,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mBtnEffectBack.setText(R.string.back);
                 mImgEffectBack.setVisibility(View.VISIBLE);
                 mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
-                mBtnAddEffectTemplate.setAlpha(1.0f);
+                if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                    mBtnAddEffectTemplate.setAlpha(1.0f);
             } else {
                 mRelativeEffectDetail.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.INVISIBLE);
@@ -664,7 +670,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                         mBtnEffectBack.setText(R.string.back);
                         mImgEffectBack.setVisibility(View.VISIBLE);
                         mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
-                        mBtnAddEffectTemplate.setAlpha(1.0f);
+                        if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                            mBtnAddEffectTemplate.setAlpha(1.0f);
 
                         mBtnEffectTemplateOff.setSelected(false);
 
@@ -796,7 +803,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 }
                 mBtnEffectFinish.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.VISIBLE);
-                mBtnAddEffectTemplate.setAlpha(1.0f);
+                if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                    mBtnAddEffectTemplate.setAlpha(1.0f);
             }
         } else if (v.getId() == R.id.btnEffectTemplateMenu) showTemplateMenu();
         else if (v.getId() == R.id.btnAddEffectTemplate) {
@@ -846,14 +854,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mRelativeEffectTemplates.setVisibility(View.INVISIBLE);
             mImgEffectBack.setVisibility(View.INVISIBLE);
             mBtnEffectBack.setPadding((int) (16 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
-            mBtnAddEffectTemplate.setAlpha(0.0f);
+            if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                mBtnAddEffectTemplate.setAlpha(0.0f);
         } else if (v.getId() == R.id.textFinishSortEffect) {
             mRecyclerEffectTemplates.setPadding(0, 0, 0, 0);
             mBtnEffectTemplateOff.setVisibility(View.VISIBLE);
             mRelativeEffectTitle.setVisibility(View.VISIBLE);
             mViewSepEffectDetail.setVisibility(View.VISIBLE);
             mViewSepEffectTemplateHeader.setVisibility(View.VISIBLE);
-            mBtnAddEffectTemplate.setAlpha(1.0f);
+            if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                mBtnAddEffectTemplate.setAlpha(1.0f);
             mTextFinishSortEffect.setVisibility(View.INVISIBLE);
             mSorting = false;
             mEffectTemplatesAdapter.notifyDataSetChanged();
@@ -933,7 +943,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     mScrollCompCustomize.setVisibility(View.INVISIBLE);
                     mImgEffectBack.setVisibility(View.VISIBLE);
                     mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
-                    mBtnAddEffectTemplate.setAlpha(1.0f);
+                    if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                        mBtnAddEffectTemplate.setAlpha(1.0f);
 
                     for (int i = 0; i < sCompItems.size() - 1; i++)
                         sCompItems.get(i).setSelected(false);
@@ -1010,7 +1021,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     mImgEffectBack.setVisibility(View.VISIBLE);
                     mTextEffectName.setText(sEffectItems.get(sEffectDetail).getEffectName());
                     mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
-                    mBtnAddEffectTemplate.setAlpha(1.0f);
+                    if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                        mBtnAddEffectTemplate.setAlpha(1.0f);
 
                     for (int i = 0; i < sEchoItems.size() - 1; i++)
                         sEchoItems.get(i).setSelected(false);
@@ -1089,7 +1101,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     mScrollReverbCustomize.setVisibility(View.INVISIBLE);
                     mImgEffectBack.setVisibility(View.VISIBLE);
                     mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
-                    mBtnAddEffectTemplate.setAlpha(1.0f);
+                    if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                        mBtnAddEffectTemplate.setAlpha(1.0f);
 
                     for (int i = 0; i < sReverbItems.size() - 1; i++)
                         sReverbItems.get(i).setSelected(false);
@@ -1171,7 +1184,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     mScrollChorusCustomize.setVisibility(View.INVISIBLE);
                     mImgEffectBack.setVisibility(View.VISIBLE);
                     mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
-                    mBtnAddEffectTemplate.setAlpha(1.0f);
+                    if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                        mBtnAddEffectTemplate.setAlpha(1.0f);
 
                     for (int i = 0; i < sChorusItems.size() - 1; i++)
                         sChorusItems.get(i).setSelected(false);
@@ -1250,7 +1264,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     mScrollDistortionCustomize.setVisibility(View.INVISIBLE);
                     mImgEffectBack.setVisibility(View.VISIBLE);
                     mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
-                    mBtnAddEffectTemplate.setAlpha(1.0f);
+                    if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                        mBtnAddEffectTemplate.setAlpha(1.0f);
 
                     for (int i = 0; i < sDistortionItems.size() - 1; i++)
                         sDistortionItems.get(i).setSelected(false);
@@ -3124,6 +3139,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mRelativeRollerEffectDetail.setVisibility(View.GONE);
             mEffectTemplatesAdapter.changeItems(sCompItems);
             mBtnAddEffectTemplate.setContentDescription(getString(R.string.newComp));
+            mBtnAddEffectTemplate.setAlpha(1f);
             mBtnAddEffectTemplate.setVisibility(View.VISIBLE);
             for (int i = 0; i < sCompItems.size(); i++) sCompItems.get(i).setSelected(false);
             if (sCompSelected == -1) resetComp();
@@ -3136,6 +3152,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mRelativeRollerEffectDetail.setVisibility(View.GONE);
             mEffectTemplatesAdapter.changeItems(sEchoItems);
             mBtnAddEffectTemplate.setContentDescription(getString(R.string.newEcho));
+            mBtnAddEffectTemplate.setAlpha(1f);
             mBtnAddEffectTemplate.setVisibility(View.VISIBLE);
             for (int i = 0; i < sEchoItems.size(); i++) sEchoItems.get(i).setSelected(false);
             if (sEchoSelected == -1) resetEcho();
@@ -3148,6 +3165,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mRelativeRollerEffectDetail.setVisibility(View.GONE);
             mEffectTemplatesAdapter.changeItems(sReverbItems);
             mBtnAddEffectTemplate.setContentDescription(getString(R.string.newReverb));
+            mBtnAddEffectTemplate.setAlpha(1f);
             mBtnAddEffectTemplate.setVisibility(View.VISIBLE);
             for (int i = 0; i < sReverbItems.size(); i++) sReverbItems.get(i).setSelected(false);
             if (sReverbSelected == -1) resetReverb();
@@ -3160,6 +3178,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mRelativeRollerEffectDetail.setVisibility(View.GONE);
             mEffectTemplatesAdapter.changeItems(sChorusItems);
             mBtnAddEffectTemplate.setContentDescription(getString(R.string.newChorus));
+            mBtnAddEffectTemplate.setAlpha(1f);
             mBtnAddEffectTemplate.setVisibility(View.VISIBLE);
             for (int i = 0; i < sChorusItems.size(); i++) sChorusItems.get(i).setSelected(false);
             if (sChorusSelected == -1) resetChorus();
@@ -3172,6 +3191,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mRelativeRollerEffectDetail.setVisibility(View.GONE);
             mEffectTemplatesAdapter.changeItems(sDistortionItems);
             mBtnAddEffectTemplate.setContentDescription(getString(R.string.newDistortion));
+            mBtnAddEffectTemplate.setAlpha(1f);
             mBtnAddEffectTemplate.setVisibility(View.VISIBLE);
             for (int i = 0; i < sDistortionItems.size(); i++)
                 sDistortionItems.get(i).setSelected(false);
@@ -3184,6 +3204,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mRelativeSliderEffectDatail.setVisibility(View.GONE);
             mRelativeRollerEffectDetail.setVisibility(View.GONE);
             mEffectTemplatesAdapter.changeItems(sSoundEffectItems);
+            mBtnAddEffectTemplate.setAlpha(0f);
             mBtnAddEffectTemplate.setVisibility(View.INVISIBLE);
             for (int i = 0; i < sSoundEffectItems.size(); i++)
                 sSoundEffectItems.get(i).setSelected(false);
@@ -5211,7 +5232,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mRelativeEffectTitle.setVisibility(View.GONE);
                 mViewSepEffectDetail.setVisibility(View.GONE);
                 mViewSepEffectTemplateHeader.setVisibility(View.GONE);
-                mBtnAddEffectTemplate.setAlpha(0.0f);
+                if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                    mBtnAddEffectTemplate.setAlpha(0.0f);
                 mTextFinishSortEffect.setVisibility(View.VISIBLE);
                 mSorting = true;
                 mEffectTemplatesAdapter.notifyDataSetChanged();
