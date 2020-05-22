@@ -343,4 +343,7 @@
     <string name="zeroHMS">00:00:00.00</string>
     <string name="clearEditText">입력 상자를 지우십시오</string>
     <string name="darkMode">어두운 모드</string>
+    <string name="copyInfo">Copy info</string>
+    <string name="copied1">Copied \"</string>
+    <string name="copied2">\" to the clipboard.</string>
 </resources>

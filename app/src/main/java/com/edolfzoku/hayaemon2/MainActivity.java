@@ -27,6 +27,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -1375,6 +1377,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.setIcon(R.mipmap.ic_launcher);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) { }
+            });
+            builder.setNeutralButton(getString(R.string.copyInfo), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    String strVersionName;
+                    try {
+                        strVersionName = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
+                    }
+                    catch(PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                    final String copyText = getString(R.string.app_name) + " Android ver." + strVersionName;
+                    ClipboardManager clipboardManager =
+                            (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    if (null == clipboardManager) {
+                        return;
+                    }
+                    clipboardManager.setPrimaryClip(ClipData.newPlainText("", copyText));
+
+                    sHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            AlertDialog.Builder builder;
+                            if(mDarkMode)
+                                builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
+                            else builder = new AlertDialog.Builder(sActivity);
+
+                            builder.setTitle(R.string.about);
+                            builder.setMessage(getString(R.string.copied1) + copyText + getString(R.string.copied2));
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) { }
+                            });
+                            final AlertDialog alertDialog = builder.create();
+                            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                                @Override
+                                public void onShow(DialogInterface arg0) {
+                                    if(alertDialog.getWindow() != null) {
+                                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                                        lp.dimAmount = 0.4f;
+                                        alertDialog.getWindow().setAttributes(lp);
+                                    }
+                                }
+                            });
+                            alertDialog.show();
+                        }
+                    }, 200);
+                }
             });
             final AlertDialog alertDialog = builder.create();
             alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {

@@ -343,4 +343,7 @@
     <string name="zeroHMS">00:00:00.00</string>
     <string name="clearEditText">編集ボックスをクリア</string>
     <string name="darkMode">ダークモード</string>
+    <string name="copyInfo">情報をコピー</string>
+    <string name="copied1">クリップボードに「</string>
+    <string name="copied2">」をコピーしました。</string>
 </resources>
