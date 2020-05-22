@@ -1346,7 +1346,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             openItem();
         }
         else if(v.getId() == R.id.relativeReport) {
-            Uri uri = Uri.parse("https://twitter.com/ryota_yama");
+            String strVersionName;
+            try {
+                strVersionName = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
+            }
+            catch(PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+                return;
+            }
+            Uri uri = Uri.parse("https://twitter.com/intent/tweet?screen_name=ryota_yama&text=" + getString(R.string.app_name) + " Android ver." + strVersionName + " Android " + Build.VERSION.RELEASE + " " + Build.MODEL);
             Intent i = new Intent(Intent.ACTION_VIEW,uri);
             startActivity(i);
             mDrawerLayout.closeDrawer(GravityCompat.START);
