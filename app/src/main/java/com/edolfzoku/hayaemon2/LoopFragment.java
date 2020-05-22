@@ -36,6 +36,8 @@ import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AlertDialog;
+
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -191,8 +193,38 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         final LinearLayout ABLabel = sActivity.findViewById(R.id.ABLabel);
 
         mTextAValue.setText(getString(R.string.zeroHMS));
+        mTextAValue.setOnTouchListener(new View.OnTouchListener() {
+            @Override public boolean onTouch(View v, MotionEvent event) {
+                int inType = mTextAValue.getInputType();
+                mTextAValue.setInputType(InputType.TYPE_NULL);
+                mTextAValue.onTouchEvent(event);
+                mTextAValue.setInputType(inType);
+                mTextAValue.setSelection(mTextAValue.getText().length());
+                return true;
+            }
+        });
         mTextBValue.setText(getString(R.string.zeroHMS));
+        mTextBValue.setOnTouchListener(new View.OnTouchListener() {
+            @Override public boolean onTouch(View v, MotionEvent event) {
+                int inType = mTextBValue.getInputType();
+                mTextBValue.setInputType(InputType.TYPE_NULL);
+                mTextBValue.onTouchEvent(event);
+                mTextBValue.setInputType(inType);
+                mTextBValue.setSelection(mTextBValue.getText().length());
+                return true;
+            }
+        });
         mTextCurValue.setText(getString(R.string.zeroHMS));
+        mTextCurValue.setOnTouchListener(new View.OnTouchListener() {
+            @Override public boolean onTouch(View v, MotionEvent event) {
+                int inType = mTextCurValue.getInputType();
+                mTextCurValue.setInputType(InputType.TYPE_NULL);
+                mTextCurValue.onTouchEvent(event);
+                mTextCurValue.setInputType(inType);
+                mTextCurValue.setSelection(mTextCurValue.getText().length());
+                return true;
+            }
+        });
         mBtnZoomIn.setColorFilter(new PorterDuffColorFilter(Color.parseColor(sActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
         mBtnZoomIn.setEnabled(false);
         mBtnZoomOut.setColorFilter(new PorterDuffColorFilter(Color.parseColor(sActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
@@ -389,28 +421,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                     .setInterpolator(new LinearInterpolator())
                     .start();
             if (!mContinue) mWaveView.invalidate();
-            if (MainActivity.sLoopA) {
-                long nPosA = 0;
-                if (MainActivity.sStream != 0)
-                    nPosA = BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, MainActivity.sLoopAPos);
-                nPosA = nPos - nPosA;
-                int nLeftA = (int) (nLeft - nMaxWidth * nPosA / MainActivity.sByteLength);
-                if (nLeftA < 0) nLeftA = 0;
-                mViewMaskA.getLayoutParams().width = nLeftA;
-                mViewMaskA.requestLayout();
-            }
-            if (MainActivity.sLoopB) {
-                long nPosB = 0;
-                if (MainActivity.sStream != 0)
-                    nPosB = BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, MainActivity.sLoopBPos);
-                nPosB = nPos - nPosB;
-                int nLeftB = (int) (nLeft - nMaxWidth * nPosB / MainActivity.sByteLength);
-                if (nLeftB < 0) nLeftB = 0;
-                else if (nLeftB > mWaveView.getWidth()) nLeftB = mWaveView.getWidth();
-                mViewMaskB.setTranslationX(nLeftB);
-                mViewMaskB.getLayoutParams().width = mWaveView.getWidth() - nLeftB;
-                mViewMaskB.requestLayout();
-            }
+            if (MainActivity.sLoopA) updateMaskA();
+            if (MainActivity.sLoopB) updateMaskB();
             if (sMarkerButton.getVisibility() == View.VISIBLE) {
                 for (int i = 0; i < sMarkerTimes.size(); i++) {
                     double dMarkerPos = sMarkerTimes.get(i);
@@ -426,6 +438,58 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
                 }
             }
         }
+    }
+
+    void updateMaskA() {
+        if (MainActivity.sStream == 0) return;
+
+        long nPos = 0;
+        int nScreenWidth = mWaveView.getWidth();
+        int nMaxWidth = (int) (nScreenWidth * mWaveView.getZoom());
+        int nLeft = -(int) (1.0 * sActivity.getDensity());
+        if (MainActivity.sStream != 0) {
+            nPos = BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE);
+            nLeft = (int) (nMaxWidth * nPos / MainActivity.sByteLength);
+        }
+        if (nScreenWidth / 2 <= nLeft && nLeft < nMaxWidth - nScreenWidth / 2)
+            nLeft = (int) (nScreenWidth / 2.0f);
+        else if (nMaxWidth - nScreenWidth / 2 <= nLeft)
+            nLeft = nScreenWidth - (nMaxWidth - nLeft);
+        long nPosA = 0;
+        if (MainActivity.sStream != 0)
+            nPosA = BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, MainActivity.sLoopAPos);
+        nPosA = nPos - nPosA;
+        int nLeftA = (int) (nLeft - nMaxWidth * nPosA / MainActivity.sByteLength);
+        if (nLeftA < 0) nLeftA = 0;
+        mViewMaskA.getLayoutParams().width = nLeftA;
+        mViewMaskA.requestLayout();
+    }
+
+    void updateMaskB() {
+        if (MainActivity.sStream == 0) return;
+
+        long nPos = 0;
+        int nScreenWidth = mWaveView.getWidth();
+        int nMaxWidth = (int) (nScreenWidth * mWaveView.getZoom());
+        int nLeft = -(int) (1.0 * sActivity.getDensity());
+        if (MainActivity.sStream != 0) {
+            nPos = BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE);
+            nLeft = (int) (nMaxWidth * nPos / MainActivity.sByteLength);
+        }
+        if (nScreenWidth / 2 <= nLeft && nLeft < nMaxWidth - nScreenWidth / 2)
+            nLeft = (int) (nScreenWidth / 2.0f);
+        else if (nMaxWidth - nScreenWidth / 2 <= nLeft)
+            nLeft = nScreenWidth - (nMaxWidth - nLeft);
+        long nPosB = 0;
+        if (MainActivity.sStream != 0)
+            nPosB = BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, MainActivity.sLoopBPos);
+        nPosB = nPos - nPosB;
+        int nLeftB = (int) (nLeft - nMaxWidth * nPosB / MainActivity.sByteLength);
+        if (nLeftB < 0) nLeftB = 0;
+        else if (nLeftB > mWaveView.getWidth()) nLeftB = mWaveView.getWidth();
+        mViewMaskB.setTranslationX(nLeftB);
+        mViewMaskB.getLayoutParams().width = mWaveView.getWidth() - nLeftB;
+        mViewMaskB.requestLayout();
     }
 
     static void startTimer() {
@@ -648,285 +712,19 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if(hasFocus) {
-            if(v.getId() == R.id.textAValue) showABLoopPicker(true);
-            else if(v.getId() == R.id.textBValue) showABLoopPicker(false);
-            else if(v.getId() == R.id.textCurValue) showCurPicker();
+            if(v.getId() == R.id.textAValue) new TimeFragmentDialog(sActivity, TimeFragmentDialog.SCREENTYPE_TIME_A).show();
+            else if(v.getId() == R.id.textBValue) new TimeFragmentDialog(sActivity, TimeFragmentDialog.SCREENTYPE_TIME_B).show();
+            else if(v.getId() == R.id.textCurValue) new TimeFragmentDialog(sActivity, TimeFragmentDialog.SCREENTYPE_TIME_CUR).show();
         }
     }
 
-    private void showABLoopPicker(boolean bAPos) {
-        LayoutInflater inflater = sActivity.getLayoutInflater();
-        View view = inflater.inflate(R.layout.ablooppicker, (ViewGroup)sActivity.findViewById(R.id.layout_root), false);
-        final NumberPicker hourPicker = view.findViewById(R.id.abLoopHourPicker);
-        final NumberPicker minutePicker = view.findViewById(R.id.abLoopMinutePicker);
-        final NumberPicker secondPicker = view.findViewById(R.id.abLoopSecondPicker);
-        final NumberPicker decPicker = view.findViewById(R.id.abLoopDecPicker);
-
-        double dValue;
-        if(bAPos) dValue = MainActivity.sLoopAPos;
-        else dValue = MainActivity.sLoopBPos;
-        int nMinute = (int)(dValue / 60);
-        int nSecond = (int)(dValue % 60);
-        int nHour = nMinute / 60;
-        nMinute = nMinute % 60;
-        int nDec = (int)((dValue * 100) % 100);
-        String strHour = String.format(Locale.getDefault(), "%02d", nHour);
-        String strMinute = String.format(Locale.getDefault(), "%02d", nMinute);
-        String strSecond = String.format(Locale.getDefault(), "%02d", nSecond);
-        String strDec = String.format(Locale.getDefault(), "%02d", nDec);
-
-        final String[] arInts = {"59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
-        hourPicker.setDisplayedValues(arInts);
-        hourPicker.setMinValue(0);
-        hourPicker.setMaxValue(59);
-        if(sActivity.isDarkMode()) {
-            setNumberPickerTextColor(hourPicker, Color.WHITE);
-            setNumberPickerTextColor(minutePicker, Color.WHITE);
-            setNumberPickerTextColor(secondPicker, Color.WHITE);
-            setNumberPickerTextColor(decPicker, Color.WHITE);
-            setDividerColor(hourPicker, Color.rgb(38, 40, 44));
-            setDividerColor(minutePicker, Color.rgb(38, 40, 44));
-            setDividerColor(secondPicker, Color.rgb(38, 40, 44));
-            setDividerColor(decPicker, Color.rgb(38, 40, 44));
-        }
-        for(int i = 0; i < arInts.length; i++) {
-            if(arInts[i].equals(strHour)) hourPicker.setValue(i);
-        }
-
-        minutePicker.setDisplayedValues(arInts);
-        minutePicker.setMinValue(0);
-        minutePicker.setMaxValue(59);
-        for(int i = 0; i < arInts.length; i++) {
-            if(arInts[i].equals(strMinute)) minutePicker.setValue(i);
-        }
-        secondPicker.setDisplayedValues(arInts);
-        secondPicker.setMinValue(0);
-        secondPicker.setMaxValue(59);
-        for(int i = 0; i < arInts.length; i++) {
-            if(arInts[i].equals(strSecond)) secondPicker.setValue(i);
-        }
-
-        final String[] arDecs = {"99", "98", "97", "96", "95", "94", "93", "92", "91", "90", "89", "88", "87", "86", "85", "84", "83", "82", "81", "80", "79", "78", "77", "76", "75", "74", "73", "72", "71", "70", "69", "68", "67", "66", "65", "64", "63", "62", "61", "60", "59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
-        decPicker.setDisplayedValues(arDecs);
-        decPicker.setMinValue(0);
-        decPicker.setMaxValue(99);
-        for(int i = 0; i < arDecs.length; i++) {
-            if(arDecs[i].equals(strDec)) decPicker.setValue(i);
-        }
-
-        AlertDialog.Builder builder;
-        if(sActivity.isDarkMode()) builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-        else builder = new AlertDialog.Builder(sActivity);
-        if(bAPos) builder.setTitle(R.string.adjustAPos);
-        else builder.setTitle(R.string.adjustBPos);
-        final boolean f_bAPos = bAPos;
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                LayoutInflater inflater = sActivity.getLayoutInflater();
-                inflater.inflate(R.layout.ablooppicker, (ViewGroup)sActivity.findViewById(R.id.layout_root), false);
-                int nHour = Integer.parseInt(arInts[hourPicker.getValue()]);
-                int nMinute = Integer.parseInt(arInts[minutePicker.getValue()]);
-                int nSecond = Integer.parseInt(arInts[secondPicker.getValue()]);
-                double dDec = Double.parseDouble(arDecs[decPicker.getValue()]);
-                double dPos = nHour * 3600 + nMinute * 60 + nSecond + dDec / 100.0;
-
-                if(f_bAPos) setLoopA(dPos);
-                else setLoopB(dPos);
-                clearFocus();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                clearFocus();
-            }
-        });
-        builder.setView(view);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface arg0) {
-                if(alertDialog.getWindow() != null) {
-                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
-                    lp.dimAmount = 0.4f;
-                    alertDialog.getWindow().setAttributes(lp);
-                }
-            }
-        });
-        alertDialog.show();
-    }
-
-    private static void setNumberPickerTextColor(NumberPicker numberPicker, int color) {
-        try{
-            Field selectorWheelPaintField = numberPicker.getClass()
-                    .getDeclaredField("mSelectorWheelPaint");
-            selectorWheelPaintField.setAccessible(true);
-            ((Paint)selectorWheelPaintField.get(numberPicker)).setColor(color);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-
-        final int count = numberPicker.getChildCount();
-        for(int i = 0; i < count; i++){
-            View child = numberPicker.getChildAt(i);
-            if(child instanceof EditText)
-                ((EditText)child).setTextColor(color);
-        }
-        numberPicker.invalidate();
-    }
-
-    private void setDividerColor(NumberPicker picker, int color) {
-        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
-        for (java.lang.reflect.Field pf : pickerFields) {
-            if (pf.getName().equals("mSelectionDivider")) {
-                pf.setAccessible(true);
-                try {
-                    ColorDrawable colorDrawable = new ColorDrawable(color);
-                    pf.set(picker, colorDrawable);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-            }
-        }
-    }
-
-    private void showCurPicker() {
-        LayoutInflater inflater = sActivity.getLayoutInflater();
-        View view = inflater.inflate(R.layout.ablooppicker, (ViewGroup)sActivity.findViewById(R.id.layout_root), false);
-        final NumberPicker hourPicker = view.findViewById(R.id.abLoopHourPicker);
-        final NumberPicker minutePicker = view.findViewById(R.id.abLoopMinutePicker);
-        final NumberPicker secondPicker = view.findViewById(R.id.abLoopSecondPicker);
-        final NumberPicker decPicker = view.findViewById(R.id.abLoopDecPicker);
-
-        String strCurPos = mTextCurValue.getText().toString();
-        String strHour = strCurPos.substring(0, 2);
-        String strMinute = strCurPos.substring(3, 5);
-        String strSecond = strCurPos.substring(6, 8);
-        String strDec = strCurPos.substring(9, 11);
-
-        final String[] arInts = {"59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
-        final String[] arDecs = {"99", "98", "97", "96", "95", "94", "93", "92", "91", "90", "89", "88", "87", "86", "85", "84", "83", "82", "81", "80", "79", "78", "77", "76", "75", "74", "73", "72", "71", "70", "69", "68", "67", "66", "65", "64", "63", "62", "61", "60", "59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01", "00"};
-
-        hourPicker.setDisplayedValues(arInts);
-        hourPicker.setMinValue(0);
-        hourPicker.setMaxValue(59);
-        if(sActivity.isDarkMode()) {
-            setNumberPickerTextColor(hourPicker, Color.WHITE);
-            setNumberPickerTextColor(minutePicker, Color.WHITE);
-            setNumberPickerTextColor(secondPicker, Color.WHITE);
-            setNumberPickerTextColor(decPicker, Color.WHITE);
-            setDividerColor(hourPicker, Color.rgb(38, 40, 44));
-            setDividerColor(minutePicker, Color.rgb(38, 40, 44));
-            setDividerColor(secondPicker, Color.rgb(38, 40, 44));
-            setDividerColor(decPicker, Color.rgb(38, 40, 44));
-        }
-        hourPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
-                int nHour = Integer.parseInt(arInts[nNewValue]);
-                int nMinute = Integer.parseInt(arInts[minutePicker.getValue()]);
-                int nSecond = Integer.parseInt(arInts[secondPicker.getValue()]);
-                double dDec = Double.parseDouble(arDecs[decPicker.getValue()]);
-                double dPos = nHour * 3600 + nMinute * 60 + nSecond + dDec / 100.0;
-                setCurPos(dPos);
-            }
-        });
-        for(int i = 0; i < arInts.length; i++) {
-            if(arInts[i].equals(strHour)) hourPicker.setValue(i);
-        }
-        minutePicker.setDisplayedValues(arInts);
-        minutePicker.setMinValue(0);
-        minutePicker.setMaxValue(59);
-        minutePicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
-                int nHour = Integer.parseInt(arInts[hourPicker.getValue()]);
-                int nMinute = Integer.parseInt(arInts[nNewValue]);
-                int nSecond = Integer.parseInt(arInts[secondPicker.getValue()]);
-                double dDec = Double.parseDouble(arDecs[decPicker.getValue()]);
-                double dPos = nHour * 3600 + nMinute * 60 + nSecond + dDec / 100.0;
-                setCurPos(dPos);
-            }
-        });
-        for(int i = 0; i < arInts.length; i++) {
-            if(arInts[i].equals(strMinute)) minutePicker.setValue(i);
-        }
-        secondPicker.setDisplayedValues(arInts);
-        secondPicker.setMinValue(0);
-        secondPicker.setMaxValue(59);
-        secondPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
-                int nHour = Integer.parseInt(arInts[hourPicker.getValue()]);
-                int nMinute = Integer.parseInt(arInts[minutePicker.getValue()]);
-                int nSecond = Integer.parseInt(arInts[nNewValue]);
-                double dDec = Double.parseDouble(arDecs[decPicker.getValue()]);
-                double dPos = nHour * 3600 + nMinute * 60 + nSecond + dDec / 100.0;
-                setCurPos(dPos);
-            }
-        });
-        for(int i = 0; i < arInts.length; i++) {
-            if(arInts[i].equals(strSecond)) secondPicker.setValue(i);
-        }
-
-        decPicker.setDisplayedValues(arDecs);
-        decPicker.setMinValue(0);
-        decPicker.setMaxValue(99);
-        decPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker numberPicker, int nOldValue, int nNewValue) {
-                int nHour = Integer.parseInt(arInts[hourPicker.getValue()]);
-                int nMinute = Integer.parseInt(arInts[minutePicker.getValue()]);
-                int nSecond = Integer.parseInt(arInts[secondPicker.getValue()]);
-                double dDec = Double.parseDouble(arDecs[nNewValue]);
-                double dPos = nHour * 3600 + nMinute * 60 + nSecond + dDec / 100.0;
-                setCurPos(dPos);
-            }
-        });
-        for(int i = 0; i < arDecs.length; i++) {
-            if(arDecs[i].equals(strDec)) decPicker.setValue(i);
-        }
-
-        AlertDialog.Builder builder;
-        if(sActivity.isDarkMode())
-            builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-        else
-            builder = new AlertDialog.Builder(sActivity);
-        builder.setTitle(R.string.adjustCurPos);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                clearFocus();
-            }
-        });
-        builder.setView(view);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface arg0) {
-                if(alertDialog.getWindow() != null) {
-                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
-                    lp.dimAmount = 0.4f;
-                    alertDialog.getWindow().setAttributes(lp);
-                }
-            }
-        });
-        alertDialog.show();
-    }
-
-    private void clearFocus() {
+    public void clearFocus() {
         mTextAValue.clearFocus();
         mTextBValue.clearFocus();
         mTextCurValue.clearFocus();
     }
 
-    private static void setLoopA(double dLoopA) {
+    public static void setLoopA(double dLoopA) {
         setLoopA(dLoopA, true);
     }
 
@@ -945,16 +743,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         if(sActivity != null) {
             sActivity.loopFragment.getBtnA().setSelected(true);
             sActivity.loopFragment.getBtnA().setImageResource(sActivity.isDarkMode() ? R.drawable.ic_abloop_a_on_dark : R.drawable.ic_abloop_a_on);
-
-            long nLength = BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE);
-            long nPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, dLoopA);
-            int nScreenWidth = sActivity.loopFragment.getWaveView().getWidth();
-            int nMaxWidth = (int) (nScreenWidth * sActivity.loopFragment.getWaveView().getZoom());
-            int nLeft = (int) (sActivity.loopFragment.getViewCurPos().getX() - nMaxWidth * nPos / nLength);
-            if (nLeft > 0) nLeft = 0;
-            sActivity.loopFragment.getViewMaskA().getLayoutParams().width = nLeft;
+            sActivity.loopFragment.updateMaskA();
             sActivity.loopFragment.getViewMaskA().setVisibility(View.VISIBLE);
-            sActivity.loopFragment.getViewMaskA().requestLayout();
 
             int nMinute = (int) (MainActivity.sLoopAPos / 60);
             int nSecond = (int) (MainActivity.sLoopAPos % 60);
@@ -962,12 +752,18 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             nMinute = nMinute % 60;
             int nDec = (int) ((MainActivity.sLoopAPos * 100) % 100);
             sActivity.loopFragment.getTextAValue().setText((nHour < 10 ? "0" : "") + nHour + (nMinute < 10 ? ":0" : ":") + nMinute + (nSecond < 10 ? ":0" : ":") + nSecond + (nDec < 10 ? ".0" : ".") + nDec);
+
+            double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE));
+            if (dPos < MainActivity.sLoopAPos) {
+                BASS.BASS_ChannelSetPosition(MainActivity.sStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, MainActivity.sLoopAPos), BASS.BASS_POS_BYTE);
+                sActivity.loopFragment.updateCurPos();
+            }
         }
 
         if(bSave) PlaylistFragment.updateSavingEffect();
     }
 
-    private static void setLoopB(double dLoopB) {
+    public static void setLoopB(double dLoopB) {
         setLoopB(dLoopB, true);
     }
 
@@ -986,17 +782,8 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
         if(sActivity != null) {
             sActivity.loopFragment.getBtnB().setSelected(true);
             sActivity.loopFragment.getBtnB().setImageResource(sActivity.isDarkMode() ? R.drawable.ic_abloop_b_on_dark : R.drawable.ic_abloop_b_on);
-            long nLength = BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE);
-            long nPos = BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, dLoopB);
-            int nScreenWidth = sActivity.loopFragment.getWaveView().getWidth();
-            int nMaxWidth = (int) (nScreenWidth * sActivity.loopFragment.getWaveView().getZoom());
-            int nLeft = (int) (sActivity.loopFragment.getViewCurPos().getX() - nMaxWidth * nPos / nLength);
-            if (nLeft < 0) nLeft = 0;
-            else if (nLeft > sActivity.loopFragment.getWaveView().getWidth()) nLeft = sActivity.loopFragment.getWaveView().getWidth();
-            sActivity.loopFragment.getViewMaskB().setTranslationX(nLeft);
-            sActivity.loopFragment.getViewMaskB().getLayoutParams().width = sActivity.loopFragment.getWaveView().getWidth() - nLeft;
+            sActivity.loopFragment.updateMaskB();
             sActivity.loopFragment.getViewMaskB().setVisibility(View.VISIBLE);
-            sActivity.loopFragment.getViewMaskB().requestLayout();
 
             int nMinute = (int) (MainActivity.sLoopBPos / 60);
             int nSecond = (int) (MainActivity.sLoopBPos % 60);
@@ -1004,15 +791,20 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             nMinute = nMinute % 60;
             int nDec = (int) ((MainActivity.sLoopBPos * 100) % 100);
             sActivity.loopFragment.getTextBValue().setText((nHour < 10 ? "0" : "") + nHour + (nMinute < 10 ? ":0" : ":") + nMinute + (nSecond < 10 ? ":0" : ":") + nSecond + (nDec < 10 ? ".0" : ".") + nDec);
+
+            double dPos = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetPosition(MainActivity.sStream, BASS.BASS_POS_BYTE));
+            if (MainActivity.sLoopBPos <= dPos) {
+                BASS.BASS_ChannelSetPosition(MainActivity.sStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, MainActivity.sLoopAPos), BASS.BASS_POS_BYTE);
+                sActivity.loopFragment.updateCurPos();
+            }
         }
 
-        BASS.BASS_ChannelSetPosition(MainActivity.sStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, MainActivity.sLoopAPos), BASS.BASS_POS_BYTE);
         MainActivity.setSync();
 
         if(bSave) PlaylistFragment.updateSavingEffect();
     }
 
-    void setCurPos(double dPos) {
+    public void setCurPos(double dPos) {
         if(MainActivity.sStream == 0) return;
 
         double dLength = BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE));
@@ -1036,6 +828,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
             }
         }
         BASS.BASS_ChannelSetPosition(MainActivity.sStream, BASS.BASS_ChannelSeconds2Bytes(MainActivity.sStream, dPos), BASS.BASS_POS_BYTE);
+        sActivity.loopFragment.updateCurPos();
         MainActivity.setSync();
 
         double dCurPos = dPos;

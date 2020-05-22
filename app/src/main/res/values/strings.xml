@@ -300,8 +300,6 @@
     <string name="addFromVideo">Add from video</string>
     <string name="chooseRewindButton">Please select the rewind button.</string>
     <string name="chooseForwardButton">Please select the forward button.</string>
-    <string name="adjustAPos">Adjust A Position</string>
-    <string name="adjustBPos">Adjust B Position</string>
     <string name="adjustCurPos">Adjust Current Position</string>
     <string name="permitMicError">Access to the mic is not permitted.</string>
     <string name="changeArtwork">Change the Artwork Image</string>

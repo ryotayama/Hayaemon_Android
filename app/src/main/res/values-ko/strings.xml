@@ -300,8 +300,6 @@
     <string name="addFromVideo">영상으로부터 추가</string>
     <string name="chooseRewindButton">뒤로 버튼 선택</string>
     <string name="chooseForwardButton">앞으로 버튼 선택</string>
-    <string name="adjustAPos">A위치 조절</string>
-    <string name="adjustBPos">B위치 조절</string>
     <string name="adjustCurPos">재생위치 조절</string>
     <string name="permitMicError">마이크의 접근이 허용되지 않았습니다.</string>
     <string name="changeArtwork">아트워크 변경</string>
