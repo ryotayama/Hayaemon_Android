@@ -144,6 +144,21 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     private View mDivider1, mDivider2, mViewMultipleSelection, mViewSepLyrics;
 
     static int getSongCount(int nPlaylist) { return sPlaylists.get(nPlaylist).size(); }
+    static String getTotalLength(int nPlaylist) {
+        ArrayList<SongItem> arSongs = sPlaylists.get(nPlaylist);
+        int totalSeconds = 0;
+        for (int i = 0; i < arSongs.size(); i++) {
+            SongItem item = arSongs.get(i);
+            String time = item.getTime();
+            if (time == null) return null;
+            String[] elements = time.split(":");
+            int seconds = Integer.parseInt(elements[0]) * 60 + Integer.parseInt(elements[1]);
+            totalSeconds += seconds;
+        }
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+        return String.format(Locale.getDefault(), "%d:%02d", minutes, seconds);
+    }
     public void setProgress(int nProgress) { mProgress.setProgress(nProgress); }
     public boolean isSorting() { return mSorting; }
     boolean isMultiSelecting() { return mMultiSelecting; }

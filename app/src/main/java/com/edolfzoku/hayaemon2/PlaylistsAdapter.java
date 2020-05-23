@@ -82,7 +82,28 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
 
         holder.textName.setText(item);
         holder.textName.setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? android.R.color.white : android.R.color.black));
-        holder.textSongCount.setText(String.format(Locale.getDefault(), "%d曲", PlaylistFragment.getSongCount(position)));
+        int songCount = PlaylistFragment.getSongCount(position);
+        String totalLength = PlaylistFragment.getTotalLength(position);
+        if (totalLength == null) {
+            if (Locale.getDefault().equals(Locale.JAPAN))
+                holder.textSongCount.setText(String.format(Locale.getDefault(), "%d曲", songCount));
+            else {
+                if (songCount <= 1)
+                    holder.textSongCount.setText(String.format(Locale.getDefault(), "%d song", songCount));
+                else
+                    holder.textSongCount.setText(String.format(Locale.getDefault(), "%d songs", songCount));
+            }
+        }
+        else {
+            if (Locale.getDefault().equals(Locale.JAPAN))
+                holder.textSongCount.setText("" + PlaylistFragment.getSongCount(position) + "曲 / " + totalLength);
+            else {
+                if (songCount <= 1)
+                    holder.textSongCount.setText("" + PlaylistFragment.getSongCount(position) + "song / " + totalLength);
+                else
+                    holder.textSongCount.setText("" + PlaylistFragment.getSongCount(position) + "songs / " + totalLength);
+            }
+        }
         holder.textSongCount.setTextColor(mActivity.getResources().getColor(mActivity.isDarkMode() ? R.color.darkModeGray : R.color.lightModeGray));
 
         holder.playlistItem.setOnClickListener(new View.OnClickListener() {
