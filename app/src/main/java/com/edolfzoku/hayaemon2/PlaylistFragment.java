@@ -135,7 +135,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     private ProgressBar mProgress;
     private RecyclerView mRecyclerPlaylists, mRecyclerTab, mRecyclerSongs;
     private Button mBtnSortPlaylist, mBtnFinishLyrics;
-    private AnimationButton mBtnAddPlaylist, mBtnArtworkInPlayingBar, mBtnAddSong, mBtnEdit, mBtnCopyInMultipleSelection, mBtnMoveInMultipleSelection, mBtnDeleteInMultipleSelection, mBtnMoreInMultipleSelection;
+    private AnimationButton mBtnAddPlaylist, mBtnArtworkInPlayingBar, mBtnAddSong, mBtnEdit, mBtnCopyInMultipleSelection, mBtnMoveInMultipleSelection, mBtnDeleteInMultipleSelection;
     private TextView mTextTitleInPlayingBar, mTextArtistInPlayingBar, mTextFinishSort, mTextLyricsTitle, mTextNoLyrics, mTextLyrics, mTextTapEdit, mTextPlaylistInMultipleSelection, mTextPlaylist;
     private RelativeLayout mRelativeSongs, mRelativePlaylists, mRelativeLyrics, mRelativeLyricsTitle;
     private ImageView mImgEdit, mImgSelectAllInMultipleSelection;
@@ -1432,7 +1432,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mBtnCopyInMultipleSelection = sActivity.findViewById(R.id.btnCopyInMultipleSelection);
         mBtnMoveInMultipleSelection = sActivity.findViewById(R.id.btnMoveInMultipleSelection);
         mBtnDeleteInMultipleSelection = sActivity.findViewById(R.id.btnDeleteInMultipleSelection);
-        mBtnMoreInMultipleSelection = sActivity.findViewById(R.id.btnMoreInMultipleSelection);
         mImgEdit = sActivity.findViewById(R.id.imgEdit);
         mTextTapEdit = sActivity.findViewById(R.id.textTapEdit);
         mRelativeLyrics = sActivity.findViewById(R.id.relativeLyrics);
@@ -1448,6 +1447,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mViewSepLyrics = sActivity.findViewById(R.id.viewSepLyrics);
         mTextPlaylistInMultipleSelection = sActivity.findViewById(R.id.textPlaylistInMultipleSelection);
         mTextPlaylist = sActivity.findViewById(R.id.textPlaylist);
+        AnimationButton btnMoreInMultipleSelection = sActivity.findViewById(R.id.btnMoreInMultipleSelection);
         AnimationButton btnRewind = sActivity.findViewById(R.id.btnRewind);
         AnimationButton btnPlay = sActivity.findViewById(R.id.btnPlay);
         AnimationButton btnForward = sActivity.findViewById(R.id.btnForward);
@@ -1500,7 +1500,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mBtnDeleteInMultipleSelection.setOnClickListener(this);
         mBtnCopyInMultipleSelection.setOnClickListener(this);
         mBtnMoveInMultipleSelection.setOnClickListener(this);
-        mBtnMoreInMultipleSelection.setOnClickListener(this);
+        btnMoreInMultipleSelection.setOnClickListener(this);
 
         new SwipeHelper(sActivity, mRecyclerSongs) {
             @Override
@@ -4490,7 +4490,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-    public void setPeak(float fPeak) {
+    void setPeak(float fPeak) {
         if(sPlayingPlaylist < 0 || sPlayingPlaylist >= sPlaylists.size()) return;
         ArrayList<SongItem> arSongs = sPlaylists.get(sPlayingPlaylist);
         if(sPlaying < 0 || sPlaying >= arSongs.size()) return;

@@ -4622,7 +4622,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 }
             } else if (strEffect.equals(context.getString(R.string.transcribeBassOctave))) {
                 sActivity.controlFragment.setLink(false);
-                sActivity.controlFragment.setPitch(12.0f);
+                ControlFragment.setPitch(12.0f);
                 array = new int[]{0, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -20, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                 for (int j = 0; j < 32; j++) {
                     int nLevel = array[j];
@@ -4913,7 +4913,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 speed.value -= sDecreaseSpeed;
                 if (speed.value + 100.0f < 10.0f) speed.value = -90.0f;
                 if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
-                    sActivity.controlFragment.setSpeed(speed.value, false);
+                    ControlFragment.setSpeed(speed.value, false);
                 sHandler.postDelayed(this, (long) (sTimeOfIncreaseSpeed * 1000.0f));
             } else if (sEffectItems.get(EFFECTTYPE_OLDRECORD).isSelected()) {
                 BASS.FloatValue freq = new BASS.FloatValue();
@@ -4982,7 +4982,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 sVelo1 += sAccel; // 速度の差分に加速度を加える
                 speed.value += sVelo1; // 速度に差分を加える
                 if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
-                    sActivity.controlFragment.setSpeed(speed.value);
+                    ControlFragment.setSpeed(speed.value);
 
                 BASS.FloatValue pitch = new BASS.FloatValue();
                 fRand = random.nextFloat();
@@ -5329,7 +5329,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
     }
 
-    public void playMetronome() {
+    void playMetronome() {
         final MediaPlayer mp = MediaPlayer.create(sActivity, R.raw.click);
         mp.start();
         mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -5538,17 +5538,62 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                         final int fromPos = viewHolder.getAdapterPosition();
                         final int toPos = target.getAdapterPosition();
 
-                        EffectTemplateItem itemTemp = sReverbItems.get(fromPos);
-                        sReverbItems.remove(fromPos);
-                        sReverbItems.add(toPos, itemTemp);
+                        ArrayList<EffectTemplateItem> items = null;
+                        if (sEffectDetail == EFFECTTYPE_REVERB) items = sReverbItems;
+                        else if (sEffectDetail == EFFECTTYPE_ECHO) items = sEchoItems;
+                        else if (sEffectDetail == EFFECTTYPE_CHORUS) items = sChorusItems;
+                        else if (sEffectDetail == EFFECTTYPE_DISTORTION) items = sDistortionItems;
+                        else if (sEffectDetail == EFFECTTYPE_COMP) items = sCompItems;
+                        else if (sEffectDetail == EFFECTTYPE_PAN) items = sPanItems;
+
+                        EffectTemplateItem itemTemp = items.get(fromPos);
+                        items.remove(fromPos);
+                        items.add(toPos, itemTemp);
 
                         mEffectTemplatesAdapter.notifyItemMoved(fromPos, toPos);
 
-                        if (fromPos == sReverbSelected) sReverbSelected = toPos;
-                        else if (fromPos < sReverbSelected && sReverbSelected <= toPos)
-                            sReverbSelected--;
-                        else if (fromPos > sReverbSelected && sReverbSelected >= toPos)
-                            sReverbSelected++;
+                        if (sEffectDetail == EFFECTTYPE_REVERB) {
+                            if (fromPos == sReverbSelected) sReverbSelected = toPos;
+                            else if (fromPos < sReverbSelected && sReverbSelected <= toPos)
+                                sReverbSelected--;
+                            else if (fromPos > sReverbSelected && sReverbSelected >= toPos)
+                                sReverbSelected++;
+                        }
+                        else if (sEffectDetail == EFFECTTYPE_ECHO) {
+                            if (fromPos == sEchoSelected) sEchoSelected = toPos;
+                            else if (fromPos < sEchoSelected && sEchoSelected <= toPos)
+                                sEchoSelected--;
+                            else if (fromPos > sEchoSelected && sEchoSelected >= toPos)
+                                sEchoSelected++;
+                        }
+                        else if (sEffectDetail == EFFECTTYPE_CHORUS) {
+                            if (fromPos == sChorusSelected) sChorusSelected = toPos;
+                            else if (fromPos < sChorusSelected && sChorusSelected <= toPos)
+                                sChorusSelected--;
+                            else if (fromPos > sChorusSelected && sChorusSelected >= toPos)
+                                sChorusSelected++;
+                        }
+                        else if (sEffectDetail == EFFECTTYPE_DISTORTION) {
+                            if (fromPos == sDistortionSelected) sDistortionSelected = toPos;
+                            else if (fromPos < sDistortionSelected && sDistortionSelected <= toPos)
+                                sDistortionSelected--;
+                            else if (fromPos > sDistortionSelected && sDistortionSelected >= toPos)
+                                sDistortionSelected++;
+                        }
+                        else if (sEffectDetail == EFFECTTYPE_COMP) {
+                            if (fromPos == sCompSelected) sCompSelected = toPos;
+                            else if (fromPos < sCompSelected && sCompSelected <= toPos)
+                                sCompSelected--;
+                            else if (fromPos > sCompSelected && sCompSelected >= toPos)
+                                sCompSelected++;
+                        }
+                        else if (sEffectDetail == EFFECTTYPE_PAN) {
+                            if (fromPos == sPanSelected) sPanSelected = toPos;
+                            else if (fromPos < sPanSelected && sPanSelected <= toPos)
+                                sPanSelected--;
+                            else if (fromPos > sPanSelected && sPanSelected >= toPos)
+                                sPanSelected++;
+                        }
 
                         for (int i = 0; i < PlaylistFragment.sPlaylists.size(); i++) {
 
@@ -5557,12 +5602,54 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                             for (int j = 0; j < arSongs.size(); j++) {
                                 EffectSaver saver = arEffects.get(j);
                                 if (saver.isSave()) {
-                                    if (fromPos == saver.getReverbSelected())
-                                        saver.setReverbSelected(toPos);
-                                    else if (fromPos < saver.getReverbSelected() && saver.getReverbSelected() <= toPos)
-                                        saver.setReverbSelected(saver.getReverbSelected() - 1);
-                                    else if (fromPos > saver.getReverbSelected() && saver.getReverbSelected() >= toPos)
-                                        saver.setReverbSelected(saver.getReverbSelected() + 1);
+                                    if (sEffectDetail == EFFECTTYPE_REVERB) {
+                                        if (fromPos == saver.getReverbSelected())
+                                            saver.setReverbSelected(toPos);
+                                        else if (fromPos < saver.getReverbSelected() && saver.getReverbSelected() <= toPos)
+                                            saver.setReverbSelected(saver.getReverbSelected() - 1);
+                                        else if (fromPos > saver.getReverbSelected() && saver.getReverbSelected() >= toPos)
+                                            saver.setReverbSelected(saver.getReverbSelected() + 1);
+                                    }
+                                    else if (sEffectDetail == EFFECTTYPE_ECHO) {
+                                        if (fromPos == saver.getEchoSelected())
+                                            saver.setEchoSelected(toPos);
+                                        else if (fromPos < saver.getEchoSelected() && saver.getEchoSelected() <= toPos)
+                                            saver.setEchoSelected(saver.getEchoSelected() - 1);
+                                        else if (fromPos > saver.getEchoSelected() && saver.getEchoSelected() >= toPos)
+                                            saver.setEchoSelected(saver.getEchoSelected() + 1);
+                                    }
+                                    else if (sEffectDetail == EFFECTTYPE_CHORUS) {
+                                        if (fromPos == saver.getChorusSelected())
+                                            saver.setChorusSelected(toPos);
+                                        else if (fromPos < saver.getChorusSelected() && saver.getChorusSelected() <= toPos)
+                                            saver.setChorusSelected(saver.getChorusSelected() - 1);
+                                        else if (fromPos > saver.getChorusSelected() && saver.getChorusSelected() >= toPos)
+                                            saver.setChorusSelected(saver.getChorusSelected() + 1);
+                                    }
+                                    else if (sEffectDetail == EFFECTTYPE_DISTORTION) {
+                                        if (fromPos == saver.getDistortionSelected())
+                                            saver.setDistortionSelected(toPos);
+                                        else if (fromPos < saver.getDistortionSelected() && saver.getDistortionSelected() <= toPos)
+                                            saver.setDistortionSelected(saver.getDistortionSelected() - 1);
+                                        else if (fromPos > saver.getDistortionSelected() && saver.getDistortionSelected() >= toPos)
+                                            saver.setDistortionSelected(saver.getDistortionSelected() + 1);
+                                    }
+                                    else if (sEffectDetail == EFFECTTYPE_COMP) {
+                                        if (fromPos == saver.getCompSelected())
+                                            saver.setCompSelected(toPos);
+                                        else if (fromPos < saver.getCompSelected() && saver.getCompSelected() <= toPos)
+                                            saver.setCompSelected(saver.getCompSelected() - 1);
+                                        else if (fromPos > saver.getCompSelected() && saver.getCompSelected() >= toPos)
+                                            saver.setCompSelected(saver.getCompSelected() + 1);
+                                    }
+                                    else if (sEffectDetail == EFFECTTYPE_PAN) {
+                                        if (fromPos == saver.getPanSelected())
+                                            saver.setPanSelected(toPos);
+                                        else if (fromPos < saver.getPanSelected() && saver.getPanSelected() <= toPos)
+                                            saver.setPanSelected(saver.getPanSelected() - 1);
+                                        else if (fromPos > saver.getPanSelected() && saver.getPanSelected() >= toPos)
+                                            saver.setPanSelected(saver.getPanSelected() + 1);
+                                    }
                                 }
                             }
                         }
