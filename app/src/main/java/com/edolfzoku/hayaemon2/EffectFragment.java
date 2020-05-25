@@ -146,7 +146,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static final int ECHO_DRY_MAX = 200;
     private static final int ECHO_WET_MAX = 200;
     private static final int ECHO_FEEDBACK_MAX = 100;
-    private static final int ECHO_DELAY_MAX = 200;
+    private static final int ECHO_DELAY_MAX = 199;
     private static final int REVERB_DRY_MAX = 100;
     private static final int REVERB_WET_MAX = 300;
     private static final int REVERB_ROOMSIZE_MAX = 100;
@@ -3676,10 +3676,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if (nRelease > COMP_RELEASE_MAX) nRelease = COMP_RELEASE_MAX;
 
         sCompGain = nGain / 100.0f;
-        sCompThreshold = nThreshold / 100.0f;
-        sCompRatio = nRatio / 100.0f;
-        sCompAttack = nAttack / 100.0f;
-        sCompRelease = nRelease / 100.0f;
+        sCompThreshold = (nThreshold - 6000) / 100.0f;
+        sCompRatio = (nRatio + 100) / 100.0f;
+        sCompAttack = (nAttack + 1) / 100.0f;
+        sCompRelease = (nRelease + 1) / 100.0f;
 
         if(sActivity != null) {
             sActivity.effectFragment.getTextCompGain().setText(String.format(Locale.getDefault(), "%.2f", sCompGain));
@@ -3714,10 +3714,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             sActivity.effectFragment.getTextCompRelease().setText(String.format(Locale.getDefault(), "%.2f", sCompRelease));
 
             sActivity.effectFragment.getSeekCompGain().setProgress((int) (fGain * 100.0f));
-            sActivity.effectFragment.getSeekCompThreshold().setProgress((int) (fThreshold * 100.0f));
-            sActivity.effectFragment.getSeekCompRatio().setProgress((int) (fRatio * 100.0f));
-            sActivity.effectFragment.getSeekCompAttack().setProgress((int) (fAttack * 100.0f));
-            sActivity.effectFragment.getSeekCompRelease().setProgress((int) (fRelease * 100.0f));
+            sActivity.effectFragment.getSeekCompThreshold().setProgress((int) (fThreshold * 100.0f) + 6000);
+            sActivity.effectFragment.getSeekCompRatio().setProgress((int) (fRatio * 100.0f) - 100);
+            sActivity.effectFragment.getSeekCompAttack().setProgress((int) (fAttack * 100.0f) - 1);
+            sActivity.effectFragment.getSeekCompRelease().setProgress((int) (fRelease * 100.0f) - 1);
         }
 
         updateComp();
@@ -3847,7 +3847,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         sEchoDry = nDry / 100.0f;
         sEchoWet = nWet / 100.0f;
         sEchoFeedback = nFeedback / 100.0f;
-        sEchoDelay = nDelay / 100.0f;
+        sEchoDelay = (nDelay + 1) / 100.0f;
 
         if(sActivity != null) {
             sActivity.effectFragment.getTextEchoDry().setText(String.format(Locale.getDefault(), "%.2f", sEchoDry));
@@ -3880,7 +3880,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             sActivity.effectFragment.getSeekEchoDry().setProgress((int) (fDry * 100.0f));
             sActivity.effectFragment.getSeekEchoWet().setProgress((int) (fWet * 100.0f));
             sActivity.effectFragment.getSeekEchoFeedback().setProgress((int) (fFeedback * 100.0f));
-            sActivity.effectFragment.getSeekEchoDelay().setProgress((int) (fDelay * 100.0f));
+            sActivity.effectFragment.getSeekEchoDelay().setProgress((int) (fDelay * 100.0f) - 1);
         }
 
         updateEcho();
@@ -5522,6 +5522,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 menu.dismiss();
                 mRecyclerEffectTemplates.setPadding(0, 0, 0, (int) (64 * sActivity.getDensity()));
                 mBtnEffectTemplateOff.setVisibility(View.GONE);
+                mBtnEffectTemplateMenu.setVisibility(View.GONE);
 
                 mRelativeEffectTitle.setVisibility(View.GONE);
                 mViewSepEffectDetail.setVisibility(View.GONE);
