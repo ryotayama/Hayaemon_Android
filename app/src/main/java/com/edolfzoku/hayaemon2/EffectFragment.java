@@ -4900,110 +4900,110 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         @Override
         public void run() {
             if (sEffectItems.get(EFFECTTYPE_INCREASESPEED).isSelected()) {
-                Float fSpeed = 0.0f;
-                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, fSpeed);
-                fSpeed += sIncreaseSpeed;
-                if (fSpeed + 100.0f > 400.0f) fSpeed = 300.0f;
+                BASS.FloatValue speed = new BASS.FloatValue();
+                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, speed);
+                speed.value += sIncreaseSpeed;
+                if (speed.value + 100.0f > 400.0f) speed.value = 300.0f;
                 if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
-                    ControlFragment.setSpeed(fSpeed, false);
+                    ControlFragment.setSpeed(speed.value, false);
                 sHandler.postDelayed(this, (long) (sTimeOfIncreaseSpeed * 1000.0f));
             } else if (sEffectItems.get(EFFECTTYPE_DECREASESPEED).isSelected()) {
-                Float fSpeed = 0.0f;
-                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, fSpeed);
-                fSpeed -= sDecreaseSpeed;
-                if (fSpeed + 100.0f < 10.0f) fSpeed = -90.0f;
+                BASS.FloatValue speed = new BASS.FloatValue();
+                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, speed);
+                speed.value -= sDecreaseSpeed;
+                if (speed.value + 100.0f < 10.0f) speed.value = -90.0f;
                 if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
-                    sActivity.controlFragment.setSpeed(fSpeed, false);
+                    sActivity.controlFragment.setSpeed(speed.value, false);
                 sHandler.postDelayed(this, (long) (sTimeOfIncreaseSpeed * 1000.0f));
             } else if (sEffectItems.get(EFFECTTYPE_OLDRECORD).isSelected()) {
-                Float sFreq = 0.0f;
-                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS.BASS_ATTRIB_FREQ, sFreq);
-                Float fTempoFreq = 0.0f;
-                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, fTempoFreq);
-                fTempoFreq = fTempoFreq * 100.0f / sFreq;
+                BASS.FloatValue freq = new BASS.FloatValue();
+                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS.BASS_ATTRIB_FREQ, freq);
+                BASS.FloatValue tempoFreq = new BASS.FloatValue();
+                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, tempoFreq);
+                tempoFreq.value = tempoFreq.value * 100.0f / sFreq;
                 // 加速度の設定
                 // 周波数が98以上の場合 : -0.1
                 // 　　　　98未満の場合 : +0.1
-                float sAccel = fTempoFreq >= 98.0f ? -0.1f : 0.1f;
+                float sAccel = tempoFreq.value >= 98.0f ? -0.1f : 0.1f;
 
                 // 周波数の差分に加速度を加える
                 sVelo1 += sAccel;
 
                 // 周波数に差分を加える
-                fTempoFreq += sVelo1;
+                tempoFreq.value += sVelo1;
 
-                if (fTempoFreq <= 90.0) fTempoFreq = 90.0f;
-                if (fTempoFreq >= 100.0) fTempoFreq = 100.0f;
+                if (tempoFreq.value <= 90.0) tempoFreq.value = 90.0f;
+                if (tempoFreq.value >= 100.0) tempoFreq.value = 100.0f;
 
-                BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, sFreq * fTempoFreq / 100.0f);
+                BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, sFreq * tempoFreq.value / 100.0f);
                 sHandler.postDelayed(this, 750);
             } else if (sEffectItems.get(EFFECTTYPE_LOWBATTERY).isSelected()) {
-                Float sFreq = 0.0f;
-                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS.BASS_ATTRIB_FREQ, sFreq);
-                Float fTempoFreq = 0.0f;
-                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, fTempoFreq);
-                fTempoFreq = fTempoFreq * 100.0f / sFreq;
+                BASS.FloatValue freq = new BASS.FloatValue();
+                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS.BASS_ATTRIB_FREQ, freq);
+                BASS.FloatValue tempoFreq = new BASS.FloatValue();
+                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, tempoFreq);
+                tempoFreq.value = tempoFreq.value * 100.0f / sFreq;
                 // 加速度の設定
                 // 周波数が68以上の場合 : -0.02
                 // 　　　　68未満の場合 : +0.01
-                float sAccel = fTempoFreq >= 68.0f ? -0.02f : 0.01f;
+                float sAccel = tempoFreq.value >= 68.0f ? -0.02f : 0.01f;
 
                 // 周波数の差分に加速度を加える
                 sVelo1 += sAccel;
 
                 // 周波数に差分を加える
-                fTempoFreq += sVelo1;
+                tempoFreq.value += sVelo1;
 
-                if (fTempoFreq <= 65.0) fTempoFreq = 65.0f;
-                if (fTempoFreq >= 70.0) fTempoFreq = 70.0f;
+                if (tempoFreq.value <= 65.0) tempoFreq.value = 65.0f;
+                if (tempoFreq.value >= 70.0) tempoFreq.value = 70.0f;
 
-                BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, sFreq * fTempoFreq / 100.0f);
+                BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, sFreq * tempoFreq.value / 100.0f);
 
                 sHandler.postDelayed(this, 50);
             } else if (sEffectItems.get(EFFECTTYPE_NOSENSE_STRONG).isSelected() || sEffectItems.get(EFFECTTYPE_NOSENSE_MIDDLE).isSelected() || sEffectItems.get(EFFECTTYPE_NOSENSE_WEAK).isSelected()) {
-                Float fSpeed = 0.0f;
-                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, fSpeed);
+                BASS.FloatValue speed = new BASS.FloatValue();
+                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, speed);
                 float sAccel;
                 Random random = new Random();
                 float fRand = random.nextFloat();
                 if (sEffectItems.get(EFFECTTYPE_NOSENSE_STRONG).isSelected()) {
                     sAccel = (fRand * 400.0f) / 10000.0f - 0.02f; // 加速度の設定
-                    if (fSpeed < -20.0f) sAccel = 0.01f;
-                    else if (fSpeed > 20.0f) sAccel = -0.01f;
+                    if (speed.value < -20.0f) sAccel = 0.01f;
+                    else if (speed.value > 20.0f) sAccel = -0.01f;
                 } else if (sEffectItems.get(EFFECTTYPE_NOSENSE_MIDDLE).isSelected()) {
                     sAccel = (fRand * 200.0f) / 10000.0f - 0.01f; // 加速度の設定
-                    if (fSpeed < -10.0f) sAccel = 0.01f;
-                    else if (fSpeed > 10.0f) sAccel = -0.01f;
+                    if (speed.value < -10.0f) sAccel = 0.01f;
+                    else if (speed.value > 10.0f) sAccel = -0.01f;
                 } else {
                     sAccel = (fRand * 100.0f) / 10000.0f - 0.005f; // 加速度の設定
-                    if (fSpeed < -5.0f) sAccel = 0.01f;
-                    else if (fSpeed > 5.0f) sAccel = -0.01f;
+                    if (speed.value < -5.0f) sAccel = 0.01f;
+                    else if (speed.value > 5.0f) sAccel = -0.01f;
                 }
                 sVelo1 += sAccel; // 速度の差分に加速度を加える
-                fSpeed += sVelo1; // 速度に差分を加える
+                speed.value += sVelo1; // 速度に差分を加える
                 if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
-                    sActivity.controlFragment.setSpeed(fSpeed);
+                    sActivity.controlFragment.setSpeed(speed.value);
 
-                Float fPitch = 0.0f;
+                BASS.FloatValue pitch = new BASS.FloatValue();
                 fRand = random.nextFloat();
-                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, fPitch);
+                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, pitch);
                 if (sEffectItems.get(EFFECTTYPE_NOSENSE_STRONG).isSelected()) {
                     sAccel = (fRand * 400.0f) / 10000.0f - 0.02f; // 加速度の設定
-                    if (fPitch < -4.0f) sAccel = 0.01f;
-                    else if (fPitch > 4.0f) sAccel = -0.01f;
+                    if (pitch.value < -4.0f) sAccel = 0.01f;
+                    else if (pitch.value > 4.0f) sAccel = -0.01f;
                 } else if (sEffectItems.get(EFFECTTYPE_NOSENSE_MIDDLE).isSelected()) {
                     sAccel = (fRand * 200.0f) / 10000.0f - 0.01f; // 加速度の設定
-                    if (fPitch < -2.0f) sAccel = 0.01f;
-                    else if (fPitch > 2.0f) sAccel = -0.01f;
+                    if (pitch.value < -2.0f) sAccel = 0.01f;
+                    else if (pitch.value > 2.0f) sAccel = -0.01f;
                 } else {
                     sAccel = (fRand * 100.0f) / 10000.0f - 0.005f; // 加速度の設定
-                    if (fPitch < -1.0f) sAccel = 0.01f;
-                    else if (fPitch > 1.0f) sAccel = -0.01f;
+                    if (pitch.value < -1.0f) sAccel = 0.01f;
+                    else if (pitch.value > 1.0f) sAccel = -0.01f;
                 }
                 sVelo2 += sAccel; // 音程の差分に加速度を加える
-                fPitch += sVelo2; // 音程に差分を加える
+                pitch.value += sVelo2; // 音程に差分を加える
                 if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
-                    ControlFragment.setPitch(fPitch);
+                    ControlFragment.setPitch(pitch.value);
                 sHandler.postDelayed(this, 80);
             } else if (sEffectItems.get(EFFECTTYPE_EARTRAINING).isSelected()) {
                 EqualizerFragment.setEQRandom();
@@ -5022,18 +5022,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     return;
                 }
 
-                Float fVol = 0.0f;
-                BASS.BASS_ChannelGetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol);
+                BASS.FloatValue vol = new BASS.FloatValue();
+                BASS.BASS_ChannelGetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, vol);
                 Random random = new Random();
                 float fRand = random.nextFloat();
                 fRand = (fRand / 200.0f) - 0.0025f;
-                if (fVol > 1.0f - 0.01f) fRand = -0.0005f;
-                else if (fVol <= 0.5f) fRand = 0.0005f;
+                if (vol.value > 1.0f - 0.01f) fRand = -0.0005f;
+                else if (vol.value <= 0.5f) fRand = 0.0005f;
                 sAccel += fRand;
-                fVol += sAccel;
-                if (fVol > 1.0f) fVol = 1.0f;
-                else if (fVol < 0.5f) fVol = 0.5f;
-                BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, fVol * sSoundEffectVolume / 100.0f);
+                vol.value += sAccel;
+                if (vol.value > 1.0f) vol.value = 1.0f;
+                else if (vol.value < 0.5f) vol.value = 0.5f;
+                BASS.BASS_ChannelSetAttribute(hSETemp, BASS.BASS_ATTRIB_VOL, vol.value * sSoundEffectVolume / 100.0f);
                 sHandler.postDelayed(this, 100);
             }
         }
@@ -5293,8 +5293,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static void onCheerEnded() {
         Context context = sActivity != null ? sActivity : MainActivity.sService;
         if (sSE1PlayingFlag) {
-            Float fVol = 0.0f;
-            BASS.BASS_ChannelGetAttribute(sSEStream, BASS.BASS_ATTRIB_VOL, fVol);
+            BASS.FloatValue vol = new BASS.FloatValue();
+            BASS.BASS_ChannelGetAttribute(sSEStream, BASS.BASS_ATTRIB_VOL, vol);
             MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
             params.inputStream = context.getResources().openRawResource(R.raw.cheer);
             sSEStream2 = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
@@ -5306,12 +5306,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             sSync = BASS.BASS_ChannelSetSync(sSEStream2, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(sSEStream2, 14.0), endCheer, null);
             BASS.BASS_ChannelPlay(sSEStream2, FALSE);
-            BASS.BASS_ChannelSlideAttribute(sSEStream2, BASS.BASS_ATTRIB_VOL, fVol, 1000);
+            BASS.BASS_ChannelSlideAttribute(sSEStream2, BASS.BASS_ATTRIB_VOL, vol.value, 1000);
             BASS.BASS_ChannelSlideAttribute(sSEStream, BASS.BASS_ATTRIB_VOL, 0.0f, 1000);
             sSE1PlayingFlag = false;
         } else if (BASS.BASS_ChannelIsActive(sSEStream2) == BASS.BASS_ACTIVE_PLAYING) {
-            Float fVol = 0.0f;
-            BASS.BASS_ChannelGetAttribute(sSEStream2, BASS.BASS_ATTRIB_VOL, fVol);
+            BASS.FloatValue vol = new BASS.FloatValue();
+            BASS.BASS_ChannelGetAttribute(sSEStream2, BASS.BASS_ATTRIB_VOL, vol);
             MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
             params.inputStream = context.getResources().openRawResource(R.raw.cheer);
             sSEStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
@@ -5323,7 +5323,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             sSync = BASS.BASS_ChannelSetSync(sSEStream, BASS.BASS_SYNC_POS, BASS.BASS_ChannelSeconds2Bytes(sSEStream, 14.0), endCheer, null);
             BASS.BASS_ChannelPlay(sSEStream, FALSE);
-            BASS.BASS_ChannelSlideAttribute(sSEStream, BASS.BASS_ATTRIB_VOL, fVol, 1000);
+            BASS.BASS_ChannelSlideAttribute(sSEStream, BASS.BASS_ATTRIB_VOL, vol.value, 1000);
             BASS.BASS_ChannelSlideAttribute(sSEStream2, BASS.BASS_ATTRIB_VOL, 0.0f, 1000);
             sSE1PlayingFlag = true;
         }

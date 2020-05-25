@@ -9,7 +9,9 @@ package com.un4seen.bass;
 
 import java.nio.ByteBuffer;
 import android.content.res.AssetManager;
+import android.os.ParcelFileDescriptor;
 
+@SuppressWarnings({"all"})
 public class BASS
 {
 	public static final int BASSVERSION = 0x204;	// API version
@@ -28,6 +30,7 @@ public class BASS
 	public static final int BASS_ERROR_START = 9;	// BASS_Start has not been successfully called
 	public static final int BASS_ERROR_SSL = 10;	// SSL/HTTPS support isn't available
 	public static final int BASS_ERROR_ALREADY = 14;	// already initialized/paused/whatever
+	public static final int BASS_ERROR_NOTAUDIO = 17;	// file does not contain audio
 	public static final int BASS_ERROR_NOCHAN = 18;	// can't get a free channel
 	public static final int BASS_ERROR_ILLTYPE = 19;	// an illegal type was specified
 	public static final int BASS_ERROR_ILLPARAM = 20;	// an illegal parameter was specified
@@ -52,6 +55,7 @@ public class BASS
 	public static final int BASS_ERROR_CODEC = 44;	// codec is not available/supported
 	public static final int BASS_ERROR_ENDED = 45;	// the channel/file has ended
 	public static final int BASS_ERROR_BUSY = 46;	// the device is busy
+	public static final int BASS_ERROR_UNSTREAMABLE = 47; // unstreamable file
 	public static final int BASS_ERROR_UNKNOWN = -1;	// some other mystery problem
 
 	public static final int BASS_ERROR_JAVA_CLASS = 500;	// object class problem
@@ -93,6 +97,7 @@ public class BASS
 	public static final int BASS_CONFIG_NET_PLAYLIST_DEPTH = 59;
 	public static final int BASS_CONFIG_NET_PREBUF_WAIT = 60;
 	public static final int BASS_CONFIG_ANDROID_SESSIONID = 62;
+	public static final int BASS_CONFIG_ANDROID_AAUDIO = 67;
 
 	// BASS_SetConfigPtr options
 	public static final int BASS_CONFIG_NET_AGENT = 16;
@@ -252,6 +257,7 @@ public class BASS
 	public static final int BASS_CTYPE_SAMPLE = 1;
 	public static final int BASS_CTYPE_RECORD = 2;
 	public static final int BASS_CTYPE_STREAM = 0x10000;
+	public static final int BASS_CTYPE_STREAM_VORBIS = 0x10002;
 	public static final int BASS_CTYPE_STREAM_OGG = 0x10002;
 	public static final int BASS_CTYPE_STREAM_MP1 = 0x10003;
 	public static final int BASS_CTYPE_STREAM_MP2 = 0x10004;
@@ -307,8 +313,7 @@ public class BASS
 	public interface STREAMPROC
 	{
 		int STREAMPROC(int handle, ByteBuffer buffer, int length, Object user);
-		/* User stream callback function. NOTE: A stream function should obviously be as quick
-		as possible, other streams (and MOD musics) can't be mixed until it's finished.
+		/* User stream callback function.
 		handle : The stream that needs writing
 		buffer : Buffer to write the samples in
 		length : Number of bytes to write
@@ -379,16 +384,14 @@ public class BASS
 	public static final int BASS_SYNC_OGG_CHANGE = 12;
 	public static final int BASS_SYNC_DEV_FAIL = 14;
 	public static final int BASS_SYNC_DEV_FORMAT = 15;
+	public static final int BASS_SYNC_THREAD = 0x20000000;	// flag: call sync in other thread
 	public static final int BASS_SYNC_MIXTIME = 0x40000000;	// flag: sync at mixtime, else at playtime
 	public static final int BASS_SYNC_ONETIME = 0x80000000;	// flag: sync only once, else continuously
 
 	public interface SYNCPROC
 	{
 		void SYNCPROC(int handle, int channel, int data, Object user);
-		/* Sync callback function. NOTE: a sync callback function should be very
-		quick as other syncs can't be processed until it has finished. If the sync
-		is a "mixtime" sync, then other streams and MOD musics can't be mixed until
-		it's finished either.
+		/* Sync callback function.
 		handle : The sync that has occured
 		channel: Channel that the sync occured in
 		data   : Additional data associated with the sync's occurance
@@ -398,9 +401,7 @@ public class BASS
 	public interface DSPPROC
 	{
 		void DSPPROC(int handle, int channel, ByteBuffer buffer, int length, Object user);
-		/* DSP callback function. NOTE: A DSP function should obviously be as quick as
-		possible... other DSP functions, streams and MOD musics can not be processed
-		until it's finished.
+		/* DSP callback function.
 		handle : The DSP handle
 		channel: Channel that the DSP is being applied to
 		buffer : Buffer to apply the DSP to
@@ -440,6 +441,7 @@ public class BASS
 	public static final int BASS_ATTRIB_NORAMP = 11;
 	public static final int BASS_ATTRIB_BITRATE = 12;
 	public static final int BASS_ATTRIB_BUFFER = 13;
+	public static final int BASS_ATTRIB_GRANULE = 14;
 	public static final int BASS_ATTRIB_MUSIC_AMPLIFY = 0x100;
 	public static final int BASS_ATTRIB_MUSIC_PANSEP = 0x101;
 	public static final int BASS_ATTRIB_MUSIC_PSCALER = 0x102;
@@ -619,6 +621,10 @@ public class BASS
 		public String file;
 	}
 
+	public static class FloatValue {
+		public float value;
+	}
+
 	public static native boolean BASS_SetConfig(int option, int value);
 	public static native int BASS_GetConfig(int option);
 	public static native boolean BASS_SetConfigPtr(int option, Object value);
@@ -645,7 +651,7 @@ public class BASS
 	public static native BASS_PLUGININFO BASS_PluginGetInfo(int handle);
 
 	public static native boolean BASS_Set3DFactors(float distf, float rollf, float doppf);
-	public static native boolean BASS_Get3DFactors(Float distf, Float rollf, Float doppf);
+	public static native boolean BASS_Get3DFactors(FloatValue distf, FloatValue rollf, FloatValue doppf);
 	public static native boolean BASS_Set3DPosition(BASS_3DVECTOR pos, BASS_3DVECTOR vel, BASS_3DVECTOR front, BASS_3DVECTOR top);
 	public static native boolean BASS_Get3DPosition(BASS_3DVECTOR pos, BASS_3DVECTOR vel, BASS_3DVECTOR front, BASS_3DVECTOR top);
 	public static native void BASS_Apply3D();
@@ -653,6 +659,7 @@ public class BASS
 	public static native int BASS_SampleLoad(String file, long offset, int length, int max, int flags);
 	public static native int BASS_SampleLoad(ByteBuffer file, long offset, int length, int max, int flags);
 	public static native int BASS_SampleLoad(Asset file, long offset, int length, int max, int flags);
+	public static native int BASS_SampleLoad(ParcelFileDescriptor file, long offset, int length, int max, int flags);
 	public static native int BASS_SampleCreate(int length, int freq, int chans, int max, int flags);
 	public static native boolean BASS_SampleFree(int handle);
 	public static native boolean BASS_SampleSetData(int handle, ByteBuffer buffer);
@@ -666,11 +673,13 @@ public class BASS
 	public static native int BASS_MusicLoad(String file, long offset, int length, int flags, int freq);
 	public static native int BASS_MusicLoad(ByteBuffer file, long offset, int length, int flags, int freq);
 	public static native int BASS_MusicLoad(Asset asset, long offset, int length, int flags, int freq);
+	public static native int BASS_MusicLoad(ParcelFileDescriptor asset, long offset, int length, int flags, int freq);
 	public static native boolean BASS_MusicFree(int handle);
 
 	public static native int BASS_StreamCreate(int freq, int chans, int flags, STREAMPROC proc, Object user);
 	public static native int BASS_StreamCreateFile(String file, long offset, long length, int flags);
 	public static native int BASS_StreamCreateFile(ByteBuffer file, long offset, long length, int flags);
+	public static native int BASS_StreamCreateFile(ParcelFileDescriptor file, long offset, long length, int flags);
 	public static native int BASS_StreamCreateFile(Asset asset, long offset, long length, int flags);
 	public static native int BASS_StreamCreateURL(String url, int offset, int flags, DOWNLOADPROC proc, Object user);
 	public static native int BASS_StreamCreateFileUser(int system, int flags, BASS_FILEPROCS procs, Object user);
@@ -687,7 +696,7 @@ public class BASS
 	public static native boolean BASS_RecordGetInfo(BASS_RECORDINFO info);
 	public static native String BASS_RecordGetInputName(int input);
 	public static native boolean BASS_RecordSetInput(int input, int flags, float volume);
-	public static native int BASS_RecordGetInput(int input, Float volume);
+	public static native int BASS_RecordGetInput(int input, FloatValue volume);
 	public static native int BASS_RecordStart(int freq, int chans, int flags, RECORDPROC proc, Object user);
 
 	public static native double BASS_ChannelBytes2Seconds(int handle, long pos);
@@ -704,13 +713,13 @@ public class BASS
 	public static native boolean BASS_ChannelStop(int handle);
 	public static native boolean BASS_ChannelPause(int handle);
 	public static native boolean BASS_ChannelSetAttribute(int handle, int attrib, float value);
-	public static native boolean BASS_ChannelGetAttribute(int handle, int attrib, Float value);
+	public static native boolean BASS_ChannelGetAttribute(int handle, int attrib, FloatValue value);
 	public static native boolean BASS_ChannelSlideAttribute(int handle, int attrib, float value, int time);
 	public static native boolean BASS_ChannelIsSliding(int handle, int attrib);
 	public static native boolean BASS_ChannelSetAttributeEx(int handle, int attrib, ByteBuffer value, int size);
 	public static native int BASS_ChannelGetAttributeEx(int handle, int attrib, ByteBuffer value, int size);
 	public static native boolean BASS_ChannelSet3DAttributes(int handle, int mode, float min, float max, int iangle, int oangle, float outvol);
-	public static native boolean BASS_ChannelGet3DAttributes(int handle, Integer mode, Float min, Float max, Integer iangle, Integer oangle, Float outvol);
+	public static native boolean BASS_ChannelGet3DAttributes(int handle, Integer mode, FloatValue min, FloatValue max, Integer iangle, Integer oangle, FloatValue outvol);
 	public static native boolean BASS_ChannelSet3DPosition(int handle, BASS_3DVECTOR pos, BASS_3DVECTOR orient, BASS_3DVECTOR vel);
 	public static native boolean BASS_ChannelGet3DPosition(int handle, BASS_3DVECTOR pos, BASS_3DVECTOR orient, BASS_3DVECTOR vel);
 	public static native long BASS_ChannelGetLength(int handle, int mode);
