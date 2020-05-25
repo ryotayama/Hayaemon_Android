@@ -2983,6 +2983,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saver.setChorusSelected(EffectFragment.sChorusSelected);
         saver.setDistortionSelected(EffectFragment.sDistortionSelected);
         saver.setCompSelected(EffectFragment.sCompSelected);
+        saver.setPanSelected(EffectFragment.sPanSelected);
         saver.setSoundEffectSelected(EffectFragment.sSoundEffectSelected);
 
         saveFiles(false, true, false, false, false);
@@ -3082,6 +3083,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setChorusSelected(EffectFragment.sChorusSelected);
             saver.setDistortionSelected(EffectFragment.sDistortionSelected);
             saver.setCompSelected(EffectFragment.sCompSelected);
+            saver.setPanSelected(EffectFragment.sPanSelected);
             saver.setSoundEffectSelected(EffectFragment.sSoundEffectSelected);
 
             saveFiles(false, true, false, false, false);
@@ -3176,6 +3178,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         EffectFragment.setChorusSelected(saver.getChorusSelected());
         EffectFragment.setDistortionSelected(saver.getDistortionSelected());
         EffectFragment.setCompSelected(saver.getCompSelected());
+        EffectFragment.setPanSelected(saver.getPanSelected());
         EffectFragment.setSoundEffectSelected(saver.getSoundEffectSelected());
     }
 

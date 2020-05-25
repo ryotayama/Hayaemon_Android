@@ -824,6 +824,168 @@
         </ScrollView>
 
         <ScrollView
+            android:id="@+id/scrollPanCustomize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/viewSepEffectDetail"
+            android:visibility="invisible"
+            >
+
+            <RelativeLayout
+                android:id="@+id/relativePan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:background="#FFF"
+                >
+
+                <RelativeLayout
+                    android:id="@+id/relativePanTopButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    >
+
+                    <Button
+                        android:id="@+id/btnPanRandom"
+                        android:text="@string/random"
+                        android:textSize="12sp"
+                        android:textColor="@color/btn_text"
+                        android:background="@drawable/resetbutton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:stateListAnimator="@null"
+                        />
+
+                    <Button
+                        android:id="@+id/btnResetPan"
+                        android:text="@string/reset"
+                        android:textSize="12sp"
+                        android:textColor="@color/btn_text"
+                        android:background="@drawable/resetbutton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:stateListAnimator="@null"
+                        android:layout_toRightOf="@+id/btnPanRandom"
+                        android:layout_toEndOf="@+id/btnPanRandom"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textPanValueLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pan"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativePanTopButton"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderPanValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_below="@id/textPanValueLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekPanValue"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="200"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textPanValue"
+                        android:layout_toStartOf="@id/textPanValue"
+                        android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
+                        />
+
+                    <TextView
+                        android:id="@+id/textPanValue"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnPanValueMinus"
+                        android:layout_toStartOf="@+id/btnPanValueMinus"
+                        />
+
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
+                        android:id="@+id/btnPanValueMinus"
+                        android:contentDescription="@string/changeLeft"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/ic_button_left"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnPanValuePlus"
+                        android:layout_toStartOf="@+id/btnPanValuePlus"
+                        />
+
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
+                        android:id="@+id/btnPanValuePlus"
+                        android:contentDescription="@string/changeRight"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/ic_button_right"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btnPanSaveAs"
+                    android:text="@string/saveAs"
+                    android:textColor="@color/btn_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="44dp"
+                    android:layout_marginRight="44dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/btn_border_background"
+                    android:stateListAnimator="@null"
+                    android:visibility="visible"
+                    android:layout_below="@+id/relativeSliderPanValue"
+                    />
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+        <ScrollView
             android:id="@+id/scrollEchoCustomize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

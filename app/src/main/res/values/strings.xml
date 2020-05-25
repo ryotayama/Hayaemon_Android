@@ -16,6 +16,16 @@
     <string name="transcribeSideGuitar">Transcribe Side Guitar</string>
     <string name="transcribeBassOctave">Transcribe Bass (Octave up)</string>
     <string name="pan">Pan</string>
+    <string name="newPan">New pan</string>
+    <string name="panTemplate">Pan template</string>
+    <string name="panL100">Left 100%</string>
+    <string name="panR100">Right 100%</string>
+    <string name="panL75">Left 75%</string>
+    <string name="panR75">Right 75%</string>
+    <string name="panL50">Left 50%</string>
+    <string name="panR50">Right 50%</string>
+    <string name="panL25">Left 25%</string>
+    <string name="panR25">Right 25%</string>
     <string name="normalize">Normalize</string>
     <string name="comp">Compressor</string>
     <string name="newComp">New compressor</string>

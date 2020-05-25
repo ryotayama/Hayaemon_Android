@@ -16,6 +16,16 @@
     <string name="transcribeSideGuitar">サイドギターの耳コピ</string>
     <string name="transcribeBassOctave">ベースの耳コピ（オクターブ上げ）</string>
     <string name="pan">パン（左右バランス）</string>
+    <string name="newPan">新規パン</string>
+    <string name="panTemplate">パンテンプレート</string>
+    <string name="panL100">左100%</string>
+    <string name="panR100">右100%</string>
+    <string name="panL75">左75%</string>
+    <string name="panR75">右75%</string>
+    <string name="panL50">左50%</string>
+    <string name="panR50">右50%</string>
+    <string name="panL25">左25%</string>
+    <string name="panR25">右25%</string>
     <string name="normalize">ノーマライズ</string>
     <string name="comp">コンプレッサー</string>
     <string name="newComp">新規コンプレッサー</string>
