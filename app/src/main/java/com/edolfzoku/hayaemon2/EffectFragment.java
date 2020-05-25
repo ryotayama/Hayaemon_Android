@@ -3779,11 +3779,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         if(sActivity != null) {
             if (sPan == 0f)
-                sActivity.effectFragment.getTextPanValue().setText(String.format(Locale.getDefault(), "%.0f", sPan * 100f));
+                sActivity.effectFragment.getTextPanValue().setText(String.format(Locale.getDefault(), "%.0f%%", sPan * 100f));
             else if (sPan < 0f)
-                sActivity.effectFragment.getTextPanValue().setText(String.format(Locale.getDefault(), "L%.0f", sPan * -100f));
+                sActivity.effectFragment.getTextPanValue().setText(String.format(Locale.getDefault(), "L%.0f%%", sPan * -100f));
             else
-                sActivity.effectFragment.getTextPanValue().setText(String.format(Locale.getDefault(), "R%.0f", sPan * 100f));
+                sActivity.effectFragment.getTextPanValue().setText(String.format(Locale.getDefault(), "R%.0f%%", sPan * 100f));
 
             sActivity.effectFragment.getSeekPanValue().setProgress(nValue);
         }
@@ -3797,11 +3797,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         if(sActivity != null) {
             if (sPan == 0f)
-                sActivity.effectFragment.getTextPanValue().setText(String.format(Locale.getDefault(), "%.0f", sPan * 100f));
+                sActivity.effectFragment.getTextPanValue().setText(String.format(Locale.getDefault(), "%.0f%%", sPan * 100f));
             else if (sPan < 0f)
-                sActivity.effectFragment.getTextPanValue().setText(String.format(Locale.getDefault(), "L%.0f", sPan * -100f));
+                sActivity.effectFragment.getTextPanValue().setText(String.format(Locale.getDefault(), "L%.0f%%", sPan * -100f));
             else
-                sActivity.effectFragment.getTextPanValue().setText(String.format(Locale.getDefault(), "R%.0f", sPan * 100f));
+                sActivity.effectFragment.getTextPanValue().setText(String.format(Locale.getDefault(), "R%.0f%%", sPan * 100f));
 
             sActivity.effectFragment.getSeekPanValue().setProgress((int)(fValue * 100f + 100));
         }
