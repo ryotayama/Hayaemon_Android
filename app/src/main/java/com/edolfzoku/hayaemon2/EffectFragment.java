@@ -145,7 +145,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static final int PAN_VALUE_MAX = 200;
     private static final int ECHO_DRY_MAX = 200;
     private static final int ECHO_WET_MAX = 200;
-    private static final int ECHO_FEEDBACK_MAX = 100;
+    private static final int ECHO_FEEDBACK_MAX = 98;
     private static final int ECHO_DELAY_MAX = 199;
     private static final int REVERB_DRY_MAX = 100;
     private static final int REVERB_WET_MAX = 300;
