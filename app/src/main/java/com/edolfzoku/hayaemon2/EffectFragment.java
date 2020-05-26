@@ -878,7 +878,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 if (sEffectDetail == EFFECTTYPE_REVERB)
                     setReverb(70, 100, 85, 50, 90, true);
                 else if (sEffectDetail == EFFECTTYPE_ECHO)
-                    setEcho(100, 30, 60, 8, true);
+                    setEcho(100, 30, 60, 7, true);
                 else if (sEffectDetail == EFFECTTYPE_CHORUS)
                     setChorus(100, 10, 50, 100, 200, 1000, true);
                 else if (sEffectDetail == EFFECTTYPE_DISTORTION)
@@ -2623,7 +2623,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         setComp(200, 4000, 900, 119, 39999, false);
         setPan(100, false);
-        setEcho(100, 30, 60, 8, false);
+        setEcho(100, 30, 60, 7, false);
         setReverb(70, 100, 85, 50, 90, false);
         setChorus(100, 10, 50, 100, 200, 1000, false);
         setDistortion(20, 95, 5, 10, 100, false);
@@ -3144,7 +3144,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         BASS.BASS_ChannelRemoveFX(MainActivity.sStream, sFxEcho);
         sFxEcho = 0;
 
-        setEcho(100, 30, 60, 8, save);
+        setEcho(100, 30, 60, 7, save);
     }
 
     private int getRandomValue(int nMin, int nMax) {
