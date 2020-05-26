@@ -702,7 +702,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                             sCompItems.get(sCompItems.size() - 1).setSelected(true);
                             sCompSelected = sCompItems.size() - 1;
                         } else if (sEffectDetail == EFFECTTYPE_PAN) {
-                            arPresets.add(Float.parseFloat((String) mTextPanValue.getText()));
+                            arPresets.add((mSeekPanValue.getProgress() - 100) / 100f);
                             sPanItems.add(new EffectTemplateItem(editPreset.getText().toString(), arPresets));
                             mEffectTemplatesAdapter.notifyItemInserted(sPanItems.size() - 1);
                             mScrollPanCustomize.setVisibility(View.INVISIBLE);
