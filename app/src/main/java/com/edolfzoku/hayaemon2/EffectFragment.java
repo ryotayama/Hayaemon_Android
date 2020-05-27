@@ -88,6 +88,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static ArrayList<EffectTemplateItem> sDistortionItems;
     private static ArrayList<EffectTemplateItem> sCompItems;
     private static ArrayList<EffectTemplateItem> sPanItems;
+    private static ArrayList<EffectTemplateItem> sFreqItems;
     private static ArrayList<EffectTemplateItem> sSoundEffectItems;
     private ItemTouchHelper mEffectTemplateTouchHelper;
     private static Metronome sMetronome;
@@ -112,7 +113,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static final int EFFECTTYPE_PAN = 9;
     // private static final int EFFECTTYPE_NORMALIZE = 10;
     private static final int EFFECTTYPE_COMP = 11;
-    private static final int EFFECTTYPE_FREQUENCY = 12;
+    private static final int EFFECTTYPE_FREQ = 12;
     // private static final int EFFECTTYPE_PHASEREVERSAL = 13;
     private static final int EFFECTTYPE_ECHO = 14;
     private static final int EFFECTTYPE_REVERB = 15;
@@ -143,6 +144,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static final int COMP_ATTACK_MAX = 99999;
     private static final int COMP_RELEASE_MAX = 99999;
     private static final int PAN_VALUE_MAX = 200;
+    private static final int FREQ_VALUE_MAX = 390;
     private static final int ECHO_DRY_MAX = 200;
     private static final int ECHO_WET_MAX = 200;
     private static final int ECHO_FEEDBACK_MAX = 98;
@@ -171,17 +173,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private boolean mSorting, mAddTemplate;
     private static float sAccel = 0.0f, sVelo1 = 0.0f, sVelo2 = 0.0f;
     private boolean mContinueFlag = true;
-    static int sEffectDetail = -1, sReverbSelected = -1, sEchoSelected = -1, sChorusSelected = -1, sDistortionSelected = -1, sCompSelected = -1, sPanSelected = -1, sSoundEffectSelected = -1;
+    static int sEffectDetail = -1, sReverbSelected = -1, sEchoSelected = -1, sChorusSelected = -1, sDistortionSelected = -1, sCompSelected = -1, sPanSelected = -1, sFreqSelected = -1, sSoundEffectSelected = -1;
     private RecyclerView mRecyclerEffects, mRecyclerEffectTemplates;
-    private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextPanValue, mTextEchoDry, mTextEchoWet, mTextEchoFeedback, mTextEchoDelay, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth, mTextChorusDry, mTextChorusWet, mTextChorusFeedback, mTextChorusMinSweep, mTextChorusMaxSweep, mTextChorusRate, mTextDistortionDrive, mTextDistortionDry, mTextDistortionWet, mTextDistortionFeedback, mTextDistortionVolume, mTextSoundEffectVolume, mTextFinishSortEffect, mTextCompGainLabel, mTextCompThresholdLabel, mTextCompRatioLabel, mTextCompAttackLabel, mTextCompReleaseLabel, mTextPanValueLabel, mTextEchoDryLabel, mTextEchoWetLabel, mTextEchoFeedbackLabel, mTextEchoDelayLabel, mTextReverbDryLabel, mTextReverbWetLabel, mTextReverbRoomSizeLabel, mTextReverbDampLabel, mTextReverbWidthLabel, mTextChorusDryLabel, mTextChorusWetLabel, mTextChorusFeedbackLabel, mTextChorusMinSweepLabel, mTextChorusMaxSweepLabel, mTextChorusRateLabel, mTextDistortionDriveLabel, mTextDistortionDryLabel, mTextDistortionWetLabel, mTextDistortionFeedbackLabel, mTextDistortionVolumeLabel, mTextSoundEffectVolumeLabel, mTextTimeEffectDetail, mTextSpeedEffectDetail;
+    private TextView mTextEffectName, mTextEffectDetail, mTextEffectLabel, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextPanValue, mTextFreqValue, mTextEchoDry, mTextEchoWet, mTextEchoFeedback, mTextEchoDelay, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth, mTextChorusDry, mTextChorusWet, mTextChorusFeedback, mTextChorusMinSweep, mTextChorusMaxSweep, mTextChorusRate, mTextDistortionDrive, mTextDistortionDry, mTextDistortionWet, mTextDistortionFeedback, mTextDistortionVolume, mTextSoundEffectVolume, mTextFinishSortEffect, mTextCompGainLabel, mTextCompThresholdLabel, mTextCompRatioLabel, mTextCompAttackLabel, mTextCompReleaseLabel, mTextPanValueLabel, mTextFreqValueLabel, mTextEchoDryLabel, mTextEchoWetLabel, mTextEchoFeedbackLabel, mTextEchoDelayLabel, mTextReverbDryLabel, mTextReverbWetLabel, mTextReverbRoomSizeLabel, mTextReverbDampLabel, mTextReverbWidthLabel, mTextChorusDryLabel, mTextChorusWetLabel, mTextChorusFeedbackLabel, mTextChorusMinSweepLabel, mTextChorusMaxSweepLabel, mTextChorusRateLabel, mTextDistortionDriveLabel, mTextDistortionDryLabel, mTextDistortionWetLabel, mTextDistortionFeedbackLabel, mTextDistortionVolumeLabel, mTextSoundEffectVolumeLabel, mTextTimeEffectDetail, mTextSpeedEffectDetail;
     private EditText mEditSpeedEffectDetail, mEditTimeEffectDetail;
-    private RelativeLayout mRelativeEffectDetail, mRelativeSliderEffectDatail, mRelativeRollerEffectDetail, mRelativeEffectTemplates, mRelativeEffectTitle, mRelativeComp, mRelativePan, mRelativeEcho, mRelativeReverb, mRelativeChorus, mRelativeDistortion, mRelativeSoundEffect;
-    private SeekBar mSeekEffectDetail, mSeekCompGain, mSeekCompThreshold, mSeekCompRatio, mSeekCompAttack, mSeekCompRelease, mSeekPanValue, mSeekEchoDry, mSeekEchoWet, mSeekEchoFeedback, mSeekEchoDelay, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth, mSeekChorusDry, mSeekChorusWet, mSeekChorusFeedback, mSeekChorusMinSweep, mSeekChorusMaxSweep, mSeekChorusRate, mSeekDistortionDrive, mSeekDistortionDry, mSeekDistortionWet, mSeekDistortionFeedback, mSeekDistortionVolume, mSeekSoundEffectVolume;
-    private ImageButton mBtnEffectMinus, mBtnEffectPlus, mBtnCompGainMinus, mBtnCompGainPlus, mBtnCompThresholdMinus, mBtnCompThresholdPlus, mBtnCompRatioMinus, mBtnCompRatioPlus, mBtnCompAttackMinus, mBtnCompAttackPlus, mBtnCompReleaseMinus, mBtnCompReleasePlus, mBtnPanValueMinus, mBtnPanValuePlus, mBtnEchoDryMinus, mBtnEchoDryPlus, mBtnEchoWetMinus, mBtnEchoWetPlus, mBtnEchoFeedbackMinus, mBtnEchoFeedbackPlus, mBtnEchoDelayMinus, mBtnEchoDelayPlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus, mBtnChorusDryMinus, mBtnChorusDryPlus, mBtnChorusWetMinus, mBtnChorusWetPlus, mBtnChorusFeedbackMinus, mBtnChorusFeedbackPlus, mBtnChorusMinSweepMinus, mBtnChorusMinSweepPlus, mBtnChorusMaxSweepMinus, mBtnChorusMaxSweepPlus, mBtnChorusRateMinus, mBtnChorusRatePlus, mBtnDistortionDriveMinus, mBtnDistortionDrivePlus, mBtnDistortionDryMinus, mBtnDistortionDryPlus, mBtnDistortionWetMinus, mBtnDistortionWetPlus, mBtnDistortionFeedbackMinus, mBtnDistortionFeedbackPlus, mBtnDistortionVolumeMinus, mBtnDistortionVolumePlus, mBtnSoundEffectVolumeMinus, mBtnSoundEffectVolumePlus;
-    private Button mBtnEffectOff, mBtnEffectBack, mBtnEffectFinish, mBtnEffectTemplateOff, mBtnReverbSaveAs, mBtnEchoSaveAs, mBtnChorusSaveAs, mBtnDistortionSaveAs, mBtnCompSaveAs, mBtnCompRandom, mBtnResetComp, mBtnPanSaveAs, mBtnPanRandom, mBtnResetPan, mBtnEchoRandom, mBtnResetEcho, mBtnReverbRandom, mBtnResetReverb, mBtnChorusRandom, mBtnResetChorus, mBtnDistortionRandom, mBtnResetDistortion;
+    private RelativeLayout mRelativeEffectDetail, mRelativeSliderEffectDatail, mRelativeRollerEffectDetail, mRelativeEffectTemplates, mRelativeEffectTitle, mRelativeComp, mRelativePan, mRelativeFreq, mRelativeEcho, mRelativeReverb, mRelativeChorus, mRelativeDistortion, mRelativeSoundEffect;
+    private SeekBar mSeekEffectDetail, mSeekCompGain, mSeekCompThreshold, mSeekCompRatio, mSeekCompAttack, mSeekCompRelease, mSeekPanValue, mSeekFreqValue, mSeekEchoDry, mSeekEchoWet, mSeekEchoFeedback, mSeekEchoDelay, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth, mSeekChorusDry, mSeekChorusWet, mSeekChorusFeedback, mSeekChorusMinSweep, mSeekChorusMaxSweep, mSeekChorusRate, mSeekDistortionDrive, mSeekDistortionDry, mSeekDistortionWet, mSeekDistortionFeedback, mSeekDistortionVolume, mSeekSoundEffectVolume;
+    private ImageButton mBtnEffectMinus, mBtnEffectPlus, mBtnCompGainMinus, mBtnCompGainPlus, mBtnCompThresholdMinus, mBtnCompThresholdPlus, mBtnCompRatioMinus, mBtnCompRatioPlus, mBtnCompAttackMinus, mBtnCompAttackPlus, mBtnCompReleaseMinus, mBtnCompReleasePlus, mBtnPanValueMinus, mBtnPanValuePlus, mBtnFreqValueMinus, mBtnFreqValuePlus, mBtnEchoDryMinus, mBtnEchoDryPlus, mBtnEchoWetMinus, mBtnEchoWetPlus, mBtnEchoFeedbackMinus, mBtnEchoFeedbackPlus, mBtnEchoDelayMinus, mBtnEchoDelayPlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus, mBtnChorusDryMinus, mBtnChorusDryPlus, mBtnChorusWetMinus, mBtnChorusWetPlus, mBtnChorusFeedbackMinus, mBtnChorusFeedbackPlus, mBtnChorusMinSweepMinus, mBtnChorusMinSweepPlus, mBtnChorusMaxSweepMinus, mBtnChorusMaxSweepPlus, mBtnChorusRateMinus, mBtnChorusRatePlus, mBtnDistortionDriveMinus, mBtnDistortionDrivePlus, mBtnDistortionDryMinus, mBtnDistortionDryPlus, mBtnDistortionWetMinus, mBtnDistortionWetPlus, mBtnDistortionFeedbackMinus, mBtnDistortionFeedbackPlus, mBtnDistortionVolumeMinus, mBtnDistortionVolumePlus, mBtnSoundEffectVolumeMinus, mBtnSoundEffectVolumePlus;
+    private Button mBtnEffectOff, mBtnEffectBack, mBtnEffectFinish, mBtnEffectTemplateOff, mBtnReverbSaveAs, mBtnEchoSaveAs, mBtnChorusSaveAs, mBtnDistortionSaveAs, mBtnCompSaveAs, mBtnCompRandom, mBtnResetComp, mBtnPanSaveAs, mBtnPanRandom, mBtnResetPan, mBtnFreqSaveAs, mBtnFreqRandom, mBtnResetFreq, mBtnEchoRandom, mBtnResetEcho, mBtnReverbRandom, mBtnResetReverb, mBtnChorusRandom, mBtnResetChorus, mBtnDistortionRandom, mBtnResetDistortion;
 
     private AnimationButton mBtnEffectTemplateMenu, mBtnAddEffectTemplate;
-    private ScrollView mScrollCompCustomize, mScrollPanCustomize, mScrollEchoCustomize, mScrollReverbCustomize, mScrollChorusCustomize, mScrollDistortionCustomize, mScrollSoundEffectCustomize;
+    private ScrollView mScrollCompCustomize, mScrollPanCustomize, mScrollFreqCustomize, mScrollEchoCustomize, mScrollReverbCustomize, mScrollChorusCustomize, mScrollDistortionCustomize, mScrollSoundEffectCustomize;
     private View mViewSepEffectHeader, mViewSepEffectDetail, mViewSepEffectTemplateHeader;
     private ImageView mImgEffectBack;
 
@@ -197,6 +199,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private TextView getTextCompAttack() { return mTextCompAttack; }
     private TextView getTextCompRelease() { return mTextCompRelease; }
     private TextView getTextPanValue() { return mTextPanValue; }
+    private TextView getTextFreqValue() { return mTextFreqValue; }
     private TextView getTextEchoDry() { return mTextEchoDry; }
     private TextView getTextEchoWet() { return mTextEchoWet; }
     private TextView getTextEchoFeedback() { return mTextEchoFeedback; }
@@ -224,6 +227,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private SeekBar getSeekCompAttack() { return mSeekCompAttack; }
     private SeekBar getSeekCompRelease() { return mSeekCompRelease; }
     private SeekBar getSeekPanValue() { return mSeekPanValue; }
+    private SeekBar getSeekFreqValue() { return mSeekFreqValue; }
     private SeekBar getSeekEchoDry() { return mSeekEchoDry; }
     private SeekBar getSeekEchoWet() { return mSeekEchoWet; }
     private SeekBar getSeekEchoFeedback() { return mSeekEchoFeedback; }
@@ -245,6 +249,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private SeekBar getSeekDistortionFeedback() { return mSeekDistortionFeedback; }
     private SeekBar getSeekDistortionVolume() { return mSeekDistortionVolume; }
     private SeekBar getSeekSoundEffectVolume() { return mSeekSoundEffectVolume; }
+    private ScrollView getScrollCompCustomize() { return mScrollCompCustomize; }
+    private ScrollView getScrollPanCustomize() { return mScrollPanCustomize; }
+    private ScrollView getScrollFreqCustomize() { return mScrollFreqCustomize; }
+    private ScrollView getScrollEchoCustomize() { return mScrollEchoCustomize; }
+    private ScrollView getScrollReverbCustomize() { return mScrollReverbCustomize; }
+    private ScrollView getScrollChorusCustomize() { return mScrollChorusCustomize; }
+    private ScrollView getScrollDistortionCustomize() { return mScrollDistortionCustomize; }
+    private ScrollView getScrollSoundEffectCustomize() { return mScrollSoundEffectCustomize; }
     private RelativeLayout getRelativeEffectTemplates() { return mRelativeEffectTemplates; }
     private Button getBtnEffectTemplateOff() { return mBtnEffectTemplateOff; }
     private EffectTemplatesAdapter getEffectTemplatesAdapter() { return mEffectTemplatesAdapter; }
@@ -313,6 +325,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mEffectTemplatesAdapter.changeItems(sPanItems);
     }
 
+    private void setFreqItems(ArrayList<EffectTemplateItem> lists) {
+        sFreqItems = lists;
+        mEffectTemplatesAdapter.changeItems(sFreqItems);
+    }
+
     private void setSoundEffectItems(ArrayList<EffectTemplateItem> lists) {
         sSoundEffectItems = lists;
         mEffectTemplatesAdapter.changeItems(sSoundEffectItems);
@@ -352,6 +369,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         } else if (sEffectDetail == EFFECTTYPE_PAN) {
             if (nItem >= sPanItems.size()) return false;
             EffectTemplateItem item = sPanItems.get(nItem);
+            return item.isSelected();
+        } else if (sEffectDetail == EFFECTTYPE_FREQ) {
+            if (nItem >= sFreqItems.size()) return false;
+            EffectTemplateItem item = sFreqItems.get(nItem);
             return item.isSelected();
         } else if (sEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
             if (nItem >= sSoundEffectItems.size()) return false;
@@ -446,6 +467,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
     }
 
+    public static void setFreqSelected(int nSelected) {
+        sFreqSelected = nSelected;
+        for (int i = 0; i < sFreqItems.size(); i++) sFreqItems.get(i).setSelected(i == nSelected);
+        if (sActivity != null) {
+            if (sActivity.effectFragment.getRelativeEffectTemplates().getVisibility() == View.VISIBLE && sEffectDetail == EFFECTTYPE_FREQ) {
+                sActivity.effectFragment.getBtnEffectTemplateOff().setSelected(nSelected == -1);
+                sActivity.effectFragment.getEffectTemplatesAdapter().notifyDataSetChanged();
+            }
+        }
+    }
+
     public static void setSoundEffectSelected(int nSelected) {
         sSoundEffectSelected = nSelected;
         for (int i = 0; i < sSoundEffectItems.size(); i++) sSoundEffectItems.get(i).setSelected(i == nSelected);
@@ -465,6 +497,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if(sDistortionItems == null) sDistortionItems = new ArrayList<>();
         if(sCompItems == null) sCompItems = new ArrayList<>();
         if(sPanItems == null) sPanItems = new ArrayList<>();
+        if(sFreqItems == null) sFreqItems = new ArrayList<>();
         if(sSoundEffectItems == null) sSoundEffectItems = new ArrayList<>();
         mHandlerLongClick = new Handler();
     }
@@ -508,13 +541,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             PlaylistFragment.updateSavingEffect();
         } else if (v.getId() == R.id.btnEffectBack) {
             if (mScrollReverbCustomize.getVisibility() == View.VISIBLE) {
+                mScrollReverbCustomize.setVisibility(View.INVISIBLE);
                 if (sReverbSelected != -1) {
                     ArrayList<Float> arFloats = sReverbItems.get(sReverbSelected).getArPresets();
                     setReverb(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), arFloats.get(4), true);
                 } else resetReverb();
                 mBtnEffectFinish.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.VISIBLE);
-                mScrollReverbCustomize.setVisibility(View.INVISIBLE);
                 mTextEffectName.setText(sEffectItems.get(sEffectDetail).getEffectName());
                 mBtnEffectBack.setText(R.string.back);
                 mImgEffectBack.setVisibility(View.VISIBLE);
@@ -522,13 +555,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
                     mBtnAddEffectTemplate.setAlpha(1.0f);
             } else if (mScrollEchoCustomize.getVisibility() == View.VISIBLE) {
+                mScrollEchoCustomize.setVisibility(View.INVISIBLE);
                 if (sEchoSelected != -1) {
                     ArrayList<Float> arFloats = sEchoItems.get(sEchoSelected).getArPresets();
                     setEcho(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), true);
                 } else resetEcho();
                 mBtnEffectFinish.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.VISIBLE);
-                mScrollEchoCustomize.setVisibility(View.INVISIBLE);
                 mTextEffectName.setText(sEffectItems.get(sEffectDetail).getEffectName());
                 mBtnEffectBack.setText(R.string.back);
                 mImgEffectBack.setVisibility(View.VISIBLE);
@@ -536,13 +569,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
                     mBtnAddEffectTemplate.setAlpha(1.0f);
             } else if (mScrollChorusCustomize.getVisibility() == View.VISIBLE) {
+                mScrollChorusCustomize.setVisibility(View.INVISIBLE);
                 if (sChorusSelected != -1) {
                     ArrayList<Float> arFloats = sChorusItems.get(sChorusSelected).getArPresets();
                     setChorus(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), arFloats.get(4), arFloats.get(5), true);
                 } else resetChorus();
                 mBtnEffectFinish.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.VISIBLE);
-                mScrollChorusCustomize.setVisibility(View.INVISIBLE);
                 mTextEffectName.setText(sEffectItems.get(sEffectDetail).getEffectName());
                 mBtnEffectBack.setText(R.string.back);
                 mImgEffectBack.setVisibility(View.VISIBLE);
@@ -550,13 +583,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
                     mBtnAddEffectTemplate.setAlpha(1.0f);
             } else if (mScrollDistortionCustomize.getVisibility() == View.VISIBLE) {
+                mScrollDistortionCustomize.setVisibility(View.INVISIBLE);
                 if (sDistortionSelected != -1) {
                     ArrayList<Float> arFloats = sDistortionItems.get(sDistortionSelected).getArPresets();
                     setDistortion(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), arFloats.get(4), true);
                 } else resetDistortion();
                 mBtnEffectFinish.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.VISIBLE);
-                mScrollDistortionCustomize.setVisibility(View.INVISIBLE);
                 mTextEffectName.setText(sEffectItems.get(sEffectDetail).getEffectName());
                 mBtnEffectBack.setText(R.string.back);
                 mImgEffectBack.setVisibility(View.VISIBLE);
@@ -564,13 +597,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
                     mBtnAddEffectTemplate.setAlpha(1.0f);
             } else if (mScrollCompCustomize.getVisibility() == View.VISIBLE) {
+                mScrollCompCustomize.setVisibility(View.INVISIBLE);
                 if (sCompSelected != -1) {
                     ArrayList<Float> arFloats = sCompItems.get(sCompSelected).getArPresets();
                     setComp(arFloats.get(0), arFloats.get(1), arFloats.get(2), arFloats.get(3), arFloats.get(4), true);
                 } else resetComp();
                 mBtnEffectFinish.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.VISIBLE);
-                mScrollCompCustomize.setVisibility(View.INVISIBLE);
                 mTextEffectName.setText(sEffectItems.get(sEffectDetail).getEffectName());
                 mBtnEffectBack.setText(R.string.back);
                 mImgEffectBack.setVisibility(View.VISIBLE);
@@ -578,13 +611,27 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
                     mBtnAddEffectTemplate.setAlpha(1.0f);
             } else if (mScrollPanCustomize.getVisibility() == View.VISIBLE) {
+                mScrollPanCustomize.setVisibility(View.INVISIBLE);
                 if (sPanSelected != -1) {
                     ArrayList<Float> arFloats = sPanItems.get(sPanSelected).getArPresets();
                     setPan(arFloats.get(0), true);
                 } else resetPan();
                 mBtnEffectFinish.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.VISIBLE);
-                mScrollPanCustomize.setVisibility(View.INVISIBLE);
+                mTextEffectName.setText(sEffectItems.get(sEffectDetail).getEffectName());
+                mBtnEffectBack.setText(R.string.back);
+                mImgEffectBack.setVisibility(View.VISIBLE);
+                mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+                if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                    mBtnAddEffectTemplate.setAlpha(1.0f);
+            } else if (mScrollFreqCustomize.getVisibility() == View.VISIBLE) {
+                mScrollFreqCustomize.setVisibility(View.INVISIBLE);
+                if (sFreqSelected != -1) {
+                    ArrayList<Float> arFloats = sFreqItems.get(sFreqSelected).getArPresets();
+                    setFreq(arFloats.get(0), true);
+                } else resetFreq();
+                mBtnEffectFinish.setVisibility(View.GONE);
+                mRelativeEffectTemplates.setVisibility(View.VISIBLE);
                 mTextEffectName.setText(sEffectItems.get(sEffectDetail).getEffectName());
                 mBtnEffectBack.setText(R.string.back);
                 mImgEffectBack.setVisibility(View.VISIBLE);
@@ -592,13 +639,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
                     mBtnAddEffectTemplate.setAlpha(1.0f);
             } else if (mScrollSoundEffectCustomize.getVisibility() == View.VISIBLE) {
+                mScrollSoundEffectCustomize.setVisibility(View.INVISIBLE);
                 if (sSoundEffectSelected != -1) {
                     ArrayList<Float> arFloats = sSoundEffectItems.get(sSoundEffectSelected).getArPresets();
                     setSoundEffect(arFloats.get(0), true);
                 } else resetSoundEffect();
                 mBtnEffectFinish.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.VISIBLE);
-                mScrollSoundEffectCustomize.setVisibility(View.INVISIBLE);
                 mTextEffectName.setText(sEffectItems.get(sEffectDetail).getEffectName());
                 mBtnEffectBack.setText(R.string.back);
                 mImgEffectBack.setVisibility(View.VISIBLE);
@@ -631,6 +678,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     editPreset.setText(R.string.newDistortion);
                 else if (sEffectDetail == EFFECTTYPE_COMP) editPreset.setText(R.string.newComp);
                 else if (sEffectDetail == EFFECTTYPE_PAN) editPreset.setText(R.string.newPan);
+                else if (sEffectDetail == EFFECTTYPE_FREQ) editPreset.setText(R.string.newFreq);
                 linearLayout.addView(editPreset);
                 builder.setView(linearLayout);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -710,6 +758,15 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                                 sPanItems.get(i).setSelected(false);
                             sPanItems.get(sPanItems.size() - 1).setSelected(true);
                             sPanSelected = sPanItems.size() - 1;
+                        } else if (sEffectDetail == EFFECTTYPE_FREQ) {
+                            arPresets.add((mSeekFreqValue.getProgress() + 10) / 100f);
+                            sFreqItems.add(new EffectTemplateItem(editPreset.getText().toString(), arPresets));
+                            mEffectTemplatesAdapter.notifyItemInserted(sFreqItems.size() - 1);
+                            mScrollFreqCustomize.setVisibility(View.INVISIBLE);
+                            for (int i = 0; i < sFreqItems.size() - 1; i++)
+                                sFreqItems.get(i).setSelected(false);
+                            sFreqItems.get(sFreqItems.size() - 1).setSelected(true);
+                            sFreqSelected = sFreqItems.size() - 1;
                         }
                         saveData();
 
@@ -741,6 +798,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                             mRecyclerEffectTemplates.scrollToPosition(sCompItems.size() - 1);
                         else if (sEffectDetail == EFFECTTYPE_PAN)
                             mRecyclerEffectTemplates.scrollToPosition(sPanItems.size() - 1);
+                        else if (sEffectDetail == EFFECTTYPE_FREQ)
+                            mRecyclerEffectTemplates.scrollToPosition(sFreqItems.size() - 1);
                         else if (sEffectDetail == EFFECTTYPE_SOUNDEFFECT)
                             mRecyclerEffectTemplates.scrollToPosition(sSoundEffectItems.size() - 1);
                     }
@@ -851,6 +910,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                         saveData();
                     }
                     mScrollPanCustomize.setVisibility(View.INVISIBLE);
+                } else if (sEffectDetail == EFFECTTYPE_FREQ) {
+                    for (; nItem < sFreqItems.size(); nItem++) {
+                        item = sFreqItems.get(nItem);
+                        if (item.isSelected()) break;
+                    }
+                    if (item != null) {
+                        ArrayList<Float> arPresets = item.getArPresets();
+                        arPresets.set(0, (mSeekFreqValue.getProgress() - 100) / 100f);
+                        saveData();
+                    }
+                    mScrollFreqCustomize.setVisibility(View.INVISIBLE);
                 } else if (sEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
                     for (; nItem < sSoundEffectItems.size(); nItem++) {
                         item = sSoundEffectItems.get(nItem);
@@ -886,6 +956,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 else if (sEffectDetail == EFFECTTYPE_COMP)
                     setComp(200, 4000, 900, 119, 39999, true);
                 else if (sEffectDetail == EFFECTTYPE_PAN) setPan(100, true);
+                else if (sEffectDetail == EFFECTTYPE_FREQ) setFreq(90, true);
             }
 
             if (sEffectDetail == EFFECTTYPE_REVERB) {
@@ -912,6 +983,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mTextEffectName.setText(R.string.newPan);
                 mScrollPanCustomize.setVisibility(View.VISIBLE);
                 mBtnPanSaveAs.setVisibility(View.GONE);
+            } else if (sEffectDetail == EFFECTTYPE_FREQ) {
+                mTextEffectName.setText(R.string.newFreq);
+                mScrollFreqCustomize.setVisibility(View.VISIBLE);
+                mBtnFreqSaveAs.setVisibility(View.GONE);
             }
 
             mBtnEffectBack.setText(R.string.cancel);
@@ -958,6 +1033,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             } else if (sEffectDetail == EFFECTTYPE_PAN) {
                 for (int i = 0; i < sPanItems.size(); i++) sPanItems.get(i).setSelected(false);
                 resetPan();
+            } else if (sEffectDetail == EFFECTTYPE_FREQ) {
+                for (int i = 0; i < sFreqItems.size(); i++) sFreqItems.get(i).setSelected(false);
+                resetFreq();
             } else if (sEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
                 for (int i = 0; i < sSoundEffectItems.size(); i++)
                     sSoundEffectItems.get(i).setSelected(false);
@@ -1096,6 +1174,75 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
                     mEffectTemplatesAdapter.notifyDataSetChanged();
                     mRecyclerEffectTemplates.scrollToPosition(sPanItems.size() - 1);
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, null);
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface arg0) {
+                    if (alertDialog.getWindow() != null) {
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
+                    editPreset.requestFocus();
+                    editPreset.setSelection(editPreset.getText().toString().length());
+                    InputMethodManager imm = (InputMethodManager) sActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (null != imm) imm.showSoftInput(editPreset, 0);
+                }
+            });
+            alertDialog.show();
+        }
+        else if (v.getId() == R.id.btnFreqValueMinus) minusFreqValue();
+        else if (v.getId() == R.id.btnFreqValuePlus) plusFreqValue();
+        else if (v.getId() == R.id.btnFreqRandom) setFreqRandom();
+        else if (v.getId() == R.id.btnResetFreq) {
+            if (sFreqSelected != -1) {
+                ArrayList<Float> arFloats = sFreqItems.get(sFreqSelected).getArPresets();
+                setFreq(arFloats.get(0), true);
+            } else resetFreq();
+        } else if (v.getId() == R.id.btnFreqSaveAs) {
+            AlertDialog.Builder builder;
+            if (sActivity.isDarkMode())
+                builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
+            else
+                builder = new AlertDialog.Builder(sActivity);
+            builder.setTitle(R.string.saveTemplate);
+            LinearLayout linearLayout = new LinearLayout(sActivity);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            final ClearableEditText editPreset = new ClearableEditText(sActivity, sActivity.isDarkMode());
+            editPreset.setHint(R.string.templateName);
+            editPreset.setText(R.string.newFreq);
+            linearLayout.addView(editPreset);
+            builder.setView(linearLayout);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    ArrayList<Float> arPresets = new ArrayList<>();
+                    arPresets.add((mSeekFreqValue.getProgress() + 10) / 100f);
+                    sFreqItems.add(new EffectTemplateItem(editPreset.getText().toString(), arPresets));
+                    mEffectTemplatesAdapter.notifyItemInserted(sFreqItems.size() - 1);
+                    saveData();
+
+                    mBtnEffectFinish.setVisibility(View.GONE);
+                    mRelativeEffectTemplates.setVisibility(View.VISIBLE);
+                    mScrollFreqCustomize.setVisibility(View.INVISIBLE);
+                    mImgEffectBack.setVisibility(View.VISIBLE);
+                    mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+                    if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
+                        mBtnAddEffectTemplate.setAlpha(1.0f);
+
+                    for (int i = 0; i < sFreqItems.size() - 1; i++)
+                        sFreqItems.get(i).setSelected(false);
+                    sFreqItems.get(sFreqItems.size() - 1).setSelected(true);
+                    sFreqSelected = sFreqItems.size() - 1;
+
+                    sEffectItems.get(sEffectDetail).setSelected(true);
+                    checkDuplicate(sEffectDetail);
+                    mEffectsAdapter.notifyDataSetChanged();
+
+                    mEffectTemplatesAdapter.notifyDataSetChanged();
+                    mRecyclerEffectTemplates.scrollToPosition(sFreqItems.size() - 1);
                 }
             });
             builder.setNegativeButton(R.string.cancel, null);
@@ -1569,6 +1716,26 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 }
             });
             return true;
+        } else if (v.getId() == R.id.btnFreqValueMinus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (!mContinueFlag) return;
+                    minusFreqValue();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
+        } else if (v.getId() == R.id.btnFreqValuePlus) {
+            mHandlerLongClick.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (!mContinueFlag) return;
+                    plusFreqValue();
+                    mHandlerLongClick.postDelayed(this, 100);
+                }
+            });
+            return true;
         } else if (v.getId() == R.id.btnEchoDryMinus) {
             mHandlerLongClick.post(new Runnable() {
                 @Override
@@ -2026,11 +2193,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         nProgress -= 1;
         if (nProgress < 0) nProgress = 0;
         mSeekEffectDetail.setProgress(nProgress);
-        if (mTextEffectName.getText().toString().equals(sEffectItems.get(EFFECTTYPE_FREQUENCY).getEffectName())) {
-            double dProgress = (double) (nProgress + 1) / 10.0;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%.1f", dProgress));
-            setFreq((float) dProgress);
-        } else if (mTextEffectName.getText().toString().equals(sEffectItems.get(EFFECTTYPE_METRONOME).getEffectName())) {
+        if (mTextEffectName.getText().toString().equals(sEffectItems.get(EFFECTTYPE_METRONOME).getEffectName())) {
             sBpm = nProgress + 10;
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", sBpm));
             sMetronome.setBpm(sBpm);
@@ -2043,11 +2206,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         nProgress += 1;
         if (nProgress > mSeekEffectDetail.getMax()) nProgress = mSeekEffectDetail.getMax();
         mSeekEffectDetail.setProgress(nProgress);
-        if (mTextEffectName.getText().toString().equals(sEffectItems.get(EFFECTTYPE_FREQUENCY).getEffectName())) {
-            double dProgress = (double) (nProgress + 1) / 10.0;
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%.1f", dProgress));
-            setFreq((float) dProgress);
-        } else if (mTextEffectName.getText().toString().equals(sEffectItems.get(EFFECTTYPE_METRONOME).getEffectName())) {
+        if (mTextEffectName.getText().toString().equals(sEffectItems.get(EFFECTTYPE_METRONOME).getEffectName())) {
             sBpm = nProgress + 10;
             mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", sBpm));
             sMetronome.setBpm(sBpm);
@@ -2099,6 +2258,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnDistortionSaveAs = sActivity.findViewById(R.id.btnDistortionSaveAs);
         mBtnCompSaveAs = sActivity.findViewById(R.id.btnCompSaveAs);
         mBtnPanSaveAs = sActivity.findViewById(R.id.btnPanSaveAs);
+        mBtnFreqSaveAs = sActivity.findViewById(R.id.btnFreqSaveAs);
 
         mScrollCompCustomize = sActivity.findViewById(R.id.scrollCompCustomize);
         mRelativeComp = sActivity.findViewById(R.id.relativeComp);
@@ -2134,6 +2294,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mTextPanValueLabel = sActivity.findViewById(R.id.textPanValueLabel);
         mBtnPanValueMinus = sActivity.findViewById(R.id.btnPanValueMinus);
         mBtnPanValuePlus = sActivity.findViewById(R.id.btnPanValuePlus);
+        mScrollFreqCustomize = sActivity.findViewById(R.id.scrollFreqCustomize);
+        mRelativeFreq = sActivity.findViewById(R.id.relativeFreq);
+        mSeekFreqValue = sActivity.findViewById(R.id.seekFreqValue);
+        mTextFreqValue = sActivity.findViewById(R.id.textFreqValue);
+        mTextFreqValueLabel = sActivity.findViewById(R.id.textFreqValueLabel);
+        mBtnFreqValueMinus = sActivity.findViewById(R.id.btnFreqValueMinus);
+        mBtnFreqValuePlus = sActivity.findViewById(R.id.btnFreqValuePlus);
         mScrollEchoCustomize = sActivity.findViewById(R.id.scrollEchoCustomize);
         mRelativeEcho = sActivity.findViewById(R.id.relativeEcho);
         mSeekEchoDry = sActivity.findViewById(R.id.seekEchoDry);
@@ -2259,6 +2426,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnResetComp = sActivity.findViewById(R.id.btnResetComp);
         mBtnPanRandom = sActivity.findViewById(R.id.btnPanRandom);
         mBtnResetPan = sActivity.findViewById(R.id.btnResetPan);
+        mBtnFreqRandom = sActivity.findViewById(R.id.btnFreqRandom);
+        mBtnResetFreq = sActivity.findViewById(R.id.btnResetFreq);
         mBtnEchoRandom = sActivity.findViewById(R.id.btnEchoRandom);
         mBtnResetEcho = sActivity.findViewById(R.id.btnResetEcho);
         mBtnReverbRandom = sActivity.findViewById(R.id.btnReverbRandom);
@@ -2280,6 +2449,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mSeekCompRelease.setOnSeekBarChangeListener(this);
         mSeekPanValue.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
         mSeekPanValue.setOnSeekBarChangeListener(this);
+        mSeekFreqValue.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
+        mSeekFreqValue.setOnSeekBarChangeListener(this);
         mSeekEchoDry.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
         mSeekEchoWet.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
         mSeekEchoFeedback.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
@@ -2348,7 +2519,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             sEffectItems.add(item);
             item = new EffectItem(getString(R.string.comp), true);
             sEffectItems.add(item);
-            item = new EffectItem(getString(R.string.frequency), true);
+            item = new EffectItem(getString(R.string.freq), true);
             sEffectItems.add(item);
             item = new EffectItem(getString(R.string.phaseReversal), false);
             sEffectItems.add(item);
@@ -2471,6 +2642,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnPanValuePlus.setOnTouchListener(this);
         mBtnPanRandom.setOnClickListener(this);
         mBtnResetPan.setOnClickListener(this);
+        mBtnFreqValueMinus.setOnClickListener(this);
+        mBtnFreqValueMinus.setOnLongClickListener(this);
+        mBtnFreqValueMinus.setOnTouchListener(this);
+        mBtnFreqValuePlus.setOnClickListener(this);
+        mBtnFreqValuePlus.setOnLongClickListener(this);
+        mBtnFreqValuePlus.setOnTouchListener(this);
+        mBtnFreqRandom.setOnClickListener(this);
+        mBtnResetFreq.setOnClickListener(this);
         mBtnEchoDryMinus.setOnClickListener(this);
         mBtnEchoDryMinus.setOnLongClickListener(this);
         mBtnEchoDryMinus.setOnTouchListener(this);
@@ -2605,6 +2784,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnDistortionSaveAs.setOnClickListener(this);
         mBtnCompSaveAs.setOnClickListener(this);
         mBtnPanSaveAs.setOnClickListener(this);
+        mBtnFreqSaveAs.setOnClickListener(this);
         mBtnSoundEffectVolumeMinus.setOnClickListener(this);
         mBtnSoundEffectVolumeMinus.setOnLongClickListener(this);
         mBtnSoundEffectVolumeMinus.setOnTouchListener(this);
@@ -2623,6 +2803,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         setComp(200, 4000, 900, 119, 39999, false);
         setPan(100, false);
+        setFreq(90, false);
         setEcho(100, 30, 60, 7, false);
         setReverb(70, 100, 85, 50, 90, false);
         setChorus(100, 10, 50, 100, 200, 1000, false);
@@ -2648,6 +2829,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         ArrayList<EffectTemplateItem> compItems = gson.fromJson(preferences.getString("sCompItems", ""), new TypeToken<ArrayList<EffectTemplateItem>>() {
         }.getType());
         ArrayList<EffectTemplateItem> panItems = gson.fromJson(preferences.getString("sPanItems", ""), new TypeToken<ArrayList<EffectTemplateItem>>() {
+        }.getType());
+        ArrayList<EffectTemplateItem> freqItems = gson.fromJson(preferences.getString("sFreqItems", ""), new TypeToken<ArrayList<EffectTemplateItem>>() {
         }.getType());
         ArrayList<EffectTemplateItem> soundEffectItems = gson.fromJson(preferences.getString("sSoundEffectItems", ""), new TypeToken<ArrayList<EffectTemplateItem>>() {
         }.getType());
@@ -2680,6 +2863,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else resetComps();
         if (panItems != null) setPanItems(panItems);
         else resetPans();
+        if (freqItems != null) setFreqItems(freqItems);
+        else resetFreqs();
         if (soundEffectItems != null && soundEffectItems.size() != 0)
             setSoundEffectItems(soundEffectItems);
         else resetSoundEffects();
@@ -2697,6 +2882,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             sCompItems.get(i).setSelected(false);
         for (int i = 0; i < sPanItems.size(); i++)
             sPanItems.get(i).setSelected(false);
+        for (int i = 0; i < sFreqItems.size(); i++)
+            sFreqItems.get(i).setSelected(false);
         for (int i = 0; i < sSoundEffectItems.size(); i++)
             sSoundEffectItems.get(i).setSelected(false);
     }
@@ -2710,6 +2897,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         preferences.edit().putString("sDistortionItems", gson.toJson(sDistortionItems)).apply();
         preferences.edit().putString("sCompItems", gson.toJson(sCompItems)).apply();
         preferences.edit().putString("sPanItems", gson.toJson(sPanItems)).apply();
+        preferences.edit().putString("sFreqItems", gson.toJson(sFreqItems)).apply();
         preferences.edit().putString("sSoundEffectItems", gson.toJson(sSoundEffectItems)).apply();
     }
 
@@ -2795,6 +2983,24 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         resetPan();
     }
 
+    private void resetFreqs() {
+        if (sFreqItems.size() > 0) sFreqItems.clear();
+
+        sFreqItems.add(new EffectTemplateItem(getString(R.string.freq50), new ArrayList<>(Arrays.asList(0.5f))));
+        sFreqItems.add(new EffectTemplateItem(getString(R.string.freq60), new ArrayList<>(Arrays.asList(0.6f))));
+        sFreqItems.add(new EffectTemplateItem(getString(R.string.freq70), new ArrayList<>(Arrays.asList(0.7f))));
+        sFreqItems.add(new EffectTemplateItem(getString(R.string.freq80), new ArrayList<>(Arrays.asList(0.8f))));
+        sFreqItems.add(new EffectTemplateItem(getString(R.string.freq90), new ArrayList<>(Arrays.asList(0.9f))));
+        sFreqItems.add(new EffectTemplateItem(getString(R.string.freq125), new ArrayList<>(Arrays.asList(1.25f))));
+        sFreqItems.add(new EffectTemplateItem(getString(R.string.freq150), new ArrayList<>(Arrays.asList(1.5f))));
+        sFreqItems.add(new EffectTemplateItem(getString(R.string.freq175), new ArrayList<>(Arrays.asList(1.75f))));
+        sFreqItems.add(new EffectTemplateItem(getString(R.string.freq200), new ArrayList<>(Arrays.asList(2f))));
+
+        saveData();
+        mEffectTemplatesAdapter.notifyDataSetChanged();
+        resetFreq();
+    }
+
     private void resetSoundEffects() {
         if (sSoundEffectItems.size() > 0) sSoundEffectItems.clear();
 
@@ -2816,7 +3022,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         if (!item.isSelected()) {
             mBtnEffectOff.setSelected(false);
-            if (nEffect == EFFECTTYPE_REVERB || nEffect == EFFECTTYPE_ECHO || nEffect == EFFECTTYPE_CHORUS || nEffect == EFFECTTYPE_DISTORTION || nEffect == EFFECTTYPE_COMP || nEffect == EFFECTTYPE_PAN || nEffect == EFFECTTYPE_SOUNDEFFECT) {
+            if (nEffect == EFFECTTYPE_REVERB || nEffect == EFFECTTYPE_ECHO || nEffect == EFFECTTYPE_CHORUS || nEffect == EFFECTTYPE_DISTORTION || nEffect == EFFECTTYPE_COMP || nEffect == EFFECTTYPE_PAN || nEffect == EFFECTTYPE_FREQ || nEffect == EFFECTTYPE_SOUNDEFFECT) {
                 onEffectDetailClick(nEffect);
                 return;
             }
@@ -2921,6 +3127,15 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
             if (bAlreadySelected) sPanSelected = -1;
             else sPanSelected = nEffectTemplate;
+        } else if (sEffectDetail == EFFECTTYPE_FREQ) {
+            item = sFreqItems.get(nEffectTemplate);
+            if (item.isSelected()) bAlreadySelected = true;
+            for (int i = 0; i < sFreqItems.size(); i++) {
+                if (i != nEffectTemplate) sFreqItems.get(i).setSelected(false);
+                else sFreqItems.get(i).setSelected(!bAlreadySelected);
+            }
+            if (bAlreadySelected) sFreqSelected = -1;
+            else sFreqSelected = nEffectTemplate;
         } else if (sEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
             item = sSoundEffectItems.get(nEffectTemplate);
             if (item.isSelected()) bAlreadySelected = true;
@@ -2985,6 +3200,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 ArrayList<Float> arFloats = sPanItems.get(nEffectTemplate).getArPresets();
                 setPan(arFloats.get(0), true);
             }
+        } else if (sEffectDetail == EFFECTTYPE_FREQ) {
+            if (sFreqSelected == -1) resetFreq();
+            else {
+                ArrayList<Float> arFloats = sFreqItems.get(nEffectTemplate).getArPresets();
+                setFreq(arFloats.get(0), true);
+            }
         } else if (sEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
             if (sSoundEffectSelected == -1) resetSoundEffect();
             else {
@@ -3037,6 +3258,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setDecreaseSpeed(0.1f);
         resetComp(save);
         resetPan(save);
+        resetFreq(save);
         resetEcho(save);
         resetReverb(save);
         resetChorus(save);
@@ -3058,7 +3280,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     private static void resetComp(boolean save) {
-        sEffectItems.get(EFFECTTYPE_COMP).setSelected(false);
+        if (sActivity != null && sActivity.effectFragment.getScrollCompCustomize().getVisibility() != View.VISIBLE)
+            sEffectItems.get(EFFECTTYPE_COMP).setSelected(false);
         boolean bSelected = false;
         for (int i = 0; i < sEffectItems.size(); i++) {
             if (sEffectItems.get(i).isSelected()) bSelected = true;
@@ -3089,7 +3312,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     private static void resetPan(boolean save) {
-        sEffectItems.get(EFFECTTYPE_PAN).setSelected(false);
+        if (sActivity != null && sActivity.effectFragment.getScrollPanCustomize().getVisibility() != View.VISIBLE)
+            sEffectItems.get(EFFECTTYPE_PAN).setSelected(false);
         boolean bSelected = false;
         for (int i = 0; i < sEffectItems.size(); i++) {
             if (sEffectItems.get(i).isSelected()) bSelected = true;
@@ -3110,6 +3334,39 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setPan(100, save);
     }
 
+    private void setFreqRandom() {
+        setFreq(getRandomValue(0, mSeekFreqValue.getMax()),
+                true);
+    }
+
+    private static void resetFreq() {
+        resetFreq(true);
+    }
+
+    private static void resetFreq(boolean save) {
+        if (sActivity != null && sActivity.effectFragment.getScrollFreqCustomize().getVisibility() != View.VISIBLE)
+            sEffectItems.get(EFFECTTYPE_FREQ).setSelected(false);
+        boolean bSelected = false;
+        for (int i = 0; i < sEffectItems.size(); i++) {
+            if (sEffectItems.get(i).isSelected()) bSelected = true;
+        }
+        for (int i = 0; i < sFreqItems.size(); i++) sFreqItems.get(i).setSelected(false);
+
+        sFreqSelected = -1;
+        if (sActivity != null) {
+            if (!bSelected) sActivity.effectFragment.getBtnEffectOff().setSelected(true);
+            sActivity.effectFragment.getBtnEffectTemplateOff().setSelected(true);
+            sActivity.effectFragment.getEffectsAdapter().notifyDataSetChanged();
+            sActivity.effectFragment.getEffectTemplatesAdapter().notifyDataSetChanged();
+        }
+
+        BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
+        BASS.BASS_ChannelGetInfo(MainActivity.sStream, info);
+        BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq);
+
+        setFreq(90, save);
+    }
+
     private void setEchoRandom() {
         int nDry = getRandomValue(50, 100);
         int nWet;
@@ -3126,7 +3383,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     private static void resetEcho(boolean save) {
-        sEffectItems.get(EFFECTTYPE_ECHO).setSelected(false);
+        if (sActivity != null && sActivity.effectFragment.getScrollEchoCustomize().getVisibility() != View.VISIBLE)
+            sEffectItems.get(EFFECTTYPE_ECHO).setSelected(false);
         boolean bSelected = false;
         for (int i = 0; i < sEffectItems.size(); i++) {
             if (sEffectItems.get(i).isSelected()) bSelected = true;
@@ -3167,7 +3425,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     private static void resetReverb(boolean save) {
-        sEffectItems.get(EFFECTTYPE_REVERB).setSelected(false);
+        if (sActivity != null && sActivity.effectFragment.getScrollReverbCustomize().getVisibility() != View.VISIBLE)
+            sEffectItems.get(EFFECTTYPE_REVERB).setSelected(false);
         boolean bSelected = false;
         for (int i = 0; i < sEffectItems.size(); i++) {
             if (sEffectItems.get(i).isSelected()) bSelected = true;
@@ -3204,7 +3463,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     private static void resetChorus(boolean save) {
-        sEffectItems.get(EFFECTTYPE_CHORUS).setSelected(false);
+        if (sActivity != null && sActivity.effectFragment.getScrollChorusCustomize().getVisibility() != View.VISIBLE)
+            sEffectItems.get(EFFECTTYPE_CHORUS).setSelected(false);
         boolean bSelected = false;
         for (int i = 0; i < sEffectItems.size(); i++) {
             if (sEffectItems.get(i).isSelected()) bSelected = true;
@@ -3242,7 +3502,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     private static void resetDistortion(boolean save) {
-        sEffectItems.get(EFFECTTYPE_DISTORTION).setSelected(false);
+        if (sActivity != null && sActivity.effectFragment.getScrollDistortionCustomize().getVisibility() != View.VISIBLE)
+            sEffectItems.get(EFFECTTYPE_DISTORTION).setSelected(false);
         boolean bSelected = false;
         for (int i = 0; i < sEffectItems.size(); i++) {
             if (sEffectItems.get(i).isSelected()) bSelected = true;
@@ -3269,7 +3530,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     private static void resetSoundEffect(boolean save) {
-        sEffectItems.get(EFFECTTYPE_SOUNDEFFECT).setSelected(false);
+        if (sActivity != null && sActivity.effectFragment.getScrollSoundEffectCustomize().getVisibility() != View.VISIBLE)
+            sEffectItems.get(EFFECTTYPE_SOUNDEFFECT).setSelected(false);
         boolean bSelected = false;
         for (int i = 0; i < sEffectItems.size(); i++) {
             if (sEffectItems.get(i).isSelected()) bSelected = true;
@@ -3316,6 +3578,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 if (sCompSelected != -1) onEffectItemClick(nEffect);
             } else if (sEffectDetail == EFFECTTYPE_PAN) {
                 if (sPanSelected != -1) onEffectItemClick(nEffect);
+            } else if (sEffectDetail == EFFECTTYPE_FREQ) {
+                if (sFreqSelected != -1) onEffectItemClick(nEffect);
             } else if (sEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
                 if (sSoundEffectSelected != -1) onEffectItemClick(nEffect);
             } else onEffectItemClick(nEffect);
@@ -3323,14 +3587,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         mTextEffectName.setText(sEffectItems.get(nEffect).getEffectName());
         mSeekEffectDetail.setOnSeekBarChangeListener(null);
-        if (nEffect == EFFECTTYPE_FREQUENCY) {
-            mTextEffectLabel.setText(R.string.frequency);
-            mTextEffectLabel.setVisibility(View.VISIBLE);
-            mTextEffectDetail.setText(String.format(Locale.getDefault(), "%.1f", sFreq));
-            // SeekBarについてはAPIエベル26以降しか最小値を設定できない為、最大値に39を設定（本来は1～40にしたい）
-            mSeekEffectDetail.setMax(39);
-            mSeekEffectDetail.setProgress((int) (sFreq * 10.0f) - 1);
-        } else if (nEffect == EFFECTTYPE_INCREASESPEED) {
+        if (nEffect == EFFECTTYPE_INCREASESPEED) {
             mTextEffectLabel.setText(R.string.incSpeedTitle);
             mTextEffectLabel.setVisibility(View.VISIBLE);
             mEditTimeEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfIncreaseSpeed, getString(R.string.sec)));
@@ -3360,6 +3617,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mRelativeRollerEffectDetail.setVisibility(View.VISIBLE);
             mScrollCompCustomize.setVisibility(View.GONE);
             mScrollPanCustomize.setVisibility(View.GONE);
+            mScrollFreqCustomize.setVisibility(View.GONE);
             mScrollEchoCustomize.setVisibility(View.GONE);
             mScrollReverbCustomize.setVisibility(View.GONE);
             mScrollChorusCustomize.setVisibility(View.GONE);
@@ -3389,6 +3647,19 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             for (int i = 0; i < sPanItems.size(); i++) sPanItems.get(i).setSelected(false);
             if (sPanSelected == -1) resetPan();
             else onEffectTemplateItemClick(sPanSelected);
+            mEffectTemplatesAdapter.notifyDataSetChanged();
+            mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
+            mRelativeEffectTemplates.setVisibility(View.VISIBLE);
+        } else if (nEffect == EFFECTTYPE_FREQ) {
+            mRelativeSliderEffectDatail.setVisibility(View.GONE);
+            mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mEffectTemplatesAdapter.changeItems(sFreqItems);
+            mBtnAddEffectTemplate.setContentDescription(getString(R.string.newFreq));
+            mBtnAddEffectTemplate.setAlpha(1f);
+            mBtnAddEffectTemplate.setVisibility(View.VISIBLE);
+            for (int i = 0; i < sFreqItems.size(); i++) sFreqItems.get(i).setSelected(false);
+            if (sFreqSelected == -1) resetFreq();
+            else onEffectTemplateItemClick(sFreqSelected);
             mEffectTemplatesAdapter.notifyDataSetChanged();
             mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
@@ -3463,6 +3734,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mRelativeRollerEffectDetail.setVisibility(View.GONE);
             mScrollCompCustomize.setVisibility(View.GONE);
             mScrollPanCustomize.setVisibility(View.GONE);
+            mScrollFreqCustomize.setVisibility(View.GONE);
             mScrollEchoCustomize.setVisibility(View.GONE);
             mScrollReverbCustomize.setVisibility(View.GONE);
             mScrollChorusCustomize.setVisibility(View.GONE);
@@ -3560,6 +3832,19 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mImgEffectBack.setVisibility(View.VISIBLE);
             mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
             mBtnPanSaveAs.setVisibility(View.VISIBLE);
+        } else if (sEffectDetail == EFFECTTYPE_FREQ) {
+            EffectTemplateItem item = sFreqItems.get(nTemplate);
+            mTextEffectName.setText(item.getEffectTemplateName());
+
+            mBtnEffectBack.setText(R.string.back);
+            mBtnEffectFinish.setText(R.string.done);
+
+            mBtnEffectFinish.setVisibility(View.VISIBLE);
+            mRelativeEffectTemplates.setVisibility(View.INVISIBLE);
+            mScrollFreqCustomize.setVisibility(View.VISIBLE);
+            mImgEffectBack.setVisibility(View.VISIBLE);
+            mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
+            mBtnFreqSaveAs.setVisibility(View.VISIBLE);
         } else if (sEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
             EffectTemplateItem item = sSoundEffectItems.get(nTemplate);
             mTextEffectName.setText(item.getEffectTemplateName());
@@ -3582,11 +3867,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
         if (seekBar.getId() == R.id.seekEffectDetail) {
-            if (mTextEffectName.getText().toString().equals(sEffectItems.get(EFFECTTYPE_FREQUENCY).getEffectName())) {
-                double dProgress = (double) (progress + 1) / 10.0;
-                mTextEffectDetail.setText(String.format(Locale.getDefault(), "%.1f", dProgress));
-                setFreq((float) dProgress);
-            } else if (mTextEffectName.getText().toString().equals(sEffectItems.get(EFFECTTYPE_METRONOME).getEffectName())) {
+            if (mTextEffectName.getText().toString().equals(sEffectItems.get(EFFECTTYPE_METRONOME).getEffectName())) {
                 sBpm = progress + 10;
                 mTextEffectDetail.setText(String.format(Locale.getDefault(), "%d", sBpm));
                 sMetronome.setBpm(sBpm);
@@ -3603,6 +3884,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else if (seekBar.getId() == R.id.seekCompRelease)
             setComp(mSeekCompGain.getProgress(), mSeekCompThreshold.getProgress(), mSeekCompRatio.getProgress(), mSeekCompAttack.getProgress(), progress, fromTouch);
         else if (seekBar.getId() == R.id.seekPanValue) setPan(progress, fromTouch);
+        else if (seekBar.getId() == R.id.seekFreqValue) setFreq(progress, fromTouch);
         else if (seekBar.getId() == R.id.seekEchoDry)
             setEcho(progress, mSeekEchoWet.getProgress(), mSeekEchoFeedback.getProgress(), mSeekEchoDelay.getProgress(), fromTouch);
         else if (seekBar.getId() == R.id.seekEchoWet)
@@ -3806,7 +4088,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             sActivity.effectFragment.getSeekPanValue().setProgress((int)(fValue * 100f + 100));
         }
 
-        updateComp();
+        updatePan();
         if (bSave) PlaylistFragment.updateSavingEffect();
     }
 
@@ -3816,6 +4098,51 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
     private void plusPanValue() {
         setPan(mSeekPanValue.getProgress() + 1, true);
+    }
+
+    private static void updateFreq() {
+        if (!sEffectItems.get(EFFECTTYPE_FREQ).isSelected() || MainActivity.sStream == 0)
+            return;
+        BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
+        BASS.BASS_ChannelGetInfo(MainActivity.sStream, info);
+        BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * sFreq);
+    }
+
+    public static void setFreq(int nValue, boolean bSave) {
+        if (nValue < 0) nValue = 0;
+        if (nValue > FREQ_VALUE_MAX) nValue = FREQ_VALUE_MAX;
+
+        sFreq = (nValue + 10) / 100f;
+
+        if(sActivity != null) {
+            sActivity.effectFragment.getTextFreqValue().setText(String.format(Locale.getDefault(), "%.0f", sFreq * 100f));
+
+            sActivity.effectFragment.getSeekFreqValue().setProgress(nValue);
+        }
+
+        updateFreq();
+        if (bSave) PlaylistFragment.updateSavingEffect();
+    }
+
+    public static void setFreq(float fValue, boolean bSave) {
+        sFreq = fValue;
+
+        if(sActivity != null) {
+            sActivity.effectFragment.getTextFreqValue().setText(String.format(Locale.getDefault(), "%.0f", sFreq * 100f));
+
+            sActivity.effectFragment.getSeekFreqValue().setProgress((int)(fValue * 100f - 10));
+        }
+
+        updateFreq();
+        if (bSave) PlaylistFragment.updateSavingEffect();
+    }
+
+    private void minusFreqValue() {
+        setFreq(mSeekFreqValue.getProgress() - 1, true);
+    }
+
+    private void plusFreqValue() {
+        setFreq(mSeekFreqValue.getProgress() + 1, true);
     }
 
     private static void updateEcho() {
@@ -4392,22 +4719,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setSoundEffect(mSeekSoundEffectVolume.getProgress() + 1, true);
     }
 
-    private void setFreq(float freq) {
-        setFreq(freq, true);
-    }
-
-    public static void setFreq(float freq, boolean bSave) {
-        if (freq < 0.1f) freq = 0.1f;
-        else if (freq > 4.0f) freq = 4.0f;
-        sFreq = freq;
-        if (sEffectItems.get(EFFECTTYPE_FREQUENCY).isSelected() && MainActivity.sStream != 0) {
-            BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
-            BASS.BASS_ChannelGetInfo(MainActivity.sStream, info);
-            BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * freq);
-        }
-        if (bSave) PlaylistFragment.updateSavingEffect();
-    }
-
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         if (seekBar.getId() == R.id.seekEffectDetail) {
@@ -4423,8 +4734,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 if (i != nSelect) deselectEffect(i);
             if (nSelect != EFFECTTYPE_8BITSOUND) deselectEffect(EFFECTTYPE_8BITSOUND);
         }
-        if (nSelect == EFFECTTYPE_FREQUENCY || nSelect == EFFECTTYPE_8BITSOUND) {
-            if (nSelect != EFFECTTYPE_FREQUENCY) deselectEffect(EFFECTTYPE_FREQUENCY);
+        if (nSelect == EFFECTTYPE_FREQ || nSelect == EFFECTTYPE_8BITSOUND) {
+            if (nSelect != EFFECTTYPE_FREQ) deselectEffect(EFFECTTYPE_FREQ);
             if (nSelect != EFFECTTYPE_8BITSOUND) deselectEffect(EFFECTTYPE_8BITSOUND);
         }
         if (nSelect == EFFECTTYPE_RANDOM || nSelect == EFFECTTYPE_TRANSCRIBESIDEGUITAR || nSelect == EFFECTTYPE_TRANSCRIBEBASS || nSelect == EFFECTTYPE_OLDRECORD || nSelect == EFFECTTYPE_LOWBATTERY || nSelect == EFFECTTYPE_EARTRAINING || nSelect == EFFECTTYPE_NOSENSE_STRONG || nSelect == EFFECTTYPE_NOSENSE_MIDDLE || nSelect == EFFECTTYPE_NOSENSE_WEAK) {
@@ -4478,6 +4789,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if (nEffect == EFFECTTYPE_DISTORTION) sDistortionSelected = -1;
         if (nEffect == EFFECTTYPE_COMP) sCompSelected = -1;
         if (nEffect == EFFECTTYPE_PAN) sPanSelected = -1;
+        if (nEffect == EFFECTTYPE_FREQ) sFreqSelected = -1;
         if (nEffect == EFFECTTYPE_SOUNDEFFECT) sSoundEffectSelected = -1;
     }
 
@@ -4652,7 +4964,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 p.fRelease = 400.0f;
                 p.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(sFxComp, p);
-            } else if (strEffect.equals(context.getString(R.string.frequency)))
+            } else if (strEffect.equals(context.getString(R.string.freq)))
                 BASS.BASS_ChannelSetAttribute(stream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, info.freq * sFreq);
             else if (strEffect.equals(context.getString(R.string.phaseReversal)))
                 sDspPhaseReversal = BASS.BASS_ChannelSetDSP(stream, phaseReversalDSP, null, 0);
@@ -5516,6 +5828,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             menu.setTitle(getString(R.string.distortionTemplate));
         else if (sEffectDetail == EFFECTTYPE_COMP) menu.setTitle(getString(R.string.compTemplate));
         else if (sEffectDetail == EFFECTTYPE_PAN) menu.setTitle(getString(R.string.panTemplate));
+        else if (sEffectDetail == EFFECTTYPE_FREQ) menu.setTitle(getString(R.string.freqTemplate));
         menu.addMenu(getString(R.string.sortTemplate), sActivity.isDarkMode() ? R.drawable.ic_actionsheet_sort_dark : R.drawable.ic_actionsheet_sort, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -5546,6 +5859,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                         else if (sEffectDetail == EFFECTTYPE_DISTORTION) items = sDistortionItems;
                         else if (sEffectDetail == EFFECTTYPE_COMP) items = sCompItems;
                         else if (sEffectDetail == EFFECTTYPE_PAN) items = sPanItems;
+                        else if (sEffectDetail == EFFECTTYPE_FREQ) items = sFreqItems;
 
                         EffectTemplateItem itemTemp = items.get(fromPos);
                         items.remove(fromPos);
@@ -5594,6 +5908,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                                 sPanSelected--;
                             else if (fromPos > sPanSelected && sPanSelected >= toPos)
                                 sPanSelected++;
+                        }
+                        else if (sEffectDetail == EFFECTTYPE_FREQ) {
+                            if (fromPos == sFreqSelected) sFreqSelected = toPos;
+                            else if (fromPos < sFreqSelected && sFreqSelected <= toPos)
+                                sFreqSelected--;
+                            else if (fromPos > sFreqSelected && sFreqSelected >= toPos)
+                                sFreqSelected++;
                         }
 
                         for (int i = 0; i < PlaylistFragment.sPlaylists.size(); i++) {
@@ -5651,6 +5972,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                                         else if (fromPos > saver.getPanSelected() && saver.getPanSelected() >= toPos)
                                             saver.setPanSelected(saver.getPanSelected() + 1);
                                     }
+                                    else if (sEffectDetail == EFFECTTYPE_FREQ) {
+                                        if (fromPos == saver.getFreqSelected())
+                                            saver.setFreqSelected(toPos);
+                                        else if (fromPos < saver.getFreqSelected() && saver.getFreqSelected() <= toPos)
+                                            saver.setFreqSelected(saver.getFreqSelected() - 1);
+                                        else if (fromPos > saver.getFreqSelected() && saver.getFreqSelected() >= toPos)
+                                            saver.setFreqSelected(saver.getFreqSelected() + 1);
+                                    }
                                 }
                             }
                         }
@@ -5697,6 +6026,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                         else if (sEffectDetail == EFFECTTYPE_DISTORTION) resetDistortions();
                         else if (sEffectDetail == EFFECTTYPE_COMP) resetComps();
                         else if (sEffectDetail == EFFECTTYPE_PAN) resetPans();
+                        else if (sEffectDetail == EFFECTTYPE_FREQ) resetFreqs();
                     }
                 });
                 final AlertDialog alertDialog = builder.create();
@@ -5733,6 +6063,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             menu.setTitle(sCompItems.get(nItem).getEffectTemplateName());
         else if (sEffectDetail == EFFECTTYPE_PAN)
             menu.setTitle(sPanItems.get(nItem).getEffectTemplateName());
+        else if (sEffectDetail == EFFECTTYPE_FREQ)
+            menu.setTitle(sFreqItems.get(nItem).getEffectTemplateName());
         menu.addMenu(getString(R.string.changeTemplateName), sActivity.isDarkMode() ? R.drawable.ic_actionsheet_edit_dark : R.drawable.ic_actionsheet_edit, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -5759,6 +6091,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     editPreset.setText(sCompItems.get(nItem).getEffectTemplateName());
                 else if (sEffectDetail == EFFECTTYPE_PAN)
                     editPreset.setText(sPanItems.get(nItem).getEffectTemplateName());
+                else if (sEffectDetail == EFFECTTYPE_FREQ)
+                    editPreset.setText(sFreqItems.get(nItem).getEffectTemplateName());
                 linearLayout.addView(editPreset);
                 builder.setView(linearLayout);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -5775,6 +6109,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                             sCompItems.get(nItem).setEffectTemplateName(editPreset.getText().toString());
                         else if (sEffectDetail == EFFECTTYPE_PAN)
                             sPanItems.get(nItem).setEffectTemplateName(editPreset.getText().toString());
+                        else if (sEffectDetail == EFFECTTYPE_FREQ)
+                            sFreqItems.get(nItem).setEffectTemplateName(editPreset.getText().toString());
                         mEffectTemplatesAdapter.notifyItemChanged(nItem);
                         saveData();
                     }
@@ -5821,6 +6157,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 } else if (sEffectDetail == EFFECTTYPE_PAN) {
                     item = sPanItems.get(nItem);
                     sPanItems.add(nItem + 1, new EffectTemplateItem(item.getEffectTemplateName(), new ArrayList<>(Arrays.asList(item.getArPresets().get(0)))));
+                } else if (sEffectDetail == EFFECTTYPE_FREQ) {
+                    item = sFreqItems.get(nItem);
+                    sFreqItems.add(nItem + 1, new EffectTemplateItem(item.getEffectTemplateName(), new ArrayList<>(Arrays.asList(item.getArPresets().get(0)))));
                 } else return;
                 mEffectTemplatesAdapter.notifyItemInserted(nItem + 1);
 
@@ -5836,6 +6175,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     if (nItem < sCompSelected) sCompSelected++;
                 } else if (sEffectDetail == EFFECTTYPE_PAN) {
                     if (nItem < sPanSelected) sPanSelected++;
+                } else if (sEffectDetail == EFFECTTYPE_FREQ) {
+                    if (nItem < sFreqSelected) sFreqSelected++;
                 }
 
                 for (int i = 0; i < PlaylistFragment.sPlaylists.size(); i++) {
@@ -5863,6 +6204,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                             } else if (sEffectDetail == EFFECTTYPE_PAN) {
                                 if (nItem < saver.getPanSelected())
                                     saver.setPanSelected(saver.getPanSelected() + 1);
+                            } else if (sEffectDetail == EFFECTTYPE_FREQ) {
+                                if (nItem < saver.getFreqSelected())
+                                    saver.setFreqSelected(saver.getFreqSelected() + 1);
                             }
                         }
                     }
@@ -5901,6 +6245,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             builder.setTitle(sCompItems.get(item).getEffectTemplateName());
         else if (sEffectDetail == EFFECTTYPE_PAN)
             builder.setTitle(sPanItems.get(item).getEffectTemplateName());
+        else if (sEffectDetail == EFFECTTYPE_FREQ)
+            builder.setTitle(sFreqItems.get(item).getEffectTemplateName());
         builder.setMessage(R.string.askDeleteTemplate);
         builder.setPositiveButton(R.string.decideNot, null);
         builder.setNegativeButton(R.string.doDelete, new DialogInterface.OnClickListener() {
@@ -5912,6 +6258,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     removeDistortionItem(item);
                 else if (sEffectDetail == EFFECTTYPE_COMP) removeCompItem(item);
                 else if (sEffectDetail == EFFECTTYPE_PAN) removePanItem(item);
+                else if (sEffectDetail == EFFECTTYPE_FREQ) removeFreqItem(item);
             }
         });
         final AlertDialog alertDialog = builder.create();
@@ -6100,6 +6447,31 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         saveData();
     }
 
+    private void removeFreqItem(int nItem) {
+        sFreqItems.remove(nItem);
+        mEffectTemplatesAdapter.notifyItemRemoved(nItem);
+
+        if (nItem == sFreqSelected) resetFreq();
+        else if (nItem < sFreqSelected) sFreqSelected--;
+
+        for (int i = 0; i < PlaylistFragment.sPlaylists.size(); i++) {
+
+            ArrayList<SongItem> arSongs = PlaylistFragment.sPlaylists.get(i);
+            ArrayList<EffectSaver> arEffects = PlaylistFragment.sEffects.get(i);
+            for (int j = 0; j < arSongs.size(); j++) {
+                EffectSaver saver = arEffects.get(j);
+                if (saver.isSave()) {
+                    if (nItem == saver.getFreqSelected()) {
+                        saver.setFreqSelected(-1);
+                        saver.setFreq(0.0f);
+                    } else if (nItem < saver.getFreqSelected())
+                        saver.setFreqSelected(saver.getFreqSelected() - 1);
+                }
+            }
+        }
+        saveData();
+    }
+
     public void setLightMode(boolean animated) {
         final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
         final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
@@ -6123,6 +6495,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     mRelativeEffectTitle.setBackgroundColor(nColorModeBk);
                     mRelativeComp.setBackgroundColor(nColorModeBk);
                     mRelativePan.setBackgroundColor(nColorModeBk);
+                    mRelativeFreq.setBackgroundColor(nColorModeBk);
                     mRelativeEcho.setBackgroundColor(nColorModeBk);
                     mRelativeReverb.setBackgroundColor(nColorModeBk);
                     mRelativeChorus.setBackgroundColor(nColorModeBk);
@@ -6137,6 +6510,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     mTextCompAttackLabel.setTextColor(nColorModeText);
                     mTextCompReleaseLabel.setTextColor(nColorModeText);
                     mTextPanValueLabel.setTextColor(nColorModeText);
+                    mTextFreqValueLabel.setTextColor(nColorModeText);
                     mTextEchoDryLabel.setTextColor(nColorModeText);
                     mTextEchoWetLabel.setTextColor(nColorModeText);
                     mTextEchoFeedbackLabel.setTextColor(nColorModeText);
@@ -6164,6 +6538,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     mTextCompAttack.setTextColor(nColorModeText);
                     mTextCompRelease.setTextColor(nColorModeText);
                     mTextPanValue.setTextColor(nColorModeText);
+                    mTextFreqValue.setTextColor(nColorModeText);
                     mTextEchoDry.setTextColor(nColorModeText);
                     mTextEchoWet.setTextColor(nColorModeText);
                     mTextEchoFeedback.setTextColor(nColorModeText);
@@ -6198,6 +6573,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     mBtnResetComp.setTextColor(nColorModeBlue);
                     mBtnPanRandom.setTextColor(nColorModeBlue);
                     mBtnResetPan.setTextColor(nColorModeBlue);
+                    mBtnFreqRandom.setTextColor(nColorModeBlue);
+                    mBtnResetFreq.setTextColor(nColorModeBlue);
                     mBtnEchoRandom.setTextColor(nColorModeBlue);
                     mBtnResetEcho.setTextColor(nColorModeBlue);
                     mBtnReverbRandom.setTextColor(nColorModeBlue);
@@ -6228,6 +6605,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mRelativeEffectTitle.setBackgroundColor(nLightModeBk);
             mRelativeComp.setBackgroundColor(nLightModeBk);
             mRelativePan.setBackgroundColor(nLightModeBk);
+            mRelativeFreq.setBackgroundColor(nLightModeBk);
             mRelativeEcho.setBackgroundColor(nLightModeBk);
             mRelativeReverb.setBackgroundColor(nLightModeBk);
             mRelativeChorus.setBackgroundColor(nLightModeBk);
@@ -6242,6 +6620,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mTextCompAttackLabel.setTextColor(nLightModeText);
             mTextCompReleaseLabel.setTextColor(nLightModeText);
             mTextPanValueLabel.setTextColor(nLightModeText);
+            mTextFreqValueLabel.setTextColor(nLightModeText);
             mTextEchoDryLabel.setTextColor(nLightModeText);
             mTextEchoWetLabel.setTextColor(nLightModeText);
             mTextEchoFeedbackLabel.setTextColor(nLightModeText);
@@ -6269,6 +6648,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mTextCompAttack.setTextColor(nLightModeText);
             mTextCompRelease.setTextColor(nLightModeText);
             mTextPanValue.setTextColor(nLightModeText);
+            mTextFreqValue.setTextColor(nLightModeText);
             mTextEchoDry.setTextColor(nLightModeText);
             mTextEchoWet.setTextColor(nLightModeText);
             mTextEchoFeedback.setTextColor(nLightModeText);
@@ -6303,6 +6683,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnResetComp.setTextColor(nLightModeBlue);
             mBtnPanRandom.setTextColor(nLightModeBlue);
             mBtnResetPan.setTextColor(nLightModeBlue);
+            mBtnFreqRandom.setTextColor(nLightModeBlue);
+            mBtnResetFreq.setTextColor(nLightModeBlue);
             mBtnEchoRandom.setTextColor(nLightModeBlue);
             mBtnResetEcho.setTextColor(nLightModeBlue);
             mBtnReverbRandom.setTextColor(nLightModeBlue);
@@ -6327,6 +6709,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnResetComp.setBackgroundResource(R.drawable.resetbutton);
         mBtnPanRandom.setBackgroundResource(R.drawable.resetbutton);
         mBtnResetPan.setBackgroundResource(R.drawable.resetbutton);
+        mBtnFreqRandom.setBackgroundResource(R.drawable.resetbutton);
+        mBtnResetFreq.setBackgroundResource(R.drawable.resetbutton);
         mBtnEchoRandom.setBackgroundResource(R.drawable.resetbutton);
         mBtnResetEcho.setBackgroundResource(R.drawable.resetbutton);
         mBtnReverbRandom.setBackgroundResource(R.drawable.resetbutton);
@@ -6341,6 +6725,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mSeekCompAttack.setProgressDrawable(getResources().getDrawable(R.drawable.progress));
         mSeekCompRelease.setProgressDrawable(getResources().getDrawable(R.drawable.progress));
         mSeekPanValue.setProgressDrawable(getResources().getDrawable(R.drawable.progress));
+        mSeekFreqValue.setProgressDrawable(getResources().getDrawable(R.drawable.progress));
         mSeekEchoDry.setProgressDrawable(getResources().getDrawable(R.drawable.progress));
         mSeekEchoWet.setProgressDrawable(getResources().getDrawable(R.drawable.progress));
         mSeekEchoFeedback.setProgressDrawable(getResources().getDrawable(R.drawable.progress));
@@ -6368,6 +6753,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mSeekCompAttack.setThumb(getResources().getDrawable(R.drawable.thumbplaying));
         mSeekCompRelease.setThumb(getResources().getDrawable(R.drawable.thumbplaying));
         mSeekPanValue.setThumb(getResources().getDrawable(R.drawable.thumbplaying));
+        mSeekFreqValue.setThumb(getResources().getDrawable(R.drawable.thumbplaying));
         mSeekEchoDry.setThumb(getResources().getDrawable(R.drawable.thumbplaying));
         mSeekEchoWet.setThumb(getResources().getDrawable(R.drawable.thumbplaying));
         mSeekEchoFeedback.setThumb(getResources().getDrawable(R.drawable.thumbplaying));
@@ -6403,6 +6789,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnCompReleasePlus.setBackgroundResource(R.drawable.ic_button_plus);
         mBtnPanValueMinus.setBackgroundResource(R.drawable.ic_button_left);
         mBtnPanValuePlus.setBackgroundResource(R.drawable.ic_button_right);
+        mBtnFreqValueMinus.setBackgroundResource(R.drawable.ic_button_left);
+        mBtnFreqValuePlus.setBackgroundResource(R.drawable.ic_button_right);
         mBtnEchoDryMinus.setBackgroundResource(R.drawable.ic_button_minus);
         mBtnEchoDryPlus.setBackgroundResource(R.drawable.ic_button_plus);
         mBtnEchoWetMinus.setBackgroundResource(R.drawable.ic_button_minus);
@@ -6451,12 +6839,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnDistortionSaveAs.setTextColor(getResources().getColorStateList(R.color.btn_text));
         mBtnCompSaveAs.setTextColor(getResources().getColorStateList(R.color.btn_text));
         mBtnPanSaveAs.setTextColor(getResources().getColorStateList(R.color.btn_text));
+        mBtnFreqSaveAs.setTextColor(getResources().getColorStateList(R.color.btn_text));
         mBtnReverbSaveAs.setBackgroundResource(R.drawable.btn_border_background);
         mBtnEchoSaveAs.setBackgroundResource(R.drawable.btn_border_background);
         mBtnChorusSaveAs.setBackgroundResource(R.drawable.btn_border_background);
         mBtnDistortionSaveAs.setBackgroundResource(R.drawable.btn_border_background);
         mBtnCompSaveAs.setBackgroundResource(R.drawable.btn_border_background);
         mBtnPanSaveAs.setBackgroundResource(R.drawable.btn_border_background);
+        mBtnFreqSaveAs.setBackgroundResource(R.drawable.btn_border_background);
         mEditSpeedEffectDetail.setBackgroundResource(R.drawable.editborder);
         mEditTimeEffectDetail.setBackgroundResource(R.drawable.editborder);
         mEffectsAdapter.notifyDataSetChanged();
@@ -6486,6 +6876,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mRelativeEffectTitle.setBackgroundColor(nColorModeBk);
                 mRelativeComp.setBackgroundColor(nColorModeBk);
                 mRelativePan.setBackgroundColor(nColorModeBk);
+                mRelativeFreq.setBackgroundColor(nColorModeBk);
                 mRelativeEcho.setBackgroundColor(nColorModeBk);
                 mRelativeReverb.setBackgroundColor(nColorModeBk);
                 mRelativeChorus.setBackgroundColor(nColorModeBk);
@@ -6500,6 +6891,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mTextCompAttackLabel.setTextColor(nColorModeText);
                 mTextCompReleaseLabel.setTextColor(nColorModeText);
                 mTextPanValueLabel.setTextColor(nColorModeText);
+                mTextFreqValueLabel.setTextColor(nColorModeText);
                 mTextEchoDryLabel.setTextColor(nColorModeText);
                 mTextEchoWetLabel.setTextColor(nColorModeText);
                 mTextEchoFeedbackLabel.setTextColor(nColorModeText);
@@ -6527,6 +6919,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mTextCompAttack.setTextColor(nColorModeText);
                 mTextCompRelease.setTextColor(nColorModeText);
                 mTextPanValue.setTextColor(nColorModeText);
+                mTextFreqValue.setTextColor(nColorModeText);
                 mTextEchoDry.setTextColor(nColorModeText);
                 mTextEchoWet.setTextColor(nColorModeText);
                 mTextEchoFeedback.setTextColor(nColorModeText);
@@ -6561,6 +6954,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mBtnResetComp.setTextColor(nColorModeBlue);
                 mBtnPanRandom.setTextColor(nColorModeBlue);
                 mBtnResetPan.setTextColor(nColorModeBlue);
+                mBtnFreqRandom.setTextColor(nColorModeBlue);
+                mBtnResetFreq.setTextColor(nColorModeBlue);
                 mBtnEchoRandom.setTextColor(nColorModeBlue);
                 mBtnResetEcho.setTextColor(nColorModeBlue);
                 mBtnReverbRandom.setTextColor(nColorModeBlue);
@@ -6597,6 +6992,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnResetComp.setBackgroundResource(R.drawable.resetbutton_dark);
         mBtnPanRandom.setBackgroundResource(R.drawable.resetbutton_dark);
         mBtnResetPan.setBackgroundResource(R.drawable.resetbutton_dark);
+        mBtnFreqRandom.setBackgroundResource(R.drawable.resetbutton_dark);
+        mBtnResetFreq.setBackgroundResource(R.drawable.resetbutton_dark);
         mBtnEchoRandom.setBackgroundResource(R.drawable.resetbutton_dark);
         mBtnResetEcho.setBackgroundResource(R.drawable.resetbutton_dark);
         mBtnReverbRandom.setBackgroundResource(R.drawable.resetbutton_dark);
@@ -6611,6 +7008,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mSeekCompAttack.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));
         mSeekCompRelease.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));
         mSeekPanValue.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));
+        mSeekFreqValue.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));
         mSeekEchoDry.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));
         mSeekEchoWet.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));
         mSeekEchoFeedback.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));
@@ -6638,6 +7036,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mSeekCompAttack.setThumb(getResources().getDrawable(R.drawable.thumbplaying_dark));
         mSeekCompRelease.setThumb(getResources().getDrawable(R.drawable.thumbplaying_dark));
         mSeekPanValue.setThumb(getResources().getDrawable(R.drawable.thumbplaying_dark));
+        mSeekFreqValue.setThumb(getResources().getDrawable(R.drawable.thumbplaying_dark));
         mSeekEchoDry.setThumb(getResources().getDrawable(R.drawable.thumbplaying_dark));
         mSeekEchoWet.setThumb(getResources().getDrawable(R.drawable.thumbplaying_dark));
         mSeekEchoFeedback.setThumb(getResources().getDrawable(R.drawable.thumbplaying_dark));
@@ -6673,6 +7072,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnCompReleasePlus.setBackgroundResource(R.drawable.ic_button_plus_dark);
         mBtnPanValueMinus.setBackgroundResource(R.drawable.ic_button_left_dark);
         mBtnPanValuePlus.setBackgroundResource(R.drawable.ic_button_right_dark);
+        mBtnFreqValueMinus.setBackgroundResource(R.drawable.ic_button_left_dark);
+        mBtnFreqValuePlus.setBackgroundResource(R.drawable.ic_button_right_dark);
         mBtnEchoDryMinus.setBackgroundResource(R.drawable.ic_button_minus_dark);
         mBtnEchoDryPlus.setBackgroundResource(R.drawable.ic_button_plus_dark);
         mBtnEchoWetMinus.setBackgroundResource(R.drawable.ic_button_minus_dark);
@@ -6721,12 +7122,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnDistortionSaveAs.setTextColor(getResources().getColorStateList(R.color.btn_text_dark));
         mBtnCompSaveAs.setTextColor(getResources().getColorStateList(R.color.btn_text_dark));
         mBtnPanSaveAs.setTextColor(getResources().getColorStateList(R.color.btn_text_dark));
+        mBtnFreqSaveAs.setTextColor(getResources().getColorStateList(R.color.btn_text_dark));
         mBtnReverbSaveAs.setBackgroundResource(R.drawable.btn_border_background_dark);
         mBtnEchoSaveAs.setBackgroundResource(R.drawable.btn_border_background_dark);
         mBtnChorusSaveAs.setBackgroundResource(R.drawable.btn_border_background_dark);
         mBtnDistortionSaveAs.setBackgroundResource(R.drawable.btn_border_background_dark);
         mBtnCompSaveAs.setBackgroundResource(R.drawable.btn_border_background_dark);
         mBtnPanSaveAs.setBackgroundResource(R.drawable.btn_border_background_dark);
+        mBtnFreqSaveAs.setBackgroundResource(R.drawable.btn_border_background_dark);
         mEditSpeedEffectDetail.setBackgroundResource(R.drawable.editborder_dark);
         mEditTimeEffectDetail.setBackgroundResource(R.drawable.editborder_dark);
         mEffectsAdapter.notifyDataSetChanged();

@@ -79,7 +79,7 @@ class EffectSaver {
     private ArrayList<Double> arMarkerTime = null;
     private boolean bLoopMarker = false;
     private int nMarker = 0;
-    private int mReverbSelected = -1, mEchoSelected = -1, mChorusSelected = -1, mDistortionSelected = -1, mCompSelected = -1, mPanSelected = -1, mSoundEffectSelected = -1;
+    private int mReverbSelected = -1, mEchoSelected = -1, mChorusSelected = -1, mDistortionSelected = -1, mCompSelected = -1, mPanSelected = -1, mFreqSelected = -1, mSoundEffectSelected = -1;
 
     void setSave(boolean save) { mSave = save; }
     void setSpeed(float speed) { mSpeed = speed; }
@@ -174,6 +174,7 @@ class EffectSaver {
     void setDistortionSelected(int nSelected) { this.mDistortionSelected = nSelected; }
     void setCompSelected(int nSelected) { this.mCompSelected = nSelected; }
     void setPanSelected(int nSelected) { this.mPanSelected = nSelected; }
+    void setFreqSelected(int nSelected) { this.mFreqSelected = nSelected; }
     void setSoundEffectSelected(int nSelected) { this.mSoundEffectSelected = nSelected; }
 
     boolean isSave() { return mSave; }
@@ -259,6 +260,7 @@ class EffectSaver {
     int getDistortionSelected() { return mDistortionSelected; }
     int getCompSelected() { return mCompSelected; }
     int getPanSelected() { return mPanSelected; }
+    int getFreqSelected() { return mFreqSelected; }
     int getSoundEffectSelected() { return mSoundEffectSelected; }
 
     EffectSaver() {
@@ -353,6 +355,7 @@ class EffectSaver {
         mDistortionSelected = saver.mDistortionSelected;
         mCompSelected = saver.mCompSelected;
         mPanSelected = saver.mPanSelected;
+        mFreqSelected = saver.mFreqSelected;
         mSoundEffectSelected = saver.mSoundEffectSelected;
     }
 }
