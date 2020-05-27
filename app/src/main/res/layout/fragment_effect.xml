@@ -109,75 +109,6 @@
             />
 
         <RelativeLayout
-            android:id="@+id/relativeSliderEffectDatail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_below="@id/textEffectLabel"
-            android:visibility="invisible"
-            >
-
-            <SeekBar
-                android:id="@+id/seekEffectDetail"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_toLeftOf="@id/textEffectDetail"
-                android:layout_toStartOf="@id/textEffectDetail"
-                android:thumb="@drawable/thumbplaying"
-                android:progressDrawable="@drawable/progress"
-                android:splitTrack="false"
-                />
-
-            <TextView
-                android:id="@+id/textEffectDetail"
-                android:layout_width="32dp"
-                android:layout_height="wrap_content"
-                android:textSize="15dp"
-                android:textColor="#000000"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/btnEffectMinus"
-                android:layout_toStartOf="@+id/btnEffectMinus"
-                />
-
-            <com.edolfzoku.hayaemon2.HighlightImageButton
-                android:id="@+id/btnEffectMinus"
-                android:contentDescription="@string/minus"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/ic_button_minus"
-                android:scaleType="centerInside"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="2dp"
-                android:layout_toLeftOf="@+id/btnEffectPlus"
-                android:layout_toStartOf="@+id/btnEffectPlus"
-                />
-
-            <com.edolfzoku.hayaemon2.HighlightImageButton
-                android:id="@+id/btnEffectPlus"
-                android:contentDescription="@string/plus"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/ic_button_plus"
-                android:scaleType="centerInside"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="2dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                />
-
-       </RelativeLayout>
-
-        <RelativeLayout
             android:id="@+id/relativeRollerEffectDatail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -1141,6 +1072,168 @@
                     android:stateListAnimator="@null"
                     android:visibility="visible"
                     android:layout_below="@+id/relativeSliderFreqValue"
+                    />
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+        <ScrollView
+            android:id="@+id/scrollMetronomeCustomize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/viewSepEffectDetail"
+            android:visibility="invisible"
+            >
+
+            <RelativeLayout
+                android:id="@+id/relativeMetronome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:background="#FFF"
+                >
+
+                <RelativeLayout
+                    android:id="@+id/relativeMetronomeTopButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    >
+
+                    <Button
+                        android:id="@+id/btnMetronomeRandom"
+                        android:text="@string/random"
+                        android:textSize="12sp"
+                        android:textColor="@color/btn_text"
+                        android:background="@drawable/resetbutton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:stateListAnimator="@null"
+                        />
+
+                    <Button
+                        android:id="@+id/btnResetMetronome"
+                        android:text="@string/reset"
+                        android:textSize="12sp"
+                        android:textColor="@color/btn_text"
+                        android:background="@drawable/resetbutton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:stateListAnimator="@null"
+                        android:layout_toRightOf="@+id/btnMetronomeRandom"
+                        android:layout_toEndOf="@+id/btnMetronomeRandom"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textMetronomeValueLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/BPM"
+                    android:textSize="13dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_below="@+id/relativeMetronomeTopButton"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSliderMetronomeValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_below="@id/textMetronomeValueLabel"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekMetronomeValue"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:max="390"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@id/textMetronomeValue"
+                        android:layout_toStartOf="@id/textMetronomeValue"
+                        android:thumb="@drawable/thumbplaying"
+                        android:progressDrawable="@drawable/progress"
+                        android:splitTrack="false"
+                        />
+
+                    <TextView
+                        android:id="@+id/textMetronomeValue"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="13dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/btnMetronomeValueMinus"
+                        android:layout_toStartOf="@+id/btnMetronomeValueMinus"
+                        />
+
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
+                        android:id="@+id/btnMetronomeValueMinus"
+                        android:contentDescription="@string/changeLeft"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/ic_button_left"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_toLeftOf="@+id/btnMetronomeValuePlus"
+                        android:layout_toStartOf="@+id/btnMetronomeValuePlus"
+                        />
+
+                    <com.edolfzoku.hayaemon2.HighlightImageButton
+                        android:id="@+id/btnMetronomeValuePlus"
+                        android:contentDescription="@string/changeRight"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/ic_button_right"
+                        android:scaleType="centerInside"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btnMetronomeSaveAs"
+                    android:text="@string/saveAs"
+                    android:textColor="@color/btn_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="44dp"
+                    android:layout_marginRight="44dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/btn_border_background"
+                    android:stateListAnimator="@null"
+                    android:visibility="visible"
+                    android:layout_below="@+id/relativeSliderMetronomeValue"
                     />
 
             </RelativeLayout>

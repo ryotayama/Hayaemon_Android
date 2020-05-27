@@ -2985,6 +2985,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saver.setCompSelected(EffectFragment.sCompSelected);
         saver.setPanSelected(EffectFragment.sPanSelected);
         saver.setFreqSelected(EffectFragment.sFreqSelected);
+        saver.setMetronomeSelected(EffectFragment.sMetronomeSelected);
         saver.setSoundEffectSelected(EffectFragment.sSoundEffectSelected);
 
         saveFiles(false, true, false, false, false);
@@ -3086,6 +3087,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setCompSelected(EffectFragment.sCompSelected);
             saver.setPanSelected(EffectFragment.sPanSelected);
             saver.setFreqSelected(EffectFragment.sFreqSelected);
+            saver.setMetronomeSelected(EffectFragment.sMetronomeSelected);
             saver.setSoundEffectSelected(EffectFragment.sSoundEffectSelected);
 
             saveFiles(false, true, false, false, false);
@@ -3182,6 +3184,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         EffectFragment.setCompSelected(saver.getCompSelected());
         EffectFragment.setPanSelected(saver.getPanSelected());
         EffectFragment.setFreqSelected(saver.getFreqSelected());
+        EffectFragment.setMetronomeSelected(saver.getMetronomeSelected());
         EffectFragment.setSoundEffectSelected(saver.getSoundEffectSelected());
     }
 
