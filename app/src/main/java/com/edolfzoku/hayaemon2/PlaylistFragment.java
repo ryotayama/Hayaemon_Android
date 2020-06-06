@@ -3051,6 +3051,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setIncreaseSpeed(EffectFragment.sIncreaseSpeed);
             saver.setTimeOmDecreaseSpeed(EffectFragment.sTimeOfDecreaseSpeed);
             saver.setDecreaseSpeed(EffectFragment.sDecreaseSpeed);
+            saver.setTimeOfRaisePitch(EffectFragment.sTimeOfRaisePitch);
+            saver.setRaisePitch(EffectFragment.sRaisePitch);
+            saver.setTimeOfLowerPitch(EffectFragment.sTimeOfLowerPitch);
+            saver.setLowerPitch(EffectFragment.sLowerPitch);
             saver.setCompGain(EffectFragment.sCompGain);
             saver.setCompThreshold(EffectFragment.sCompThreshold);
             saver.setCompRatio(EffectFragment.sCompRatio);
