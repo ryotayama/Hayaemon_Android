@@ -101,6 +101,8 @@
     <string name="reverse">역회전재생</string>
     <string name="increaseSpeed">점점 빠르게</string>
     <string name="decreaseSpeed">점점 느리게</string>
+    <string name="raisePitch">피치 올리기</string>
+    <string name="lowerPitch">낮은 피치</string>
     <string name="oldRecord">레코드 재생</string>
     <string name="lowBattery">배터리 부족</string>
     <string name="noSenseStrong">음치(강함)</string>
@@ -293,6 +295,8 @@
     <string name="cancel">취소</string>
     <string name="incSpeedTitle">지정한 시간에 따라 가속</string>
     <string name="decSpeedTitle">지정한 시간에 따라 감속</string>
+    <string name="rasPitchTitle">지정된 시간마다 피치를 올립니다</string>
+    <string name="lowPitchTitle">지정한 시간에 따라 감속</string>
     <string name="BPM">BPM</string>
     <string name="changeLeft">값을 왼쪽으로 변경</string>
     <string name="changeRight">값을 오른쪽으로 변경</string>

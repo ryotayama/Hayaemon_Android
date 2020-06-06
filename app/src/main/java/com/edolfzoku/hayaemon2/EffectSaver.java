@@ -61,10 +61,14 @@ class EffectSaver {
     private float fFreq = 0.0f;
     private int nBPM = 0;
     private float mSoundEffectVolume;
-    private float mTimeOmIncreaseSpeed = 1.0f;
+    private float mTimeOmIncreaseSpeed = 1.0f;//todo: fix typo and make wildcard for old version
     private float mIncreaseSpeed = 0.1f;
     private float mTimeOmDecreaseSpeed = 1.0f;
     private float mDecreaseSpeed = 0.1f;
+    private float mTimeOfRaisePitch = 1.0f;
+    private float mRaisePitch = 0.1f;
+    private float mTimeOfLowerPitch = 1.0f;
+    private float mLowerPitch = 0.1f;
     private float mCompGain = 2.0f, mCompThreshold = -20.0f, mCompRatio = 10.0f, mCompAttack = 1.2f, mCompRelease = 400.0f;
     private float mEchoDry, mEchoWet, mEchoFeedback, mEchoDelay;
     private float mReverbDry = 0.7f, mReverbWet = 1.0f, mReverbRoomSize = 0.85f, mReverbDamp = 0.5f, mReverbWidth = 0.9f;
@@ -131,10 +135,14 @@ class EffectSaver {
     void setFreq(float fFreq) { this.fFreq = fFreq; }
     void setBPM(int nBPM) { this.nBPM = nBPM; }
     void setSoundEffectVolume(float soundEffectVolume) { this.mSoundEffectVolume = soundEffectVolume; }
-    void setTimeOmIncreaseSpeed(float mTimeOmIncreaseSpeed) { this.mTimeOmIncreaseSpeed = mTimeOmIncreaseSpeed; }
+    void setTimeOmIncreaseSpeed(float mTimeOmIncreaseSpeed) { this.mTimeOmIncreaseSpeed = mTimeOmIncreaseSpeed; }//todo: fix typo and make wildcard for old version
     void setIncreaseSpeed(float mIncreaseSpeed) { this.mIncreaseSpeed = mIncreaseSpeed; }
     void setTimeOmDecreaseSpeed(float mTimeOmDecreaseSpeed) { this.mTimeOmDecreaseSpeed = mTimeOmDecreaseSpeed; }
     void setDecreaseSpeed(float mDecreaseSpeed) { this.mDecreaseSpeed = mDecreaseSpeed; }
+    void setTimeOfRaisePitch(float mTimeOfRaisePitch) { this.mTimeOfRaisePitch = mTimeOfRaisePitch; }
+    void setRaisePitch(float mRaisePitch) { this.mRaisePitch = mRaisePitch; }
+    void setTimeOfLowerPitch(float mTimeOfLowerPitch) { this.mTimeOfLowerPitch = mTimeOfLowerPitch; }
+    void setLowerPitch(float mLowerPitch) { this.mLowerPitch = mLowerPitch; }
     void setCompGain(float compGain) { mCompGain = compGain; }
     void setCompThreshold(float compThreshold) { mCompThreshold = compThreshold; }
     void setCompRatio(float compRatio) { mCompRatio = compRatio; }
@@ -222,6 +230,10 @@ class EffectSaver {
     float getIncreaseSpeed() { return mIncreaseSpeed; }
     float getTimeOmDecreaseSpeed() { return mTimeOmDecreaseSpeed; }
     float getDecreaseSpeed() { return mDecreaseSpeed; }
+    float getTimeOfRaisePitch() { return mTimeOfRaisePitch; }
+    float getRaisePitch() { return mRaisePitch; }
+    float getTimeOfLowerPitch() { return mTimeOfLowerPitch; }
+    float getLowerPitch() { return mLowerPitch; }
     float getCompGain() { return mCompGain; }
     float getCompThreshold() { return mCompThreshold; }
     float getCompRatio() { return mCompRatio; }
@@ -314,6 +326,10 @@ class EffectSaver {
         mIncreaseSpeed = saver.mIncreaseSpeed;
         mTimeOmDecreaseSpeed = saver.mTimeOmDecreaseSpeed;
         mDecreaseSpeed = saver.mDecreaseSpeed;
+        mTimeOfRaisePitch = saver.mTimeOfRaisePitch;
+        mRaisePitch = saver.mRaisePitch;
+        mTimeOfLowerPitch = saver.mTimeOfLowerPitch;
+        mLowerPitch = saver.mLowerPitch;
         mCompGain = saver.mCompGain;
         mCompThreshold = saver.mCompThreshold;
         mCompRatio = saver.mCompRatio;

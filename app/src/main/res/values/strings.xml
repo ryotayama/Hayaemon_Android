@@ -101,6 +101,8 @@
     <string name="reverse">Reverse</string>
     <string name="increaseSpeed">Increase Speed</string>
     <string name="decreaseSpeed">Decrease Speed</string>
+    <string name="raisePitch">Raise Pitch</string>
+    <string name="lowerPitch">Lower Pitch</string>
     <string name="oldRecord">Old Record</string>
     <string name="lowBattery">Low Battery</string>
     <string name="noSenseStrong">No Sense (Strong)</string>
@@ -293,6 +295,8 @@
     <string name="cancel">Cancel</string>
     <string name="incSpeedTitle">Increase speed every specified time.</string>
     <string name="decSpeedTitle">Decrease speed every specified time.</string>
+    <string name="rasPitchTitle">Raise the pitch every specified time.</string>
+    <string name="lowPitchTitle">Lower the pitch every specified time.</string>
     <string name="BPM">BPM</string>
     <string name="changeLeft">Left</string>
     <string name="changeRight">Right</string>

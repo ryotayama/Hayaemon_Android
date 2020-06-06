@@ -51,7 +51,12 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
         TextView textEffectName = mActivity.findViewById(R.id.textEffectName);
         if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
             fTime = EffectFragment.sTimeOfIncreaseSpeed;
-        else fTime = EffectFragment.sTimeOfDecreaseSpeed;
+        else if(textEffectName.getText().toString().equals(getString(R.string.decreaseSpeed)))
+            fTime = EffectFragment.sTimeOfDecreaseSpeed;
+        else if(textEffectName.getText().toString().equals(getString(R.string.raisePitch)))
+            fTime = EffectFragment.sTimeOfRaisePitch;
+        else
+            fTime = EffectFragment.sTimeOfLowerPitch;
         int nInt = (int)fTime;
         int nDec = (int)((fTime - (float)nInt) * 10.0f + 0.05f);
         String strInt;
@@ -79,7 +84,12 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
                 TextView textEffectName = mActivity.findViewById(R.id.textEffectName);
                 if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
                     mActivity.effectFragment.setTimeOfIncreaseSpeed(fTime);
-                else mActivity.effectFragment.setTimeOfDecreaseSpeed(fTime);
+                else if(textEffectName.getText().toString().equals(getString(R.string.decreaseSpeed)))
+                    mActivity.effectFragment.setTimeOfDecreaseSpeed(fTime);
+                else if(textEffectName.getText().toString().equals(getString(R.string.raisePitch)))
+                    mActivity.effectFragment.setTimeOfRaisePitch(fTime);
+                else
+                    mActivity.effectFragment.setTimeOfLowerPitch(fTime);
             }
         });
         for(int i = 0; i < arInts.length; i++)
@@ -106,7 +116,12 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
                 TextView textEffectName = mActivity.findViewById(R.id.textEffectName);
                 if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
                     mActivity.effectFragment.setTimeOfIncreaseSpeed(fTime);
-                else mActivity.effectFragment.setTimeOfDecreaseSpeed(fTime);
+                else if(textEffectName.getText().toString().equals(getString(R.string.decreaseSpeed)))
+                    mActivity.effectFragment.setTimeOfDecreaseSpeed(fTime);
+                else if(textEffectName.getText().toString().equals(getString(R.string.raisePitch)))
+                    mActivity.effectFragment.setTimeOfRaisePitch(fTime);
+                else
+                    mActivity.effectFragment.setTimeOfLowerPitch(fTime);
             }
         });
         for(int i = 0; i < arDecs.length; i++)

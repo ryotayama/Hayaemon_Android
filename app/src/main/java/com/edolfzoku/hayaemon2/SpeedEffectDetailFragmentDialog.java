@@ -50,7 +50,12 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
         TextView textEffectName = mActivity.findViewById(R.id.textEffectName);
         if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
             fTime = EffectFragment.sIncreaseSpeed;
-        else fTime = EffectFragment.sDecreaseSpeed;
+        else if(textEffectName.getText().toString().equals(getString(R.string.decreaseSpeed)))
+            fTime = EffectFragment.sDecreaseSpeed;
+        else if(textEffectName.getText().toString().equals(getString(R.string.raisePitch)))
+            fTime = EffectFragment.sRaisePitch;
+        else //if(textEffectName.getText().toString().equals(getString(R.string.lowerPitch)))
+            fTime = EffectFragment.sLowerPitch;
         int nInt = (int)fTime;
         int nDec = (int)((fTime - (float)nInt) * 10.0f + 0.05f);
         String strInt;
@@ -78,7 +83,12 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
                 TextView textEffectName = mActivity.findViewById(R.id.textEffectName);
                 if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
                     mActivity.effectFragment.setIncreaseSpeed(fTime);
-                else mActivity.effectFragment.setDecreaseSpeed(fTime);
+                else if(textEffectName.getText().toString().equals(getString(R.string.decreaseSpeed)))
+                    mActivity.effectFragment.setDecreaseSpeed(fTime);
+                else if(textEffectName.getText().toString().equals(getString(R.string.raisePitch)))
+                    mActivity.effectFragment.setRaisePitch(fTime);
+                else
+                    mActivity.effectFragment.setLowerPitch(fTime);
             }
         });
         for(int i = 0; i < arInts.length; i++)
@@ -105,7 +115,12 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
                 TextView textEffectName = mActivity.findViewById(R.id.textEffectName);
                 if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
                     mActivity.effectFragment.setIncreaseSpeed(fTime);
-                else mActivity.effectFragment.setDecreaseSpeed(fTime);
+                else if(textEffectName.getText().toString().equals(getString(R.string.decreaseSpeed)))
+                    mActivity.effectFragment.setDecreaseSpeed(fTime);
+                else if(textEffectName.getText().toString().equals(getString(R.string.raisePitch)))
+                    mActivity.effectFragment.setRaisePitch(fTime);
+                else
+                    mActivity.effectFragment.setLowerPitch(fTime);
             }
         });
         for(int i = 0; i < arDecs.length; i++)
@@ -119,7 +134,10 @@ public class SpeedEffectDetailFragmentDialog extends DialogFragment {
             builder = new AlertDialog.Builder(mActivity, R.style.DarkModeDialog);
         else
             builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle(R.string.adjustSpeed);
+        if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)) || textEffectName.getText().toString().equals(getString(R.string.decreaseSpeed)))
+            builder.setTitle(R.string.adjustSpeed);
+        else
+            builder.setTitle(R.string.adjustPitch);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override

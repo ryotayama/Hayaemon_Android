@@ -2942,6 +2942,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saver.setIncreaseSpeed(EffectFragment.sIncreaseSpeed);
         saver.setTimeOmDecreaseSpeed(EffectFragment.sTimeOfDecreaseSpeed);
         saver.setDecreaseSpeed(EffectFragment.sDecreaseSpeed);
+        saver.setTimeOfRaisePitch(EffectFragment.sTimeOfRaisePitch);
+        saver.setRaisePitch(EffectFragment.sRaisePitch);
+        saver.setTimeOfLowerPitch(EffectFragment.sTimeOfLowerPitch);
+        saver.setLowerPitch(EffectFragment.sLowerPitch);
         saver.setCompGain(EffectFragment.sCompGain);
         saver.setCompThreshold(EffectFragment.sCompThreshold);
         saver.setCompRatio(EffectFragment.sCompRatio);
@@ -3146,6 +3150,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         EffectFragment.setIncreaseSpeed(saver.getIncreaseSpeed());
         EffectFragment.setTimeOfDecreaseSpeed(saver.getTimeOmDecreaseSpeed());
         EffectFragment.setDecreaseSpeed(saver.getDecreaseSpeed());
+        EffectFragment.setTimeOfRaisePitch(saver.getTimeOfRaisePitch());
+        EffectFragment.setRaisePitch(saver.getRaisePitch());
+        EffectFragment.setTimeOfLowerPitch(saver.getTimeOfLowerPitch());
+        EffectFragment.setLowerPitch(saver.getLowerPitch());
         EffectFragment.setComp(saver.getCompGain(), saver.getCompThreshold(), saver.getCompRatio(), saver.getCompAttack(), saver.getCompRelease(), false);
         EffectFragment.setEcho(saver.getEchoDry(), saver.getEchoWet(), saver.getEchoFeedback(), saver.getEchoDelay(), false);
         EffectFragment.setReverb(saver.getReverbDry(), saver.getReverbWet(), saver.getReverbRoomSize(), saver.getReverbDamp(), saver.getReverbWidth(), false);
