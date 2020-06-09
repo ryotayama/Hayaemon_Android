@@ -1639,24 +1639,28 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 if(Build.VERSION.SDK_INT < 19) addSong(sActivity, data.getData());
                 else {
                     if(data.getClipData() == null) {
-                        addSong(sActivity, data.getData());
                         Uri uri = data.getData();
                         if(uri != null) {
                             try {
                                 sActivity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                                addSong(sActivity, data.getData());
                             } catch (SecurityException e) {
                                 e.printStackTrace();
+                                Uri uriCopy = sActivity.copyFile(data.getData());
+                                addSong(sActivity, uriCopy);
                             }
                         }
                     }
                     else {
                         for(int i = 0; i < data.getClipData().getItemCount(); i++) {
                             Uri uri = data.getClipData().getItemAt(i).getUri();
-                            addSong(sActivity, uri);
                             try {
                                 sActivity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                                addSong(sActivity, uri);
                             } catch (SecurityException e) {
                                 e.printStackTrace();
+                                Uri uriCopy = sActivity.copyFile(uri);
+                                addSong(sActivity, uriCopy);
                             }
                         }
                     }
