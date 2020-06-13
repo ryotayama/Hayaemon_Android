@@ -53,6 +53,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
@@ -94,7 +96,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private ItemTouchHelper mEffectTemplateTouchHelper;
     private static Metronome sMetronome;
     private static int sDspVocalCancel = 0, sDspMonoral = 0, sDspLeft = 0, sDspRight = 0, sDspExchange = 0, sDspDoubling = 0, sDspPan = 0, sDspNormalize = 0, sFxComp = 0, sDspPhaseReversal = 0, sFxEcho = 0, sFxReverb = 0, sFxChorus = 0, sFxDistortion = 0;
-    public static float sPan = 0.0f, sFreq = 1.0f, sPeak = 0.0f, sTimeOfIncreaseSpeed = 1.0f, sIncreaseSpeed = 0.1f, sTimeOfDecreaseSpeed = 1.0f, sDecreaseSpeed = 0.1f, sTimeOfRaisePitch = 1.0f, sRaisePitch = 0.1f, sTimeOfLowerPitch = 1.0f, sLowerPitch = 0.1f;
+    public static float sPan = 0.0f, sFreq = 1.0f, sPeak = 0.0f, sTimeOfIncreaseSpeedSpecified = 1.0f, sIncreaseSpeedSpecified = 0.1f, sIncreaseSpeedLoop = 1.0f, sTimeOfDecreaseSpeedSpecified = 1.0f, sDecreaseSpeedSpecified = 0.1f, sDecreaseSpeedLoop = 1.0f, sTimeOfRaisePitchSpecified = 1.0f, sRaisePitchSpecified = 0.1f, sRaisePitchLoop = 1.0f, sTimeOfLowerPitchSpecified = 1.0f, sLowerPitchSpecified = 0.1f, sLowerPitchLoop = 1.0f;
     public static int sBpm = 120;
     public static float sCompGain, sCompThreshold, sCompRatio, sCompAttack, sCompRelease;
     public static float sEchoDry, sEchoWet, sEchoFeedback, sEchoDelay;
@@ -121,10 +123,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static final int EFFECTTYPE_CHORUS = 16;
     private static final int EFFECTTYPE_DISTORTION = 17;
     static final int EFFECTTYPE_REVERSE = 18;
-    private static final int EFFECTTYPE_INCREASESPEED = 19;
-    private static final int EFFECTTYPE_DECREASESPEED = 20;
-    private static final int EFFECTTYPE_RAISEPITCH = 21;
-    private static final int EFFECTTYPE_LOWERPITCH = 22;
+    static final int EFFECTTYPE_INCREASESPEED = 19;
+    static final int EFFECTTYPE_DECREASESPEED = 20;
+    static final int EFFECTTYPE_RAISEPITCH = 21;
+    static final int EFFECTTYPE_LOWERPITCH = 22;
     private static final int EFFECTTYPE_OLDRECORD = 23;
     private static final int EFFECTTYPE_LOWBATTERY = 24;
     private static final int EFFECTTYPE_NOSENSE_STRONG = 25;
@@ -179,12 +181,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private boolean mContinueFlag = true;
     static int sEffectDetail = -1, sReverbSelected = -1, sEchoSelected = -1, sChorusSelected = -1, sDistortionSelected = -1, sCompSelected = -1, sPanSelected = -1, sFreqSelected = -1, sMetronomeSelected = -1, sSoundEffectSelected = -1;
     private RecyclerView mRecyclerEffects, mRecyclerEffectTemplates;
-    private TextView mTextEffectName, mTextEffectLabel, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextPanValue, mTextFreqValue, mTextMetronomeValue, mTextEchoDry, mTextEchoWet, mTextEchoFeedback, mTextEchoDelay, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth, mTextChorusDry, mTextChorusWet, mTextChorusFeedback, mTextChorusMinSweep, mTextChorusMaxSweep, mTextChorusRate, mTextDistortionDrive, mTextDistortionDry, mTextDistortionWet, mTextDistortionFeedback, mTextDistortionVolume, mTextSoundEffectVolume, mTextFinishSortEffect, mTextCompGainLabel, mTextCompThresholdLabel, mTextCompRatioLabel, mTextCompAttackLabel, mTextCompReleaseLabel, mTextPanValueLabel, mTextFreqValueLabel, mTextMetronomeValueLabel, mTextEchoDryLabel, mTextEchoWetLabel, mTextEchoFeedbackLabel, mTextEchoDelayLabel, mTextReverbDryLabel, mTextReverbWetLabel, mTextReverbRoomSizeLabel, mTextReverbDampLabel, mTextReverbWidthLabel, mTextChorusDryLabel, mTextChorusWetLabel, mTextChorusFeedbackLabel, mTextChorusMinSweepLabel, mTextChorusMaxSweepLabel, mTextChorusRateLabel, mTextDistortionDriveLabel, mTextDistortionDryLabel, mTextDistortionWetLabel, mTextDistortionFeedbackLabel, mTextDistortionVolumeLabel, mTextSoundEffectVolumeLabel, mTextTimeEffectDetail, mTextSpeedEffectDetail;
-    private EditText mEditSpeedEffectDetail, mEditTimeEffectDetail, mEditPitchEffectDetail, mEditPTimeEffectDetail;
-    private RelativeLayout mRelativeEffectDetail, mRelativeRollerEffectDetail, mRelativeEffectTemplates, mRelativeEffectTitle, mRelativeComp, mRelativePan, mRelativeFreq, mRelativeMetronome, mRelativeEcho, mRelativeReverb, mRelativeChorus, mRelativeDistortion, mRelativeSoundEffect;
+    private TextView mTextEffectName, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextPanValue, mTextFreqValue, mTextMetronomeValue, mTextEchoDry, mTextEchoWet, mTextEchoFeedback, mTextEchoDelay, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth, mTextChorusDry, mTextChorusWet, mTextChorusFeedback, mTextChorusMinSweep, mTextChorusMaxSweep, mTextChorusRate, mTextDistortionDrive, mTextDistortionDry, mTextDistortionWet, mTextDistortionFeedback, mTextDistortionVolume, mTextSoundEffectVolume, mTextFinishSortEffect, mTextCompGainLabel, mTextCompThresholdLabel, mTextCompRatioLabel, mTextCompAttackLabel, mTextCompReleaseLabel, mTextPanValueLabel, mTextFreqValueLabel, mTextMetronomeValueLabel, mTextEchoDryLabel, mTextEchoWetLabel, mTextEchoFeedbackLabel, mTextEchoDelayLabel, mTextReverbDryLabel, mTextReverbWetLabel, mTextReverbRoomSizeLabel, mTextReverbDampLabel, mTextReverbWidthLabel, mTextChorusDryLabel, mTextChorusWetLabel, mTextChorusFeedbackLabel, mTextChorusMinSweepLabel, mTextChorusMaxSweepLabel, mTextChorusRateLabel, mTextDistortionDriveLabel, mTextDistortionDryLabel, mTextDistortionWetLabel, mTextDistortionFeedbackLabel, mTextDistortionVolumeLabel, mTextSoundEffectVolumeLabel, mTextTimeSpecifiedEffectDetail, mTextSpeedSpecifiedEffectDetail, mTextSpeedLoopEffectDetail;
+    private RelativeLayout mRelativeEffectDetail, mRelativeSpecifiedEffectDetail, mRelativeLoopEffectDetail, mRelativeEffectTemplates, mRelativeEffectTitle, mRelativeComp, mRelativePan, mRelativeFreq, mRelativeMetronome, mRelativeEcho, mRelativeReverb, mRelativeChorus, mRelativeDistortion, mRelativeSoundEffect;
     private SeekBar mSeekCompGain, mSeekCompThreshold, mSeekCompRatio, mSeekCompAttack, mSeekCompRelease, mSeekPanValue, mSeekFreqValue, mSeekMetronomeValue, mSeekEchoDry, mSeekEchoWet, mSeekEchoFeedback, mSeekEchoDelay, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth, mSeekChorusDry, mSeekChorusWet, mSeekChorusFeedback, mSeekChorusMinSweep, mSeekChorusMaxSweep, mSeekChorusRate, mSeekDistortionDrive, mSeekDistortionDry, mSeekDistortionWet, mSeekDistortionFeedback, mSeekDistortionVolume, mSeekSoundEffectVolume;
     private ImageButton mBtnCompGainMinus, mBtnCompGainPlus, mBtnCompThresholdMinus, mBtnCompThresholdPlus, mBtnCompRatioMinus, mBtnCompRatioPlus, mBtnCompAttackMinus, mBtnCompAttackPlus, mBtnCompReleaseMinus, mBtnCompReleasePlus, mBtnPanValueMinus, mBtnPanValuePlus, mBtnFreqValueMinus, mBtnFreqValuePlus, mBtnMetronomeValueMinus, mBtnMetronomeValuePlus, mBtnEchoDryMinus, mBtnEchoDryPlus, mBtnEchoWetMinus, mBtnEchoWetPlus, mBtnEchoFeedbackMinus, mBtnEchoFeedbackPlus, mBtnEchoDelayMinus, mBtnEchoDelayPlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus, mBtnChorusDryMinus, mBtnChorusDryPlus, mBtnChorusWetMinus, mBtnChorusWetPlus, mBtnChorusFeedbackMinus, mBtnChorusFeedbackPlus, mBtnChorusMinSweepMinus, mBtnChorusMinSweepPlus, mBtnChorusMaxSweepMinus, mBtnChorusMaxSweepPlus, mBtnChorusRateMinus, mBtnChorusRatePlus, mBtnDistortionDriveMinus, mBtnDistortionDrivePlus, mBtnDistortionDryMinus, mBtnDistortionDryPlus, mBtnDistortionWetMinus, mBtnDistortionWetPlus, mBtnDistortionFeedbackMinus, mBtnDistortionFeedbackPlus, mBtnDistortionVolumeMinus, mBtnDistortionVolumePlus, mBtnSoundEffectVolumeMinus, mBtnSoundEffectVolumePlus;
     private Button mBtnEffectOff, mBtnEffectBack, mBtnEffectFinish, mBtnEffectTemplateOff, mBtnReverbSaveAs, mBtnEchoSaveAs, mBtnChorusSaveAs, mBtnDistortionSaveAs, mBtnCompSaveAs, mBtnCompRandom, mBtnResetComp, mBtnPanSaveAs, mBtnPanRandom, mBtnResetPan, mBtnFreqSaveAs, mBtnFreqRandom, mBtnResetFreq, mBtnMetronomeSaveAs, mBtnMetronomeRandom, mBtnResetMetronome, mBtnEchoRandom, mBtnResetEcho, mBtnReverbRandom, mBtnResetReverb, mBtnChorusRandom, mBtnResetChorus, mBtnDistortionRandom, mBtnResetDistortion;
+
+    static boolean sSpecifiedEffectDetail, sLoopEffectDetail;
+    private RadioGroup mRadioGroupEffectDetail;
+    private RadioButton mRadioButtonSpecifiedEffectDetail, mRadioButtonLoopEffectDetail;
+    private EditText mEditSpeedSpecifiedEffectDetail, mEditTimeSpecifiedEffectDetail, mEditPitchSpecifiedEffectDetail, mEditPTimeSpecifiedEffectDetail, mEditSpeedLoopEffectDetail, mEditPitchLoopEffectDetail;
 
     private AnimationButton mBtnEffectTemplateMenu, mBtnAddEffectTemplate;
     private ScrollView mScrollCompCustomize, mScrollPanCustomize, mScrollFreqCustomize, mScrollMetronomeCustomize, mScrollEchoCustomize, mScrollReverbCustomize, mScrollChorusCustomize, mScrollDistortionCustomize, mScrollSoundEffectCustomize;
@@ -267,72 +273,108 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private RelativeLayout getRelativeEffectTemplates() { return mRelativeEffectTemplates; }
     private Button getBtnEffectTemplateOff() { return mBtnEffectTemplateOff; }
     private EffectTemplatesAdapter getEffectTemplatesAdapter() { return mEffectTemplatesAdapter; }
-    private EditText getEditSpeedEffectDetail() { return mEditSpeedEffectDetail; }
-    private EditText getEditTimeEffectDetail() { return mEditTimeEffectDetail; }
-    private EditText getEditPitchEffectDetail() { return mEditPitchEffectDetail; }
-    private EditText getEditPTimeEffectDetail() { return mEditPTimeEffectDetail; }
+    private EditText getEditSpeedSpecifiedEffectDetail() { return mEditSpeedSpecifiedEffectDetail; }
+    private EditText getEditTimeSpecifiedEffectDetail() { return mEditTimeSpecifiedEffectDetail; }
+    private EditText getEditPitchSpecifiedEffectDetail() { return mEditPitchSpecifiedEffectDetail; }
+    private EditText getEditPTimeSpecifiedEffectDetail() { return mEditPTimeSpecifiedEffectDetail; }
+    private EditText getEditSpeedLoopEffectDetail() { return mEditSpeedLoopEffectDetail; }
+    private EditText getEditPitchLoopEffectDetail() { return mEditPitchLoopEffectDetail; }
 
     public static void setTimeOfRaisePitch(float timeOfRaisePitch) {
-        sTimeOfRaisePitch = timeOfRaisePitch;
+        sTimeOfRaisePitchSpecified = timeOfRaisePitch;
         if (sActivity != null) {
             if (sActivity.effectFragment.getTextEffectName().getText().toString().equals(sEffectItems.get(EFFECTTYPE_RAISEPITCH).getEffectName()))
-                sActivity.effectFragment.getEditPTimeEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfRaisePitch, sActivity.getString(R.string.sec)));
+                sActivity.effectFragment.getEditPTimeSpecifiedEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfRaisePitchSpecified, sActivity.getString(R.string.sec)));
         }
     }
 
-    public static void setRaisePitch(float raisePitch) {
-        sRaisePitch = raisePitch;
+    public static void setRaisePitchSpecified(float raisePitch) {
+        sRaisePitchSpecified = raisePitch;
+        if (sActivity != null) {
+            if (sActivity.effectFragment.getTextEffectName().getText().toString().equals(sEffectItems.get(EFFECTTYPE_RAISEPITCH).getEffectName())) {
+                sActivity.effectFragment.getEditPitchSpecifiedEffectDetail().setText(String.format(Locale.getDefault(), "%s%.1f", sActivity.getString(R.string.sharp), sRaisePitchSpecified));
+                sActivity.effectFragment.getEditPitchLoopEffectDetail().setText(String.format(Locale.getDefault(), "%s%.1f", sActivity.getString(R.string.sharp), sRaisePitchLoop));
+            }
+        }
+    }
+
+    public static void setRaisePitchLoop(float raisePitch) {
+        sRaisePitchLoop = raisePitch;
         if (sActivity != null) {
             if (sActivity.effectFragment.getTextEffectName().getText().toString().equals(sEffectItems.get(EFFECTTYPE_RAISEPITCH).getEffectName()))
-                sActivity.effectFragment.getEditPitchEffectDetail().setText(String.format(Locale.getDefault(), "%s%.1f", sActivity.getString(R.string.sharp), sRaisePitch));
+                sActivity.effectFragment.getEditPitchLoopEffectDetail().setText(String.format(Locale.getDefault(), "%s%.1f", sActivity.getString(R.string.sharp), sRaisePitchLoop));
         }
     }
 
     public static void setTimeOfLowerPitch(float timeOfLowerPitch) {
-        sTimeOfLowerPitch = timeOfLowerPitch;
+        sTimeOfLowerPitchSpecified = timeOfLowerPitch;
         if (sActivity != null) {
             if (sActivity.effectFragment.getTextEffectName().getText().toString().equals(sEffectItems.get(EFFECTTYPE_LOWERPITCH).getEffectName()))
-                sActivity.effectFragment.getEditPTimeEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfLowerPitch, sActivity.getString(R.string.sec)));
+                sActivity.effectFragment.getEditPTimeSpecifiedEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfLowerPitchSpecified, sActivity.getString(R.string.sec)));
         }
     }
 
-    public static void setLowerPitch(float lowerPitch) {
-        sLowerPitch = lowerPitch;
+    public static void setLowerPitchSpecified(float lowerPitch) {
+        sLowerPitchSpecified = lowerPitch;
         if (sActivity != null) {
             if (sActivity.effectFragment.getTextEffectName().getText().toString().equals(sEffectItems.get(EFFECTTYPE_LOWERPITCH).getEffectName()))
-                sActivity.effectFragment.getEditPitchEffectDetail().setText(String.format(Locale.getDefault(), "%s%.1f", sActivity.getString(R.string.flat), sLowerPitch));
+                sActivity.effectFragment.getEditPitchSpecifiedEffectDetail().setText(String.format(Locale.getDefault(), "%s%.1f", sActivity.getString(R.string.flat), sLowerPitchSpecified));
+        }
+    }
+
+    public static void setLowerPitchLoop(float lowerPitch) {
+        sLowerPitchLoop = lowerPitch;
+        if (sActivity != null) {
+            if (sActivity.effectFragment.getTextEffectName().getText().toString().equals(sEffectItems.get(EFFECTTYPE_LOWERPITCH).getEffectName()))
+                sActivity.effectFragment.getEditPitchLoopEffectDetail().setText(String.format(Locale.getDefault(), "%s%.1f", sActivity.getString(R.string.flat), sLowerPitchLoop));
         }
     }
 
     public static void setTimeOfIncreaseSpeed(float timeOfIncreaseSpeed) {
-        sTimeOfIncreaseSpeed = timeOfIncreaseSpeed;
+        sTimeOfIncreaseSpeedSpecified = timeOfIncreaseSpeed;
         if (sActivity != null) {
             if (sActivity.effectFragment.getTextEffectName().getText().toString().equals(sEffectItems.get(EFFECTTYPE_INCREASESPEED).getEffectName()))
-                sActivity.effectFragment.getEditTimeEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfIncreaseSpeed, sActivity.getString(R.string.sec)));
+                sActivity.effectFragment.getEditTimeSpecifiedEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfIncreaseSpeedSpecified, sActivity.getString(R.string.sec)));
         }
     }
 
-    public static void setIncreaseSpeed(float increaseSpeed) {
-        sIncreaseSpeed = increaseSpeed;
+    public static void setIncreaseSpeedSpecified(float increaseSpeed) {
+        sIncreaseSpeedSpecified = increaseSpeed;
         if (sActivity != null) {
             if (sActivity.effectFragment.getTextEffectName().getText().toString().equals(sEffectItems.get(EFFECTTYPE_INCREASESPEED).getEffectName()))
-                sActivity.effectFragment.getEditSpeedEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%%", sIncreaseSpeed));
+                sActivity.effectFragment.getEditSpeedSpecifiedEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%%", sIncreaseSpeedSpecified));
+        }
+    }
+
+    public static void setIncreaseSpeedLoop(float increaseSpeed) {
+        sIncreaseSpeedLoop = increaseSpeed;
+        if (sActivity != null) {
+            if (sActivity.effectFragment.getTextEffectName().getText().toString().equals(sEffectItems.get(EFFECTTYPE_INCREASESPEED).getEffectName()))
+                sActivity.effectFragment.getEditSpeedLoopEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%%", sIncreaseSpeedLoop));
         }
     }
 
     public static void setTimeOfDecreaseSpeed(float timeOfDecreaseSpeed) {
-        sTimeOfDecreaseSpeed = timeOfDecreaseSpeed;
+        sTimeOfDecreaseSpeedSpecified = timeOfDecreaseSpeed;
         if (sActivity != null) {
             if (sActivity.effectFragment.getTextEffectName().getText().toString().equals(sEffectItems.get(EFFECTTYPE_DECREASESPEED).getEffectName()))
-                sActivity.effectFragment.getEditTimeEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfDecreaseSpeed, sActivity.getString(R.string.sec)));
+                sActivity.effectFragment.getEditTimeSpecifiedEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfDecreaseSpeedSpecified, sActivity.getString(R.string.sec)));
         }
     }
 
-    public static void setDecreaseSpeed(float decreaseSpeed) {
-        sDecreaseSpeed = decreaseSpeed;
+    public static void setDecreaseSpeedSpecified(float decreaseSpeed) {
+        sDecreaseSpeedSpecified = decreaseSpeed;
         if (sActivity != null) {
             if (sActivity.effectFragment.getTextEffectName().getText().toString().equals(sEffectItems.get(EFFECTTYPE_DECREASESPEED).getEffectName()))
-                sActivity.effectFragment.getEditSpeedEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%%", sDecreaseSpeed));
+                sActivity.effectFragment.getEditSpeedSpecifiedEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%%", sDecreaseSpeedSpecified));
+        }
+    }
+
+    public static void setDecreaseSpeedLoop(float decreaseSpeed) {
+        sDecreaseSpeedLoop = decreaseSpeed;
+        if (sActivity != null) {
+            if (sActivity.effectFragment.getTextEffectName().getText().toString().equals(sEffectItems.get(EFFECTTYPE_DECREASESPEED).getEffectName()))
+                sActivity.effectFragment.getEditSpeedLoopEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%%", sDecreaseSpeedLoop));
         }
     }
 
@@ -2371,15 +2413,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if(sMetronome == null) sMetronome = new Metronome(sActivity);
 
         mTextEffectName = sActivity.findViewById(R.id.textEffectName);
-        mEditSpeedEffectDetail = sActivity.findViewById(R.id.editSpeedEffectDetail);
-        mEditTimeEffectDetail = sActivity.findViewById(R.id.editTimeEffectDetail);
-        mEditPitchEffectDetail = sActivity.findViewById(R.id.editSpeedEffectDetail);
-        mEditPTimeEffectDetail = sActivity.findViewById(R.id.editTimeEffectDetail);
+        mEditSpeedSpecifiedEffectDetail = sActivity.findViewById(R.id.editSpeedSpecifiedEffectDetail);
+        mEditTimeSpecifiedEffectDetail = sActivity.findViewById(R.id.editTimeSpecifiedEffectDetail);
+        mEditPitchSpecifiedEffectDetail = sActivity.findViewById(R.id.editSpeedSpecifiedEffectDetail);
+        mEditPTimeSpecifiedEffectDetail = sActivity.findViewById(R.id.editTimeSpecifiedEffectDetail);
+        mEditSpeedLoopEffectDetail = sActivity.findViewById(R.id.editSpeedLoopEffectDetail);
+        mEditPitchLoopEffectDetail = sActivity.findViewById(R.id.editSpeedLoopEffectDetail);
         mRelativeEffectDetail = sActivity.findViewById(R.id.relativeEffectDetail);
         mRelativeEffectTitle = sActivity.findViewById(R.id.relativeEffectTitle);
         mRelativeEffectTemplates = sActivity.findViewById(R.id.relativeEffectTemplates);
-        mTextEffectLabel = sActivity.findViewById(R.id.textEffectLabel);
-        mRelativeRollerEffectDetail = sActivity.findViewById(R.id.relativeRollerEffectDetail);
+        mRelativeSpecifiedEffectDetail = sActivity.findViewById(R.id.relativeSpecifiedEffectDetail);
+        mRelativeLoopEffectDetail = sActivity.findViewById(R.id.relativeLoopEffectDetail);
         mBtnEffectOff = sActivity.findViewById(R.id.btnEffectOff);
         mBtnEffectBack = sActivity.findViewById(R.id.btnEffectBack);
         mBtnEffectFinish = sActivity.findViewById(R.id.btnEffectFinish);
@@ -2399,6 +2443,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnPanSaveAs = sActivity.findViewById(R.id.btnPanSaveAs);
         mBtnFreqSaveAs = sActivity.findViewById(R.id.btnFreqSaveAs);
         mBtnMetronomeSaveAs = sActivity.findViewById(R.id.btnMetronomeSaveAs);
+
+        mRadioGroupEffectDetail = sActivity.findViewById(R.id.radioGroupEffectDetail);
+        mRadioButtonSpecifiedEffectDetail = sActivity.findViewById(R.id.radioButtonSpecifiedEffectDetail);
+        mRadioButtonLoopEffectDetail = sActivity.findViewById(R.id.radioButtonLoopEffectDetail);
 
         mScrollCompCustomize = sActivity.findViewById(R.id.scrollCompCustomize);
         mRelativeComp = sActivity.findViewById(R.id.relativeComp);
@@ -2564,8 +2612,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mTextSoundEffectVolumeLabel = sActivity.findViewById(R.id.textSoundEffectVolumeLabel);
         mBtnSoundEffectVolumeMinus = sActivity.findViewById(R.id.btnSoundEffectVolumeMinus);
         mBtnSoundEffectVolumePlus = sActivity.findViewById(R.id.btnSoundEffectVolumePlus);
-        mTextTimeEffectDetail = sActivity.findViewById(R.id.textTimeEffectDetail);
-        mTextSpeedEffectDetail = sActivity.findViewById(R.id.textSpeedEffectDetail);
+        mTextTimeSpecifiedEffectDetail = sActivity.findViewById(R.id.textTimeSpecifiedEffectDetail);
+        mTextSpeedSpecifiedEffectDetail = sActivity.findViewById(R.id.textSpeedSpecifiedEffectDetail);
+        mTextSpeedLoopEffectDetail = sActivity.findViewById(R.id.textSpeedLoopEffectDetail);
 
         mRecyclerEffects = sActivity.findViewById(R.id.recyclerEffects);
         mRecyclerEffectTemplates = sActivity.findViewById(R.id.recyclerEffectTemplates);
@@ -2644,6 +2693,56 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mSeekDistortionVolume.setOnSeekBarChangeListener(this);
         mSeekSoundEffectVolume.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
         mSeekSoundEffectVolume.setOnSeekBarChangeListener(this);
+
+        mRadioGroupEffectDetail.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int nItem) {
+                if(nItem == R.id.radioButtonSpecifiedEffectDetail) {
+                    mEditTimeSpecifiedEffectDetail.setEnabled(true);
+                    mEditSpeedSpecifiedEffectDetail.setEnabled(true);
+                    mEditPTimeSpecifiedEffectDetail.setEnabled(true);
+                    mEditPitchSpecifiedEffectDetail.setEnabled(true);
+                    mEditTimeSpecifiedEffectDetail.setAlpha(1.0f);
+                    mEditSpeedSpecifiedEffectDetail.setAlpha(1.0f);
+                    mEditPTimeSpecifiedEffectDetail.setAlpha(1.0f);
+                    mEditPitchSpecifiedEffectDetail.setAlpha(1.0f);
+                    mTextTimeSpecifiedEffectDetail.setEnabled(true);
+                    mTextSpeedSpecifiedEffectDetail.setEnabled(true);
+                    mTextTimeSpecifiedEffectDetail.setAlpha(1.0f);
+                    mTextSpeedSpecifiedEffectDetail.setAlpha(1.0f);
+                    mEditSpeedLoopEffectDetail.setEnabled(false);
+                    mEditPitchLoopEffectDetail.setEnabled(false);
+                    mEditSpeedLoopEffectDetail.setAlpha(0.5f);
+                    mEditPitchLoopEffectDetail.setAlpha(0.5f);
+                    mTextSpeedLoopEffectDetail.setEnabled(false);
+                    mTextSpeedLoopEffectDetail.setAlpha(0.5f);
+                    sSpecifiedEffectDetail = true;
+                    sLoopEffectDetail = false;
+                }
+                else {
+                    mEditTimeSpecifiedEffectDetail.setEnabled(false);
+                    mEditSpeedSpecifiedEffectDetail.setEnabled(false);
+                    mEditPTimeSpecifiedEffectDetail.setEnabled(false);
+                    mEditPitchSpecifiedEffectDetail.setEnabled(false);
+                    mEditTimeSpecifiedEffectDetail.setAlpha(0.5f);
+                    mEditSpeedSpecifiedEffectDetail.setAlpha(0.5f);
+                    mEditPTimeSpecifiedEffectDetail.setAlpha(0.5f);
+                    mEditPitchSpecifiedEffectDetail.setAlpha(0.5f);
+                    mTextTimeSpecifiedEffectDetail.setEnabled(false);
+                    mTextSpeedSpecifiedEffectDetail.setEnabled(false);
+                    mTextTimeSpecifiedEffectDetail.setAlpha(0.5f);
+                    mTextSpeedSpecifiedEffectDetail.setAlpha(0.5f);
+                    mEditSpeedLoopEffectDetail.setEnabled(true);
+                    mEditPitchLoopEffectDetail.setEnabled(true);
+                    mEditSpeedLoopEffectDetail.setAlpha(1.0f);
+                    mEditPitchLoopEffectDetail.setAlpha(1.0f);
+                    mTextSpeedLoopEffectDetail.setEnabled(true);
+                    mTextSpeedLoopEffectDetail.setAlpha(1.0f);
+                    sSpecifiedEffectDetail = false;
+                    sLoopEffectDetail = true;
+                }
+            }
+        });
 
         if(sEffectItems.size() == 0) {
             EffectItem item = new EffectItem(getString(R.string.random), false);
@@ -2950,10 +3049,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnSoundEffectVolumePlus.setOnLongClickListener(this);
         mBtnSoundEffectVolumePlus.setOnTouchListener(this);
 
-        mEditTimeEffectDetail.setOnFocusChangeListener(this);
-        mEditSpeedEffectDetail.setOnFocusChangeListener(this);
-        mEditPTimeEffectDetail.setOnFocusChangeListener(this);
-        mEditPitchEffectDetail.setOnFocusChangeListener(this);
+        //mRadioButtonSpecifiedEffectDetail.setOnClickListener(this);
+        //mRadioButtonLoopEffectDetail.setOnClickListener(this);
+        mEditTimeSpecifiedEffectDetail.setOnFocusChangeListener(this);
+        mEditSpeedSpecifiedEffectDetail.setOnFocusChangeListener(this);
+        mEditPTimeSpecifiedEffectDetail.setOnFocusChangeListener(this);
+        mEditPitchSpecifiedEffectDetail.setOnFocusChangeListener(this);
+        mEditSpeedLoopEffectDetail.setOnFocusChangeListener(this);
+        mEditPitchLoopEffectDetail.setOnFocusChangeListener(this);
 
         boolean selected = false;
         for(int i = 0; i < sEffectItems.size(); i++) {
@@ -3456,13 +3559,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         sPan = 0.0f;
         sFreq = 1.0f;
         setTimeOfIncreaseSpeed(1.0f);
-        setIncreaseSpeed(0.1f);
+        setIncreaseSpeedSpecified(0.1f);
+        setIncreaseSpeedLoop(1.0f);
         setTimeOfDecreaseSpeed(1.0f);
-        setDecreaseSpeed(0.1f);
+        setDecreaseSpeedSpecified(0.1f);
+        setDecreaseSpeedLoop(1.0f);
         setTimeOfRaisePitch(1.0f);
-        setRaisePitch(0.1f);
+        setRaisePitchSpecified(0.1f);
+        setRaisePitchLoop(1.0f);
         setTimeOfLowerPitch(1.0f);
-        setLowerPitch(0.1f);
+        setLowerPitchSpecified(0.1f);
+        setLowerPitchLoop(1.0f);
         resetComp(save);
         resetPan(save);
         resetFreq(save);
@@ -3828,30 +3935,50 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         mTextEffectName.setText(sEffectItems.get(nEffect).getEffectName());
         if (nEffect == EFFECTTYPE_INCREASESPEED) {
-            mTextEffectLabel.setText(R.string.incSpeedTitle);
-            mTextEffectLabel.setVisibility(View.VISIBLE);
-            mEditTimeEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfIncreaseSpeed, getString(R.string.sec)));
-            mEditSpeedEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%%", sIncreaseSpeed));
+            mRadioButtonSpecifiedEffectDetail.setText(R.string.incSpeedTitle);
+            mRadioButtonSpecifiedEffectDetail.setVisibility(View.VISIBLE);
+            mRadioButtonLoopEffectDetail.setText(R.string.incSpeedLoopTitle);
+            mRadioButtonLoopEffectDetail.setVisibility(View.VISIBLE);
+            mRadioGroupEffectDetail.setVisibility(View.VISIBLE);
+            mEditTimeSpecifiedEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfIncreaseSpeedSpecified, getString(R.string.sec)));
+            mEditSpeedSpecifiedEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%%", sIncreaseSpeedSpecified));
+            mEditSpeedLoopEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%%", sIncreaseSpeedLoop));
         } else if (nEffect == EFFECTTYPE_DECREASESPEED) {
-            mTextEffectLabel.setText(R.string.decSpeedTitle);
-            mTextEffectLabel.setVisibility(View.VISIBLE);
-            mEditTimeEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfDecreaseSpeed, getString(R.string.sec)));
-            mEditSpeedEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%%", sDecreaseSpeed));
+            mRadioButtonSpecifiedEffectDetail.setText(R.string.decSpeedTitle);
+            mRadioButtonSpecifiedEffectDetail.setVisibility(View.VISIBLE);
+            mRadioButtonLoopEffectDetail.setText(R.string.decSpeedLoopTitle);
+            mRadioButtonLoopEffectDetail.setVisibility(View.VISIBLE);
+            mRadioGroupEffectDetail.setVisibility(View.VISIBLE);
+            mEditTimeSpecifiedEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfDecreaseSpeedSpecified, getString(R.string.sec)));
+            mEditSpeedSpecifiedEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%%", sDecreaseSpeedSpecified));
+            mEditSpeedLoopEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%%", sDecreaseSpeedLoop));
         } else if (nEffect == EFFECTTYPE_RAISEPITCH) {
-            mTextEffectLabel.setText(R.string.rasPitchTitle);
-            mTextEffectLabel.setVisibility(View.VISIBLE);
-            mEditTimeEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfRaisePitch, getString(R.string.sec)));
-            mEditSpeedEffectDetail.setText(String.format(Locale.getDefault(), "%s%.1f", getString(R.string.sharp), sRaisePitch));
+            mRadioButtonSpecifiedEffectDetail.setText(R.string.rasPitchTitle);
+            mRadioButtonSpecifiedEffectDetail.setVisibility(View.VISIBLE);
+            mRadioButtonLoopEffectDetail.setText(R.string.rasPitchLoopTitle);
+            mRadioButtonLoopEffectDetail.setVisibility(View.VISIBLE);
+            mRadioGroupEffectDetail.setVisibility(View.VISIBLE);
+            mEditTimeSpecifiedEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfRaisePitchSpecified, getString(R.string.sec)));
+            mEditSpeedSpecifiedEffectDetail.setText(String.format(Locale.getDefault(), "%s%.1f", getString(R.string.sharp), sRaisePitchSpecified));
+            mEditPitchLoopEffectDetail.setText(String.format(Locale.getDefault(), "%s%.1f", getString(R.string.sharp), sRaisePitchLoop));
         } else if (nEffect == EFFECTTYPE_LOWERPITCH) {
-            mTextEffectLabel.setText(R.string.lowPitchTitle);
-            mTextEffectLabel.setVisibility(View.VISIBLE);
-            mEditTimeEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfLowerPitch, getString(R.string.sec)));
-            mEditSpeedEffectDetail.setText(String.format(Locale.getDefault(), "%s%.1f", getString(R.string.flat), sLowerPitch));
-        } else mTextEffectLabel.setVisibility(View.INVISIBLE);
+            mRadioButtonSpecifiedEffectDetail.setText(R.string.lowPitchTitle);
+            mRadioButtonSpecifiedEffectDetail.setVisibility(View.VISIBLE);
+            mRadioButtonLoopEffectDetail.setText(R.string.lowPitchLoopTitle);
+            mRadioButtonLoopEffectDetail.setVisibility(View.VISIBLE);
+            mRadioGroupEffectDetail.setVisibility(View.VISIBLE);
+            mEditTimeSpecifiedEffectDetail.setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfLowerPitchSpecified, getString(R.string.sec)));
+            mEditSpeedSpecifiedEffectDetail.setText(String.format(Locale.getDefault(), "%s%.1f", getString(R.string.flat), sLowerPitchSpecified));
+            mEditPitchLoopEffectDetail.setText(String.format(Locale.getDefault(), "%s%.1f", getString(R.string.flat), sLowerPitchLoop));
+        } else {
+            mRadioGroupEffectDetail.setVisibility(View.INVISIBLE);
+        }
 
         if (nEffect == EFFECTTYPE_INCREASESPEED || nEffect == EFFECTTYPE_DECREASESPEED) {
-            mTextSpeedEffectDetail.setText(getString(R.string.speedWithColon));
-            mRelativeRollerEffectDetail.setVisibility(View.VISIBLE);
+            mTextSpeedSpecifiedEffectDetail.setText(getString(R.string.speedWithColon));
+            mRelativeSpecifiedEffectDetail.setVisibility(View.VISIBLE);
+            mTextSpeedLoopEffectDetail.setText(getString(R.string.speedWithColon));
+            mRelativeLoopEffectDetail.setVisibility(View.VISIBLE);
             mScrollCompCustomize.setVisibility(View.GONE);
             mScrollPanCustomize.setVisibility(View.GONE);
             mScrollFreqCustomize.setVisibility(View.GONE);
@@ -3863,8 +3990,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
             mScrollSoundEffectCustomize.setVisibility(View.GONE);
         } else if (nEffect == EFFECTTYPE_RAISEPITCH || nEffect == EFFECTTYPE_LOWERPITCH) {
-            mTextSpeedEffectDetail.setText(getString(R.string.pitchWithColon));
-            mRelativeRollerEffectDetail.setVisibility(View.VISIBLE);
+            mTextSpeedSpecifiedEffectDetail.setText(getString(R.string.pitchWithColon));
+            mRelativeSpecifiedEffectDetail.setVisibility(View.VISIBLE);
+            mTextSpeedLoopEffectDetail.setText(getString(R.string.pitchWithColon));
+            mRelativeLoopEffectDetail.setVisibility(View.VISIBLE);
             mScrollCompCustomize.setVisibility(View.GONE);
             mScrollPanCustomize.setVisibility(View.GONE);
             mScrollFreqCustomize.setVisibility(View.GONE);
@@ -3876,7 +4005,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
             mScrollSoundEffectCustomize.setVisibility(View.GONE);
         } else if (nEffect == EFFECTTYPE_COMP) {
-            mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mRelativeSpecifiedEffectDetail.setVisibility(View.GONE);
+            mRelativeLoopEffectDetail.setVisibility(View.GONE);
             mEffectTemplatesAdapter.changeItems(sCompItems);
             mBtnAddEffectTemplate.setContentDescription(getString(R.string.newComp));
             mBtnAddEffectTemplate.setAlpha(1f);
@@ -3888,7 +4018,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         } else if (nEffect == EFFECTTYPE_PAN) {
-            mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mRelativeSpecifiedEffectDetail.setVisibility(View.GONE);
+            mRelativeLoopEffectDetail.setVisibility(View.GONE);
             mEffectTemplatesAdapter.changeItems(sPanItems);
             mBtnAddEffectTemplate.setContentDescription(getString(R.string.newPan));
             mBtnAddEffectTemplate.setAlpha(1f);
@@ -3900,7 +4031,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         } else if (nEffect == EFFECTTYPE_FREQ) {
-            mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mRelativeSpecifiedEffectDetail.setVisibility(View.GONE);
+            mRelativeLoopEffectDetail.setVisibility(View.GONE);
             mEffectTemplatesAdapter.changeItems(sFreqItems);
             mBtnAddEffectTemplate.setContentDescription(getString(R.string.newFreq));
             mBtnAddEffectTemplate.setAlpha(1f);
@@ -3912,7 +4044,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         } else if (nEffect == EFFECTTYPE_METRONOME) {
-            mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mRelativeSpecifiedEffectDetail.setVisibility(View.GONE);
+            mRelativeLoopEffectDetail.setVisibility(View.GONE);
             mEffectTemplatesAdapter.changeItems(sMetronomeItems);
             mBtnAddEffectTemplate.setContentDescription(getString(R.string.newMetronome));
             mBtnAddEffectTemplate.setAlpha(1f);
@@ -3924,7 +4057,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         } else if (nEffect == EFFECTTYPE_ECHO) {
-            mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mRelativeSpecifiedEffectDetail.setVisibility(View.GONE);
+            mRelativeLoopEffectDetail.setVisibility(View.GONE);
             mEffectTemplatesAdapter.changeItems(sEchoItems);
             mBtnAddEffectTemplate.setContentDescription(getString(R.string.newEcho));
             mBtnAddEffectTemplate.setAlpha(1f);
@@ -3936,7 +4070,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         } else if (nEffect == EFFECTTYPE_REVERB) {
-            mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mRelativeSpecifiedEffectDetail.setVisibility(View.GONE);
+            mRelativeLoopEffectDetail.setVisibility(View.GONE);
             mEffectTemplatesAdapter.changeItems(sReverbItems);
             mBtnAddEffectTemplate.setContentDescription(getString(R.string.newReverb));
             mBtnAddEffectTemplate.setAlpha(1f);
@@ -3948,7 +4083,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         } else if (nEffect == EFFECTTYPE_CHORUS) {
-            mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mRelativeSpecifiedEffectDetail.setVisibility(View.GONE);
+            mRelativeLoopEffectDetail.setVisibility(View.GONE);
             mEffectTemplatesAdapter.changeItems(sChorusItems);
             mBtnAddEffectTemplate.setContentDescription(getString(R.string.newChorus));
             mBtnAddEffectTemplate.setAlpha(1f);
@@ -3960,7 +4096,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         } else if (nEffect == EFFECTTYPE_DISTORTION) {
-            mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mRelativeSpecifiedEffectDetail.setVisibility(View.GONE);
+            mRelativeLoopEffectDetail.setVisibility(View.GONE);
             mEffectTemplatesAdapter.changeItems(sDistortionItems);
             mBtnAddEffectTemplate.setContentDescription(getString(R.string.newDistortion));
             mBtnAddEffectTemplate.setAlpha(1f);
@@ -3973,7 +4110,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnEffectTemplateMenu.setVisibility(View.VISIBLE);
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         } else if (nEffect == EFFECTTYPE_SOUNDEFFECT) {
-            mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mRelativeSpecifiedEffectDetail.setVisibility(View.GONE);
+            mRelativeLoopEffectDetail.setVisibility(View.GONE);
             mEffectTemplatesAdapter.changeItems(sSoundEffectItems);
             mBtnAddEffectTemplate.setAlpha(0f);
             mBtnAddEffectTemplate.setVisibility(View.INVISIBLE);
@@ -3985,7 +4123,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnEffectTemplateMenu.setVisibility(View.INVISIBLE);
             mRelativeEffectTemplates.setVisibility(View.VISIBLE);
         } else {
-            mRelativeRollerEffectDetail.setVisibility(View.GONE);
+            mRelativeSpecifiedEffectDetail.setVisibility(View.GONE);
+            mRelativeLoopEffectDetail.setVisibility(View.GONE);
             mScrollCompCustomize.setVisibility(View.GONE);
             mScrollPanCustomize.setVisibility(View.GONE);
             mScrollFreqCustomize.setVisibility(View.GONE);
@@ -5523,41 +5662,60 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         sPeak = fTempPeak;
     }
 
+    private static final BASS.SYNCPROC endIncreaseSpeedLoop = new BASS.SYNCPROC() {
+        public void SYNCPROC(int handle, int channel, int data, final Object user){
+            BASS.FloatValue speed = new BASS.FloatValue();
+            BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, speed);
+            speed.value += sIncreaseSpeedLoop;
+            if (speed.value + 100.0f > 400.0f) speed.value = 300.0f;
+            if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
+                ControlFragment.setSpeed(speed.value, false);
+        }
+    };
+
     private static final Runnable onTimer = new Runnable() {
         @Override
         public void run() {
             if (sEffectItems.get(EFFECTTYPE_INCREASESPEED).isSelected()) {
-                BASS.FloatValue speed = new BASS.FloatValue();
-                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, speed);
-                speed.value += sIncreaseSpeed;
-                if (speed.value + 100.0f > 400.0f) speed.value = 300.0f;
-                if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
-                    ControlFragment.setSpeed(speed.value, false);
-                sHandler.postDelayed(this, (long) (sTimeOfIncreaseSpeed * 1000.0f));
+                if(EffectFragment.sSpecifiedEffectDetail) {
+                    BASS.FloatValue speed = new BASS.FloatValue();
+                    BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, speed);
+                    speed.value += sIncreaseSpeedSpecified;
+                    if (speed.value + 100.0f > 400.0f) speed.value = 300.0f;
+                    if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
+                        ControlFragment.setSpeed(speed.value, false);
+                    sHandler.postDelayed(this, (long) (sTimeOfIncreaseSpeedSpecified * 1000.0f));
+                }
             } else if (sEffectItems.get(EFFECTTYPE_DECREASESPEED).isSelected()) {
-                BASS.FloatValue speed = new BASS.FloatValue();
-                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, speed);
-                speed.value -= sDecreaseSpeed;
-                if (speed.value + 100.0f < 10.0f) speed.value = -90.0f;
-                if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
-                    ControlFragment.setSpeed(speed.value, false);
-                sHandler.postDelayed(this, (long) (sTimeOfDecreaseSpeed * 1000.0f));
+                if(EffectFragment.sSpecifiedEffectDetail) {
+                    BASS.FloatValue speed = new BASS.FloatValue();
+                    BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, speed);
+                    speed.value -= sDecreaseSpeedSpecified;
+                    if (speed.value + 100.0f < 10.0f) speed.value = -90.0f;
+                    if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
+                        ControlFragment.setSpeed(speed.value, false);
+                    sHandler.postDelayed(this, (long) (sTimeOfDecreaseSpeedSpecified * 1000.0f));
+                }
             } else if (sEffectItems.get(EFFECTTYPE_RAISEPITCH).isSelected()) {
-                BASS.FloatValue pitch = new BASS.FloatValue();
-                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, pitch);
-                pitch.value += sRaisePitch;
-                if (pitch.value + 10.0f > 70.0f) pitch.value = 60.0f;
-                if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
-                    ControlFragment.setPitch(pitch.value, false);
-                sHandler.postDelayed(this, (long) (sTimeOfRaisePitch * 1000.0f));
+                if(EffectFragment.sSpecifiedEffectDetail) {
+                    BASS.FloatValue pitch = new BASS.FloatValue();
+                    BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, pitch);
+                    pitch.value += sRaisePitchSpecified;
+                    if (pitch.value + 10.0f > 70.0f) pitch.value = 60.0f;
+                    if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
+                        ControlFragment.setPitch(pitch.value, false);
+                    sHandler.postDelayed(this, (long) (sTimeOfRaisePitchSpecified * 1000.0f));
+                }
             } else if (sEffectItems.get(EFFECTTYPE_LOWERPITCH).isSelected()) {
-                BASS.FloatValue pitch = new BASS.FloatValue();
-                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, pitch);
-                pitch.value -= sLowerPitch;
-                if (pitch.value + 70.0f < 10.0f) pitch.value = -60.0f;
-                if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
-                    ControlFragment.setPitch(pitch.value, false);
-                sHandler.postDelayed(this, (long) (sTimeOfLowerPitch * 1000.0f));
+                if(EffectFragment.sSpecifiedEffectDetail) {
+                    BASS.FloatValue pitch = new BASS.FloatValue();
+                    BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, pitch);
+                    pitch.value -= sLowerPitchSpecified;
+                    if (pitch.value + 70.0f < 10.0f) pitch.value = -60.0f;
+                    if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
+                        ControlFragment.setPitch(pitch.value, false);
+                    sHandler.postDelayed(this, (long) (sTimeOfLowerPitchSpecified * 1000.0f));
+                }
             } else if (sEffectItems.get(EFFECTTYPE_OLDRECORD).isSelected()) {
                 BASS.FloatValue freq = new BASS.FloatValue();
                 BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS.BASS_ATTRIB_FREQ, freq);
@@ -6125,9 +6283,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
-            if (v.getId() == R.id.editTimeEffectDetail)
+            if (v.getId() == R.id.editTimeSpecifiedEffectDetail)
                 showTimeEffectDialog();
-            else if (v.getId() == R.id.editSpeedEffectDetail)
+            else if (v.getId() == R.id.editSpeedSpecifiedEffectDetail)
+                showSpeedEffectDialog();
+            else if (v.getId() == R.id.editSpeedLoopEffectDetail)
                 showSpeedEffectDialog();
         }
     }
@@ -6145,10 +6305,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     public void clearFocus() {
-        mEditTimeEffectDetail.clearFocus();
-        mEditSpeedEffectDetail.clearFocus();
-        mEditPTimeEffectDetail.clearFocus();
-        mEditPitchEffectDetail.clearFocus();
+        mEditTimeSpecifiedEffectDetail.clearFocus();
+        mEditSpeedSpecifiedEffectDetail.clearFocus();
+        mEditPTimeSpecifiedEffectDetail.clearFocus();
+        mEditPitchSpecifiedEffectDetail.clearFocus();
+        mEditSpeedLoopEffectDetail.clearFocus();
+        mEditPitchLoopEffectDetail.clearFocus();
     }
 
     private void showTemplateMenu() {
@@ -6896,7 +7058,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     mRelativeDistortion.setBackgroundColor(nColorModeBk);
                     mRelativeSoundEffect.setBackgroundColor(nColorModeBk);
                     mTextEffectName.setTextColor(nColorModeText);
-                    mTextEffectLabel.setTextColor(nColorModeText);
                     mTextCompGainLabel.setTextColor(nColorModeText);
                     mTextCompThresholdLabel.setTextColor(nColorModeText);
                     mTextCompRatioLabel.setTextColor(nColorModeText);
@@ -6955,12 +7116,19 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     mTextDistortionFeedback.setTextColor(nColorModeText);
                     mTextDistortionVolume.setTextColor(nColorModeText);
                     mTextSoundEffectVolume.setTextColor(nColorModeText);
-                    mTextTimeEffectDetail.setTextColor(nColorModeText);
-                    mTextSpeedEffectDetail.setTextColor(nColorModeText);
-                    mEditSpeedEffectDetail.setTextColor(nColorModeText);
-                    mEditTimeEffectDetail.setTextColor(nColorModeText);
-                    mEditPTimeEffectDetail.setTextColor(nColorModeText);
-                    mEditPitchEffectDetail.setTextColor(nColorModeText);
+                    mTextTimeSpecifiedEffectDetail.setTextColor(nColorModeText);
+                    mTextSpeedSpecifiedEffectDetail.setTextColor(nColorModeText);
+                    mEditSpeedSpecifiedEffectDetail.setTextColor(nColorModeText);
+                    mEditTimeSpecifiedEffectDetail.setTextColor(nColorModeText);
+                    mEditPTimeSpecifiedEffectDetail.setTextColor(nColorModeText);
+                    mEditPitchSpecifiedEffectDetail.setTextColor(nColorModeText);
+                    mTextSpeedLoopEffectDetail.setTextColor(nColorModeText);
+                    mEditSpeedLoopEffectDetail.setTextColor(nColorModeText);
+                    mEditPitchLoopEffectDetail.setTextColor(nColorModeText);
+                    mRadioButtonSpecifiedEffectDetail.setTextColor(nColorModeText);
+                    mRadioButtonLoopEffectDetail.setTextColor(nColorModeText);
+                    mRadioButtonSpecifiedEffectDetail.setBackgroundColor(nColorModeBk);
+                    mRadioButtonLoopEffectDetail.setBackgroundColor(nColorModeBk);
                     mViewSepEffectHeader.setBackgroundColor(nColorModeSep);
                     mViewSepEffectDetail.setBackgroundColor(nColorModeSep);
                     mViewSepEffectTemplateHeader.setBackgroundColor(nColorModeSep);
@@ -7012,7 +7180,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mRelativeDistortion.setBackgroundColor(nLightModeBk);
             mRelativeSoundEffect.setBackgroundColor(nLightModeBk);
             mTextEffectName.setTextColor(nLightModeText);
-            mTextEffectLabel.setTextColor(nLightModeText);
             mTextCompGainLabel.setTextColor(nLightModeText);
             mTextCompThresholdLabel.setTextColor(nLightModeText);
             mTextCompRatioLabel.setTextColor(nLightModeText);
@@ -7071,12 +7238,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mTextDistortionFeedback.setTextColor(nLightModeText);
             mTextDistortionVolume.setTextColor(nLightModeText);
             mTextSoundEffectVolume.setTextColor(nLightModeText);
-            mTextTimeEffectDetail.setTextColor(nLightModeText);
-            mTextSpeedEffectDetail.setTextColor(nLightModeText);
-            mEditSpeedEffectDetail.setTextColor(nLightModeText);
-            mEditTimeEffectDetail.setTextColor(nLightModeText);
-            mEditPTimeEffectDetail.setTextColor(nLightModeText);
-            mEditPitchEffectDetail.setTextColor(nLightModeText);
+            mTextTimeSpecifiedEffectDetail.setTextColor(nLightModeText);
+            mTextSpeedSpecifiedEffectDetail.setTextColor(nLightModeText);
+            mEditSpeedSpecifiedEffectDetail.setTextColor(nLightModeText);
+            mEditTimeSpecifiedEffectDetail.setTextColor(nLightModeText);
+            mEditPTimeSpecifiedEffectDetail.setTextColor(nLightModeText);
+            mEditPitchSpecifiedEffectDetail.setTextColor(nLightModeText);
+            mTextSpeedLoopEffectDetail.setTextColor(nLightModeText);
+            mEditSpeedLoopEffectDetail.setTextColor(nLightModeText);
+            mEditPitchLoopEffectDetail.setTextColor(nLightModeText);
+            mRadioButtonSpecifiedEffectDetail.setTextColor(nLightModeText);
+            mRadioButtonLoopEffectDetail.setTextColor(nLightModeText);
             mViewSepEffectHeader.setBackgroundColor(nLightModeSep);
             mViewSepEffectDetail.setBackgroundColor(nLightModeSep);
             mViewSepEffectTemplateHeader.setBackgroundColor(nLightModeSep);
@@ -7256,10 +7428,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnPanSaveAs.setBackgroundResource(R.drawable.btn_border_background);
         mBtnFreqSaveAs.setBackgroundResource(R.drawable.btn_border_background);
         mBtnMetronomeSaveAs.setBackgroundResource(R.drawable.btn_border_background);
-        mEditSpeedEffectDetail.setBackgroundResource(R.drawable.editborder);
-        mEditTimeEffectDetail.setBackgroundResource(R.drawable.editborder);
-        mEditPTimeEffectDetail.setBackgroundResource(R.drawable.editborder);
-        mEditPitchEffectDetail.setBackgroundResource(R.drawable.editborder);
+        mEditSpeedSpecifiedEffectDetail.setBackgroundResource(R.drawable.editborder);
+        mEditTimeSpecifiedEffectDetail.setBackgroundResource(R.drawable.editborder);
+        mEditPTimeSpecifiedEffectDetail.setBackgroundResource(R.drawable.editborder);
+        mEditPitchSpecifiedEffectDetail.setBackgroundResource(R.drawable.editborder);
+        mEditSpeedLoopEffectDetail.setBackgroundResource(R.drawable.editborder);
+        mEditPitchLoopEffectDetail.setBackgroundResource(R.drawable.editborder);
         mEffectsAdapter.notifyDataSetChanged();
         mEffectTemplatesAdapter.notifyDataSetChanged();
     }
@@ -7295,7 +7469,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mRelativeDistortion.setBackgroundColor(nColorModeBk);
                 mRelativeSoundEffect.setBackgroundColor(nColorModeBk);
                 mTextEffectName.setTextColor(nColorModeText);
-                mTextEffectLabel.setTextColor(nColorModeText);
                 mTextCompGainLabel.setTextColor(nColorModeText);
                 mTextCompThresholdLabel.setTextColor(nColorModeText);
                 mTextCompRatioLabel.setTextColor(nColorModeText);
@@ -7354,12 +7527,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mTextDistortionFeedback.setTextColor(nColorModeText);
                 mTextDistortionVolume.setTextColor(nColorModeText);
                 mTextSoundEffectVolume.setTextColor(nColorModeText);
-                mTextTimeEffectDetail.setTextColor(nColorModeText);
-                mTextSpeedEffectDetail.setTextColor(nColorModeText);
-                mEditSpeedEffectDetail.setTextColor(nColorModeText);
-                mEditTimeEffectDetail.setTextColor(nColorModeText);
-                mEditPTimeEffectDetail.setTextColor(nColorModeText);
-                mEditPitchEffectDetail.setTextColor(nColorModeText);
+                mTextTimeSpecifiedEffectDetail.setTextColor(nColorModeText);
+                mTextSpeedSpecifiedEffectDetail.setTextColor(nColorModeText);
+                mTextSpeedLoopEffectDetail.setTextColor(nColorModeText);
+                mEditSpeedSpecifiedEffectDetail.setTextColor(nColorModeText);
+                mEditTimeSpecifiedEffectDetail.setTextColor(nColorModeText);
+                mEditPTimeSpecifiedEffectDetail.setTextColor(nColorModeText);
+                mEditPitchSpecifiedEffectDetail.setTextColor(nColorModeText);
+                mEditSpeedLoopEffectDetail.setTextColor(nColorModeText);
+                mEditPitchLoopEffectDetail.setTextColor(nColorModeText);
+                mRadioButtonSpecifiedEffectDetail.setTextColor(nColorModeText);
+                mRadioButtonLoopEffectDetail.setTextColor(nColorModeText);
                 mViewSepEffectHeader.setBackgroundColor(nColorModeSep);
                 mViewSepEffectDetail.setBackgroundColor(nColorModeSep);
                 mViewSepEffectTemplateHeader.setBackgroundColor(nColorModeSep);
@@ -7419,6 +7597,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnResetChorus.setBackgroundResource(R.drawable.resetbutton_dark);
         mBtnDistortionRandom.setBackgroundResource(R.drawable.resetbutton_dark);
         mBtnResetDistortion.setBackgroundResource(R.drawable.resetbutton_dark);
+        mRadioButtonSpecifiedEffectDetail.setBackgroundResource(R.drawable.resetbutton_dark);
+        mRadioButtonLoopEffectDetail.setBackgroundResource(R.drawable.resetbutton_dark);
         mSeekCompGain.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));
         mSeekCompThreshold.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));
         mSeekCompRatio.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));
@@ -7551,10 +7731,12 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnPanSaveAs.setBackgroundResource(R.drawable.btn_border_background_dark);
         mBtnFreqSaveAs.setBackgroundResource(R.drawable.btn_border_background_dark);
         mBtnMetronomeSaveAs.setBackgroundResource(R.drawable.btn_border_background_dark);
-        mEditSpeedEffectDetail.setBackgroundResource(R.drawable.editborder_dark);
-        mEditTimeEffectDetail.setBackgroundResource(R.drawable.editborder_dark);
-        mEditPTimeEffectDetail.setBackgroundResource(R.drawable.editborder_dark);
-        mEditPitchEffectDetail.setBackgroundResource(R.drawable.editborder_dark);
+        mEditSpeedSpecifiedEffectDetail.setBackgroundResource(R.drawable.editborder_dark);
+        mEditTimeSpecifiedEffectDetail.setBackgroundResource(R.drawable.editborder_dark);
+        mEditPTimeSpecifiedEffectDetail.setBackgroundResource(R.drawable.editborder_dark);
+        mEditPitchSpecifiedEffectDetail.setBackgroundResource(R.drawable.editborder_dark);
+        mEditSpeedLoopEffectDetail.setBackgroundResource(R.drawable.editborder_dark);
+        mEditPitchLoopEffectDetail.setBackgroundResource(R.drawable.editborder_dark);
         mEffectsAdapter.notifyDataSetChanged();
         mEffectTemplatesAdapter.notifyDataSetChanged();
     }

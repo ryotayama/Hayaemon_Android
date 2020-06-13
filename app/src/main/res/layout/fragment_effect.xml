@@ -92,93 +92,159 @@
             android:layout_below="@id/relativeEffectTitle"
             />
 
-        <TextView
-            android:id="@+id/textEffectLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/volume"
-            android:textSize="15dp"
-            android:textColor="#000000"
-            android:layout_marginTop="16dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginEnd="12dp"
-            android:layout_below="@id/viewSepEffectDetail"
-            android:visibility="invisible"
-            />
-
-        <RelativeLayout
-            android:id="@+id/relativeRollerEffectDetail"
+        <RadioGroup
+            android:id="@+id/radioGroupEffectDetail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:visibility="invisible"
-            android:layout_below="@id/textEffectLabel"
+            android:layout_below="@id/viewSepEffectDetail"
+            android:checkedButton="@id/radioButtonSpecifiedEffectDetail"
             >
 
-            <TextView
-                android:id="@+id/textTimeEffectDetail"
-                android:layout_width="wrap_content"
+            <RadioButton
+                android:id="@+id/radioButtonSpecifiedEffectDetail"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/timeWithColon"
+                android:text="@string/volume"
                 android:textSize="15dp"
                 android:textColor="#000000"
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="32dp"
                 android:layout_marginStart="32dp"
-                android:layout_alignParentTop="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                />
+                android:layout_marginRight="12dp"
+                android:layout_marginEnd="12dp"
+                android:visibility="invisible"
+                android:checked="true"
+            />
 
-            <EditText
-                android:id="@+id/editTimeEffectDetail"
-                android:textSize="13dp"
-                android:inputType="text"
-                android:hint="@null"
-                android:autofillHints="@null"
-                android:layout_width="64dp"
+            <RelativeLayout
+                android:id="@+id/relativeSpecifiedEffectDetail"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end"
-                android:layout_alignBaseline="@id/textTimeEffectDetail"
-                android:layout_alignLeft="@+id/editSpeedEffectDetail"
-                android:layout_alignStart="@+id/editSpeedEffectDetail"
-                android:layout_alignRight="@+id/editSpeedEffectDetail"
-                android:layout_alignEnd="@+id/editSpeedEffectDetail"
-                android:background="@drawable/editborder"
-                />
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:visibility="invisible"
+                >
 
-            <TextView
-                android:id="@+id/textSpeedEffectDetail"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/textTimeSpecifiedEffectDetail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/timeWithColon"
+                    android:textSize="15dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_alignParentTop="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    />
+
+                <EditText
+                    android:id="@+id/editTimeSpecifiedEffectDetail"
+                    android:textSize="13dp"
+                    android:inputType="text"
+                    android:hint="@null"
+                    android:autofillHints="@null"
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:layout_alignBaseline="@id/textTimeSpecifiedEffectDetail"
+                    android:layout_alignLeft="@+id/editSpeedSpecifiedEffectDetail"
+                    android:layout_alignStart="@+id/editSpeedSpecifiedEffectDetail"
+                    android:layout_alignRight="@+id/editSpeedSpecifiedEffectDetail"
+                    android:layout_alignEnd="@+id/editSpeedSpecifiedEffectDetail"
+                    android:background="@drawable/editborder"
+                    />
+
+                <TextView
+                    android:id="@+id/textSpeedSpecifiedEffectDetail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/speedWithColon"
+                    android:textSize="15dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_below="@id/textTimeSpecifiedEffectDetail"
+                    />
+
+                <EditText
+                    android:id="@+id/editSpeedSpecifiedEffectDetail"
+                    android:textSize="13dp"
+                    android:inputType="text"
+                    android:hint="@null"
+                    android:autofillHints="@null"
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:layout_alignBaseline="@id/textSpeedSpecifiedEffectDetail"
+                    android:layout_toRightOf="@id/textSpeedSpecifiedEffectDetail"
+                    android:layout_toEndOf="@id/textSpeedSpecifiedEffectDetail"
+                    android:background="@drawable/editborder"
+                    />
+
+            </RelativeLayout>
+
+            <RadioButton
+                android:id="@+id/radioButtonLoopEffectDetail"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/speedWithColon"
+                android:text="@string/volume"
                 android:textSize="15dp"
                 android:textColor="#000000"
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="32dp"
                 android:layout_marginStart="32dp"
-                android:layout_below="@id/textTimeEffectDetail"
+                android:layout_marginRight="12dp"
+                android:layout_marginEnd="12dp"
+                android:visibility="invisible"
                 />
 
-            <EditText
-                android:id="@+id/editSpeedEffectDetail"
-                android:textSize="13dp"
-                android:inputType="text"
-                android:hint="@null"
-                android:autofillHints="@null"
-                android:layout_width="64dp"
+            <RelativeLayout
+                android:id="@+id/relativeLoopEffectDetail"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end"
-                android:layout_alignBaseline="@id/textSpeedEffectDetail"
-                android:layout_toRightOf="@id/textSpeedEffectDetail"
-                android:layout_toEndOf="@id/textSpeedEffectDetail"
-                android:background="@drawable/editborder"
-                />
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:visibility="invisible"
+                >
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/textSpeedLoopEffectDetail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/speedWithColon"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginTop="16dp"
+                    android:textColor="#000000"
+                    android:textSize="15dp"
+                    android:enabled="false"
+                    android:alpha="0.5"
+                    />
+
+                <EditText
+                    android:id="@+id/editSpeedLoopEffectDetail"
+                    android:textSize="13dp"
+                    android:inputType="text"
+                    android:hint="@null"
+                    android:autofillHints="@null"
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:layout_alignBaseline="@id/textSpeedLoopEffectDetail"
+                    android:layout_toRightOf="@id/textSpeedLoopEffectDetail"
+                    android:layout_toEndOf="@id/textSpeedLoopEffectDetail"
+                    android:background="@drawable/editborder"
+                    android:enabled="false"
+                    android:alpha="0.5"
+                    />
+
+            </RelativeLayout>
+
+        </RadioGroup>
 
         <RelativeLayout
             android:id="@+id/relativeEffectTemplates"

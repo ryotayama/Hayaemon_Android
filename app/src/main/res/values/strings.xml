@@ -297,6 +297,10 @@
     <string name="decSpeedTitle">Decrease speed every specified time.</string>
     <string name="rasPitchTitle">Raise the pitch every specified time.</string>
     <string name="lowPitchTitle">Lower the pitch every specified time.</string>
+    <string name="incSpeedLoopTitle">Increase speed every loop.</string>
+    <string name="decSpeedLoopTitle">Decrease speed every loop.</string>
+    <string name="rasPitchLoopTitle">Raise the pitch every loop.</string>
+    <string name="lowPitchLoopTitle">Lower the pitch every loop.</string>
     <string name="BPM">BPM</string>
     <string name="changeLeft">Left</string>
     <string name="changeRight">Right</string>

@@ -297,6 +297,10 @@
     <string name="decSpeedTitle">指定時間ごとに減速</string>
     <string name="rasPitchTitle">指定時間ごとにだんだん高く</string>
     <string name="lowPitchTitle">指定時間ごとにだんだん低く</string>
+    <string name="incSpeedLoopTitle">ループごとに加速</string>
+    <string name="decSpeedLoopTitle">ループごとに減速</string>
+    <string name="rasPitchLoopTitle">ループごとにだんだん高く</string>
+    <string name="lowPitchLoopTitle">ループごとにだんだん低く</string>
     <string name="BPM">BPM</string>
     <string name="changeLeft">値を左に変更</string>
     <string name="changeRight">値を右に変更</string>

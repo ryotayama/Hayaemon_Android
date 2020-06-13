@@ -297,6 +297,10 @@
     <string name="decSpeedTitle">지정한 시간에 따라 감속</string>
     <string name="rasPitchTitle">지정된 시간마다 피치를 올립니다</string>
     <string name="lowPitchTitle">지정한 시간에 따라 감속</string>
+    <string name="incSpeedLoopTitle">루프마다 속도를 높이십시오</string>
+    <string name="decSpeedLoopTitle">루프마다 속도를 줄입니다</string>
+    <string name="rasPitchLoopTitle">루프마다 피치를 올립니다</string>
+    <string name="lowPitchLoopTitle">루프마다 피치를 낮추십시오</string>
     <string name="BPM">BPM</string>
     <string name="changeLeft">값을 왼쪽으로 변경</string>
     <string name="changeRight">값을 오른쪽으로 변경</string>

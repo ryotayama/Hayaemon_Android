@@ -91,6 +91,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
@@ -2280,6 +2281,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             };
             sHandler.postDelayed(timer, 0);
+        }
+
+        if(EffectFragment.sLoopEffectDetail) {
+            if (EffectFragment.sEffectDetail == EffectFragment.EFFECTTYPE_INCREASESPEED) {
+                BASS.FloatValue speed = new BASS.FloatValue();
+                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, speed);
+                speed.value += EffectFragment.sIncreaseSpeedLoop;
+                if (speed.value + 100.0f > 400.0f) speed.value = 300.0f;
+                if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
+                    ControlFragment.setSpeed(speed.value, false);
+            } else if (EffectFragment.sEffectDetail == EffectFragment.EFFECTTYPE_DECREASESPEED) {
+                BASS.FloatValue speed = new BASS.FloatValue();
+                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO, speed);
+                speed.value -= EffectFragment.sDecreaseSpeedLoop;
+                if (speed.value + 100.0f < 10.0f) speed.value = -90.0f;
+                if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
+                    ControlFragment.setSpeed(speed.value, false);
+            } else if (EffectFragment.sEffectDetail == EffectFragment.EFFECTTYPE_RAISEPITCH) {
+                BASS.FloatValue pitch = new BASS.FloatValue();
+                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, pitch);
+                pitch.value += EffectFragment.sRaisePitchLoop;
+                if (pitch.value + 10.0f > 70.0f) pitch.value = 60.0f;
+                if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
+                    ControlFragment.setPitch(pitch.value, false);
+            } else if (EffectFragment.sEffectDetail == EffectFragment.EFFECTTYPE_LOWERPITCH) {
+                BASS.FloatValue pitch = new BASS.FloatValue();
+                BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, pitch);
+                pitch.value -= EffectFragment.sLowerPitchLoop;
+                if (pitch.value + 70.0f < 10.0f) pitch.value = -60.0f;
+                if (MainActivity.sStream != 0 && BASS.BASS_ChannelIsActive(MainActivity.sStream) != BASS.BASS_ACTIVE_PAUSED)
+                    ControlFragment.setPitch(pitch.value, false);
+            }
         }
     }
 

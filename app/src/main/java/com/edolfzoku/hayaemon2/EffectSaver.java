@@ -63,12 +63,16 @@ class EffectSaver {
     private float mSoundEffectVolume;
     private float mTimeOmIncreaseSpeed = 1.0f;//todo: fix typo and make wildcard for old version
     private float mIncreaseSpeed = 0.1f;
+    private float mIncreaseSpeedLoop = 1.0f;
     private float mTimeOmDecreaseSpeed = 1.0f;
     private float mDecreaseSpeed = 0.1f;
+    private float mDecreaseSpeedLoop = 1.0f;
     private float mTimeOfRaisePitch = 1.0f;
     private float mRaisePitch = 0.1f;
+    private float mRaisePitchLoop = 1.0f;
     private float mTimeOfLowerPitch = 1.0f;
     private float mLowerPitch = 0.1f;
+    private float mLowerPitchLoop = 1.0f;
     private float mCompGain = 2.0f, mCompThreshold = -20.0f, mCompRatio = 10.0f, mCompAttack = 1.2f, mCompRelease = 400.0f;
     private float mEchoDry, mEchoWet, mEchoFeedback, mEchoDelay;
     private float mReverbDry = 0.7f, mReverbWet = 1.0f, mReverbRoomSize = 0.85f, mReverbDamp = 0.5f, mReverbWidth = 0.9f;
@@ -137,12 +141,16 @@ class EffectSaver {
     void setSoundEffectVolume(float soundEffectVolume) { this.mSoundEffectVolume = soundEffectVolume; }
     void setTimeOmIncreaseSpeed(float mTimeOmIncreaseSpeed) { this.mTimeOmIncreaseSpeed = mTimeOmIncreaseSpeed; }//todo: fix typo and make wildcard for old version
     void setIncreaseSpeed(float mIncreaseSpeed) { this.mIncreaseSpeed = mIncreaseSpeed; }
+    void setIncreaseSpeedLoop(float mIncreaseSpeedLoop) { this.mIncreaseSpeedLoop = mIncreaseSpeedLoop; }
     void setTimeOmDecreaseSpeed(float mTimeOmDecreaseSpeed) { this.mTimeOmDecreaseSpeed = mTimeOmDecreaseSpeed; }
     void setDecreaseSpeed(float mDecreaseSpeed) { this.mDecreaseSpeed = mDecreaseSpeed; }
+    void setDecreaseSpeedLoop(float mDecreaseSpeedLoop) { this.mDecreaseSpeedLoop = mDecreaseSpeedLoop; }
     void setTimeOfRaisePitch(float mTimeOfRaisePitch) { this.mTimeOfRaisePitch = mTimeOfRaisePitch; }
     void setRaisePitch(float mRaisePitch) { this.mRaisePitch = mRaisePitch; }
+    void setRaisePitchLoop(float mRaisePitchLoop) { this.mRaisePitchLoop = mRaisePitchLoop; }
     void setTimeOfLowerPitch(float mTimeOfLowerPitch) { this.mTimeOfLowerPitch = mTimeOfLowerPitch; }
     void setLowerPitch(float mLowerPitch) { this.mLowerPitch = mLowerPitch; }
+    void setLowerPitchLoop(float mLowerPitchLoop) { this.mLowerPitchLoop = mLowerPitchLoop; }
     void setCompGain(float compGain) { mCompGain = compGain; }
     void setCompThreshold(float compThreshold) { mCompThreshold = compThreshold; }
     void setCompRatio(float compRatio) { mCompRatio = compRatio; }
@@ -228,12 +236,16 @@ class EffectSaver {
     float getSoundEffectVolume() { return mSoundEffectVolume; }
     float getTimeOmIncreaseSpeed() { return mTimeOmIncreaseSpeed; }
     float getIncreaseSpeed() { return mIncreaseSpeed; }
+    float getIncreaseSpeedLoop() { return mIncreaseSpeedLoop; }
     float getTimeOmDecreaseSpeed() { return mTimeOmDecreaseSpeed; }
     float getDecreaseSpeed() { return mDecreaseSpeed; }
+    float getDecreaseSpeedLoop() { return mDecreaseSpeedLoop; }
     float getTimeOfRaisePitch() { return mTimeOfRaisePitch; }
     float getRaisePitch() { return mRaisePitch; }
+    float getRaisePitchLoop() { return mRaisePitchLoop; }
     float getTimeOfLowerPitch() { return mTimeOfLowerPitch; }
     float getLowerPitch() { return mLowerPitch; }
+    float getLowerPitchLoop() { return mLowerPitchLoop; }
     float getCompGain() { return mCompGain; }
     float getCompThreshold() { return mCompThreshold; }
     float getCompRatio() { return mCompRatio; }
@@ -324,12 +336,16 @@ class EffectSaver {
         mSoundEffectVolume = saver.mSoundEffectVolume;
         mTimeOmIncreaseSpeed = saver.mTimeOmIncreaseSpeed;
         mIncreaseSpeed = saver.mIncreaseSpeed;
+        mIncreaseSpeedLoop = saver.mIncreaseSpeedLoop;
         mTimeOmDecreaseSpeed = saver.mTimeOmDecreaseSpeed;
         mDecreaseSpeed = saver.mDecreaseSpeed;
+        mDecreaseSpeedLoop = saver.mDecreaseSpeedLoop;
         mTimeOfRaisePitch = saver.mTimeOfRaisePitch;
         mRaisePitch = saver.mRaisePitch;
+        mRaisePitchLoop = saver.mRaisePitchLoop;
         mTimeOfLowerPitch = saver.mTimeOfLowerPitch;
         mLowerPitch = saver.mLowerPitch;
+        mLowerPitchLoop = saver.mLowerPitchLoop;
         mCompGain = saver.mCompGain;
         mCompThreshold = saver.mCompThreshold;
         mCompRatio = saver.mCompRatio;
