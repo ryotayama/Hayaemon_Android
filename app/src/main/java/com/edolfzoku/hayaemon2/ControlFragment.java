@@ -279,11 +279,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         else
             fX = nBkLeft + fCenter - (fDummySpeed / fMinSpeed) * (fCenter - nPtWidth / 2.0f);
         float fY = mImgPoint.getY() + nPtHeight / 2.0f;
-        mImgPoint.animate()
-                .x(fX - nPtWidth / 2.0f)
-                .y(fY - nPtHeight / 2.0f)
-                .setDuration(0)
-                .start();
+        mImgPoint.setX(fX - nPtWidth / 2.0f);
+        mImgPoint.setY(fY - nPtHeight / 2.0f);
 
         if(sLinkFlag) {
             sLinkFlag = false;
@@ -370,11 +367,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
         float fY;
         if(sPitch > 0.0f) fY = nBkTop + fHalfHeight - (fDummyPitch / fMaxPitch) * fHalfHeight;
         else fY = nBkTop + fHalfHeight - (fDummyPitch / -fMinPitch) * fHalfHeight;
-        mImgPoint.animate()
-                .x(fX - nPtWidth / 2.0f)
-                .y(fY)
-                .setDuration(0)
-                .start();
+        mImgPoint.setX(fX - nPtWidth / 2.0f);
+        mImgPoint.setY(fY);
 
         if(sLinkFlag) {
             sLinkFlag = false;
@@ -590,11 +584,8 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
             }
 
             if(!sLinkFlag) {
-                mImgPoint.animate()
-                        .x(fX)
-                        .y(fY)
-                        .setDuration(0)
-                        .start();
+                mImgPoint.setX(fX);
+                mImgPoint.setY(fY);
 
                 if(bSave) PlaylistFragment.updateSavingEffect();
             }
