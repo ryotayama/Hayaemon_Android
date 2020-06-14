@@ -78,6 +78,8 @@ class EffectSaver {
     private float mReverbDry = 0.7f, mReverbWet = 1.0f, mReverbRoomSize = 0.85f, mReverbDamp = 0.5f, mReverbWidth = 0.9f;
     private float mChorusDry = 1.0f, mChorusWet = 0.1f, mChorusFeedback = 0.5f, mChorusMinSweep = 1.0f, mChorusMaxSweep = 2.0f, mChorusRate = 10.0f;
     private float mDistortionDrive = 0.2f, mDistortionDry = 0.95f, mDistortionWet = 0.05f, mDistortionFeedback = 0.1f, mDistortionVolume = 1.0f;
+    private boolean bSpecifiedEffectDetail = false;
+    private boolean bLoopEffectDetail = false;
     private boolean bABLoop = false;
     private boolean bLoop = false;
     private boolean bLoopA = false;
@@ -176,6 +178,8 @@ class EffectSaver {
     void setDistortionWet(float distortionWet) { mDistortionWet = distortionWet; }
     void setDistortionFeedback(float distortionFeedback) { mDistortionFeedback = distortionFeedback; }
     void setDistortionVolume(float distortionVolume) { mDistortionVolume = distortionVolume; }
+    void setSpecifiedEffectDetail(boolean bSpecifiedEffectDetail) { this.bSpecifiedEffectDetail = bSpecifiedEffectDetail; }
+    void setLoopEffectDetail(boolean bLoopEffectDetail) { this.bLoopEffectDetail = bLoopEffectDetail; }
     void setIsABLoop(boolean bABLoop) { this.bABLoop = bABLoop; }
     void setIsLoopA(boolean bLoopA) { this.bLoopA = bLoopA; }
     void setLoopA(double dLoopA) { this.dLoopA = dLoopA; }
@@ -271,6 +275,8 @@ class EffectSaver {
     float getDistortionWet() { return mDistortionWet; }
     float getDistortionFeedback() { return mDistortionFeedback; }
     float getDistortionVolume() { return mDistortionVolume; }
+    boolean isSpecifiedEffectDetail() { return bSpecifiedEffectDetail; }
+    boolean isLoopEffectDetail() { return bLoopEffectDetail; }
     boolean isABLoop() { return bABLoop; }
     boolean isLoopA() { return bLoopA; }
     double getLoopA() { return dLoopA; }

@@ -279,6 +279,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private EditText getEditPTimeSpecifiedEffectDetail() { return mEditPTimeSpecifiedEffectDetail; }
     private EditText getEditSpeedLoopEffectDetail() { return mEditSpeedLoopEffectDetail; }
     private EditText getEditPitchLoopEffectDetail() { return mEditPitchLoopEffectDetail; }
+    RadioGroup getRadioGroupEffectDetail() { return mRadioGroupEffectDetail; }
 
     public static void setTimeOfRaisePitch(float timeOfRaisePitch) {
         sTimeOfRaisePitchSpecified = timeOfRaisePitch;

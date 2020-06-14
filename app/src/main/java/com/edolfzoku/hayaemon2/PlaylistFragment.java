@@ -2954,6 +2954,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saver.setTimeOfLowerPitch(EffectFragment.sTimeOfLowerPitchSpecified);
         saver.setLowerPitch(EffectFragment.sLowerPitchSpecified);
         saver.setLowerPitchLoop(EffectFragment.sLowerPitchLoop);
+        saver.setSpecifiedEffectDetail(EffectFragment.sSpecifiedEffectDetail);
+        saver.setLoopEffectDetail(EffectFragment.sLoopEffectDetail);
         saver.setCompGain(EffectFragment.sCompGain);
         saver.setCompThreshold(EffectFragment.sCompThreshold);
         saver.setCompRatio(EffectFragment.sCompRatio);
@@ -3067,6 +3069,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setTimeOfLowerPitch(EffectFragment.sTimeOfLowerPitchSpecified);
             saver.setLowerPitch(EffectFragment.sLowerPitchSpecified);
             saver.setLowerPitchLoop(EffectFragment.sLowerPitchLoop);
+            saver.setSpecifiedEffectDetail(EffectFragment.sSpecifiedEffectDetail);
+            saver.setLoopEffectDetail(EffectFragment.sLoopEffectDetail);
             saver.setCompGain(EffectFragment.sCompGain);
             saver.setCompThreshold(EffectFragment.sCompThreshold);
             saver.setCompRatio(EffectFragment.sCompRatio);
@@ -3179,6 +3183,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         EffectFragment.setReverb(saver.getReverbDry(), saver.getReverbWet(), saver.getReverbRoomSize(), saver.getReverbDamp(), saver.getReverbWidth(), false);
         EffectFragment.setChorus(saver.getChorusDry(), saver.getChorusWet(), saver.getChorusFeedback(), saver.getChorusMinSweep(), saver.getChorusMaxSweep(), saver.getChorusRate(), false);
         EffectFragment.setDistortion(saver.getDistortionDrive(), saver.getDistortionDry(), saver.getDistortionWet(), saver.getDistortionFeedback(), saver.getDistortionVolume(), false);
+        if(saver.isSpecifiedEffectDetail()) {
+            EffectFragment.sSpecifiedEffectDetail = true;
+            EffectFragment.sLoopEffectDetail = false;
+            if(sActivity != null) sActivity.effectFragment.getRadioGroupEffectDetail().check(R.id.radioButtonSpecifiedEffectDetail);
+        }
+        else if(saver.isLoopEffectDetail()) {
+            EffectFragment.sSpecifiedEffectDetail = false;
+            EffectFragment.sLoopEffectDetail = true;
+            if(sActivity != null) sActivity.effectFragment.getRadioGroupEffectDetail().check(R.id.radioButtonLoopEffectDetail);
+        }
         if(saver.isABLoop()) {
             LoopFragment.sABLoop = true;
             if(sActivity != null) sActivity.loopFragment.getRadioGroupLoopMode().check(R.id.radioButtonABLoop);
