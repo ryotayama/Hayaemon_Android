@@ -3575,6 +3575,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     void finishSaveSongToGallery(int hTempStream, int hEncode, String strPathTo, AlertDialog alert) {
         BASSenc.BASS_Encode_Stop(hEncode);
+        BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
+        BASS.BASS_ChannelGetInfo(hTempStream, info);
         int nLength = (int)BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE)) + 1;
         BASS.BASS_StreamFree(hTempStream);
 
@@ -3588,7 +3590,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         if(mVideoSavingTask != null && mVideoSavingTask.getStatus() == AsyncTask.Status.RUNNING)
             mVideoSavingTask.cancel(true);
-        mVideoSavingTask = new VideoSavingTask(this, strPathTo, alert, nLength);
+        mVideoSavingTask = new VideoSavingTask(this, strPathTo, alert, nLength, info.chans);
         mVideoSavingTask.execute(0);
     }
 

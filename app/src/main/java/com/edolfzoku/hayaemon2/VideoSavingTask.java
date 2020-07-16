@@ -45,15 +45,15 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
     private final PlaylistFragment mPlaylistFragment;
     private final String mPathTo;
     private final AlertDialog mAlert;
-    private final int mLength;
+    private final int mLength, mChans;
     private String mMP4Path;
 
-    VideoSavingTask(PlaylistFragment playlistFragment, String pathTo, AlertDialog alert, int length)
-    {
+    VideoSavingTask(PlaylistFragment playlistFragment, String pathTo, AlertDialog alert, int length, int chans) {
         mPlaylistFragment = playlistFragment;
         mPathTo = pathTo;
         mAlert = alert;
         mLength = length;
+        mChans = chans;
     }
 
     @SuppressWarnings("deprecation")
@@ -116,7 +116,7 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
             codec = MediaCodec.createEncoderByType("audio/mp4a-latm");
             MediaFormat outputFormat = new MediaFormat();
             outputFormat.setString(MediaFormat.KEY_MIME, "audio/mp4a-latm");
-            outputFormat.setInteger(MediaFormat.KEY_CHANNEL_COUNT, 2);
+            outputFormat.setInteger(MediaFormat.KEY_CHANNEL_COUNT, mChans);
             outputFormat.setInteger(MediaFormat.KEY_SAMPLE_RATE, 44100);
             outputFormat.setInteger(MediaFormat.KEY_BIT_RATE, 128 * 1024);
             outputFormat.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC);
@@ -160,7 +160,7 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
                             totalBytesRead += bytesRead;
                             dstBuf.put(tempBuffer, 0, bytesRead);
                             codec.queueInputBuffer(inputBufIndex, 0, bytesRead, (long) presentationTimeUs, 0);
-                            presentationTimeUs = 1000000L * (totalBytesRead / 4) / 44100;
+                            presentationTimeUs = 1000000L * (totalBytesRead / 2 / mChans) / 44100;
                         }
                     }
                 }
