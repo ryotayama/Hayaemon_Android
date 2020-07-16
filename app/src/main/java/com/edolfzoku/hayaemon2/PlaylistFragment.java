@@ -1234,7 +1234,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mRecbuf.order(ByteOrder.LITTLE_ENDIAN);
         mRecbuf.put(new byte[]{'R','I','F','F',0,0,0,0,'W','A','V','E','f','m','t',' ',16,0,0,0});
         mRecbuf.putShort((short)1);
-        mRecbuf.putShort((short)2);
+        mRecbuf.putShort((short)1);
         mRecbuf.putInt(44100);
         mRecbuf.putInt(44100 * 2);
         mRecbuf.putShort((short)2);
@@ -1266,7 +1266,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 return true;
             }
         };
-        MainActivity.sRecord = BASS.BASS_RecordStart(44100, 2, 0, RecordingCallback, 0);
+        MainActivity.sRecord = BASS.BASS_RecordStart(44100, 1, 0, RecordingCallback, 0);
 
         sActivity.getBtnRecord().setColorFilter(new PorterDuffColorFilter(sActivity.isDarkMode() ? getResources().getColor(R.color.darkModeBlue) : getResources().getColor(R.color.lightModeBlue), PorterDuff.Mode.SRC_IN));
 
