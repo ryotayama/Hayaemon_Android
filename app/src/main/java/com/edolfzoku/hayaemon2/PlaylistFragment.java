@@ -1208,7 +1208,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativeRecording);
         paramContainer.bottomMargin = 0;
         if(sActivity.getSeekCurPos().getVisibility() == View.VISIBLE)
-            paramRecording.addRule(RelativeLayout.ABOVE, R.id.adView);
+            paramRecording.addRule(RelativeLayout.ABOVE, R.id.ad_view_container);
         else paramRecording.addRule(RelativeLayout.ABOVE, R.id.relativePlayingWithShadow);
         if(MainActivity.sStream == 0) paramRecording.bottomMargin = 0;
         else {

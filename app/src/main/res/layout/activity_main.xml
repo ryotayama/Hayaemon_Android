@@ -190,7 +190,7 @@
             android:visibility="gone"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:layout_above="@+id/adView">
+            android:layout_above="@+id/ad_view_container">
 
             <RelativeLayout
                 android:id="@+id/relativePlaying"
@@ -454,17 +454,13 @@
             android:background="#a0a0a0"
             android:layout_above="@+id/tabs"/>
 
-        <com.google.android.gms.ads.AdView
-            xmlns:ads="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/adView"
-            android:background="#FFF"
+        <FrameLayout
+            android:id="@+id/ad_view_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_above="@id/viewSep2"
             android:layout_centerHorizontal="true"
-            ads:adSize="SMART_BANNER"
-            ads:adUnitId="ca-app-pub-9499594730627438/5954202671">
-        </com.google.android.gms.ads.AdView>
+            />
 
     </RelativeLayout>
 

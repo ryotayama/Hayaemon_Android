@@ -57,6 +57,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.core.content.ContextCompat;
@@ -76,7 +80,9 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
 import android.text.method.ScrollingMovementMethod;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -89,9 +95,9 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
@@ -154,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private IInAppBillingService mService;
     private ServiceConnection mServiceConn;
     private BroadcastReceiver mReceiver;
+    private FrameLayout mAdContainerView;
     private AdView mAdView;
     private LinearLayout mLinearControl;
     private SeekBar mSeekCurPos;
@@ -261,6 +268,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnSetting = findViewById(R.id.btnSetting);
         mBtnDarkMode = findViewById(R.id.btnDarkMode);
         mTextRecording = findViewById(R.id.textRecording);
+        mAdContainerView = findViewById(R.id.ad_view_container);
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        mAdContainerView.getLayoutParams().height = (int)(getAdSize().getHeight() * mDensity);
+        mAdContainerView.post(new Runnable() {
+            @Override
+            public void run() {
+                loadBanner();
+            }
+        });
 
         initialize(savedInstanceState);
         loadData();
@@ -380,6 +401,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             MainActivity.setSystemBarTheme(this, false);
 
         updateDrawer();
+    }
+
+    private void loadBanner() {
+        // Create an ad request.
+        mAdView = new AdView(this);
+        mAdView.setAdUnitId("ca-app-pub-9499594730627438/5954202671"); // 本番用
+        // mAdView.setAdUnitId("ca-app-pub-3940256099942544/6300978111"); // テスト用
+        mAdContainerView.removeAllViews();
+        mAdContainerView.addView(mAdView);
+
+        AdSize adSize = getAdSize();
+        mAdView.setAdSize(adSize);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        // Start loading the ad in the background.
+        mAdView.loadAd(adRequest);
+    }
+
+    public AdSize getAdSize() {
+        // Determine the screen width (less decorations) to use for the ad width.
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float density = outMetrics.density;
+
+        float adWidthPixels = mAdContainerView.getWidth();
+
+        // If the ad hasn't been laid out, default to the full screen width.
+        if (adWidthPixels == 0) {
+            adWidthPixels = outMetrics.widthPixels;
+        }
+
+        int adWidth = (int) (adWidthPixels / density);
+
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -1062,10 +1120,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (MainActivity.sRecord != 0) {
                         paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativeRecording);
                         paramContainer.bottomMargin = 0;
-                        paramRecording.addRule(RelativeLayout.ABOVE, R.id.adView);
+                        paramRecording.addRule(RelativeLayout.ABOVE, R.id.ad_view_container);
                         paramRecording.bottomMargin = (int) (60.0 * mDensity);
                     } else {
-                        paramContainer.addRule(RelativeLayout.ABOVE, R.id.adView);
+                        paramContainer.addRule(RelativeLayout.ABOVE, R.id.ad_view_container);
                         paramContainer.bottomMargin = (int) (60.0 * mDensity);
                     }
                     RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) mRelativePlayingWithShadow.getLayoutParams();
@@ -1595,10 +1653,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (MainActivity.sRecord != 0) {
             paramContainer.addRule(RelativeLayout.ABOVE, R.id.relativeRecording);
             paramContainer.bottomMargin = 0;
-            paramRecording.addRule(RelativeLayout.ABOVE, R.id.adView);
+            paramRecording.addRule(RelativeLayout.ABOVE, R.id.ad_view_container);
             paramRecording.bottomMargin = (int) (60.0 * mDensity);
         } else {
-            paramContainer.addRule(RelativeLayout.ABOVE, R.id.adView);
+            paramContainer.addRule(RelativeLayout.ABOVE, R.id.ad_view_container);
             paramContainer.bottomMargin = (int) (60.0 * mDensity);
         }
 
@@ -1717,8 +1775,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnShuffleInPlayingBar.animate().alpha(1.0f).setDuration(lDuration);
         mBtnRepeatInPlayingBar.animate().alpha(1.0f).setDuration(lDuration);
         mBtnCloseInPlayingBar.animate().alpha(0.0f).setDuration(lDuration);
-        mAdView.animate().translationY(mTabLayout.getHeight() + mAdView.getHeight()).setDuration(lDuration);
-        mTabLayout.animate().translationY(mTabLayout.getHeight() + mAdView.getHeight()).setDuration(lDuration);
+        mAdContainerView.animate().translationY(mTabLayout.getHeight() + mAdContainerView.getHeight()).setDuration(lDuration);
+        mTabLayout.animate().translationY(mTabLayout.getHeight() + mAdContainerView.getHeight()).setDuration(lDuration);
         mViewSep2.animate().translationY(mTabLayout.getHeight()).setDuration(lDuration);
     }
 
@@ -1879,7 +1937,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnShuffleInPlayingBar.animate().alpha(0.0f).setDuration(lDuration);
         mBtnRepeatInPlayingBar.animate().alpha(0.0f).setDuration(lDuration);
         mBtnCloseInPlayingBar.animate().alpha(1.0f).setDuration(lDuration);
-        mAdView.animate().translationY(0).setDuration(lDuration);
+        mAdContainerView.animate().translationY(0).setDuration(lDuration);
         mTabLayout.animate().translationY(0).setDuration(lDuration);
         mViewSep2.animate().translationY(0).setDuration(lDuration);
     }
@@ -2059,22 +2117,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void hideAds() {
-        if(mAdView.getVisibility() != AdView.GONE) {
-            mAdView.setVisibility(AdView.GONE);
+        if(mAdContainerView.getVisibility() != View.GONE) {
+            mAdContainerView.setVisibility(View.GONE);
 
             SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-            preferences.edit().putBoolean("hideads", mAdView.getVisibility() == AdView.GONE).apply();
+            preferences.edit().putBoolean("hideads", mAdContainerView.getVisibility() == View.GONE).apply();
         }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void initialize(Bundle savedInstanceState) {
-        MobileAds.initialize(this, "ca-app-pub-9499594730627438~9516019647");
-
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
         if(sStream == 0) {
             BASS.BASS_Init(-1, 44100, 0);
             BASS.BASS_SetConfig(BASS.BASS_CONFIG_FLOATDSP, 1);
@@ -2215,7 +2267,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private boolean isAdsVisible() {
-        return (mAdView.getVisibility() != AdView.GONE);
+        return (mAdContainerView.getVisibility() != View.GONE);
     }
 
     public static void setSync() {
@@ -2612,7 +2664,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 relativeMain.setBackgroundColor(nColorModeBk);
                 mTabLayout.setBackgroundColor(nColorModeBk);
                 mTabLayout.setSelectedTabIndicatorColor(nColorModeBk);
-                mAdView.setBackgroundColor(nColorModeBk);
+                mAdContainerView.setBackgroundColor(nColorModeBk);
                 mRelativeLeftMenu.setBackgroundColor(nColorModeBk);
                 mRelativeSave.setBackgroundColor(nColorModeBk);
                 mRelativeLock.setBackgroundColor(nColorModeBk);
@@ -2849,7 +2901,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 relativeMain.setBackgroundColor(nColorModeBk);
                 mTabLayout.setBackgroundColor(nColorModeBk);
                 mTabLayout.setSelectedTabIndicatorColor(nColorModeBk);
-                mAdView.setBackgroundColor(nColorModeBk);
+                mAdContainerView.setBackgroundColor(nColorModeBk);
                 mRelativeLeftMenu.setBackgroundColor(nColorModeBk);
                 mRelativeSave.setBackgroundColor(nColorModeBk);
                 mRelativeLock.setBackgroundColor(nColorModeBk);
