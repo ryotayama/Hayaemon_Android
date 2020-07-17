@@ -5744,7 +5744,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS.BASS_ATTRIB_FREQ, freq);
                 BASS.FloatValue tempoFreq = new BASS.FloatValue();
                 BASS.BASS_ChannelGetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, tempoFreq);
-                tempoFreq.value = tempoFreq.value * 100.0f / sFreq;
+                tempoFreq.value = tempoFreq.value * 100.0f / freq.value;
                 // 加速度の設定
                 // 周波数が68以上の場合 : -0.02
                 // 　　　　68未満の場合 : +0.01
@@ -5759,7 +5759,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 if (tempoFreq.value <= 65.0) tempoFreq.value = 65.0f;
                 if (tempoFreq.value >= 70.0) tempoFreq.value = 70.0f;
 
-                BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, sFreq * tempoFreq.value / 100.0f);
+                BASS.BASS_ChannelSetAttribute(MainActivity.sStream, BASS_FX.BASS_ATTRIB_TEMPO_FREQ, freq.value * tempoFreq.value / 100.0f);
 
                 sHandler.postDelayed(this, 50);
             } else if (sEffectItems.get(EFFECTTYPE_NOSENSE_STRONG).isSelected() || sEffectItems.get(EFFECTTYPE_NOSENSE_MIDDLE).isSelected() || sEffectItems.get(EFFECTTYPE_NOSENSE_WEAK).isSelected()) {
