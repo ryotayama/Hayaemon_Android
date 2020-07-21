@@ -672,11 +672,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     if (intent.getAction() == null) return;
-                    if (intent.getAction().equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
-                        if (BASS.BASS_ChannelIsActive(sStream) == BASS.BASS_ACTIVE_PLAYING)
-                            PlaylistFragment.pause();
-                        return;
-                    }
                     try {
                         Bundle ownedItems = mService.getPurchases(3, getPackageName(), "inapp", null);
                         if (ownedItems != null && ownedItems.getInt("RESPONSE_CODE") == 0) {
@@ -698,7 +693,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             };
-            registerReceiver(mReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
             registerReceiver(mReceiver, new IntentFilter("com.android.vending.billing.PURCHASES_UPDATED"));
         }
 

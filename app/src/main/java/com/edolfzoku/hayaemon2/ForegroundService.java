@@ -5,17 +5,24 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.un4seen.bass.BASS;
+
+import java.util.ArrayList;
 
 public class ForegroundService extends IntentService {
     private PendingIntent pendingIntentForeground = null;
@@ -24,10 +31,30 @@ public class ForegroundService extends IntentService {
     private NotificationCompat.Action actionForward= null;
     private Notification notification;
     private NotificationCompat.Builder builder;
+    private BroadcastReceiver mReceiver;
 
     public ForegroundService() {
         super("ForegroundService");
         MainActivity.sService = this;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        if(mReceiver == null) {
+            mReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (intent.getAction() == null) return;
+                    if (intent.getAction().equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
+                        if (BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_PLAYING)
+                            PlaylistFragment.pause();
+                    }
+                }
+            };
+            registerReceiver(mReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
+        }
     }
 
     @Override
@@ -36,6 +63,15 @@ public class ForegroundService extends IntentService {
         stopForeground(true);
         MainActivity.sService = null;
 
+        if(mReceiver != null) {
+            try {
+                unregisterReceiver(mReceiver);
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+            mReceiver = null;
+        }
         super.onDestroy();
     }
 
