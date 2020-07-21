@@ -401,7 +401,7 @@
             android:scaleType="centerInside"
             android:clickable="true"
             android:focusable="true"
-            android:layout_margin="16dp"
+            android:layout_margin="8dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
