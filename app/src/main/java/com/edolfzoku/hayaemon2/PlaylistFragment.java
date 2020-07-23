@@ -3671,7 +3671,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         MainActivity.sWaitEnd = false;
         if(MainActivity.sStream == 0) return;
         sPlaying--;
-        if(sPlaying < 0) return;
+        if(sPlaying < 0) {
+            boolean bRepeatAll = MainActivity.sRepeat == 1;
+            if (bRepeatAll) {
+                ArrayList<SongItem> arSongs = sPlaylists.get(sPlayingPlaylist);
+                sPlaying = arSongs.size() - 1;
+            }
+            else {
+                stop();
+                return;
+            }
+        }
         playSong(sPlaying, true);
     }
 
