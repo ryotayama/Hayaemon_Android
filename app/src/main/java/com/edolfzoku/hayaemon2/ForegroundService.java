@@ -197,7 +197,7 @@ public class ForegroundService extends IntentService {
                 if(notificationManager != null)
                     notificationManager.notify(1, notification);
             }
-            bitmap.recycle();
+            if(bitmap != null) bitmap.recycle();
         }
         else {
             if (intent.getAction().equals("action_rewind")) PlaylistFragment.onRewindBtnClick();
