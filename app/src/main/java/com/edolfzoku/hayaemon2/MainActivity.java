@@ -2122,6 +2122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @SuppressLint("ClickableViewAccessibility")
     private void initialize(Bundle savedInstanceState) {
         if(sStream == 0) {
+            BASS.BASS_SetConfig(BASS.BASS_CONFIG_ANDROID_AAUDIO, 0);
             BASS.BASS_Init(-1, 44100, 0);
             BASS.BASS_SetConfig(BASS.BASS_CONFIG_FLOATDSP, 1);
             BASS.BASS_SetConfig(BASS_CONFIG_AAC_MP4, 1);
