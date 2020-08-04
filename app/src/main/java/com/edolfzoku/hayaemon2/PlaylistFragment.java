@@ -123,6 +123,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     private boolean mMultiSelecting, mAllowSelectNone;
     private static boolean sForceNormal, sForceReverse;
     private static List<Boolean> sPlays;
+    private String mRecordingPath;
 
     private PlaylistsAdapter mPlaylistsAdapter;
     private PlaylistTabAdapter mTabAdapter;
@@ -1230,43 +1231,21 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 .setDuration(200);
 
         BASS.BASS_RecordInit(-1);
-        mRecbuf = ByteBuffer.allocateDirect(200000);
-        mRecbuf.order(ByteOrder.LITTLE_ENDIAN);
-        mRecbuf.put(new byte[]{'R','I','F','F',0,0,0,0,'W','A','V','E','f','m','t',' ',16,0,0,0});
-        mRecbuf.putShort((short)1);
-        mRecbuf.putShort((short)1);
-        mRecbuf.putInt(44100);
-        mRecbuf.putInt(44100 * 2);
-        mRecbuf.putShort((short)2);
-        mRecbuf.putShort((short)16);
-        mRecbuf.put(new byte[]{'d','a','t','a',0,0,0,0});
         BASS.RECORDPROC RecordingCallback = new BASS.RECORDPROC() {
             public boolean RECORDPROC(int handle, ByteBuffer buffer, int length, Object user) {
-                try {
-                    mRecbuf.put(buffer);
-                } catch (BufferOverflowException e) {
-                    ByteBuffer temp;
-                    try {
-                        temp = ByteBuffer.allocateDirect(mRecbuf.position() + length + 200000);
-                    } catch (Error e2) {
-                        sActivity.runOnUiThread(new Runnable() {
-                            public void run() {
-                                stopRecord();
-                            }
-                        });
-                        return false;
-                    }
-                    temp.order(ByteOrder.LITTLE_ENDIAN);
-                    mRecbuf.limit(mRecbuf.position());
-                    mRecbuf.position(0);
-                    temp.put(mRecbuf);
-                    mRecbuf = temp;
-                    mRecbuf.put(buffer);
-                }
                 return true;
             }
         };
         MainActivity.sRecord = BASS.BASS_RecordStart(44100, 1, 0, RecordingCallback, 0);
+        int i = 0;
+        File fileForCheck;
+        while(true) {
+            mRecordingPath = sActivity.getFilesDir() + "/recorded" + String.format(Locale.getDefault(), "%d", i) + ".mp3";
+            fileForCheck = new File(mRecordingPath);
+            if(!fileForCheck.exists()) break;
+            i++;
+        }
+        MainActivity.sEncode = BASSenc_MP3.BASS_Encode_MP3_StartFile(MainActivity.sRecord, "", 0, mRecordingPath);
 
         sActivity.getBtnRecord().setColorFilter(new PorterDuffColorFilter(sActivity.isDarkMode() ? getResources().getColor(R.color.darkModeBlue) : getResources().getColor(R.color.lightModeBlue), PorterDuff.Mode.SRC_IN));
 
@@ -1298,33 +1277,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mBtnAddSong.setVisibility(View.VISIBLE);
         mBtnEdit.setVisibility(View.VISIBLE);
 
+        BASSenc.BASS_Encode_Stop(MainActivity.sEncode);
+        MainActivity.sEncode = 0;
         BASS.BASS_ChannelStop(MainActivity.sRecord);
         MainActivity.sRecord = 0;
 
         sActivity.getBtnRecord().clearColorFilter();
-
-        mRecbuf.limit(mRecbuf.position());
-        mRecbuf.putInt(4, mRecbuf.position()-8);
-        mRecbuf.putInt(40, mRecbuf.position()-44);
-        int i = 0;
-        String strPath;
-        File fileForCheck;
-        while(true) {
-            strPath = sActivity.getFilesDir() + "/recorded" + String.format(Locale.getDefault(), "%d", i) + ".wav";
-            fileForCheck = new File(strPath);
-            if(!fileForCheck.exists()) break;
-            i++;
-        }
-        final File file = new File(strPath);
-        try {
-            FileChannel fc = new FileOutputStream(file).getChannel();
-            mRecbuf.position(0);
-            fc.write(mRecbuf);
-            fc.close();
-        } catch (IOException e) {
-            return;
-        }
-
         AlertDialog.Builder builder;
         if(sActivity.isDarkMode())
             builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
@@ -1346,7 +1304,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
-                SongItem item = new SongItem(String.format(Locale.getDefault(), "%d", arSongs.size()+1), editTitle.getText().toString(), editArtist.getText().toString(), file.getPath());
+                SongItem item = new SongItem(String.format(Locale.getDefault(), "%d", arSongs.size()+1), editTitle.getText().toString(), editArtist.getText().toString(), mRecordingPath);
                 arSongs.add(item);
                 ArrayList<EffectSaver> arEffectSavers = sEffects.get(sSelectedPlaylist);
                 EffectSaver saver = new EffectSaver();
@@ -1361,12 +1319,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                final File file = new File(mRecordingPath);
                 if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             }
         });
         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
+                final File file = new File(mRecordingPath);
                 if(!file.delete()) System.out.println("ファイルが削除できませんでした");
             }
         });

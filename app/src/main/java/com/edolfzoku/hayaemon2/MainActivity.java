@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 {
     static MainActivity sActivity;
     static ForegroundService sService;
-    static int sStream, sRecord, sFxVol, sSync, sShuffle, sRepeat;
+    static int sStream, sRecord, sEncode, sFxVol, sSync, sShuffle, sRepeat;
     static boolean sLoopA, sLoopB, sPlayNextByBPos, sWaitEnd;
     static double sLoopAPos, sLoopBPos, sLength, sPrevVersion;
     static long sByteLength;
