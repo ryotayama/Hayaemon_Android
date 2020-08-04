@@ -90,6 +90,7 @@ class EffectSaver {
     private boolean bLoopMarker = false;
     private int nMarker = 0;
     private int mReverbSelected = -1, mEchoSelected = -1, mChorusSelected = -1, mDistortionSelected = -1, mCompSelected = -1, mPanSelected = -1, mFreqSelected = -1, mMetronomeSelected = -1, mSoundEffectSelected = -1;
+    private boolean bVolPercent = false;
 
     void setSave(boolean save) { mSave = save; }
     void setSpeed(float speed) { mSpeed = speed; }
@@ -197,6 +198,7 @@ class EffectSaver {
     void setFreqSelected(int nSelected) { this.mFreqSelected = nSelected; }
     void setMetronomeSelected(int nSelected) { this.mMetronomeSelected = nSelected; }
     void setSoundEffectSelected(int nSelected) { this.mSoundEffectSelected = nSelected; }
+    void setVolPercent(boolean bVolPercent) { this.bVolPercent = bVolPercent; }
 
     boolean isSave() { return mSave; }
     float getSpeed() { return mSpeed; }
@@ -294,6 +296,7 @@ class EffectSaver {
     int getFreqSelected() { return mFreqSelected; }
     int getMetronomeSelected() { return mMetronomeSelected; }
     int getSoundEffectSelected() { return mSoundEffectSelected; }
+    boolean isVolPercent() { return bVolPercent; }
 
     EffectSaver() {
     }
@@ -303,6 +306,7 @@ class EffectSaver {
         mSpeed = saver.mSpeed;
         mPitch = saver.mPitch;
         mVol = saver.mVol;
+        bVolPercent = true;
         mEQ20K = saver.mEQ20K;
         mEQ16K = saver.mEQ16K;
         nEQ12_5K = saver.nEQ12_5K;

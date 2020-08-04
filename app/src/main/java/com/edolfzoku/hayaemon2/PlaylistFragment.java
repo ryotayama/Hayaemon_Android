@@ -2866,6 +2866,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saver.setSpeed(ControlFragment.sSpeed);
         saver.setPitch(ControlFragment.sPitch);
         saver.setVol(EqualizerFragment.sVol);
+        saver.setVolPercent(true);
         saver.setEQ20K(EqualizerFragment.sEQs[0]);
         saver.setEQ16K(EqualizerFragment.sEQs[1]);
         saver.setEQ12_5K(EqualizerFragment.sEQs[2]);
@@ -2981,6 +2982,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             saver.setSpeed(ControlFragment.sSpeed);
             saver.setPitch(ControlFragment.sPitch);
             saver.setVol(EqualizerFragment.sVol);
+            saver.setVolPercent(true);
             saver.setEQ20K(EqualizerFragment.sEQs[0]);
             saver.setEQ16K(EqualizerFragment.sEQs[1]);
             saver.setEQ12_5K(EqualizerFragment.sEQs[2]);
@@ -3083,6 +3085,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         EffectSaver saver = arEffectSavers.get(sPlaying);
         ControlFragment.setSpeed(saver.getSpeed(), false);
         ControlFragment.setPitch(saver.getPitch(), false);
+        if (!saver.isVolPercent()) {
+            if(saver.getVol() == 0) saver.setVol(100);
+            else if(saver.getVol() < 0) saver.setVol((int)(((saver.getVol() + 30.0f) / 30.0f) * 100));
+            else if(saver.getVol() <= 30) saver.setVol((int)((saver.getVol() / 30.0f) * 100.0f + 100));
+        }
         EqualizerFragment.setVol(saver.getVol(), false);
         EqualizerFragment.setEQ(1, saver.getEQ20K(), false);
         EqualizerFragment.setEQ(2, saver.getEQ16K(), false);
@@ -3188,6 +3195,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         EffectFragment.setFreqSelected(saver.getFreqSelected());
         EffectFragment.setMetronomeSelected(saver.getMetronomeSelected());
         EffectFragment.setSoundEffectSelected(saver.getSoundEffectSelected());
+        if (!saver.isVolPercent()) updateSavingEffect();
     }
 
     private void saveSong(int nPurpose, String strFileName) {
@@ -3283,10 +3291,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO, ControlFragment.sSpeed);
         BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, ControlFragment.sPitch);
         int[] arHFX = new int[] {hTempFx20K, hTempFx16K, hTempFx12_5K, hTempFx10K, hTempFx8K, hTempFx6_3K, hTempFx5K, hTempFx4K, hTempFx3_15K, hTempFx2_5K, hTempFx2K, hTempFx1_6K, hTempFx1_25K, hTempFx1K, hTempFx800, hTempFx630, hTempFx500, hTempFx400, hTempFx315, hTempFx250, hTempFx200, hTempFx160, hTempFx125, hTempFx100, hTempFx80, hTempFx63, hTempFx50, hTempFx40, hTempFx31_5, hTempFx25, hTempFx20};
-        float fLevel = sActivity.equalizerFragment.getSeeks().get(0).getProgress() - 30;
-        if(fLevel == 0) fLevel = 1.0f;
-        else if(fLevel < 0) fLevel = (fLevel + 30.0f) / 30.0f;
-        else fLevel += 1.0f;
+        float fLevel = sActivity.equalizerFragment.getSeeks().get(0).getProgress() / 100.0f;
         BASS_FX.BASS_BFX_VOLUME vol = new BASS_FX.BASS_BFX_VOLUME();
         vol.lChannel = 0;
         vol.fVolume = fLevel;

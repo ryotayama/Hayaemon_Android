@@ -5365,7 +5365,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             } else if (strEffect.equals(context.getString(R.string.transcribeSideGuitar))) {
                 if (info.chans != 1)
                     sDspVocalCancel = BASS.BASS_ChannelSetDSP(stream, vocalCancelDSP, null, 0);
-                array = new int[]{0, -30, -20, -12, -7, -4, -3, -2, -1, 0, 0, 0, 0, 0, -1, -2, -3, -4, -7, -12, -20, -24, -27, -28, -29, -30, -30, -30, -30, -30, -30, -30};
+                array = new int[]{100, -30, -20, -12, -7, -4, -3, -2, -1, 0, 0, 0, 0, 0, -1, -2, -3, -4, -7, -12, -20, -24, -27, -28, -29, -30, -30, -30, -30, -30, -30, -30};
                 for (int j = 0; j < 32; j++) {
                     int nLevel = array[j];
                     if (j == 0)
@@ -5376,7 +5376,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             } else if (strEffect.equals(context.getString(R.string.transcribeBassOctave))) {
                 sActivity.controlFragment.setLink(false);
                 ControlFragment.setPitch(12.0f);
-                array = new int[]{0, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -20, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                array = new int[]{100, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -20, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                 for (int j = 0; j < 32; j++) {
                     int nLevel = array[j];
                     if (j == 0)
@@ -5486,7 +5486,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 sHandler = new Handler();
                 sHandler.post(onTimer);
             } else if (strEffect.equals(context.getString(R.string.oldRecord))) {
-                array = new int[]{2, -12, -12, -12, -12, -12, -12, -12, -12, -12, -6, 0, 0, 0, 0, 0, 0, 0, 0, 0, -6, -12, -12, -12, -12, -12, -12, -12, -12, -12, -12, -12};
+                array = new int[]{200, -12, -12, -12, -12, -12, -12, -12, -12, -12, -6, 0, 0, 0, 0, 0, 0, 0, 0, 0, -6, -12, -12, -12, -12, -12, -12, -12, -12, -12, -12, -12};
                 for (int j = 0; j < 32; j++) {
                     int nLevel = array[j];
                     if (j == 0)
@@ -5517,7 +5517,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 distortion.lChannel = BASS_FX.BASS_BFX_CHANALL;
                 BASS.BASS_FXSetParameters(sFxDistortion, distortion);
 
-                array = new int[]{2, -12, -12, -12, -12, -12, -12, -12, -12, -12, -6, 0, 0, 0, 0, 0, 0, 0, 0, 0, -6, -12, -12, -12, -12, -12, -12, -12, -12, -12, -12, -12};
+                array = new int[]{200, -12, -12, -12, -12, -12, -12, -12, -12, -12, -6, 0, 0, 0, 0, 0, 0, 0, 0, 0, -6, -12, -12, -12, -12, -12, -12, -12, -12, -12, -12, -12};
                 for (int j = 0; j < 32; j++) {
                     int nLevel = array[j];
                     if (j == 0)

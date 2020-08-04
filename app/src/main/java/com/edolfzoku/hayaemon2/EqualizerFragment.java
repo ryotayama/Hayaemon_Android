@@ -64,7 +64,7 @@ import java.util.Random;
 public class EqualizerFragment extends Fragment implements View.OnClickListener {
     static MainActivity sActivity;
     static ArrayList<EqualizerItem> sEqualizerItems;
-    static int sVol;
+    static int sVol = 100;
     static int[] sEQs = new int[31];
     private static ArrayList<Integer> sHfxs;
     private static float[] sCenters = new float[] {20000, 16000, 12500, 10000, 8000, 6300, 5000, 4000, 3150, 2500, 2000, 1600, 1250, 1000, 800, 630, 500, 400, 315, 250, 200, 160, 125, 100, 80, 63, 50, 40, 31.5f, 25, 20};
@@ -245,7 +245,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         mTextValues.add((TextView)sActivity.findViewById(R.id.text25Value));
         mTextValues.add((TextView)sActivity.findViewById(R.id.text20Value));
         for(int i = 0; i < mTextValues.size(); i++)
-            mTextValues.get(i).setText("0");
+            mTextValues.get(i).setText(i == 0 ? "100%" : "0");
 
         mSeeks = new ArrayList<>();
         mSeeks.add((SeekBar)sActivity.findViewById(R.id.seekVol));
@@ -287,13 +287,9 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     new SeekBar.OnSeekBarChangeListener() {
                         public void onProgressChanged(SeekBar seekBar,
                                                       int progress, boolean fromUser) {
-                            int nLevel = progress - 30;
                             if(j == 0)
                             {
-                                float fLevel = nLevel;
-                                if(fLevel == 0) fLevel = 1.0f;
-                                else if(fLevel < 0) fLevel = (fLevel + 30.0f) / 30.0f;
-                                else fLevel += 1.0f;
+                                float fLevel = progress / 100.0f;
                                 if(MainActivity.sStream != 0)
                                 {
                                     BASS_FX.BASS_BFX_VOLUME vol = new BASS_FX.BASS_BFX_VOLUME();
@@ -303,10 +299,11 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                                 }
 
                                 TextView textView = mTextValues.get(j);
-                                textView.setText(String.valueOf(nLevel));
+                                textView.setText(String.valueOf(progress) + "%");
                             }
                             else
                             {
+                                int nLevel = progress - 30;
                                 if(MainActivity.sStream != 0)
                                 {
                                     BASS_FX.BASS_BFX_PEAKEQ eq = new BASS_FX.BASS_BFX_PEAKEQ();
@@ -604,7 +601,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                         public void onClick(DialogInterface dialog, int id) {
                             ArrayList<Integer> arPresets = new ArrayList<>();
                             for (int i = 0; i < 32; i++) {
-                                arPresets.add(Integer.parseInt((String) mTextValues.get(i).getText()));
+                                if (i == 0) arPresets.add(mSeeks.get(i).getProgress());
+                                else arPresets.add(Integer.parseInt((String) mTextValues.get(i).getText()));
                             }
                             sEqualizerItems.add(new EqualizerItem(editPreset.getText().toString(), arPresets));
                             mEqualizersAdapter.notifyItemInserted(sEqualizerItems.size() - 1);
@@ -655,7 +653,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     if (item != null) {
                         ArrayList<Integer> arPresets = item.getArPresets();
                         for (int i = 0; i < 32; i++) {
-                            arPresets.set(i, Integer.parseInt((String) mTextValues.get(i).getText()));
+                            if (i == 0) arPresets.set(i, mSeeks.get(i).getProgress());
+                            else arPresets.set(i, Integer.parseInt((String) mTextValues.get(i).getText()));
                         }
                         saveData();
                     }
@@ -702,7 +701,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                     public void onClick(DialogInterface dialog, int id) {
                         ArrayList<Integer> arPresets = new ArrayList<>();
                         for (int i = 0; i < 32; i++) {
-                            arPresets.add(Integer.parseInt((String) mTextValues.get(i).getText()));
+                            if (i == 0) arPresets.add(mSeeks.get(i).getProgress());
+                            else arPresets.add(Integer.parseInt((String) mTextValues.get(i).getText()));
                         }
                         sEqualizerItems.add(new EqualizerItem(editPreset.getText().toString(), arPresets));
                         mEqualizersAdapter.notifyItemInserted(sEqualizerItems.size() - 1);
@@ -753,14 +753,16 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         int nProgress = seek.getProgress();
         nProgress -= 1;
         if(nProgress < 0) nProgress = 0;
-        return (nProgress - 30);
+        if (seek.equals(mSeeks.get(0))) return nProgress;
+        else return (nProgress - 30);
     }
 
     private int plusValue(SeekBar seek) {
         int nProgress = seek.getProgress();
         nProgress += 1;
-        if(nProgress > 60) nProgress = 60;
-        return (nProgress - 30);
+        if(nProgress > seek.getMax()) nProgress = seek.getMax();
+        if (seek.equals(mSeeks.get(0))) return nProgress;
+        else return (nProgress - 30);
     }
 
     void onEqualizerItemClick(int nEqualizer) {
@@ -810,7 +812,21 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         SharedPreferences preferences = sActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
         ArrayList<EqualizerItem> equalizerItems = gson.fromJson(preferences.getString("arEqualizerItems",""), new TypeToken<ArrayList<EqualizerItem>>(){}.getType());
-        if(equalizerItems != null) setArEqualizerItems(equalizerItems);
+        if(equalizerItems != null) {
+            setArEqualizerItems(equalizerItems);
+            if(MainActivity.sPrevVersion != 0.0f && MainActivity.sPrevVersion < 2.36f) {
+                for (int i = 0; i < sEqualizerItems.size(); i++) {
+                    EqualizerItem item = sEqualizerItems.get(i);
+                    int vol = item.getArPresets().get(0);
+                    if(vol == 0) vol = 100;
+                    else if(vol < 0) vol = (int)(((vol + 30.0f) / 30.0f) * 100);
+                    else if(vol <= 30) vol = (int)((vol / 30.0f) * 100.0f + 100);
+                    item.getArPresets().set(0, vol);
+                }
+                saveData();
+                mEqualizersAdapter.notifyDataSetChanged();
+            }
+        }
         else resetPresets();
         mBtnEqualizerOff.setSelected(true);
         for(int i = 0; i < sEqualizerItems.size(); i++)
@@ -829,50 +845,50 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
     private void resetPresets() {
         if(sEqualizerItems.size() > 0) sEqualizerItems.clear();
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.transcribeBass), new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.VocalBoost), new ArrayList<>(Arrays.asList(  0,-30,-20,-12, -7, -4, -3, -2, -1,  0,  0,  0,  0,  0, -1, -2, -3, -4, -7,-12,-20,-24,-27,-28,-29,-30,-30,-30,-30,-30,-30,-30))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.VocalReducer), new ArrayList<>(Arrays.asList(  0,  0, -5, -8,-10,-12,-13,-14,-14,-15,-15,-15,-15,-15,-14,-14,-13,-12,-11, -8, -5, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostUltraStrong), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostStrongest), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -7,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostStrong), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostMiddle), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -4, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostWeak), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostWeakest), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostUltraStrong), new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostStrongest), new ArrayList<>(Arrays.asList(  0,-15,-15,-15,-15,-15,-15,-15,-15,-15, -7,  0,  0,  0,  0,  0,  0,  0,  0,  0, -7,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostStrong), new ArrayList<>(Arrays.asList(  0,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostMiddle), new ArrayList<>(Arrays.asList(  0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -4,  0,  0,  0,  0,  0,  0,  0,  0,  0, -4, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostWeak), new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostWeakest), new ArrayList<>(Arrays.asList(  0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostUltraStrong), new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostStrongest), new ArrayList<>(Arrays.asList(  0,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15, -7,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostStrong), new ArrayList<>(Arrays.asList(  0,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostMiddle), new ArrayList<>(Arrays.asList(  0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostWeak), new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostWeakest), new ArrayList<>(Arrays.asList(  0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutUltraStrong), new ArrayList<>(Arrays.asList(  0,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutStrongest), new ArrayList<>(Arrays.asList(  0,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15, -8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutStrong), new ArrayList<>(Arrays.asList(  0,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutMiddle), new ArrayList<>(Arrays.asList(  0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -5,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutWeak), new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutWeakest), new ArrayList<>(Arrays.asList(  0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutUltraStrong), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutStrongest), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -8,-15,-15,-15,-15,-15,-15,-15,-15,-15, -8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutStrong), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutMiddle), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -5, -9, -9, -9, -9, -9, -9, -9, -9, -9, -5,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutWeak), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutWeakest), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutUltraStrong), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutStrongest), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -8,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutStrong), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutMiddle), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -5, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutWeak), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutWeakest), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.Pop), new ArrayList<>(Arrays.asList(  0, -6, -6, -6, -5, -5, -5, -5, -4, -3, -3, -2, -1, -1,  0,  0,  0,  0, -1, -1, -2, -3, -3, -4, -5, -5, -5, -5, -6, -6, -6, -6))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.Rock), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -5, -6, -5, -4, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.Jazz), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -5, -6, -6, -6, -6, -3, -2, -1, -2, -2, -2, -2, -2, -1, -1, -1,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.Electronic), new ArrayList<>(Arrays.asList(  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -3, -2, -1, -3, -5, -7, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
-        sEqualizerItems.add(new EqualizerItem(getString(R.string.Acoustic), new ArrayList<>(Arrays.asList(  0, -2, -2, -2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -2, -3, -3, -3, -3, -3, -4, -4, -3, -2, -1, -1, -1,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.transcribeBass), new ArrayList<>(Arrays.asList(100,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.VocalBoost), new ArrayList<>(Arrays.asList(100,-30,-20,-12, -7, -4, -3, -2, -1,  0,  0,  0,  0,  0, -1, -2, -3, -4, -7,-12,-20,-24,-27,-28,-29,-30,-30,-30,-30,-30,-30,-30))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.VocalReducer), new ArrayList<>(Arrays.asList(100,  0, -5, -8,-10,-12,-13,-14,-14,-15,-15,-15,-15,-15,-14,-14,-13,-12,-11, -8, -5, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostUltraStrong), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostStrongest), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -7,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostStrong), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostMiddle), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -4, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostWeak), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleBoostWeakest), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostUltraStrong), new ArrayList<>(Arrays.asList(100,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostStrongest), new ArrayList<>(Arrays.asList(100,-15,-15,-15,-15,-15,-15,-15,-15,-15, -7,  0,  0,  0,  0,  0,  0,  0,  0,  0, -7,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostStrong), new ArrayList<>(Arrays.asList(100,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostMiddle), new ArrayList<>(Arrays.asList(100, -9, -9, -9, -9, -9, -9, -9, -9, -9, -4,  0,  0,  0,  0,  0,  0,  0,  0,  0, -4, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostWeak), new ArrayList<>(Arrays.asList(100, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleBoostWeakest), new ArrayList<>(Arrays.asList(100, -3, -3, -3, -3, -3, -3, -3, -3, -3, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostUltraStrong), new ArrayList<>(Arrays.asList(100,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostStrongest), new ArrayList<>(Arrays.asList(100,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15, -7,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostStrong), new ArrayList<>(Arrays.asList(100,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostMiddle), new ArrayList<>(Arrays.asList(100, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostWeak), new ArrayList<>(Arrays.asList(100, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassBoostWeakest), new ArrayList<>(Arrays.asList(100, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutUltraStrong), new ArrayList<>(Arrays.asList(100,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutStrongest), new ArrayList<>(Arrays.asList(100,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15, -8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutStrong), new ArrayList<>(Arrays.asList(100,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutMiddle), new ArrayList<>(Arrays.asList(100, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -5,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutWeak), new ArrayList<>(Arrays.asList(100, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.TrebleCutWeakest), new ArrayList<>(Arrays.asList(100, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutUltraStrong), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutStrongest), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0, -8,-15,-15,-15,-15,-15,-15,-15,-15,-15, -8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutStrong), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12, -6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutMiddle), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0, -5, -9, -9, -9, -9, -9, -9, -9, -9, -9, -5,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutWeak), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.MiddleCutWeakest), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutUltraStrong), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,-15,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30,-30))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutStrongest), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -8,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15,-15))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutStrong), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -6,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12,-12))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutMiddle), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -5, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutWeak), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -3, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.BassCutWeakest), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.Pop), new ArrayList<>(Arrays.asList(100, -6, -6, -6, -5, -5, -5, -5, -4, -3, -3, -2, -1, -1,  0,  0,  0,  0, -1, -1, -2, -3, -3, -4, -5, -5, -5, -5, -6, -6, -6, -6))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.Rock), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -5, -6, -5, -4, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.Jazz), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -5, -6, -6, -6, -6, -3, -2, -1, -2, -2, -2, -2, -2, -1, -1, -1,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.Electronic), new ArrayList<>(Arrays.asList(100,  0,  0,  0,  0,  0,  0,  0, -1, -2, -3, -4, -3, -2, -1, -3, -5, -7, -3, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.Acoustic), new ArrayList<>(Arrays.asList(100, -2, -2, -2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -2, -3, -3, -3, -3, -3, -4, -4, -3, -2, -1, -1, -1,  0,  0,  0,  0,  0,  0))));
         saveData();
         mEqualizersAdapter.notifyDataSetChanged();
 
@@ -882,10 +898,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     public static void setEQ() {
         for(int i = 0; i < 32; i++) {
             if(i == 0) {
-                float fLevel = sVol;
-                if(fLevel == 0) fLevel = 1.0f;
-                else if(fLevel < 0) fLevel = (fLevel + 30.0f) / 30.0f;
-                else fLevel += 1.0f;
+                float fLevel = sVol / 100.0f;
                 if(MainActivity.sStream != 0) {
                     BASS_FX.BASS_BFX_VOLUME vol = new BASS_FX.BASS_BFX_VOLUME();
                     vol.lChannel = 0;
@@ -918,10 +931,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         for(int i = 0; i < 32; i++) {
             int nLevel = sEqualizerItems.get(row).getArPresets().get(i);
             if(i == 0) {
-                float fLevel = nLevel;
-                if(fLevel == 0) fLevel = 1.0f;
-                else if(fLevel < 0) fLevel = (fLevel + 30.0f) / 30.0f;
-                else fLevel += 1.0f;
+                float fLevel = nLevel / 100.0f;
                 if(MainActivity.sStream != 0) {
                     BASS_FX.BASS_BFX_VOLUME vol = new BASS_FX.BASS_BFX_VOLUME();
                     vol.lChannel = 0;
@@ -931,9 +941,9 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
                 sVol = nLevel;
                 SeekBar seekBar = mSeeks.get(i);
-                seekBar.setProgress(nLevel + 30);
+                seekBar.setProgress(nLevel);
                 TextView textView = mTextValues.get(i);
-                textView.setText(String.valueOf(nLevel));
+                textView.setText(String.valueOf(nLevel) + "%");
             }
             else {
                 if(MainActivity.sStream != 0) {
@@ -957,8 +967,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     }
 
     static void setEQRandom() {
-        int nLevel = 0;
-        float fLevel = 1.0f;
+        int nLevel = 100;
+        float fLevel = nLevel / 100.0f;
         if(MainActivity.sStream != 0) {
             BASS_FX.BASS_BFX_VOLUME vol = new BASS_FX.BASS_BFX_VOLUME();
             vol.lChannel = 0;
@@ -968,9 +978,9 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
         if(sActivity != null) {
             SeekBar seekBar = sActivity.equalizerFragment.getSeeks().get(0);
-            seekBar.setProgress(nLevel + 30);
+            seekBar.setProgress(nLevel);
             TextView textView = sActivity.equalizerFragment.getTextValues().get(0);
-            textView.setText(String.valueOf(nLevel));
+            textView.setText(String.valueOf(nLevel) + "%");
         }
 
         for(int i = 0; i < 31; i++) {
@@ -1005,8 +1015,8 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     }
 
     public static void resetEQ(boolean save, boolean btnOffSelected) {
-        int nLevel = 0;
-        float fLevel = 1.0f;
+        int nLevel = 100;
+        float fLevel = nLevel / 100.0f;
         if(MainActivity.sStream != 0) {
             BASS_FX.BASS_BFX_VOLUME vol = new BASS_FX.BASS_BFX_VOLUME();
             vol.lChannel = 0;
@@ -1014,15 +1024,17 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
             BASS.BASS_FXSetParameters(MainActivity.sFxVol, vol);
         }
 
+        sVol = nLevel;
         if (sActivity != null) {
             if (btnOffSelected) sActivity.equalizerFragment.getBtnEqualizerOff().setSelected(true);
 
             SeekBar seekBar = sActivity.equalizerFragment.getSeeks().get(0);
-            seekBar.setProgress(nLevel + 30);
+            seekBar.setProgress(nLevel);
             TextView textView = sActivity.equalizerFragment.getTextValues().get(0);
-            textView.setText(String.valueOf(nLevel));
+            textView.setText(String.valueOf(nLevel) + "%");
         }
 
+        nLevel = 0;
         for(int i = 0; i < 31; i++) {
             if(MainActivity.sStream != 0) {
                 BASS_FX.BASS_BFX_PEAKEQ eq = new BASS_FX.BASS_BFX_PEAKEQ();
@@ -1055,10 +1067,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
     public static void setVol(int nLevel, boolean bSave) {
         sVol = nLevel;
-        float fLevel = nLevel;
-        if(fLevel == 0) fLevel = 1.0f;
-        else if(fLevel < 0) fLevel = (fLevel + 30.0f) / 30.0f;
-        else fLevel += 1.0f;
+        float fLevel = nLevel / 100.0f;
         if(MainActivity.sStream != 0) {
             BASS_FX.BASS_BFX_VOLUME vol = new BASS_FX.BASS_BFX_VOLUME();
             vol.lChannel = 0;
@@ -1073,9 +1082,9 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
 
     private void updateVol(int nLevel) {
         SeekBar seekBar = mSeeks.get(0);
-        seekBar.setProgress(nLevel + 30);
+        seekBar.setProgress(nLevel);
         TextView textView = mTextValues.get(0);
-        textView.setText(String.valueOf(nLevel));
+        textView.setText(String.valueOf(nLevel) + "%");
     }
 
     public void setEQ(int i, int nLevel) {
