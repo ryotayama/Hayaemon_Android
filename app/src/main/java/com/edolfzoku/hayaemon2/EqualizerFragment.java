@@ -889,6 +889,21 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
         sEqualizerItems.add(new EqualizerItem(getString(R.string.Jazz), new ArrayList<>(Arrays.asList( 25,  4,  4,  4,  4,  4,  4,  4,  4,  3,  2,  1,  0, -1, -2, -2, -2, -2,  1,  2,  3,  2,  2,  2,  2,  2,  3,  3,  3,  4,  4,  4))));
         sEqualizerItems.add(new EqualizerItem(getString(R.string.Electronic), new ArrayList<>(Arrays.asList( 20,  5,  5,  5,  5,  5,  5,  5,  4,  3,  2,  1,  2,  3,  4,  2,  0, -2,  2,  3,  4,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5))));
         sEqualizerItems.add(new EqualizerItem(getString(R.string.Acoustic), new ArrayList<>(Arrays.asList( 30,  2,  2,  2,  3,  3,  3,  3,  3,  3,  3,  3,  3,  2,  1,  1,  1,  1,  1,  0,  0,  1,  2,  3,  3,  3,  4,  4,  4,  4,  4,  4))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.Classic), new ArrayList<>(Arrays.asList( 35,  4,  4,  4,  3,  3,  3,  2,  2,  1,  1,  0,  0,  0, -1, -1, -1, -1,  0,  1,  2,  2,  2,  3,  3,  3,  4,  4,  4,  5,  5,  5))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.Dance), new ArrayList<>(Arrays.asList( 25,  0,  1,  2,  3,  4,  4,  4,  4,  5,  5,  5,  5,  4,  4,  3,  3,  2,  1,  1,  0,  1,  3,  5,  6,  6,  7,  6,  5,  4,  3,  2))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.RandB), new ArrayList<>(Arrays.asList( 20,  4,  4,  3,  3,  3,  3,  3,  3,  3,  3,  2,  1,  0, -1, -1, -2, -2, -1,  0,  1,  3,  4,  6,  6,  7,  7,  6,  5,  3,  2,  1))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.HipHop), new ArrayList<>(Arrays.asList( 35,  3,  3,  3,  2,  2,  1,  1,  0,  0,  1,  1,  0,  0, -1, -1, -1, -1,  0,  2,  3,  2,  2,  1,  2,  3,  4,  4,  5,  5,  5,  5))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.Latin), new ArrayList<>(Arrays.asList( 40,  4,  4,  4,  4,  3,  2,  1,  0,  0,  0, -1, -1, -1, -1, -1, -2, -2, -1, -1,  0,  0,  0,  0,  1,  2,  3,  3,  4,  4,  4,  4))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.Loudness), new ArrayList<>(Arrays.asList( 40,  0,  1,  2,  4,  5,  2, -1, -4, -3, -2, -1, -1,  0,  0, -1, -1, -2, -1, -1,  0,  0,  0,  0,  1,  3,  4,  5,  5,  6,  6,  6))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.Deep), new ArrayList<>(Arrays.asList( 35, -4, -4, -4, -3, -3, -3, -2, -2, -1,  0,  1,  1,  2,  2,  2,  3,  3,  2,  2,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  5,  5))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.Lounge), new ArrayList<>(Arrays.asList( 35,  0,  1,  1,  2,  2,  1,  0, -1, -1,  0,  0,  1,  2,  3,  3,  4,  4,  3,  2,  1,  1,  0,  0,  0, -1, -1, -2, -2, -3, -3, -3))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.Piano), new ArrayList<>(Arrays.asList( 25,  4,  4,  4,  3,  3,  4,  4,  5,  5,  4,  4,  3,  2,  1,  2,  2,  3,  3,  3,  3,  2,  1,  0,  1,  1,  2,  2,  3,  3,  3,  3))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.SmallSpeaker), new ArrayList<>(Arrays.asList( 30, -5, -5, -5, -4, -4, -4, -3, -3, -3, -2, -2, -1, -1,  0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  4,  4,  5,  5,  5,  5,  6,  6))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.Perfect), new ArrayList<>(Arrays.asList(  5,  6,  8, 10, 11, 11, 11, 10,  9,  9,  8,  7,  6,  5,  5,  5,  5,  6,  6,  7,  7,  8,  9,  9,  8,  7,  6,  5,  4,  3,  2,  1))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.EargasmExplosion), new ArrayList<>(Arrays.asList( 10,  6,  8,  9, 10, 11,  8,  6,  4,  5,  6,  7,  6,  6,  5,  5,  6,  6,  6,  7,  7,  8,  8,  9,  8,  7,  6,  5,  4,  3,  2,  1))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.Transceiver), new ArrayList<>(Arrays.asList( 50,-30,-30,-30,-26,-20,-15, -8, -3, -1,  0,  1,  8,  8,  7,  4,  0,  0, -2, -5, -7, -9,-14,-17,-21,-26,-28,-30,-30,-30,-30,-30))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.Telephone), new ArrayList<>(Arrays.asList(400,-30,-30,-30,-30,-30,-14,  4,  9,  2, -2,  5,  0, -6, -8, -9,-10,-11,-10, -9, -8, -6,-17,-21,-30,-30,-30,-30,-30,-30,-30,-30))));
+        sEqualizerItems.add(new EqualizerItem(getString(R.string.AMRadio), new ArrayList<>(Arrays.asList(400,-30,-30,-30,-24,-19,-15,-18,-22,-15, -4, -2, -7,  2,  1, -5,  0,  0,  0,  0,-12,-17,-23,-18,-10,-15,-17,-23,-28,-30,-30,  0))));
         saveData();
         mEqualizersAdapter.notifyDataSetChanged();
 
@@ -1041,10 +1056,11 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
                 eq.fBandwidth = 0.7f;
                 eq.fQ = 0.0f;
                 eq.lChannel = BASS_FX.BASS_BFX_CHANALL;
-                eq.fGain = sEQs[i] = 0;
+                eq.fGain = 0;
                 eq.fCenter = sCenters[i];
                 BASS.BASS_FXSetParameters(sHfxs.get(i), eq);
             }
+            sEQs[i] = 0;
 
             if (sActivity != null) {
                 SeekBar seekBar = sActivity.equalizerFragment.getSeeks().get(i + 1);
