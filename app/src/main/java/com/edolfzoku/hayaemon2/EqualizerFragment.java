@@ -1430,7 +1430,7 @@ public class EqualizerFragment extends Fragment implements View.OnClickListener 
     }
 
     public void setDarkMode(boolean animated) {
-        if(sActivity == null) return;
+        if(sActivity == null || mBtnEqualizerMenu == null) return;
         final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
         final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
         final int nLightModeText = getResources().getColor(android.R.color.black);

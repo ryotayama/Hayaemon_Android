@@ -196,11 +196,14 @@ public class ForegroundService extends IntentService {
                 NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
                 if(notificationManager != null)
                     notificationManager.notify(1, notification);
+                startForeground(1, notification);
             }
             if(bitmap != null) bitmap.recycle();
         }
-        else {
-            if (intent.getAction().equals("action_rewind")) PlaylistFragment.onRewindBtnClick();
+        else if (builder != null) {
+            startForeground(1, notification);
+            if (intent.getAction().equals("stop")) stopSelf();
+            else if (intent.getAction().equals("action_rewind")) PlaylistFragment.onRewindBtnClick();
             else if(intent.getAction().equals("action_playpause")) PlaylistFragment.onPlayBtnClick();
             else if (intent.getAction().equals("action_forward")) PlaylistFragment.onForwardBtnClick();
             else getBaseContext().sendBroadcast(new Intent(intent.getAction()));

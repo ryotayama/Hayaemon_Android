@@ -7440,7 +7440,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     public void setDarkMode(boolean animated) {
-        if(sActivity == null) return;
+        if(sActivity == null || mImgEffectBack == null) return;
         final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
         final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
         final int nLightModeText = getResources().getColor(android.R.color.black);

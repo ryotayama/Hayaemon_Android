@@ -1504,7 +1504,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     }
 
     public void setDarkMode(boolean animated) {
-        if(sActivity == null) return;
+        if(sActivity == null || mBtnRewind5Sec == null) return;
         final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
         final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
         final int nLightModeSep = getResources().getColor(R.color.lightModeSep);

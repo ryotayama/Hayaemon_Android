@@ -751,8 +751,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static void stopNotification() {
         Context context = sActivity != null ? sActivity : sService;
-        Intent intent = new Intent(context, ForegroundService.class);
-        context.stopService(intent);
+        Intent intent = new Intent(context, ForegroundService.class)
+                .setAction("stop");
+        if (Build.VERSION.SDK_INT >= 26) context.startForegroundService(intent);
+        else context.startService(intent);
     }
 
     @Override

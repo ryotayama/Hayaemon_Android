@@ -733,7 +733,7 @@ public class ControlFragment extends Fragment implements View.OnTouchListener, V
     }
 
     public void setDarkMode(boolean animated) {
-        if(sActivity == null) return;
+        if(sActivity == null || mBtnLink == null) return;
         final int nDarkModeSep = getResources().getColor(R.color.darkModeSep);
         final int nLightModeSep = getResources().getColor(R.color.lightModeSep);
         final int nLightModeText = getResources().getColor(android.R.color.black);

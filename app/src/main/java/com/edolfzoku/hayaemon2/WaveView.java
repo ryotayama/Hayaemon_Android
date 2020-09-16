@@ -353,6 +353,7 @@ public class WaveView extends View {
     {
         if(mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING)
             mTask.cancel(true);
+        if (mPath == null) return;
         streamCreate();
         if(mBitmaps.size() > 0) {
             for(int i = 0; i < mBitmaps.size(); i++) {
