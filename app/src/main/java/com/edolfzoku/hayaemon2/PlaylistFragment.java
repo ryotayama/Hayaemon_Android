@@ -958,6 +958,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
             else {
                 if(MainActivity.sStream == 0) {
+                    if (sPlaylists == null) return;
                     if(sSelectedPlaylist < 0) sSelectedPlaylist = 0;
                     else if(sSelectedPlaylist >= sPlaylists.size()) sSelectedPlaylist = sPlaylists.size() - 1;
                     sPlayingPlaylist = sSelectedPlaylist;
