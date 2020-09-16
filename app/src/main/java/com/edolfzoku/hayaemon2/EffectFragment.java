@@ -3312,7 +3312,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if (nEffect < 0 || sEffectItems.size() <= nEffect) return;
         EffectItem item = sEffectItems.get(nEffect);
 
-        if (!item.isSelected()) {
+        boolean selected = item.isSelected();
+
+        if (item.isSelected()) deselectEffect(nEffect);
+        else item.setSelected(true);
+        mEffectsAdapter.notifyItemChanged(nEffect);
+
+        if (!selected) {
             mBtnEffectOff.setSelected(false);
             if (nEffect == EFFECTTYPE_REVERB || nEffect == EFFECTTYPE_ECHO || nEffect == EFFECTTYPE_CHORUS || nEffect == EFFECTTYPE_DISTORTION || nEffect == EFFECTTYPE_COMP || nEffect == EFFECTTYPE_PAN || nEffect == EFFECTTYPE_FREQ || nEffect == EFFECTTYPE_METRONOME || nEffect == EFFECTTYPE_SOUNDEFFECT) {
                 onEffectDetailClick(nEffect);
@@ -3320,9 +3326,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             }
         }
 
-        if (item.isSelected()) deselectEffect(nEffect);
-        else item.setSelected(true);
-        mEffectsAdapter.notifyItemChanged(nEffect);
         if (!item.isSelected() && nEffect == EFFECTTYPE_REVERSE) {
             int chan = BASS_FX.BASS_FX_TempoGetSource(MainActivity.sStream);
             BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
