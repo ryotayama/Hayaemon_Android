@@ -298,8 +298,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 {
                     if(intent.getClipData() == null)
                     {
-                        Uri uri = copyFile(intent.getData());
-                        playlistFragment.addSong(this, uri);
+                        if (intent.getData() != null) {
+                            Uri uri = copyFile(intent.getData());
+                            playlistFragment.addSong(this, uri);
+                        }
                     }
                     else
                     {
