@@ -4635,7 +4635,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     public void setDarkMode(boolean animated) {
-        if(sActivity == null) return;
+        if(sActivity == null || mBtnAddSong == null) return;
         final RelativeLayout relativePlaylistFragment = sActivity.findViewById(R.id.relativePlaylistFragment);
         final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
         final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
