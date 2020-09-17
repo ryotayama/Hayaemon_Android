@@ -32,6 +32,7 @@ public class ForegroundService extends IntentService {
     private Notification notification;
     private NotificationCompat.Builder builder;
     private BroadcastReceiver mReceiver;
+    private Bitmap mBitmap;
 
     public ForegroundService() {
         super("ForegroundService");
@@ -62,6 +63,10 @@ public class ForegroundService extends IntentService {
         PlaylistFragment.stop();
         stopForeground(true);
         MainActivity.sService = null;
+        if (mBitmap != null) {
+            mBitmap.recycle();
+            mBitmap = null;
+        }
 
         if(mReceiver != null) {
             try {
@@ -83,11 +88,14 @@ public class ForegroundService extends IntentService {
             String strArtist = intent.getStringExtra("strArtist");
             String strPathArtwork = intent.getStringExtra("strPathArtwork");
             String strPath = intent.getStringExtra("strPath");
-            Bitmap bitmap = null;
+            if (mBitmap != null) {
+                mBitmap.recycle();
+                mBitmap = null;
+            }
             if (strPathArtwork != null && strPathArtwork.equals("potatoboy"))
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.potatoboy);
+                mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.potatoboy);
             else if(strPathArtwork != null && !strPathArtwork.equals("")) {
-                bitmap = BitmapFactory.decodeFile(strPathArtwork);
+                mBitmap = BitmapFactory.decodeFile(strPathArtwork);
             }
             else {
                 MediaMetadataRetriever mmr = new MediaMetadataRetriever();
@@ -104,7 +112,7 @@ public class ForegroundService extends IntentService {
                         while ((imageHeight > maxSize) || (imageWidth > maxSize)) {
                             imageHeight /= 2; imageWidth /= 2;
                         }
-                        bitmap = decodeSampledBitmapFromByteArray(data, imageWidth, imageHeight);
+                        mBitmap = decodeSampledBitmapFromByteArray(data, imageWidth, imageHeight);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -127,8 +135,8 @@ public class ForegroundService extends IntentService {
                     notificationManager.createNotificationChannel(channel);
             }
 
-            if (bitmap == null)
-                bitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher);
+            if (mBitmap == null)
+                mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher);
 
             if(actionRewind == null) {
                 Intent intentRewind = new Intent(this, ForegroundService.class);
@@ -176,7 +184,7 @@ public class ForegroundService extends IntentService {
                 builder.addAction(actionForward);
                 builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
                 builder.setSmallIcon(R.drawable.ic_statusbar);
-                builder.setLargeIcon(bitmap);
+                builder.setLargeIcon(mBitmap);
                 builder.setContentTitle(strTitle);
                 builder.setContentText(strArtist);
                 builder.setContentIntent(pendingIntentForeground);
@@ -185,7 +193,7 @@ public class ForegroundService extends IntentService {
                 startForeground(1, notification);
             }
             else {
-                builder.setLargeIcon(bitmap);
+                builder.setLargeIcon(mBitmap);
                 builder.setContentTitle(strTitle);
                 builder.setContentText(strArtist);
                 if(Build.VERSION.SDK_INT >= 19) {
@@ -198,7 +206,6 @@ public class ForegroundService extends IntentService {
                     notificationManager.notify(1, notification);
                 startForeground(1, notification);
             }
-            if(bitmap != null) bitmap.recycle();
         }
         else if (builder != null) {
             startForeground(1, notification);
