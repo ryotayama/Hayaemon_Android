@@ -83,6 +83,34 @@ public class ForegroundService extends IntentService {
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         if(intent == null) return super.onStartCommand(null, flags, startId);
+
+        if(actionRewind == null) {
+            Intent intentRewind = new Intent(this, ForegroundService.class);
+            intentRewind.setAction("action_rewind");
+            PendingIntent pendingIntentRewind = PendingIntent.getService(this, 1, intentRewind, 0);
+            actionRewind = new NotificationCompat.Action.Builder(R.drawable.ic_rewind, "Previous", pendingIntentRewind).build();
+        }
+
+        if(actionPlayPause == null) {
+            Intent intentPlayPause = new Intent(this, ForegroundService.class);
+            intentPlayPause.setAction("action_playpause");
+            PendingIntent pendingIntentPlayPause = PendingIntent.getService(this, 1, intentPlayPause, 0);
+            actionPlayPause = new NotificationCompat.Action.Builder(R.drawable.ic_pause, "Pause", pendingIntentPlayPause).build();
+        }
+
+        if(actionForward == null) {
+            Intent intentForward = new Intent(this, ForegroundService.class);
+            intentForward.setAction("action_forward");
+            PendingIntent pendingIntentForward = PendingIntent.getService(this, 1, intentForward, 0);
+            actionForward = new NotificationCompat.Action.Builder(R.drawable.ic_forward, "Next", pendingIntentForward).build();
+        }
+
+        if(pendingIntentForeground == null) {
+            Intent intentForeground = new Intent(this, MainActivity.class);
+            intentForeground.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            pendingIntentForeground = PendingIntent.getActivity(this, 1, intentForeground, 0);
+        }
+
         if(intent.getAction() == null) {
             String strTitle = intent.getStringExtra("strTitle");
             String strArtist = intent.getStringExtra("strArtist");
@@ -138,33 +166,6 @@ public class ForegroundService extends IntentService {
             if (mBitmap == null)
                 mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher);
 
-            if(actionRewind == null) {
-                Intent intentRewind = new Intent(this, ForegroundService.class);
-                intentRewind.setAction("action_rewind");
-                PendingIntent pendingIntentRewind = PendingIntent.getService(this, 1, intentRewind, 0);
-                actionRewind = new NotificationCompat.Action.Builder(R.drawable.ic_rewind, "Previous", pendingIntentRewind).build();
-            }
-
-            if(actionPlayPause == null) {
-                Intent intentPlayPause = new Intent(this, ForegroundService.class);
-                intentPlayPause.setAction("action_playpause");
-                PendingIntent pendingIntentPlayPause = PendingIntent.getService(this, 1, intentPlayPause, 0);
-                actionPlayPause = new NotificationCompat.Action.Builder(R.drawable.ic_pause, "Pause", pendingIntentPlayPause).build();
-            }
-
-            if(actionForward == null) {
-                Intent intentForward = new Intent(this, ForegroundService.class);
-                intentForward.setAction("action_forward");
-                PendingIntent pendingIntentForward = PendingIntent.getService(this, 1, intentForward, 0);
-                actionForward = new NotificationCompat.Action.Builder(R.drawable.ic_forward, "Next", pendingIntentForward).build();
-            }
-
-            if(pendingIntentForeground == null) {
-                Intent intentForeground = new Intent(this, MainActivity.class);
-                intentForeground.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                pendingIntentForeground = PendingIntent.getActivity(this, 1, intentForeground, 0);
-            }
-
             int iconPlayPause;
             String playPauseTitle;
             if (BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_PLAYING) {
@@ -207,9 +208,42 @@ public class ForegroundService extends IntentService {
                 startForeground(1, notification);
             }
         }
-        else if (builder != null) {
+        else {
+            boolean stop = false;
+            if(builder == null) {
+                stop = true;
+                if (Build.VERSION.SDK_INT >= 26) {
+                    NotificationManager notificationManager =
+                            (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+                    NotificationChannel channel = new NotificationChannel("playsound",
+                            getString(R.string.notificationDescription),
+                            NotificationManager.IMPORTANCE_DEFAULT);
+                    channel.setSound(null, null);
+                    channel.enableVibration(false);
+                    channel.setDescription(getString(R.string.notificationDescription));
+                    if (notificationManager != null)
+                        notificationManager.createNotificationChannel(channel);
+                }
+
+                if (mBitmap != null) {
+                    mBitmap.recycle();
+                    mBitmap = null;
+                }
+                mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher);
+                builder = new NotificationCompat.Builder(this, "playsound");
+                builder.addAction(actionRewind);
+                builder.addAction(actionPlayPause);
+                builder.addAction(actionForward);
+                builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
+                builder.setSmallIcon(R.drawable.ic_statusbar);
+                builder.setLargeIcon(mBitmap);
+                builder.setContentTitle(getString(R.string.app_name));
+                builder.setContentIntent(pendingIntentForeground);
+                builder.setOngoing(true);
+                notification = builder.build();
+            }
             startForeground(1, notification);
-            if (intent.getAction().equals("stop")) stopSelf();
+            if (stop || intent.getAction().equals("stop")) stopSelf();
             else if (intent.getAction().equals("action_rewind")) PlaylistFragment.onRewindBtnClick();
             else if(intent.getAction().equals("action_playpause")) PlaylistFragment.onPlayBtnClick();
             else if (intent.getAction().equals("action_forward")) PlaylistFragment.onForwardBtnClick();
