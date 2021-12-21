@@ -18,6 +18,8 @@
  */
 package com.edolfzoku.hayaemon2;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaCodec;
@@ -25,9 +27,12 @@ import android.media.MediaCodecInfo;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
+
 import androidx.appcompat.app.AlertDialog;
 
 import org.jcodec.api.android.AndroidSequenceEncoder;
@@ -36,6 +41,7 @@ import org.jcodec.common.io.SeekableByteChannel;
 import org.jcodec.common.model.Rational;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -90,23 +96,41 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
             ArrayList<SongItem> arSongs = PlaylistFragment.sPlaylists.get(PlaylistFragment.sSelectedPlaylist);
             SongItem item = arSongs.get(PlaylistFragment.sSelectedItem);
             String strTitle = item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_");
-            mMP4Path = Environment.getExternalStorageDirectory() + "/" + strTitle + ".mp4";
-            File outputFile = new File(mMP4Path);
-            if (outputFile.exists()) {
-                int i = 2;
-                File fileForCheck;
-                String strTemp;
-                while (true) {
-                    strTemp = Environment.getExternalStorageDirectory() + "/" + strTitle + String.format(Locale.getDefault(), "%d", i) + ".mp4";
-                    fileForCheck = new File(strTemp);
-                    if (!fileForCheck.exists()) break;
-                    i++;
-                }
-                mMP4Path = Environment.getExternalStorageDirectory() + "/" + strTitle + String.format(Locale.getDefault(), "%d", i) + ".mp4";
-                outputFile = new File(mMP4Path);
+            Uri mpegUri = Uri.EMPTY;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ContentValues values = new ContentValues();
+                ContentResolver contentResolver = mPlaylistFragment.getActivity().getContentResolver();
+                values.put(MediaStore.Video.Media.DISPLAY_NAME, "Test2.mp4");
+                values.put(MediaStore.Video.Media.TITLE, "Test2");
+                values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+                values.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
+                values.put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES);
+                values.put(MediaStore.Video.Media.IS_PENDING, 1);
+                mpegUri = contentResolver.insert(MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), values);
+                if (mpegUri == null) return 0;
+                FileDescriptor fd = contentResolver.openFileDescriptor(mpegUri, "rw").getFileDescriptor();
+                if (fd == null) return 0;
+                mux = new MediaMuxer(fd, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
             }
+            else {
+                mMP4Path = Environment.getExternalStorageDirectory() + "/" + strTitle + ".mp4";
+                File outputFile = new File(mMP4Path);
+                if (outputFile.exists()) {
+                    int i = 2;
+                    File fileForCheck;
+                    String strTemp;
+                    while (true) {
+                        strTemp = Environment.getExternalStorageDirectory() + "/" + strTitle + String.format(Locale.getDefault(), "%d", i) + ".mp4";
+                        fileForCheck = new File(strTemp);
+                        if (!fileForCheck.exists()) break;
+                        i++;
+                    }
+                    mMP4Path = Environment.getExternalStorageDirectory() + "/" + strTitle + String.format(Locale.getDefault(), "%d", i) + ".mp4";
+                    outputFile = new File(mMP4Path);
+                }
 
-            mux = new MediaMuxer(outputFile.getAbsolutePath(), MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+                mux = new MediaMuxer(outputFile.getAbsolutePath(), MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+            }
 
             MediaExtractor videoExtractor = new MediaExtractor();
             videoExtractor.setDataSource(strTempPath);
@@ -241,6 +265,12 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
             }
             mux.stop();
             mux.release();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ContentValues values = new ContentValues();
+                ContentResolver contentResolver = mPlaylistFragment.getActivity().getContentResolver();
+                values.put(MediaStore.Video.Media.IS_PENDING, 0);
+                contentResolver.update(mpegUri, values, null, null);
+            }
         }
         catch(Exception e) {
             e.printStackTrace();
