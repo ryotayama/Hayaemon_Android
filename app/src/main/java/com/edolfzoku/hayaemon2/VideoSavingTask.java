@@ -100,8 +100,8 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 ContentValues values = new ContentValues();
                 ContentResolver contentResolver = mPlaylistFragment.getActivity().getContentResolver();
-                values.put(MediaStore.Video.Media.DISPLAY_NAME, "Test2.mp4");
-                values.put(MediaStore.Video.Media.TITLE, "Test2");
+                values.put(MediaStore.Video.Media.DISPLAY_NAME, strTitle + ".mp4");
+                values.put(MediaStore.Video.Media.TITLE, strTitle);
                 values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
                 values.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
                 values.put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES);
