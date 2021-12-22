@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/playlisttab_normal.xml" value="0.2838541666666667" />
+        <entry key="app/src/main/res/drawable/playlisttab_select.xml" value="0.2838541666666667" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.24479166666666666" />
       </map>
     </option>
