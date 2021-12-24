@@ -2675,7 +2675,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mRelativeReport.setBackgroundColor(nColorModeBk);
                 mRelativeReview.setBackgroundColor(nColorModeBk);
                 mRelativeInfo.setBackgroundColor(nColorModeBk);
-                mRelativePlaying.setBackgroundColor(nColorModePlaying);
                 mTextSave.setTextColor(nColorModeText);
                 mTextLock.setTextColor(nColorModeText);
                 mTextHideAds.setTextColor(nColorModeText);
@@ -2914,7 +2913,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mRelativeReport.setBackgroundColor(nColorModeBk);
                 mRelativeReview.setBackgroundColor(nColorModeBk);
                 mRelativeInfo.setBackgroundColor(nColorModeBk);
-                mRelativePlaying.setBackgroundColor(nColorModePlaying);
                 mTextSave.setTextColor(nColorModeText);
                 mTextLock.setTextColor(nColorModeText);
                 mTextHideAds.setTextColor(nColorModeText);
