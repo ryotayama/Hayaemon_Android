@@ -71,7 +71,7 @@
 <!-- background -->
 <item android:top="22dp">
     <shape android:shape="rectangle">
-        <solid android:color="@color/darkModeBk"/>
+        <solid android:color="@color/darkModeLightBk"/>
     </shape>
 </item>
 </layer-list>

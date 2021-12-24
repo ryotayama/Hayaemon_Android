@@ -2626,6 +2626,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final ArgbEvaluator eval = new ArgbEvaluator();
         final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
         final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
+        final int nDarkModeLightBk = getResources().getColor(R.color.darkModeLightBk);
         final int nLightModeText = getResources().getColor(android.R.color.black);
         final int nDarkModeText = getResources().getColor(android.R.color.white);
         final int nLightModeSep = getResources().getColor(R.color.lightModeSep);
@@ -2653,6 +2654,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 float fProgress = valueAnimator.getAnimatedFraction();
                 int nColorModeBk = (Integer)eval.evaluate(fProgress, nDarkModeBk, nLightModeBk);
+                int nColorModePlaying = (Integer) eval.evaluate(fProgress, nDarkModeLightBk, nLightModeBk);
                 int nColorModeSep = (Integer)eval.evaluate(fProgress, nDarkModeSep, nLightModeSep);
                 int nColorModeBlue = (Integer)eval.evaluate(fProgress, nDarkModeBlue, nLightModeBlue);
                 int nColorModeText = (Integer)eval.evaluate(fProgress, nDarkModeText, nLightModeText);
@@ -2673,7 +2675,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mRelativeReport.setBackgroundColor(nColorModeBk);
                 mRelativeReview.setBackgroundColor(nColorModeBk);
                 mRelativeInfo.setBackgroundColor(nColorModeBk);
-                mRelativePlaying.setBackgroundColor(nColorModeBk);
+                mRelativePlaying.setBackgroundColor(nColorModePlaying);
                 mTextSave.setTextColor(nColorModeText);
                 mTextLock.setTextColor(nColorModeText);
                 mTextHideAds.setTextColor(nColorModeText);
@@ -2863,6 +2865,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final ArgbEvaluator eval = new ArgbEvaluator();
         final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
         final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
+        final int nDarkModeLightBk = getResources().getColor(R.color.darkModeLightBk);
         final int nLightModeText = getResources().getColor(android.R.color.black);
         final int nDarkModeText = getResources().getColor(android.R.color.white);
         final int nLightModeSep = getResources().getColor(R.color.lightModeSep);
@@ -2890,6 +2893,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 float fProgress = valueAnimator.getAnimatedFraction();
                 int nColorModeBk = (Integer) eval.evaluate(fProgress, nLightModeBk, nDarkModeBk);
+                int nColorModePlaying = (Integer) eval.evaluate(fProgress, nLightModeBk, nDarkModeLightBk);
                 int nColorModeSep = (Integer) eval.evaluate(fProgress, nLightModeSep, nDarkModeSep);
                 int nColorModeBlue = (Integer) eval.evaluate(fProgress, nLightModeBlue, nDarkModeBlue);
                 int nColorModeText = (Integer) eval.evaluate(fProgress, nLightModeText, nDarkModeText);
@@ -2910,7 +2914,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mRelativeReport.setBackgroundColor(nColorModeBk);
                 mRelativeReview.setBackgroundColor(nColorModeBk);
                 mRelativeInfo.setBackgroundColor(nColorModeBk);
-                mRelativePlaying.setBackgroundColor(nColorModeBk);
+                mRelativePlaying.setBackgroundColor(nColorModePlaying);
                 mTextSave.setTextColor(nColorModeText);
                 mTextLock.setTextColor(nColorModeText);
                 mTextHideAds.setTextColor(nColorModeText);
