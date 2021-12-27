@@ -2714,6 +2714,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         TransitionDrawable tdBtnMenu = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_menu_dark), getResources().getDrawable(R.drawable.ic_bar_button_menu) });
+        TransitionDrawable tdBtnMoreInPlayingBar = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_playing_large_more_dark), getResources().getDrawable(R.drawable.ic_playing_large_more) });
         TransitionDrawable tdBtnRewind = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_rewind_dark), getResources().getDrawable(R.drawable.ic_bar_button_rewind) });
         TransitionDrawable tdBtnPlay, tdBtnPlayInPlayingBar;
         if(BASS.BASS_ChannelIsActive(sStream) != BASS.BASS_ACTIVE_PLAYING) {
@@ -2772,6 +2773,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TransitionDrawable tdBtnStopRecording = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_rec_stop_dark), getResources().getDrawable(R.drawable.ic_rec_stop)});
 
         mBtnMenu.setImageDrawable(tdBtnMenu);
+        mBtnMoreInPlayingBar.setImageDrawable(tdBtnMoreInPlayingBar);
         mBtnRewind.setImageDrawable(tdBtnRewind);
         mBtnPlay.setImageDrawable(tdBtnPlay);
         mBtnForward.setImageDrawable(tdBtnForward);
@@ -2826,6 +2828,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int duration = 300;
         anim.setDuration(duration).start();
         tdBtnMenu.startTransition(duration);
+        tdBtnMoreInPlayingBar.startTransition(duration);
         tdBtnRewind.startTransition(duration);
         tdBtnPlay.startTransition(duration);
         tdBtnForward.startTransition(duration);
@@ -2870,7 +2873,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final ArgbEvaluator eval = new ArgbEvaluator();
         final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
         final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
-        final int nDarkModeLightBk = getResources().getColor(R.color.darkModeLightBk);
         final int nLightModeText = getResources().getColor(android.R.color.black);
         final int nDarkModeText = getResources().getColor(android.R.color.white);
         final int nLightModeSep = getResources().getColor(R.color.lightModeSep);
@@ -2898,7 +2900,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 float fProgress = valueAnimator.getAnimatedFraction();
                 int nColorModeBk = (Integer) eval.evaluate(fProgress, nLightModeBk, nDarkModeBk);
-                int nColorModePlaying = (Integer) eval.evaluate(fProgress, nLightModeBk, nDarkModeLightBk);
                 int nColorModeSep = (Integer) eval.evaluate(fProgress, nLightModeSep, nDarkModeSep);
                 int nColorModeBlue = (Integer) eval.evaluate(fProgress, nLightModeBlue, nDarkModeBlue);
                 int nColorModeText = (Integer) eval.evaluate(fProgress, nLightModeText, nDarkModeText);
@@ -2952,6 +2953,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         TransitionDrawable tdBtnMenu = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_menu), getResources().getDrawable(R.drawable.ic_bar_button_menu_dark)});
+        TransitionDrawable tdBtnMoreInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_more), getResources().getDrawable(R.drawable.ic_playing_large_more_dark)});
         TransitionDrawable tdBtnRewind = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_rewind), getResources().getDrawable(R.drawable.ic_bar_button_rewind_dark)});
         TransitionDrawable tdBtnPlay, tdBtnPlayInPlayingBar;
         if (BASS.BASS_ChannelIsActive(sStream) != BASS.BASS_ACTIVE_PLAYING) {
@@ -3005,6 +3007,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TransitionDrawable tdBtnStopRecording = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_rec_stop), getResources().getDrawable(R.drawable.ic_rec_stop_dark)});
 
         mBtnMenu.setImageDrawable(tdBtnMenu);
+        mBtnMoreInPlayingBar.setImageDrawable(tdBtnMoreInPlayingBar);
         mBtnRewind.setImageDrawable(tdBtnRewind);
         mBtnPlay.setImageDrawable(tdBtnPlay);
         mBtnForward.setImageDrawable(tdBtnForward);
@@ -3059,6 +3062,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int duration = animated ? 300 : 0;
         anim.setDuration(duration).start();
         tdBtnMenu.startTransition(duration);
+        tdBtnMoreInPlayingBar.startTransition(duration);
         tdBtnRewind.startTransition(duration);
         tdBtnPlay.startTransition(duration);
         tdBtnForward.startTransition(duration);
