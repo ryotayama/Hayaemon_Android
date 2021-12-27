@@ -1736,6 +1736,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 advanceAnimation(mViewSep2, "bottomMargin", 0, mTabLayout.getHeight(), fProgress);
                 mRelativePlayingWithShadow.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
                 advanceAnimation(mRelativePlayingWithShadow, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
+                advanceAnimation(mRelativePlayingWithShadow, "bottomMargin", mTabLayout.getHeight() + mAdContainerView.getHeight(), 0, fProgress);
                 advanceAnimation(mRelativePlaying, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
                 advanceAnimation(mRelativePlaying, "bottomMargin", nRelativePlayingBottomMarginFrom, nRelativePlayingBottomMargin, fProgress);
                 advanceAnimation(mBtnArtworkInPlayingBar, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
