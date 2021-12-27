@@ -1174,7 +1174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     else {
                         final int nTranslationYFrom = (int)mRelativePlayingWithShadow.getTranslationY();
-                        final int nTranslationY = (int) (8.0 * mDensity);
+                        final int nTranslationY = 0;
 
                         ValueAnimator anim = ValueAnimator.ofFloat(0.0f, 1.0f);
                         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -1677,7 +1677,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         final int nTranslationYFrom = (int)mRelativePlayingWithShadow.getTranslationY();
-        final int nTranslationY = 0; // (int) (8.0 * mDensity);
+        final int nTranslationY = 0;
         final int nRelativePlayingHeightFrom = mRelativePlayingWithShadow.getHeight();
         final int nRelativePlayingHeight = getResources().getDisplayMetrics().heightPixels + (int) (60.0 * mDensity) - mLinearControl.getHeight();
         final int nRelativePlayingBottomMarginFrom = paramRelativePlaying.bottomMargin;
