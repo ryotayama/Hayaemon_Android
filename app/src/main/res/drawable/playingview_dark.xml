@@ -18,54 +18,6 @@
     <item><shape>
         <padding android:top="1dp" /><solid android:color="#00000000" />
     </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
-    </shape></item>
     <item android:bottom="-72px">
         <shape android:shape="rectangle">
             <solid android:color="@color/darkModeLightBk"/>

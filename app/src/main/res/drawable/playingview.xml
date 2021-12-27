@@ -1,70 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item><shape>
-        <padding android:top="1dp" /><solid android:color="#00000000" />
+        <padding android:top="1dp" /><solid android:color="#04000000" />
     </shape></item>
     <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
+        <padding android:top="1dp" /><solid android:color="#04000000" />
     </shape></item>
     <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
+        <padding android:top="1dp" /><solid android:color="#04000000" />
     </shape></item>
     <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
+        <padding android:top="1dp" /><solid android:color="#04000000" />
     </shape></item>
     <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
+        <padding android:top="1dp" /><solid android:color="#04000000" />
     </shape></item>
     <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
-    </shape></item>
-    <item><shape>
-        <padding android:top="1dp" /><solid android:color="#01000000" />
+        <padding android:top="1dp" /><solid android:color="#04000000" />
     </shape></item>
     <item android:bottom="-72px">
         <shape android:shape="rectangle">

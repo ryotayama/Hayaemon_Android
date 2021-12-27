@@ -42,13 +42,13 @@ import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Insets;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
@@ -90,7 +90,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.view.WindowManager;
+import android.view.WindowMetrics;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.InputMethodManager;
@@ -1665,8 +1667,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final RelativeLayout.LayoutParams paramBtnPlay = (RelativeLayout.LayoutParams) mBtnPlayInPlayingBar.getLayoutParams();
         final RelativeLayout.LayoutParams paramBtnForward = (RelativeLayout.LayoutParams) mBtnForwardInPlayingBar.getLayoutParams();
 
-        paramRelativePlayingWithShadow.addRule(RelativeLayout.ABOVE, 0);
         paramRelativePlayingWithShadow.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 1);
+        paramRelativePlayingWithShadow.addRule(RelativeLayout.ABOVE, 0);
         mTextTitle.setGravity(Gravity.CENTER);
         mTextArtist.setGravity(Gravity.CENTER);
         paramTitle.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
@@ -1679,7 +1681,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final int nTranslationYFrom = (int)mRelativePlayingWithShadow.getTranslationY();
         final int nTranslationY = 0;
         final int nRelativePlayingHeightFrom = mRelativePlayingWithShadow.getHeight();
-        final int nRelativePlayingHeight = getResources().getDisplayMetrics().heightPixels + (int) (60.0 * mDensity) - mLinearControl.getHeight();
+        int nHeight;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowMetrics windowMetrics = this.getWindowManager().getCurrentWindowMetrics();
+            Insets insets = windowMetrics.getWindowInsets()
+                    .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
+            int ScreenHeight = windowMetrics.getBounds().height();
+            int StatusBar = insets.top;
+            int NavigationBar = insets.bottom;
+            nHeight = ScreenHeight - StatusBar - NavigationBar - mLinearControl.getHeight();
+        } else {
+            nHeight = getResources().getDisplayMetrics().heightPixels - mLinearControl.getHeight(); //  - safeInsetTop - mLinearControl.getHeight(); // (int) (22.0 * mDensity); // displaySize.y - safeInsetTop; // getResources().getDisplayMetrics().heightPixels + (int) (60.0 * mDensity) - mLinearControl.getHeight();
+        }
+        final int nRelativePlayingHeight = nHeight;
         final int nRelativePlayingBottomMarginFrom = paramRelativePlaying.bottomMargin;
         final int nRelativePlayingBottomMargin = 0;
         final int nArtworkWidthFrom = mBtnArtworkInPlayingBar.getWidth();
@@ -1722,7 +1736,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 advanceAnimation(mViewSep2, "bottomMargin", 0, mTabLayout.getHeight(), fProgress);
                 mRelativePlayingWithShadow.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
                 advanceAnimation(mRelativePlayingWithShadow, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
-                advanceAnimation(mRelativePlayingWithShadow, "bottomMargin", 0, -mTabLayout.getHeight(), fProgress);
                 advanceAnimation(mRelativePlaying, "height", nRelativePlayingHeightFrom, nRelativePlayingHeight, fProgress);
                 advanceAnimation(mRelativePlaying, "bottomMargin", nRelativePlayingBottomMarginFrom, nRelativePlayingBottomMargin, fProgress);
                 advanceAnimation(mBtnArtworkInPlayingBar, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
@@ -1844,7 +1857,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 advanceAnimation(mViewSep2, "bottomMargin", mTabLayout.getHeight(), 0, fProgress);
                 mRelativePlayingWithShadow.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
                 advanceAnimation(mRelativePlayingWithShadow, "height", nRelativePlayingWithShadowHeightFrom, nRelativePlayingWithShadowHeight, fProgress);
-                advanceAnimation(mRelativePlayingWithShadow, "bottomMargin", -mTabLayout.getHeight(), 0, fProgress);
                 advanceAnimation(mRelativePlaying, "height", nRelativePlayingWithShadowHeightFrom, nRelativePlayingHeight, fProgress);
                 advanceAnimation(mBtnArtworkInPlayingBar, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
                 advanceAnimation(mBtnArtworkInPlayingBar, "height", nArtworkWidthFrom, nArtworkWidth, fProgress);
