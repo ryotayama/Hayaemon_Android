@@ -1806,11 +1806,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final RelativeLayout.LayoutParams paramBtnPlay = (RelativeLayout.LayoutParams) mBtnPlayInPlayingBar.getLayoutParams();
         final RelativeLayout.LayoutParams paramBtnForward = (RelativeLayout.LayoutParams) mBtnForwardInPlayingBar.getLayoutParams();
 
-        paramRelativePlayingWithShadow.addRule(RelativeLayout.ABOVE, R.id.ad_view_container);
-        paramRelativePlayingWithShadow.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
         final int nTranslationYFrom = (int)mRelativePlayingWithShadow.getTranslationY();
         final int nTranslationY = 0;
-        final int nRelativePlayingWithShadowHeightFrom = getResources().getDisplayMetrics().heightPixels - mTabLayout.getHeight() - mLinearControl.getHeight() - getStatusBarHeight() + (int) (16.0 * mDensity);
+        int nHeight;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowMetrics windowMetrics = this.getWindowManager().getCurrentWindowMetrics();
+            Insets insets = windowMetrics.getWindowInsets()
+                    .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
+            int ScreenHeight = windowMetrics.getBounds().height();
+            int StatusBar = insets.top;
+            int NavigationBar = insets.bottom;
+            nHeight = ScreenHeight - StatusBar - NavigationBar - mLinearControl.getHeight();
+        } else {
+            nHeight = getResources().getDisplayMetrics().heightPixels - mLinearControl.getHeight(); //  - safeInsetTop - mLinearControl.getHeight(); // (int) (22.0 * mDensity); // displaySize.y - safeInsetTop; // getResources().getDisplayMetrics().heightPixels + (int) (60.0 * mDensity) - mLinearControl.getHeight();
+        }
+        final int nRelativePlayingWithShadowHeightFrom = nHeight;
         int nTempRelativePlayingWithShadowHeight = (int) (82.0 * mDensity);
         if(bBottom) nTempRelativePlayingWithShadowHeight = 0;
         final int nRelativePlayingWithShadowHeight = nTempRelativePlayingWithShadowHeight;
@@ -1857,6 +1867,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 advanceAnimation(mViewSep2, "bottomMargin", mTabLayout.getHeight(), 0, fProgress);
                 mRelativePlayingWithShadow.setTranslationY(nTranslationYFrom + (nTranslationY - nTranslationYFrom) * fProgress);
                 advanceAnimation(mRelativePlayingWithShadow, "height", nRelativePlayingWithShadowHeightFrom, nRelativePlayingWithShadowHeight, fProgress);
+                advanceAnimation(mRelativePlayingWithShadow, "bottomMargin", 0, mTabLayout.getHeight() + mAdContainerView.getHeight(), fProgress);
                 advanceAnimation(mRelativePlaying, "height", nRelativePlayingWithShadowHeightFrom, nRelativePlayingHeight, fProgress);
                 advanceAnimation(mBtnArtworkInPlayingBar, "width", nArtworkWidthFrom, nArtworkWidth, fProgress);
                 advanceAnimation(mBtnArtworkInPlayingBar, "height", nArtworkWidthFrom, nArtworkWidth, fProgress);
@@ -1914,6 +1925,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mBtnArtworkInPlayingBar.setAnimation(false);
                 mBtnArtworkInPlayingBar.setClickable(false);
 
+                paramRelativePlayingWithShadow.addRule(RelativeLayout.ABOVE, R.id.ad_view_container);
+                paramRelativePlayingWithShadow.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
+                paramRelativePlayingWithShadow.bottomMargin = 0;
                 RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams) mViewPager.getLayoutParams();
                 RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams) mRelativeRecording.getLayoutParams();
                 if (MainActivity.sRecord != 0) {
