@@ -398,33 +398,40 @@
                     android:visibility="gone"
                     />
 
-                <com.edolfzoku.hayaemon2.AnimationButton
-                    android:id="@+id/btnShuffleInPlayingBar"
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_playing_large_mode_shuffle"
-                    android:background="@null"
-                    android:alpha="0.0"
                     android:layout_marginTop="20dp"
-                    android:layout_alignLeft="@+id/btnRewindInPlayingBar"
-                    android:layout_alignStart="@+id/btnRewindInPlayingBar"
                     android:layout_below="@+id/btnRewindInPlayingBar"
-                    android:visibility="gone"
-                    />
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal"
+                    >
 
-                <com.edolfzoku.hayaemon2.AnimationButton
-                    android:id="@+id/btnRepeatInPlayingBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_playing_large_mode_repeat_all"
-                    android:background="@null"
-                    android:alpha="0.0"
-                    android:layout_marginTop="20dp"
-                    android:layout_alignRight="@+id/btnForwardInPlayingBar"
-                    android:layout_alignEnd="@+id/btnForwardInPlayingBar"
-                    android:layout_below="@+id/btnForwardInPlayingBar"
-                    android:visibility="gone"
-                    />
+                    <com.edolfzoku.hayaemon2.AnimationButton
+                        android:id="@+id/btnShuffleInPlayingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_playing_large_mode_shuffle"
+                        android:background="@null"
+                        android:alpha="0.0"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="gone"
+                        />
+
+                    <com.edolfzoku.hayaemon2.AnimationButton
+                        android:id="@+id/btnRepeatInPlayingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_playing_large_mode_repeat_all"
+                        android:background="@null"
+                        android:alpha="0.0"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:visibility="gone"
+                        />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
             </RelativeLayout>
 
