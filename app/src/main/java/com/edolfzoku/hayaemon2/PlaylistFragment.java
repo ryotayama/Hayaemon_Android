@@ -3249,7 +3249,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 }
             }
         }
-        else _hTempStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+        else {
+            if (strPath.equals("potatoboy.m4a"))
+                _hTempStream = BASS.BASS_StreamCreateFile(new BASS.Asset(sActivity.getAssets(), strPath), 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+            else _hTempStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+        }
         if(_hTempStream == 0) return;
 
         _hTempStream = BASS_FX.BASS_FX_ReverseCreate(_hTempStream, 2, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
