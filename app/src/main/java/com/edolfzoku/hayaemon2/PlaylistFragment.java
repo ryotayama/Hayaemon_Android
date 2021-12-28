@@ -71,7 +71,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.view.WindowManager;
+import android.view.WindowMetrics;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -1014,6 +1016,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         param.topMargin = (int)(24 *  sActivity.getDensity());
         param.leftMargin = (int)(16 *  sActivity.getDensity());
         param.rightMargin = (int)(16 *  sActivity.getDensity());
+        int nWidth;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowMetrics windowMetrics = sActivity.getWindowManager().getCurrentWindowMetrics();
+            nWidth = windowMetrics.getBounds().width();
+        } else {
+            nWidth = getResources().getDisplayMetrics().widthPixels;
+        }
+        param.width = (int)(nWidth * 0.8);
         linearLayout.addView(mProgress, param);
         builder.setView(linearLayout);
 
@@ -3213,9 +3223,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         mProgress = new ProgressBar(sActivity, null, android.R.attr.progressBarStyleHorizontal);
         mProgress.setMax(100);
         mProgress.setProgress(0);
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         param.topMargin = (int)(24 *  sActivity.getDensity());
         param.leftMargin = param.rightMargin = (int)(16 *  sActivity.getDensity());
+        int nWidth;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowMetrics windowMetrics = sActivity.getWindowManager().getCurrentWindowMetrics();
+            nWidth = windowMetrics.getBounds().width();
+        } else {
+            nWidth = getResources().getDisplayMetrics().widthPixels;
+        }
+        param.width = (int)(nWidth * 0.8);
         linearLayout.addView(mProgress, param);
         builder.setView(linearLayout);
 
