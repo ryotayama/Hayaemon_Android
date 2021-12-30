@@ -308,6 +308,8 @@
     <string name="purchased">Purchased</string>
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
+    <string name="restoredPurchasedItems">Restored purchased items.</string>
+    <string name="restorePurchasedItemsError">The purchased item could not be restored.</string>
     <string name="incSpeedTitle">Increase speed every specified time.</string>
     <string name="decSpeedTitle">Decrease speed every specified time.</string>
     <string name="rasPitchTitle">Raise the pitch every specified time.</string>

@@ -25,16 +25,11 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -47,6 +42,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaMetadataRetriever;
@@ -54,11 +50,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingResult;
 import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.tabs.TabLayout;
@@ -81,6 +80,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
 import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -106,7 +106,9 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.android.vending.billing.IInAppBillingService;
+import com.edolfzoku.libs.billing.BillingConnectWrapper;
+import com.edolfzoku.libs.billing.item.PurchaseItem;
+import com.edolfzoku.libs.billing.result.IBillingResult;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -114,9 +116,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.BASS_FX;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -128,9 +127,22 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import static com.edolfzoku.hayaemon2.Constants.ITEM_BLUE_CAMPER_POINTER;
+import static com.edolfzoku.hayaemon2.Constants.ITEM_ELEGANT_SEA_URCHIN_POINTER;
+import static com.edolfzoku.hayaemon2.Constants.ITEM_HIDE_ADS;
+import static com.edolfzoku.hayaemon2.Constants.ITEM_ORANGE_CAMPER_POINTER;
+import static com.edolfzoku.hayaemon2.Constants.ITEM_PINK_CAMPER_POINTER;
+import static com.edolfzoku.hayaemon2.Constants.ITEM_PURPLE_SEA_URCHIN_POINTER;
+import static com.edolfzoku.hayaemon2.Constants.SKU_BLUE_CAMPER_POINTER;
+import static com.edolfzoku.hayaemon2.Constants.SKU_ELEGANT_SEA_URCHIN_POINTER;
+import static com.edolfzoku.hayaemon2.Constants.SKU_HIDE_ADS;
+import static com.edolfzoku.hayaemon2.Constants.SKU_ORANGE_CAMPER_POINTER;
+import static com.edolfzoku.hayaemon2.Constants.SKU_PINK_CAMPER_POINTER;
+import static com.edolfzoku.hayaemon2.Constants.SKU_PURPLE_SEA_URCHIN_POINTER;
 import static com.edolfzoku.hayaemon2.PlaylistFragment.sEffects;
 import static com.edolfzoku.hayaemon2.PlaylistFragment.sLyrics;
 import static com.edolfzoku.hayaemon2.PlaylistFragment.sPlayingPlaylist;
@@ -153,15 +165,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ControlFragment controlFragment;
     EqualizerFragment equalizerFragment;
     EffectFragment effectFragment;
-    private boolean mShowUpdateLog, mBound, mDarkMode;
+    private boolean mShowUpdateLog, mDarkMode;
     private float mDensity;
-    private int mLastY;
+    private int mLastY, mPurchasingItem;
 
     private DrawerLayout mDrawerLayout;
     private HoldableViewPager mViewPager;
-    private IInAppBillingService mService;
-    private ServiceConnection mServiceConn;
-    private BroadcastReceiver mReceiver;
+    private List<PurchaseItem> mPurchaseItemList;
+    private BillingConnectWrapper mBillingWrapper;
     private FrameLayout mAdContainerView;
     private AdView mAdView;
     private LinearLayout mLinearControl;
@@ -174,7 +185,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RelativeLayout mRelativeRecording, mRelativeSave, mRelativeLock, mRelativeAddSong, mRelativeItem, mRelativeReport, mRelativeReview, mRelativeHideAds, mRelativeInfo, mRelativePlayingWithShadow, mRelativePlaying, mRelativeLeftMenu;
     private GestureDetector mGestureDetector;
 
-    public IInAppBillingService getService() { return mService; }
     public HoldableViewPager getViewPager() { return mViewPager; }
     public SeekBar getSeekCurPos() { return mSeekCurPos; }
     public TextView getTextCurPos() { return mTextCurPos; }
@@ -272,19 +282,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTextRecording = findViewById(R.id.textRecording);
         mAdContainerView = findViewById(R.id.ad_view_container);
 
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
-        mAdContainerView.getLayoutParams().height = (int)(getAdSize().getHeight() * mDensity);
-        mAdContainerView.post(new Runnable() {
-            @Override
-            public void run() {
-                loadBanner();
-            }
-        });
-
         initialize(savedInstanceState);
         loadData();
 
@@ -325,26 +322,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        mServiceConn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                mService = IInAppBillingService.Stub.asInterface(service);
-                mBound = true;
-            }
+        mPurchaseItemList = new ArrayList<>();
+        mPurchaseItemList.add(new PurchaseItem(new PurchaseResult(), SKU_HIDE_ADS));
+        mPurchaseItemList.add(new PurchaseItem(new PurchaseResult(), SKU_PURPLE_SEA_URCHIN_POINTER));
+        mPurchaseItemList.add(new PurchaseItem(new PurchaseResult(), SKU_ELEGANT_SEA_URCHIN_POINTER));
+        mPurchaseItemList.add(new PurchaseItem(new PurchaseResult(), SKU_PINK_CAMPER_POINTER));
+        mPurchaseItemList.add(new PurchaseItem(new PurchaseResult(), SKU_BLUE_CAMPER_POINTER));
+        mPurchaseItemList.add(new PurchaseItem(new PurchaseResult(), SKU_ORANGE_CAMPER_POINTER));
 
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                mService = null;
-                mBound = false;
-            }
-        };
-        Intent serviceIntent =
-                new Intent("com.android.vending.billing.InAppBillingService.BIND");
-        serviceIntent.setPackage("com.android.vending");
-        if (!mBound) {
-            bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
-            mBound = true;
-        }
+        // 課金システムの準備
+        mBillingWrapper = new BillingConnectWrapper(this, mPurchaseItemList);
+        mBillingWrapper.bind(new BindResult());
 
         mBtnShuffle.setOnClickListener(this);
         mBtnRepeat.setOnClickListener(this);
@@ -671,67 +659,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
 
-        if(mReceiver == null) {
-            mReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    if (intent.getAction() == null) return;
-                    try {
-                        Bundle ownedItems = mService.getPurchases(3, getPackageName(), "inapp", null);
-                        if (ownedItems != null && ownedItems.getInt("RESPONSE_CODE") == 0) {
-                            ArrayList<String> ownedSkus =
-                                    ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
-                            ArrayList<String> purchaseDataList =
-                                    ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
-                            if (purchaseDataList != null && ownedSkus != null) {
-                                for (int i = 0; i < purchaseDataList.size(); i++) {
-                                    String sku = ownedSkus.get(i);
-
-                                    if (sku.equals("hideads")) hideAds();
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        finish();
-                    }
-                }
-            };
-            registerReceiver(mReceiver, new IntentFilter("com.android.vending.billing.PURCHASES_UPDATED"));
-        }
-
-        try {
-            Bundle ownedItems = mService.getPurchases(3, getPackageName(), "inapp", null);
-            if(ownedItems != null && ownedItems.getInt("RESPONSE_CODE") == 0) {
-                ArrayList<String> ownedSkus =
-                        ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
-                ArrayList<String> purchaseDataList =
-                        ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
-                if(purchaseDataList != null && ownedSkus != null) {
-                    for (int i = 0; i < purchaseDataList.size(); i++) {
-                        String sku = ownedSkus.get(i);
-
-                        if (sku.equals("hideads")) hideAds();
-                    }
-                }
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        if (mAdView != null) mAdView.resume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(mReceiver != null) {
-            try {
-                unregisterReceiver(mReceiver);
-            }
-            catch(Exception e) {
-                e.printStackTrace();
-            }
-            mReceiver = null;
-        }
+
+        if (mAdView != null) mAdView.pause();
     }
 
     public static void startNotification() {
@@ -981,25 +916,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         boolean bHideAds = preferences.getBoolean("hideads", false);
         if(bHideAds) hideAds();
         else {
-            try {
-                Bundle ownedItems = mService.getPurchases(3, getPackageName(), "inapp", null);
-                if(ownedItems.getInt("RESPONSE_CODE") == 0) {
-                    ArrayList<String> ownedSkus =
-                            ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
-                    ArrayList<String> purchaseDataList =
-                            ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
-                    if(purchaseDataList != null && ownedSkus != null) {
-                        for (int i = 0; i < purchaseDataList.size(); i++) {
-                            String sku = ownedSkus.get(i);
-
-                            if (sku.equals("hideads")) hideAds();
-                        }
-                    }
+            List<String> testDeviceIds = Arrays.asList("C274AC018E6509532711089B8BC4433D", "7A4DCE2E7A051D5905BDA9790B453502");
+            RequestConfiguration configuration =
+                    new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build();
+            MobileAds.setRequestConfiguration(configuration);
+            MobileAds.initialize(this, new OnInitializationCompleteListener() {
+                @Override
+                public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
                 }
-            }
-            catch(Exception e) {
-                e.printStackTrace();
-            }
+            });
+
+            MobileAds.initialize(this, new OnInitializationCompleteListener() {
+                @Override
+                public void onInitializationComplete(InitializationStatus initializationStatus) {
+                }
+            });
+            mAdContainerView.getLayoutParams().height = (int)(getAdSize().getHeight() * mDensity);
+            mAdContainerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    loadBanner();
+                }
+            });
         }
 
         sShuffle = preferences.getInt("shufflemode", 0);
@@ -1385,20 +1323,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             menu.show();
         }
         else if(v.getId() == R.id.relativeHideAds) {
-            try {
-                Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), "hideads", "inapp", "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkVvqgLyPSTyJKuyNw3Z0luaxCnOtbFwj65HGYmDS4KiyGaJNgFsLOc9wpmIQaQI+zrntxbufWXsT0gIh1/MRRmX2FgA0G6WDS0+w39ZsbgJRbXsxOzOOZaHbSo2NLOA29GXPo9FraFtNrOL9v4vLu7hxDPdfqoFNR80BUWwQqMBsiMNFqJ12sq1HzxHd2MIk/QooBZIB3EeM0QX5EYIsWcaKIAyzetuKjRGvO9Oi2a86dOBUfOFnHMMCvQ5+dldx5UkzmnhlbTm/KBWQCO3AqNy82NKxN9ND6GWVrlHuQGYX1FRiApMeXCmEvmwEyU2ArztpV8CfHyK2d0mM4bp0bwIDAQAB");
-                int response = buyIntentBundle.getInt("RESPONSE_CODE");
-                if(response == 0) {
-                    PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-                    if(pendingIntent != null)
-                        startIntentSenderForResult(pendingIntent.getIntentSender(), 1001, new Intent(), 0, 0, 0);
-                }
-                else if(response == 7) hideAds();
-            }
-            catch(Exception e) {
-                e.printStackTrace();
-            }
             mDrawerLayout.closeDrawer(GravityCompat.START);
+            startBillingHideAds();
         }
         else if(v.getId() == R.id.relativeItem) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -2052,99 +1978,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @SuppressLint("NewApi")
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode != RESULT_OK) return;
-
-        if(requestCode == 1001) {
-            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
-
-            try {
-                JSONObject jo = new JSONObject(purchaseData);
-                jo.getString("productId");
-
-                hideAds();
-            }
-            catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        else if(requestCode == 1002) {
-            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
-
-            try {
-                JSONObject jo = new JSONObject(purchaseData);
-                jo.getString("productId");
-
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                ItemFragment itemFragment = (ItemFragment)fragmentManager.findFragmentById(R.id.relativeMain);
-                if(itemFragment != null) itemFragment.buyPurpleSeaUrchinPointer();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else if(requestCode == 1003) {
-            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
-
-            try {
-                JSONObject jo = new JSONObject(purchaseData);
-                jo.getString("productId");
-
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                ItemFragment itemFragment = (ItemFragment)fragmentManager.findFragmentById(R.id.relativeMain);
-                if(itemFragment != null) itemFragment.buyElegantSeaUrchinPointer();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else if(requestCode == 1004) {
-            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
-
-            try {
-                JSONObject jo = new JSONObject(purchaseData);
-                jo.getString("productId");
-
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                ItemFragment itemFragment = (ItemFragment)fragmentManager.findFragmentById(R.id.relativeMain);
-                if(itemFragment != null) itemFragment.buyPinkCamperPointer();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else if(requestCode == 1005) {
-            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
-
-            try {
-                JSONObject jo = new JSONObject(purchaseData);
-                jo.getString("productId");
-
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                ItemFragment itemFragment = (ItemFragment)fragmentManager.findFragmentById(R.id.relativeMain);
-                if(itemFragment != null) itemFragment.buyBlueCamperPointer();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else if(requestCode == 1006) {
-            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
-
-            try {
-                JSONObject jo = new JSONObject(purchaseData);
-                jo.getString("productId");
-
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                ItemFragment itemFragment = (ItemFragment)fragmentManager.findFragmentById(R.id.relativeMain);
-                if(itemFragment != null) itemFragment.buyOrangeCamperPointer();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    public void startBillingHideAds() {
+        mPurchasingItem = ITEM_HIDE_ADS;
+        PurchaseItem item = mPurchaseItemList.get(ITEM_HIDE_ADS);
+        mBillingWrapper.startBillingFlow(new PurchaseResult(), item.getSkuDetails());
     }
 
     private void hideAds() {
@@ -2153,7 +1990,354 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
             preferences.edit().putBoolean("hideads", mAdContainerView.getVisibility() == View.GONE).apply();
+
+            if (mAdView != null) mAdView.destroy();
         }
+    }
+
+    public void startBillingPurpleSeaUrchinPointer() {
+        mPurchasingItem = ITEM_PURPLE_SEA_URCHIN_POINTER;
+        PurchaseItem item = mPurchaseItemList.get(ITEM_PURPLE_SEA_URCHIN_POINTER);
+        mBillingWrapper.startBillingFlow(new PurchaseResult(), item.getSkuDetails());
+    }
+
+    private void buyPurpleSeaUrchinPointer(boolean ask) {
+        ItemFragment itemFragment = null;
+        for (Fragment f : getSupportFragmentManager().getFragments()) {
+            if (f.getClass().getName().equals("com.edolfzoku.hayaemon2.ItemFragment"))
+                    itemFragment = (ItemFragment)f;
+        }
+        if (itemFragment != null) {
+            Button btnPurplePurchase = findViewById(R.id.btnPurplePurchase);
+            btnPurplePurchase.setBackgroundResource(mDarkMode ? R.drawable.itempurchased_dark : R.drawable.itempurchased);
+            btnPurplePurchase.setTextColor(mDarkMode ? getResources().getColor(R.color.darkModeTextDarkGray) : Color.argb(255, 148, 148, 148));
+            btnPurplePurchase.setText(R.string.purchased);
+            btnPurplePurchase.setShadowLayer(0, 0, 0, Color.argb(0,0, 0, 0));
+            btnPurplePurchase.setOnClickListener(null);
+            Button btnPurpleSet = findViewById(R.id.btnPurpleSet);
+            btnPurpleSet.setVisibility(View.VISIBLE);
+        }
+        SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        preferences.edit().putBoolean("unipointer_p", true).apply();
+
+        if (ask) {
+            AlertDialog.Builder builder;
+            if (mDarkMode)
+                builder = new AlertDialog.Builder(this, R.style.DarkModeDialog);
+            else
+                builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.purpleSeaUrchinPointer);
+            builder.setMessage(R.string.askApply);
+            builder.setPositiveButton(getString(R.string.Do), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    ItemFragment itemFragment = null;
+                    for (Fragment f : getSupportFragmentManager().getFragments()) {
+                        if (f.getClass().getName().equals("com.edolfzoku.hayaemon2.ItemFragment"))
+                            itemFragment = (ItemFragment)f;
+                    }
+                    if (itemFragment != null) itemFragment.close();
+                    mViewPager.setCurrentItem(2);
+                    SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                    ImageView imgPoint = findViewById(R.id.imgPoint);
+                    imgPoint.setBackgroundResource(R.drawable.control_pointer_uni_murasaki);
+                    imgPoint.setTag(1);
+                    imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    preferences.edit().putInt("imgPointTag", 1).apply();
+                }
+            });
+            builder.setNegativeButton(getString(R.string.NotYet), null);
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface arg0) {
+                    if (alertDialog.getWindow() != null) {
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
+                }
+            });
+            alertDialog.show();
+        }
+    }
+
+    public void startBillingElegantSeaUrchinPointer() {
+        mPurchasingItem = ITEM_ELEGANT_SEA_URCHIN_POINTER;
+        PurchaseItem item = mPurchaseItemList.get(ITEM_ELEGANT_SEA_URCHIN_POINTER);
+        mBillingWrapper.startBillingFlow(new PurchaseResult(), item.getSkuDetails());
+    }
+
+    private void buyElegantSeaUrchinPointer(boolean ask) {
+        ItemFragment itemFragment = null;
+        for (Fragment f : getSupportFragmentManager().getFragments()) {
+            if (f.getClass().getName().equals("com.edolfzoku.hayaemon2.ItemFragment"))
+                    itemFragment = (ItemFragment)f;
+        }
+        if (itemFragment != null) {
+            Button btnElegantPurchase = findViewById(R.id.btnElegantPurchase);
+            btnElegantPurchase.setBackgroundResource(mDarkMode ? R.drawable.itempurchased_dark : R.drawable.itempurchased);
+            btnElegantPurchase.setTextColor(mDarkMode ? getResources().getColor(R.color.darkModeTextDarkGray) : Color.argb(255, 148, 148, 148));
+            btnElegantPurchase.setText(R.string.purchased);
+            btnElegantPurchase.setShadowLayer(0, 0, 0, Color.argb(0, 0, 0, 0));
+            btnElegantPurchase.setOnClickListener(null);
+            Button btnElegantSet = findViewById(R.id.btnElegantSet);
+            btnElegantSet.setVisibility(View.VISIBLE);
+        }
+        SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        preferences.edit().putBoolean("unipointer_e", true).apply();
+
+        if (ask) {
+            AlertDialog.Builder builder;
+            if (mDarkMode)
+                builder = new AlertDialog.Builder(this, R.style.DarkModeDialog);
+            else
+                builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.elegantSeaUrchinPointer);
+            builder.setMessage(R.string.askApply);
+            builder.setPositiveButton(getString(R.string.Do), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    ItemFragment itemFragment = null;
+                    for (Fragment f : getSupportFragmentManager().getFragments()) {
+                        if (f.getClass().getName().equals("com.edolfzoku.hayaemon2.ItemFragment"))
+                            itemFragment = (ItemFragment)f;
+                    }
+                    if (itemFragment != null) itemFragment.close();
+                    mViewPager.setCurrentItem(2);
+                    SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                    ImageView imgPoint = findViewById(R.id.imgPoint);
+                    imgPoint.setBackgroundResource(R.drawable.control_pointer_uni_bafun);
+                    imgPoint.setTag(2);
+                    imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    preferences.edit().putInt("imgPointTag", 2).apply();
+                }
+            });
+            builder.setNegativeButton(getString(R.string.NotYet), null);
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface arg0) {
+                    if (alertDialog.getWindow() != null) {
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
+                }
+            });
+            alertDialog.show();
+        }
+    }
+
+    public void startBillingPinkCamperPointer() {
+        mPurchasingItem = ITEM_PINK_CAMPER_POINTER;
+        PurchaseItem item = mPurchaseItemList.get(ITEM_PINK_CAMPER_POINTER);
+        mBillingWrapper.startBillingFlow(new PurchaseResult(), item.getSkuDetails());
+    }
+
+    private void buyPinkCamperPointer(boolean ask) {
+        ItemFragment itemFragment = null;
+        for (Fragment f : getSupportFragmentManager().getFragments()) {
+            if (f.getClass().getName().equals("com.edolfzoku.hayaemon2.ItemFragment"))
+                    itemFragment = (ItemFragment)f;
+        }
+        if (itemFragment != null) {
+            Button btnPinkCamperPurchase = findViewById(R.id.btnPinkCamperPurchase);
+            btnPinkCamperPurchase.setBackgroundResource(mDarkMode ? R.drawable.itempurchased_dark : R.drawable.itempurchased);
+            btnPinkCamperPurchase.setTextColor(mDarkMode ? getResources().getColor(R.color.darkModeTextDarkGray) : Color.argb(255, 148, 148, 148));
+            btnPinkCamperPurchase.setText(R.string.purchased);
+            btnPinkCamperPurchase.setShadowLayer(0, 0, 0, Color.argb(0, 0, 0, 0));
+            btnPinkCamperPurchase.setOnClickListener(null);
+            Button btnPinkCamperSet = findViewById(R.id.btnPinkCamperSet);
+            btnPinkCamperSet.setVisibility(View.VISIBLE);
+        }
+        SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        preferences.edit().putBoolean("camperpointer_p", true).apply();
+
+        if (ask) {
+            AlertDialog.Builder builder;
+            if (mDarkMode)
+                builder = new AlertDialog.Builder(this, R.style.DarkModeDialog);
+            else
+                builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.pinkCamperPointer);
+            builder.setMessage(R.string.askApply);
+            builder.setPositiveButton(getString(R.string.Do), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    ItemFragment itemFragment = null;
+                    for (Fragment f : getSupportFragmentManager().getFragments()) {
+                        if (f.getClass().getName().equals("com.edolfzoku.hayaemon2.ItemFragment"))
+                            itemFragment = (ItemFragment)f;
+                    }
+                    if (itemFragment != null) itemFragment.close();
+                    mViewPager.setCurrentItem(2);
+                    SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                    ImageView imgPoint = findViewById(R.id.imgPoint);
+                    imgPoint.setBackgroundResource(mDarkMode ? R.drawable.control_pointer_camper_pk_dark : R.drawable.control_pointer_camper_pk);
+                    imgPoint.setTag(3);
+                    imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    preferences.edit().putInt("imgPointTag", 3).apply();
+                    AnimationDrawable anime = (AnimationDrawable) imgPoint.getBackground();
+                    anime.start();
+                }
+            });
+            builder.setNegativeButton(getString(R.string.NotYet), null);
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface arg0) {
+                    if (alertDialog.getWindow() != null) {
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
+                }
+            });
+            alertDialog.show();
+        }
+    }
+
+    public void startBillingBlueCamperPointer() {
+        mPurchasingItem = ITEM_BLUE_CAMPER_POINTER;
+        PurchaseItem item = mPurchaseItemList.get(ITEM_BLUE_CAMPER_POINTER);
+        mBillingWrapper.startBillingFlow(new PurchaseResult(), item.getSkuDetails());
+    }
+
+    private void buyBlueCamperPointer(boolean ask) {
+        ItemFragment itemFragment = null;
+        for (Fragment f : getSupportFragmentManager().getFragments()) {
+            if (f.getClass().getName().equals("com.edolfzoku.hayaemon2.ItemFragment"))
+                    itemFragment = (ItemFragment)f;
+        }
+        if (itemFragment != null) {
+            Button btnBlueCamperPurchase = findViewById(R.id.btnBlueCamperPurchase);
+            btnBlueCamperPurchase.setBackgroundResource(mDarkMode ? R.drawable.itempurchased_dark : R.drawable.itempurchased);
+            btnBlueCamperPurchase.setTextColor(mDarkMode ? getResources().getColor(R.color.darkModeTextDarkGray) : Color.argb(255, 148, 148, 148));
+            btnBlueCamperPurchase.setText(R.string.purchased);
+            btnBlueCamperPurchase.setShadowLayer(0, 0, 0, Color.argb(0, 0, 0, 0));
+            btnBlueCamperPurchase.setOnClickListener(null);
+            Button btnBlueCamperSet = findViewById(R.id.btnBlueCamperSet);
+            btnBlueCamperSet.setVisibility(View.VISIBLE);
+        }
+        SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        preferences.edit().putBoolean("camperpointer_b", true).apply();
+
+        if (ask) {
+            AlertDialog.Builder builder;
+            if (mDarkMode)
+                builder = new AlertDialog.Builder(this, R.style.DarkModeDialog);
+            else
+                builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.blueCamperPointer);
+            builder.setMessage(R.string.askApply);
+            builder.setPositiveButton(getString(R.string.Do), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    ItemFragment itemFragment = null;
+                    for (Fragment f : getSupportFragmentManager().getFragments()) {
+                        if (f.getClass().getName().equals("com.edolfzoku.hayaemon2.ItemFragment"))
+                            itemFragment = (ItemFragment)f;
+                    }
+                    if (itemFragment != null) itemFragment.close();
+                    mViewPager.setCurrentItem(2);
+                    SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                    ImageView imgPoint = findViewById(R.id.imgPoint);
+                    imgPoint.setBackgroundResource(mDarkMode ? R.drawable.control_pointer_camper_bl_dark : R.drawable.control_pointer_camper_bl);
+                    imgPoint.setTag(4);
+                    imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    preferences.edit().putInt("imgPointTag", 4).apply();
+                    AnimationDrawable anime = (AnimationDrawable) imgPoint.getBackground();
+                    anime.start();
+                }
+            });
+            builder.setNegativeButton(getString(R.string.NotYet), null);
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface arg0) {
+                    if (alertDialog.getWindow() != null) {
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
+                }
+            });
+            alertDialog.show();
+        }
+    }
+
+    public void startBillingOrangeCamperPointer() {
+        mPurchasingItem = ITEM_ORANGE_CAMPER_POINTER;
+        PurchaseItem item = mPurchaseItemList.get(ITEM_ORANGE_CAMPER_POINTER);
+        mBillingWrapper.startBillingFlow(new PurchaseResult(), item.getSkuDetails());
+    }
+
+    private void buyOrangeCamperPointer(boolean ask) {
+        ItemFragment itemFragment = null;
+        for (Fragment f : getSupportFragmentManager().getFragments()) {
+            if (f.getClass().getName().equals("com.edolfzoku.hayaemon2.ItemFragment"))
+                    itemFragment = (ItemFragment)f;
+        }
+        if (itemFragment != null) {
+            Button btnOrangeCamperPurchase = findViewById(R.id.btnOrangeCamperPurchase);
+            btnOrangeCamperPurchase.setBackgroundResource(mDarkMode ? R.drawable.itempurchased_dark : R.drawable.itempurchased);
+            btnOrangeCamperPurchase.setTextColor(mDarkMode ? getResources().getColor(R.color.darkModeTextDarkGray) : Color.argb(255, 148, 148, 148));
+            btnOrangeCamperPurchase.setText(R.string.purchased);
+            btnOrangeCamperPurchase.setShadowLayer(0, 0, 0, Color.argb(0, 0, 0, 0));
+            btnOrangeCamperPurchase.setOnClickListener(null);
+            Button btnOrangeCamperSet = findViewById(R.id.btnOrangeCamperSet);
+            btnOrangeCamperSet.setVisibility(View.VISIBLE);
+        }
+        SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        preferences.edit().putBoolean("camperpointer_o", true).apply();
+
+        if (ask) {
+            AlertDialog.Builder builder;
+            if (mDarkMode)
+                builder = new AlertDialog.Builder(this, R.style.DarkModeDialog);
+            else
+                builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.orangeCamperPointer);
+            builder.setMessage(R.string.askApply);
+            builder.setPositiveButton(getString(R.string.Do), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    ItemFragment itemFragment = null;
+                    for (Fragment f : getSupportFragmentManager().getFragments()) {
+                        if (f.getClass().getName().equals("com.edolfzoku.hayaemon2.ItemFragment"))
+                            itemFragment = (ItemFragment)f;
+                    }
+                    if (itemFragment != null) itemFragment.close();
+                    mViewPager.setCurrentItem(2);
+                    SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+                    ImageView imgPoint = findViewById(R.id.imgPoint);
+                    imgPoint.setBackgroundResource(mDarkMode ? R.drawable.control_pointer_camper_or_dark : R.drawable.control_pointer_camper_or);
+                    imgPoint.setTag(5);
+                    imgPoint.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    imgPoint.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    preferences.edit().putInt("imgPointTag", 5).apply();
+                    AnimationDrawable anime = (AnimationDrawable) imgPoint.getBackground();
+                    anime.start();
+                }
+            });
+            builder.setNegativeButton(getString(R.string.NotYet), null);
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface arg0) {
+                    if (alertDialog.getWindow() != null) {
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
+                }
+            });
+            alertDialog.show();
+        }
+    }
+
+    public void restorePurchase() {
+        mBillingWrapper.restorePurchaseItem(new RestoreResult());
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -2424,8 +2608,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // stopNotification();
         sActivity = null;
-        unbindService(mServiceConn);
-        mBound = false;
         super.onDestroy();
     }
 
@@ -3116,5 +3298,100 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTextPlaying.setTextColor(getResources().getColor(R.color.darkModePlaying));
         mSeekCurPos.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));
         mSeekCurPos.setThumb(getResources().getDrawable(R.drawable.thumbplaying_dark));
+    }
+
+    // バインドリザルト
+    class BindResult implements IBillingResult {
+        @Override
+        public void resultNotify(@NonNull BillingResult billingResult) {
+            mBillingWrapper.queryPurchases(null);
+        }
+    }
+
+    // 購入リザルト
+    class PurchaseResult implements IBillingResult {
+        @Override
+        public void resultNotify(@NonNull BillingResult billingResult) {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                for (int i = 0; i < mPurchaseItemList.size(); ++i) {
+                    PurchaseItem item = mPurchaseItemList.get(i);
+                    if (item.IsPurchased()) {
+                        if (item.getItemName().equals(SKU_HIDE_ADS))
+                            hideAds();
+                        else if (item.getItemName().equals(SKU_PURPLE_SEA_URCHIN_POINTER))
+                            buyPurpleSeaUrchinPointer(mPurchasingItem == ITEM_PURPLE_SEA_URCHIN_POINTER);
+                        else if (item.getItemName().equals(SKU_ELEGANT_SEA_URCHIN_POINTER))
+                            buyElegantSeaUrchinPointer(mPurchasingItem == ITEM_ELEGANT_SEA_URCHIN_POINTER);
+                        else if (item.getItemName().equals(SKU_PINK_CAMPER_POINTER))
+                            buyPinkCamperPointer(mPurchasingItem == ITEM_PINK_CAMPER_POINTER);
+                        else if (item.getItemName().equals(SKU_BLUE_CAMPER_POINTER))
+                            buyBlueCamperPointer(mPurchasingItem == ITEM_BLUE_CAMPER_POINTER);
+                        else if (item.getItemName().equals(SKU_ORANGE_CAMPER_POINTER))
+                            buyOrangeCamperPointer(mPurchasingItem == ITEM_ORANGE_CAMPER_POINTER);
+                    }
+                }
+            }
+        }
+    }
+
+    // リストアリザルト
+    class RestoreResult implements IBillingResult {
+        @Override
+        public void resultNotify(@NonNull BillingResult billingResult) {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                Log.d("appBillingTest", "リストアの結果の取得に成功");
+                boolean purchasedItemFound = false;
+                for (int i = 0; i < mPurchaseItemList.size(); ++i) {
+                    PurchaseItem item = mPurchaseItemList.get(i);
+                    if (item.IsPurchased()) {
+                        purchasedItemFound = true;
+                        if (item.getItemName().equals(SKU_HIDE_ADS))
+                            hideAds();
+                        else if (item.getItemName().equals(SKU_PURPLE_SEA_URCHIN_POINTER))
+                            buyPurpleSeaUrchinPointer(false);
+                        else if (item.getItemName().equals(SKU_ELEGANT_SEA_URCHIN_POINTER))
+                            buyElegantSeaUrchinPointer(false);
+                        else if (item.getItemName().equals(SKU_PINK_CAMPER_POINTER))
+                            buyPinkCamperPointer(false);
+                        else if (item.getItemName().equals(SKU_BLUE_CAMPER_POINTER))
+                            buyBlueCamperPointer(false);
+                        else if (item.getItemName().equals(SKU_ORANGE_CAMPER_POINTER))
+                            buyOrangeCamperPointer(false);
+                    }
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                if (purchasedItemFound) {
+                    builder.setTitle(R.string.restoredPurchasedItems);
+                    builder.setPositiveButton("OK", null);
+                    final AlertDialog alertDialog = builder.create();
+                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface arg0) {
+                            if (alertDialog.getWindow() != null) {
+                                WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                                lp.dimAmount = 0.4f;
+                                alertDialog.getWindow().setAttributes(lp);
+                            }
+                        }
+                    });
+                    alertDialog.show();
+                } else {
+                    builder.setTitle(R.string.restorePurchasedItemsError);
+                    builder.setPositiveButton("OK", null);
+                    final AlertDialog alertDialog = builder.create();
+                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface arg0) {
+                            if (alertDialog.getWindow() != null) {
+                                WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                                lp.dimAmount = 0.4f;
+                                alertDialog.getWindow().setAttributes(lp);
+                            }
+                        }
+                    });
+                    alertDialog.show();
+                }
+            }
+        }
     }
 }

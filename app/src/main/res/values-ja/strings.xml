@@ -308,6 +308,8 @@
     <string name="purchased">購入済み</string>
     <string name="set">設定する</string>
     <string name="cancel">キャンセル</string>
+    <string name="restoredPurchasedItems">購入済みのアイテムを復元しました。</string>
+    <string name="restorePurchasedItemsError">購入済みのアイテムを復元できませんでした。</string>
     <string name="incSpeedTitle">指定時間ごとに加速</string>
     <string name="decSpeedTitle">指定時間ごとに減速</string>
     <string name="rasPitchTitle">指定時間ごとにだんだん高く</string>
