@@ -911,11 +911,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         sPlayNextByBPos = preferences.getBoolean("bPlayNextByBPos", false);
         boolean bSnap = preferences.getBoolean("bSnap", false);
-        controlFragment.setSnap(bSnap);
-        controlFragment.setMinSpeed(preferences.getInt("nMinSpeed", 10));
-        controlFragment.setMaxSpeed(preferences.getInt("nMaxSpeed", 400));
-        controlFragment.setMinPitch(preferences.getInt("nMinPitch", -12));
-        controlFragment.setMaxPitch(preferences.getInt("nMaxPitch", 12));
+        if (controlFragment != null) {
+            controlFragment.setSnap(bSnap);
+            controlFragment.setMinSpeed(preferences.getInt("nMinSpeed", 10));
+            controlFragment.setMaxSpeed(preferences.getInt("nMaxSpeed", 400));
+            controlFragment.setMinPitch(preferences.getInt("nMinPitch", -12));
+            controlFragment.setMaxPitch(preferences.getInt("nMaxPitch", 12));
+        }
 
         boolean bHideAds = preferences.getBoolean("hideads", false);
         if(bHideAds) hideAds();
