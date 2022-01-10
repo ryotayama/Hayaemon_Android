@@ -4466,6 +4466,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
     void updateSongTime(final SongItem item) {
         String strPath = item.getPath();
+        if (strPath == null) return;
         int hTempStream = 0;
 
         Uri uri = Uri.parse(strPath);
