@@ -1271,7 +1271,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 int nMinute = (int)(dPos / 60 % 60);
                 int nSecond = (int)(dPos % 60);
                 int nMillisecond = (int)(dPos * 100 % 100);
-                sActivity.getTextRecordingTime().setText((nHour < 10 ? "0" : "") + nHour + (nMinute < 10 ? ":0" : ":") + nMinute + (nSecond < 10 ? ":0" : ":") + nSecond + (nMillisecond < 10 ? ".0" : ".") + nMillisecond);
+                if (sActivity != null)
+                    sActivity.getTextRecordingTime().setText((nHour < 10 ? "0" : "") + nHour + (nMinute < 10 ? ":0" : ":") + nMinute + (nSecond < 10 ? ":0" : ":") + nSecond + (nMillisecond < 10 ? ".0" : ".") + nMillisecond);
                 handler.postDelayed(this, 50);
             }
         };
