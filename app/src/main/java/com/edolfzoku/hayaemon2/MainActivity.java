@@ -680,6 +680,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int playing = PlaylistFragment.sPlaying;
         SongItem item = arSongs.get(playing);
         Context context = sActivity != null ? sActivity : sService;
+        if (context == null) return;
         Intent intent = new Intent(context, ForegroundService.class);
         intent.putExtra("strTitle", item.getTitle());
         intent.putExtra("strArtist", item.getArtist());
