@@ -291,7 +291,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(Build.VERSION.SDK_INT < 16)
                 {
                     Uri uri = copyFile(intent.getData());
-                    playlistFragment.addSong(this, uri);
+                    if (uri != null)
+                        playlistFragment.addSong(this, uri);
                 }
                 else
                 {
@@ -299,7 +300,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     {
                         if (intent.getData() != null) {
                             Uri uri = copyFile(intent.getData());
-                            playlistFragment.addSong(this, uri);
+                            if (uri != null)
+                                playlistFragment.addSong(this, uri);
                         }
                     }
                     else
@@ -307,7 +309,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         for(int i = 0; i < intent.getClipData().getItemCount(); i++)
                         {
                             Uri uri = copyFile(intent.getClipData().getItemAt(i).getUri());
-                            playlistFragment.addSong(this, uri);
+                            if (uri != null)
+                                playlistFragment.addSong(this, uri);
                         }
                     }
                 }
