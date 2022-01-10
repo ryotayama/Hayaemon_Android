@@ -475,7 +475,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         return false;
     }
 
-    public static boolean isReverse() { return sEffectItems.get(EFFECTTYPE_REVERSE).isSelected(); }
+    public static boolean isReverse() {
+        if (EFFECTTYPE_REVERSE >= sEffectItems.size()) return false;
+        return sEffectItems.get(EFFECTTYPE_REVERSE).isSelected();
+    }
 
     public static void setEffectItems(ArrayList<EffectItem> effectItems) {
         boolean bSelected = false;
