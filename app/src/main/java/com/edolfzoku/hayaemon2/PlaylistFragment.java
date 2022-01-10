@@ -4538,6 +4538,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     static void saveFiles(boolean bPlaylists, boolean bEffects, boolean bLyrics, boolean bPlaylistNames, boolean bPlayMode) {
+        if (sActivity == null) return;
         SharedPreferences preferences = sActivity.getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         Gson gson = new Gson();
         if(bPlaylists)
