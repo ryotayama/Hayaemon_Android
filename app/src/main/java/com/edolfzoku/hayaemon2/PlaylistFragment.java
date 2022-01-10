@@ -3734,14 +3734,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
         if(sActivity != null) {
             ArrayList<EffectSaver> arEffectSavers = sEffects.get(sPlayingPlaylist);
-            EffectSaver saver = arEffectSavers.get(nTempPlaying);
-            if(saver.isSave()) {
-                ArrayList<EffectItem> arSavedEffectItems = saver.getEffectItems();
-                for(int i = 0; i < arSavedEffectItems.size(); i++) {
-                    EffectItem item = arSavedEffectItems.get(i);
-                    if(item.getEffectName().equals(EffectFragment.sEffectItems.get(EffectFragment.EFFECTTYPE_REVERSE).getEffectName())) {
-                        if(PlaylistFragment.sForceNormal) item.setSelected(false);
-                        else if(PlaylistFragment.sForceReverse) item.setSelected(true);
+            if (nTempPlaying < arEffectSavers.size()) {
+                EffectSaver saver = arEffectSavers.get(nTempPlaying);
+                if (saver.isSave()) {
+                    ArrayList<EffectItem> arSavedEffectItems = saver.getEffectItems();
+                    for (int i = 0; i < arSavedEffectItems.size(); i++) {
+                        EffectItem item = arSavedEffectItems.get(i);
+                        if (item.getEffectName().equals(EffectFragment.sEffectItems.get(EffectFragment.EFFECTTYPE_REVERSE).getEffectName())) {
+                            if (PlaylistFragment.sForceNormal) item.setSelected(false);
+                            else if (PlaylistFragment.sForceReverse) item.setSelected(true);
+                        }
                     }
                 }
             }
