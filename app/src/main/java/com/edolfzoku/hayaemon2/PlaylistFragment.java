@@ -4144,7 +4144,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 super.onAnimationEnd(animation);
-                                sActivity.getRelativePlayingWithShadow().setVisibility(View.GONE);
+                                if (sActivity != null)
+                                    sActivity.getRelativePlayingWithShadow().setVisibility(View.GONE);
                                 final RelativeLayout.LayoutParams paramContainer = (RelativeLayout.LayoutParams) sActivity.getViewPager().getLayoutParams();
                                 final RelativeLayout.LayoutParams paramRecording = (RelativeLayout.LayoutParams) sActivity.getRelativeRecording().getLayoutParams();
                                 if (MainActivity.sRecord == 0) {
