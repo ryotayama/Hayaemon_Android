@@ -182,7 +182,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         return item.isSelected();
     }
     static boolean isLock(int nSong) {
+        if (sSelectedPlaylist >= sEffects.size()) return false;
         ArrayList<EffectSaver> arEffectSavers = sEffects.get(sSelectedPlaylist);
+        if (nSong >= arEffectSavers.size()) return false;
         EffectSaver saver = arEffectSavers.get(nSong);
         return saver.isSave();
     }
