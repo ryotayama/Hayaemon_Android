@@ -3812,6 +3812,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             BASS.BASS_StreamFree(MainActivity.sStream);
             MainActivity.sStream = 0;
         }
+        ArrayList<SongItem> arSongs = sPlaylists.get(sPlayingPlaylist);
+        for(int i = sPlays.size(); i < arSongs.size(); i++)
+            sPlays.add(false);
         sPlays.set(nSong, true);
 
         Uri uri = Uri.parse(strPath);
