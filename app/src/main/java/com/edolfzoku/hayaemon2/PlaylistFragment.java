@@ -3820,6 +3820,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             sPlays.add(false);
         sPlays.set(nSong, true);
 
+        if (strPath == null) return;
         Uri uri = Uri.parse(strPath);
         Context context = sActivity != null ? sActivity : MainActivity.sService;
         if(uri.getScheme() != null && uri.getScheme().equals("content")) {
