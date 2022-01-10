@@ -4394,10 +4394,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         ArrayList<SongItem> arSongs = sPlaylists.get(nPlaylist);
         SongItem song = arSongs.get(nSong);
-        Uri uri = Uri.parse(song.getPath());
-        if(!(uri.getScheme() != null && uri.getScheme().equals("content"))) {
-            File file = new File(song.getPath());
-            if(!file.delete()) System.out.println("ファイルが削除できませんでした");
+        if (song.getPath() != null) {
+            Uri uri = Uri.parse(song.getPath());
+            if (!(uri.getScheme() != null && uri.getScheme().equals("content"))) {
+                File file = new File(song.getPath());
+                if (!file.delete()) System.out.println("ファイルが削除できませんでした");
+            }
         }
 
         arSongs.remove(nSong);
