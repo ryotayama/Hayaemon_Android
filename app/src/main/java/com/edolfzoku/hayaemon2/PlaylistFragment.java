@@ -2042,7 +2042,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 for(int i = 0; i < arSongs.size(); i++) {
                     SongItem song = arSongs.get(i);
                     File file = new File(song.getPath());
-                    if(file.getParent().equals(sActivity.getFilesDir().toString())) {
+                    if(file.getParent() != null && sActivity != null && file.getParent().equals(sActivity.getFilesDir().toString())) {
                         if(!file.delete()) System.out.println("ファイルが削除できませんでした");
                     }
                 }
