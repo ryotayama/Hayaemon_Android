@@ -3887,9 +3887,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
         }
         else {
-            if (strPath.equals("potatoboy.m4a"))
-                MainActivity.sStream = BASS.BASS_StreamCreateFile(new BASS.Asset(sActivity.getAssets(), strPath), 0, 0, BASS.BASS_STREAM_PRESCAN | BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
-            else
+            if (strPath.equals("potatoboy.m4a")) {
+                if (sActivity != null)
+                    MainActivity.sStream = BASS.BASS_StreamCreateFile(new BASS.Asset(sActivity.getAssets(), strPath), 0, 0, BASS.BASS_STREAM_PRESCAN | BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+            } else
                 MainActivity.sStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_PRESCAN | BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
         }
         if(MainActivity.sStream == 0) return;
