@@ -316,14 +316,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 if(playlistFragment.getSongsAdapter() != null)
                     playlistFragment.getSongsAdapter().notifyDataSetChanged();
-                SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-                Gson gson = new Gson();
-                preferences.edit().putString("arPlaylists", gson.toJson(sPlaylists)).apply();
-                preferences.edit().putString("arEffects", gson.toJson(sEffects)).apply();
-                preferences.edit().putString("arLyrics", gson.toJson(sLyrics)).apply();
-                preferences.edit().putString("arPlaylistNames", gson.toJson(PlaylistFragment.sPlaylistNames)).apply();
             }
         }
+        SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        Gson gson = new Gson();
+        preferences.edit().putString("arPlaylists", gson.toJson(sPlaylists)).apply();
+        preferences.edit().putString("arEffects", gson.toJson(sEffects)).apply();
+        preferences.edit().putString("arLyrics", gson.toJson(sLyrics)).apply();
+        preferences.edit().putString("arPlaylistNames", gson.toJson(PlaylistFragment.sPlaylistNames)).apply();
 
         mPurchaseItemList = new ArrayList<>();
         mPurchaseItemList.add(new PurchaseItem(new PurchaseResult(), SKU_HIDE_ADS));
