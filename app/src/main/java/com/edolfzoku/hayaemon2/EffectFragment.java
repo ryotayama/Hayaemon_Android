@@ -3883,7 +3883,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     private static void resetSoundEffect(boolean save) {
-        if (sActivity != null && sActivity.effectFragment.getScrollSoundEffectCustomize().getVisibility() != View.VISIBLE)
+        if (sActivity != null && sActivity.effectFragment != null && sActivity.effectFragment.getScrollSoundEffectCustomize().getVisibility() != View.VISIBLE)
             sEffectItems.get(EFFECTTYPE_SOUNDEFFECT).setSelected(false);
         boolean bSelected = false;
         for (int i = 0; i < sEffectItems.size(); i++) {
