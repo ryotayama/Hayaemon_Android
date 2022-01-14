@@ -2792,7 +2792,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 arTempLyrics.remove(fromPos);
                 arTempLyrics.add(toPos, strLyrics);
 
-                if (sPlayingPlaylist == sSelectedPlaylist) {
+                if (sPlayingPlaylist == sSelectedPlaylist && fromPos < sPlays.size()) {
                     Boolean bTemp = sPlays.get(fromPos);
                     sPlays.remove(fromPos);
                     sPlays.add(toPos, bTemp);
