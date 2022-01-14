@@ -287,6 +287,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             final Handler handler = new Handler();
             Runnable timer=new Runnable() {
                 public void run() {
+                    if (sActivity == null) return;
                     AlertDialog.Builder builder;
                     if(sActivity.isDarkMode())
                         builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
