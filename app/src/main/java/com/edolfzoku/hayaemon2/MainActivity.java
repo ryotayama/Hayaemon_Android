@@ -446,15 +446,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
-        if(playlistFragment.isAdded())
+        if(playlistFragment != null && playlistFragment.isAdded())
             getSupportFragmentManager().putFragment(savedInstanceState, "playlistFragment", playlistFragment);
-        if(loopFragment.isAdded())
+        if(loopFragment != null && loopFragment.isAdded())
             getSupportFragmentManager().putFragment(savedInstanceState, "loopFragment", loopFragment);
-        if(controlFragment.isAdded())
+        if(controlFragment != null && controlFragment.isAdded())
             getSupportFragmentManager().putFragment(savedInstanceState, "controlFragment", controlFragment);
-        if(equalizerFragment.isAdded())
+        if(equalizerFragment != null && equalizerFragment.isAdded())
             getSupportFragmentManager().putFragment(savedInstanceState, "equalizerFragment", equalizerFragment);
-        if(effectFragment.isAdded())
+        if(effectFragment != null && effectFragment.isAdded())
             getSupportFragmentManager().putFragment(savedInstanceState, "effectFragment", effectFragment);
     }
 
