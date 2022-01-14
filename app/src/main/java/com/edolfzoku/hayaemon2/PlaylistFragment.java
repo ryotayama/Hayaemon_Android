@@ -2182,7 +2182,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         arTempLyricsTo.add(strLyrics);
         arTempLyricsFrom.remove(nItem);
 
-        if(sSelectedPlaylist == sPlayingPlaylist) sPlays.remove(nItem);
+        if(sSelectedPlaylist == sPlayingPlaylist && nItem < sPlays.size()) sPlays.remove(nItem);
         if(nPlaylistTo == sPlayingPlaylist) sPlays.add(false);
 
         for(int i = nItem; i < arSongsFrom.size(); i++) {
