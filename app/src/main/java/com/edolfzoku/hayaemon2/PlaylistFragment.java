@@ -2079,7 +2079,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void askDeleteSong(final int item) {
+        if (sSelectedPlaylist >= sPlaylists.size()) return;
         ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
+        if (item >= arSongs.size()) return;
         final SongItem songItem = arSongs.get(item);
         AlertDialog.Builder builder;
         if(sActivity.isDarkMode())
