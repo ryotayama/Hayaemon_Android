@@ -60,6 +60,7 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.play.core.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.core.content.ContextCompat;
@@ -112,6 +113,9 @@ import com.edolfzoku.libs.billing.result.IBillingResult;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.un4seen.bass.BASS;
@@ -165,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ControlFragment controlFragment;
     EqualizerFragment equalizerFragment;
     EffectFragment effectFragment;
-    private boolean mShowUpdateLog, mDarkMode;
+    private boolean mShowUpdateLog, mDarkMode, mShowReviewRequest;
     private float mDensity;
     private int mLastY, mPurchasingItem;
 
@@ -324,6 +328,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         preferences.edit().putString("arEffects", gson.toJson(sEffects)).apply();
         preferences.edit().putString("arLyrics", gson.toJson(sLyrics)).apply();
         preferences.edit().putString("arPlaylistNames", gson.toJson(PlaylistFragment.sPlaylistNames)).apply();
+
+        int bootCount = getSharedPreferences("SaveData", MODE_PRIVATE).getInt("bootcount", 0);
+        bootCount++;
+        if (bootCount >= 5 && bootCount % 5 == 0) mShowReviewRequest = true;
+        getSharedPreferences("SaveData", MODE_PRIVATE).edit().putInt("bootcount", bootCount).apply();
 
         mPurchaseItemList = new ArrayList<>();
         mPurchaseItemList.add(new PurchaseItem(new PurchaseResult(), SKU_HIDE_ADS));
@@ -663,6 +672,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onResume();
 
         if (mAdView != null) mAdView.resume();
+
+        if (mShowReviewRequest) {
+            mShowReviewRequest = false;
+
+            final MainActivity activity = this;
+            final ReviewManager manager = ReviewManagerFactory.create(this);
+            Task<ReviewInfo> request = manager.requestReviewFlow();
+            request.addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    // We can get the ReviewInfo object
+                    ReviewInfo reviewInfo = task.getResult();
+                    Task<Void> flow = manager.launchReviewFlow(activity, reviewInfo);
+                    flow.addOnCompleteListener(task1 -> {
+                        // The flow has finished. The API does not indicate whether the user
+                        // reviewed or not, or even whether the review dialog was shown. Thus, no
+                        // matter the result, we continue our app flow.
+                    });
+                }
+
+            });
+        }
     }
 
     @Override
