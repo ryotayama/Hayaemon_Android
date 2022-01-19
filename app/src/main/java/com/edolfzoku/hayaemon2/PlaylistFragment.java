@@ -2456,6 +2456,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     void showPlaylistTabMenu(final int nPosition) {
+        if (sActivity == null) return;
         selectPlaylist(nPosition);
         String strPlaylist = sPlaylistNames.get(nPosition);
         boolean bLockFounded = false;
