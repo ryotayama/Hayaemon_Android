@@ -3893,7 +3893,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             sSoundEffectItems.get(i).setSelected(false);
 
         sSoundEffectSelected = -1;
-        if (sActivity != null) {
+        if (sActivity != null && sActivity.effectFragment != null) {
             if (!bSelected) sActivity.effectFragment.getBtnEffectOff().setSelected(true);
             sActivity.effectFragment.getBtnEffectTemplateOff().setSelected(true);
             sActivity.effectFragment.getEffectsAdapter().notifyDataSetChanged();
