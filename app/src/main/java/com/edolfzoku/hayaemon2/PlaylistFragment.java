@@ -3740,7 +3740,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
         if(sActivity != null) {
             ArrayList<EffectSaver> arEffectSavers = sEffects.get(sPlayingPlaylist);
-            if (nTempPlaying < arEffectSavers.size()) {
+            if (nTempPlaying < arEffectSavers.size() && arEffectSavers.get(nTempPlaying) != null) {
                 EffectSaver saver = arEffectSavers.get(nTempPlaying);
                 if (saver.isSave()) {
                     ArrayList<EffectItem> arSavedEffectItems = saver.getEffectItems();
