@@ -335,7 +335,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             mRelativeSongs.setVisibility(View.INVISIBLE);
             mPlaylistsAdapter.notifyDataSetChanged();
             mRelativePlaylists.setVisibility(View.VISIBLE);
-            sActivity.getViewSep1().setVisibility(View.VISIBLE);
+            if (sActivity != null) sActivity.getViewSep1().setVisibility(View.VISIBLE);
         }
         else if(v.getId() == R.id.btnAddPlaylist_small) {
             AlertDialog.Builder builder;
