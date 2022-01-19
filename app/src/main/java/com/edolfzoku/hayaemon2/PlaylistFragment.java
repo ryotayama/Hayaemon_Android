@@ -373,6 +373,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             final Handler handler = new Handler();
             Runnable timer=new Runnable() {
                 public void run() {
+                    if (sActivity == null) return;
                     final BottomMenu menu = new BottomMenu(sActivity);
                     menu.setTitle(getString(R.string.addSong));
                     menu.addMenu(getString(R.string.addFromLocal), sActivity.isDarkMode() ? R.drawable.ic_actionsheet_music_dark : R.drawable.ic_actionsheet_music, new View.OnClickListener() {
