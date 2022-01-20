@@ -1879,6 +1879,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     void showSongMenu(final int nItem) {
+        if (sActivity == null) return;
         sSelectedItem = nItem;
         ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
         final SongItem songItem = arSongs.get(nItem);
