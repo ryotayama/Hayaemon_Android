@@ -3829,6 +3829,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if (strPath == null) return;
         Uri uri = Uri.parse(strPath);
         Context context = sActivity != null ? sActivity : MainActivity.sService;
+        if (context == null) return;
         if(uri.getScheme() != null && uri.getScheme().equals("content")) {
             boolean lostPermission = false;
             if(Build.VERSION.SDK_INT >= 19) {
