@@ -216,7 +216,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     public void onClick(View v) {
         if(v.getId() == R.id.btnSortPlaylist) {
             if(mSorting) {
-                mRecyclerPlaylists.setPadding(0, 0, 0, (int)(80 * sActivity.getDensity()));
+                if (sActivity != null) mRecyclerPlaylists.setPadding(0, 0, 0, (int)(80 * sActivity.getDensity()));
                 mBtnAddPlaylist.setVisibility(View.VISIBLE);
                 mSorting = false;
                 mPlaylistsAdapter.notifyDataSetChanged();
