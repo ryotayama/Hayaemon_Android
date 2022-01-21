@@ -489,17 +489,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 if (item.getEffectName().equals(itemSaved.getEffectName())) {
                     item.setSelected(itemSaved.isSelected());
                     if (itemSaved.isSelected()) bSelected = true;
-                    if(sActivity != null) sActivity.effectFragment.getEffectsAdapter().notifyItemChanged(i);
+                    if(sActivity != null && sActivity.effectFragment != null) sActivity.effectFragment.getEffectsAdapter().notifyItemChanged(i);
                 }
             }
         }
-        if(sActivity != null) sActivity.effectFragment.getBtnEffectOff().setSelected(!bSelected);
+        if(sActivity != null && sActivity.effectFragment != null) sActivity.effectFragment.getBtnEffectOff().setSelected(!bSelected);
     }
 
     public static void setReverbSelected(int nSelected) {
         sReverbSelected = nSelected;
         for (int i = 0; i < sReverbItems.size(); i++) sReverbItems.get(i).setSelected(i == nSelected);
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             if (sActivity.effectFragment.getRelativeEffectTemplates().getVisibility() == View.VISIBLE && sEffectDetail == EFFECTTYPE_REVERB) {
                 sActivity.effectFragment.getBtnEffectTemplateOff().setSelected(nSelected == -1);
                 sActivity.effectFragment.getEffectTemplatesAdapter().notifyDataSetChanged();
@@ -3545,7 +3545,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     public static void resetEffect(boolean save) {
-        if(sActivity != null) sActivity.effectFragment.getBtnEffectOff().setSelected(true);
+        if(sActivity != null && sActivity.effectFragment != null) sActivity.effectFragment.getBtnEffectOff().setSelected(true);
         for (int i = 0; i < sEffectItems.size(); i++) {
             if (sEffectItems.get(i).isSelected() && (i == EFFECTTYPE_RANDOM || i == EFFECTTYPE_TRANSCRIBESIDEGUITAR || i == EFFECTTYPE_OLDRECORD || i == EFFECTTYPE_LOWBATTERY || i == EFFECTTYPE_EARTRAINING))
                 EqualizerFragment.resetEQ(save);
@@ -3560,7 +3560,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             if (sEffectItems.get(i).isSelected() && (i == EFFECTTYPE_8BITSOUND))
                 ControlFragment.setSpeed(0.0f, save);
             sEffectItems.get(i).setSelected(false);
-            if(sActivity != null) sActivity.effectFragment.getEffectsAdapter().notifyItemChanged(i);
+            if(sActivity != null && sActivity.effectFragment != null) sActivity.effectFragment.getEffectsAdapter().notifyItemChanged(i);
         }
         sMetronome.stop();
         sPan = 0.0f;
@@ -4370,7 +4370,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         sCompAttack = (nAttack + 1) / 100.0f;
         sCompRelease = (nRelease + 1) / 100.0f;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             sActivity.effectFragment.getTextCompGain().setText(String.format(Locale.getDefault(), "%.2f", sCompGain));
             sActivity.effectFragment.getTextCompThreshold().setText(String.format(Locale.getDefault(), "%.2f", sCompThreshold));
             sActivity.effectFragment.getTextCompRatio().setText(String.format(Locale.getDefault(), "%.2f", sCompRatio));
@@ -4395,7 +4395,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         sCompAttack = fAttack;
         sCompRelease = fRelease;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             sActivity.effectFragment.getTextCompGain().setText(String.format(Locale.getDefault(), "%.2f", sCompGain));
             sActivity.effectFragment.getTextCompThreshold().setText(String.format(Locale.getDefault(), "%.2f", sCompThreshold));
             sActivity.effectFragment.getTextCompRatio().setText(String.format(Locale.getDefault(), "%.2f", sCompRatio));
@@ -4466,7 +4466,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         sPan = (nValue - 100) / 100f;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             if (sPan == 0f)
                 sActivity.effectFragment.getTextPanValue().setText(String.format(Locale.getDefault(), "%.0f%%", sPan * 100f));
             else if (sPan < 0f)
@@ -4484,7 +4484,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     public static void setPan(float fValue, boolean bSave) {
         sPan = fValue;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             if (sPan == 0f)
                 sActivity.effectFragment.getTextPanValue().setText(String.format(Locale.getDefault(), "%.0f%%", sPan * 100f));
             else if (sPan < 0f)
@@ -4521,7 +4521,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         sFreq = (nValue + 10) / 100f;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             sActivity.effectFragment.getTextFreqValue().setText(String.format(Locale.getDefault(), "%.0f", sFreq * 100f));
 
             sActivity.effectFragment.getSeekFreqValue().setProgress(nValue);
@@ -4534,7 +4534,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     public static void setFreq(float fValue, boolean bSave) {
         sFreq = fValue;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             sActivity.effectFragment.getTextFreqValue().setText(String.format(Locale.getDefault(), "%.0f", sFreq * 100f));
 
             sActivity.effectFragment.getSeekFreqValue().setProgress((int)(fValue * 100f - 10));
@@ -4564,7 +4564,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         sBpm = nValue + 10;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             sActivity.effectFragment.getTextMetronomeValue().setText(String.format(Locale.getDefault(), "%d", sBpm));
 
             sActivity.effectFragment.getSeekMetronomeValue().setProgress(nValue);
@@ -4577,7 +4577,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     public static void setMetronome(float fValue, boolean bSave) {
         sBpm = (int)fValue;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             sActivity.effectFragment.getTextMetronomeValue().setText(String.format(Locale.getDefault(), "%d", sBpm));
 
             sActivity.effectFragment.getSeekMetronomeValue().setProgress(sBpm - 10);
@@ -4626,7 +4626,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         sEchoFeedback = nFeedback / 100.0f;
         sEchoDelay = (nDelay + 1) / 100.0f;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             sActivity.effectFragment.getTextEchoDry().setText(String.format(Locale.getDefault(), "%.2f", sEchoDry));
             sActivity.effectFragment.getTextEchoWet().setText(String.format(Locale.getDefault(), "%.2f", sEchoWet));
             sActivity.effectFragment.getTextEchoFeedback().setText(String.format(Locale.getDefault(), "%.2f", sEchoFeedback));
@@ -4648,7 +4648,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         sEchoFeedback = fFeedback;
         sEchoDelay = fDelay;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             sActivity.effectFragment.getTextEchoDry().setText(String.format(Locale.getDefault(), "%.2f", sEchoDry));
             sActivity.effectFragment.getTextEchoWet().setText(String.format(Locale.getDefault(), "%.2f", sEchoWet));
             sActivity.effectFragment.getTextEchoFeedback().setText(String.format(Locale.getDefault(), "%.2f", sEchoFeedback));
@@ -4731,7 +4731,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         sReverbDamp = nDamp / 100.0f;
         sReverbWidth = nWidth / 100.0f;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             sActivity.effectFragment.getTextReverbDry().setText(String.format(Locale.getDefault(), "%.2f", sReverbDry));
             sActivity.effectFragment.getTextReverbWet().setText(String.format(Locale.getDefault(), "%.2f", sReverbWet));
             sActivity.effectFragment.getTextReverbRoomSize().setText(String.format(Locale.getDefault(), "%.2f", sReverbRoomSize));
@@ -4756,7 +4756,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         sReverbDamp = fDamp;
         sReverbWidth = fWidth;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             sActivity.effectFragment.getTextReverbDry().setText(String.format(Locale.getDefault(), "%.2f", sReverbDry));
             sActivity.effectFragment.getTextReverbWet().setText(String.format(Locale.getDefault(), "%.2f", sReverbWet));
             sActivity.effectFragment.getTextReverbRoomSize().setText(String.format(Locale.getDefault(), "%.2f", sReverbRoomSize));
@@ -4852,7 +4852,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         sChorusMaxSweep = nMaxSweep / 100.0f;
         sChorusRate = nRate / 100.0f;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             sActivity.effectFragment.getTextChorusDry().setText(String.format(Locale.getDefault(), "%.2f", sChorusDry));
             sActivity.effectFragment.getTextChorusWet().setText(String.format(Locale.getDefault(), "%.2f", sChorusWet));
             sActivity.effectFragment.getTextChorusFeedback().setText(String.format(Locale.getDefault(), "%.2f", sChorusFeedback));
@@ -4982,7 +4982,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         sDistortionFeedback = nFeedback / 100.0f;
         sDistortionVolume = nVolume / 100.0f;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             sActivity.effectFragment.getTextDistortionDrive().setText(String.format(Locale.getDefault(), "%.2f", sDistortionDrive));
             sActivity.effectFragment.getTextDistortionDry().setText(String.format(Locale.getDefault(), "%.2f", sDistortionDry));
             sActivity.effectFragment.getTextDistortionWet().setText(String.format(Locale.getDefault(), "%.2f", sDistortionWet));
@@ -5007,7 +5007,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         sDistortionFeedback = fFeedback;
         sDistortionVolume = fVolume;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             sActivity.effectFragment.getTextDistortionDrive().setText(String.format(Locale.getDefault(), "%.2f", sDistortionDrive));
             sActivity.effectFragment.getTextDistortionDry().setText(String.format(Locale.getDefault(), "%.2f", sDistortionDry));
             sActivity.effectFragment.getTextDistortionWet().setText(String.format(Locale.getDefault(), "%.2f", sDistortionWet));
@@ -5140,7 +5140,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         sSoundEffectVolume = nVolume;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             sActivity.effectFragment.getTextSoundEffectVolume().setText(String.format(Locale.getDefault(), "%.0f", sSoundEffectVolume));
             sActivity.effectFragment.getSeekSoundEffectVolume().setProgress(nVolume);
         }
@@ -5152,7 +5152,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     public static void setSoundEffect(float fVolume, boolean bSave) {
         sSoundEffectVolume = fVolume;
 
-        if(sActivity != null) {
+        if(sActivity != null && sActivity.effectFragment != null) {
             sActivity.effectFragment.getTextSoundEffectVolume().setText(String.format(Locale.getDefault(), "%.0f", sSoundEffectVolume));
             sActivity.effectFragment.getSeekSoundEffectVolume().setProgress((int) fVolume);
         }
