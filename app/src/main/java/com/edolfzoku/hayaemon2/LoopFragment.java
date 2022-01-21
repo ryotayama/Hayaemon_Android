@@ -505,7 +505,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     private void setZoomOut() {
         mWaveView.setZoom(mWaveView.getZoom() * 0.99f);
         if(mWaveView.getZoom() <= 1.0f) {
-            mBtnZoomOut.setColorFilter(new PorterDuffColorFilter(Color.parseColor(sActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
+            if (sActivity != null) mBtnZoomOut.setColorFilter(new PorterDuffColorFilter(Color.parseColor(sActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
             mBtnZoomOut.setEnabled(false);
         }
         mBtnZoomIn.setColorFilter(null);
@@ -515,7 +515,7 @@ public class LoopFragment extends Fragment implements View.OnTouchListener, View
     private void setZoomIn() {
         mWaveView.setZoom(mWaveView.getZoom() * 1.01f);
         if(mWaveView.getZoom() >= 10.0f) {
-            mBtnZoomIn.setColorFilter(new PorterDuffColorFilter(Color.parseColor(sActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
+            if (sActivity != null) mBtnZoomIn.setColorFilter(new PorterDuffColorFilter(Color.parseColor(sActivity.isDarkMode() ? "#FF939CA0" : "#FFCCCCCC"), PorterDuff.Mode.SRC_IN));
             mBtnZoomIn.setEnabled(false);
         }
         mBtnZoomOut.setColorFilter(null);
