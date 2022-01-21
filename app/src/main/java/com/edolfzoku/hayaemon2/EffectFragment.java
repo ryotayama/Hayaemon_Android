@@ -5321,6 +5321,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             sTimer = null;
         }
         Context context = sActivity != null ? sActivity : MainActivity.sService;
+        if (context == null) return;
         for (int i = 0; i < sEffectItems.size(); i++) {
             if (!sEffectItems.get(i).isSelected()) continue;
             String strEffect = sEffectItems.get(i).getEffectName();
