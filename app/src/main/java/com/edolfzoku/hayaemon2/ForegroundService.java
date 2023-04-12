@@ -1,5 +1,8 @@
 package com.edolfzoku.hayaemon2;
 
+import static android.app.PendingIntent.FLAG_IMMUTABLE;
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -87,28 +90,28 @@ public class ForegroundService extends IntentService {
         if(actionRewind == null) {
             Intent intentRewind = new Intent(this, ForegroundService.class);
             intentRewind.setAction("action_rewind");
-            PendingIntent pendingIntentRewind = PendingIntent.getService(this, 1, intentRewind, 0);
+            PendingIntent pendingIntentRewind = PendingIntent.getService(this, 1, intentRewind, Build.VERSION.SDK_INT >= 23 ? FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE : FLAG_UPDATE_CURRENT);
             actionRewind = new NotificationCompat.Action.Builder(R.drawable.ic_rewind, "Previous", pendingIntentRewind).build();
         }
 
         if(actionPlayPause == null) {
             Intent intentPlayPause = new Intent(this, ForegroundService.class);
             intentPlayPause.setAction("action_playpause");
-            PendingIntent pendingIntentPlayPause = PendingIntent.getService(this, 1, intentPlayPause, 0);
+            PendingIntent pendingIntentPlayPause = PendingIntent.getService(this, 1, intentPlayPause, Build.VERSION.SDK_INT >= 23 ? FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE : FLAG_UPDATE_CURRENT);
             actionPlayPause = new NotificationCompat.Action.Builder(R.drawable.ic_pause, "Pause", pendingIntentPlayPause).build();
         }
 
         if(actionForward == null) {
             Intent intentForward = new Intent(this, ForegroundService.class);
             intentForward.setAction("action_forward");
-            PendingIntent pendingIntentForward = PendingIntent.getService(this, 1, intentForward, 0);
+            PendingIntent pendingIntentForward = PendingIntent.getService(this, 1, intentForward, Build.VERSION.SDK_INT >= 23 ? FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE : FLAG_UPDATE_CURRENT);
             actionForward = new NotificationCompat.Action.Builder(R.drawable.ic_forward, "Next", pendingIntentForward).build();
         }
 
         if(pendingIntentForeground == null) {
             Intent intentForeground = new Intent(this, MainActivity.class);
             intentForeground.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            pendingIntentForeground = PendingIntent.getActivity(this, 1, intentForeground, 0);
+            pendingIntentForeground = PendingIntent.getActivity(this, 1, intentForeground, Build.VERSION.SDK_INT >= 23 ? FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE : FLAG_UPDATE_CURRENT);
         }
 
         if(intent.getAction() == null) {
