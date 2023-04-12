@@ -60,7 +60,7 @@ public class BillingConnectWrapper implements PurchasesUpdatedListener {
 
             for (Purchase purchase : purchaseList) {
                 for (PurchaseItem item : purchaseItemList) {
-                    if (item.getItemName().equals(purchase.getSku())) {
+                    if (item.getItemName().equals(purchase.getSkus().get(0))) {
                         item.handlePurchase(billingClient, purchase);
                     }
                 }
@@ -174,7 +174,7 @@ final class QueryPurchasesConnector extends BaseConnector {
         if (purchasesResult.getPurchasesList() != null) {
             for (Purchase purchase : purchasesResult.getPurchasesList()) {
                 for (PurchaseItem item : purchaseItemList) {
-                    if (item.getItemName().equals(purchase.getSku())) {
+                    if (item.getItemName().equals(purchase.getSkus().get(0))) {
                         // 課金状況を復帰
                         item.handlePurchase(billingClient, purchase);
                     }
