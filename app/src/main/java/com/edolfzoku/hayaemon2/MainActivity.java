@@ -184,9 +184,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView mImgViewDown, mImgViewArtworkInMenu, mImgViewRecording;
     private TabLayout mTabLayout;
     private View mViewSep0, mViewSep1, mViewSep2, mViewSep3, mDividerMenu;
-    private TextView mTextCurPos, mTextRemain, mTextTitle, mTextArtist, mTextRecordingTime, mTextSave, mTextLock, mTextHideAds, mTextItemInMenu, mTextReport, mTextReview, mTextInfo, mTextAddSong, mTextPlaying, mTextTitleInMenu, mTextArtistInMenu, mTextRecording;
+    private TextView mTextCurPos, mTextRemain, mTextTitle, mTextArtist, mTextRecordingTime, mTextSave, mTextLock, mTextHideAds, mTextItemInMenu, mTextInquiry, mTextReview, mTextInfo, mTextAddSong, mTextPlaying, mTextTitleInMenu, mTextArtistInMenu, mTextRecording;
     private AnimationButton mBtnMenu, mBtnRewind, mBtnPlay, mBtnForward, mBtnShuffle, mBtnRepeat, mBtnRecord, mBtnPlayInPlayingBar, mBtnForwardInPlayingBar, mBtnRewindInPlayingBar, mBtnMoreInPlayingBar, mBtnShuffleInPlayingBar, mBtnRepeatInPlayingBar, mBtnCloseInPlayingBar, mBtnStopRecording, mBtnArtworkInPlayingBar, mBtnSetting, mBtnDarkMode;
-    private RelativeLayout mRelativeRecording, mRelativeSave, mRelativeLock, mRelativeAddSong, mRelativeItem, mRelativeReport, mRelativeReview, mRelativeHideAds, mRelativeInfo, mRelativePlayingWithShadow, mRelativePlaying, mRelativeLeftMenu;
+    private RelativeLayout mRelativeRecording, mRelativeSave, mRelativeLock, mRelativeAddSong, mRelativeItem, mRelativeInquiry, mRelativeReview, mRelativeHideAds, mRelativeInfo, mRelativePlayingWithShadow, mRelativePlaying, mRelativeLeftMenu;
     private GestureDetector mGestureDetector;
 
     public HoldableViewPager getViewPager() { return mViewPager; }
@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRelativeLock = findViewById(R.id.relativeLock);
         mRelativeAddSong = findViewById(R.id.relativeAddSong);
         mRelativeItem = findViewById(R.id.relativeItem);
-        mRelativeReport = findViewById(R.id.relativeReport);
+        mRelativeInquiry = findViewById(R.id.relativeInquiry);
         mRelativeReview = findViewById(R.id.relativeReview);
         mRelativeHideAds = findViewById(R.id.relativeHideAds);
         mRelativeInfo = findViewById(R.id.relativeInfo);
@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTextLock = findViewById(R.id.textLock);
         mTextHideAds = findViewById(R.id.textHideAds);
         mTextItemInMenu = findViewById(R.id.textItemInMenu);
-        mTextReport = findViewById(R.id.textReport);
+        mTextInquiry = findViewById(R.id.textInquiry);
         mTextReview = findViewById(R.id.textReview);
         mTextInfo = findViewById(R.id.textInfo);
         mTextAddSong = findViewById(R.id.textAddSong);
@@ -357,8 +357,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRelativeAddSong.setOnClickListener(this);
         mRelativeItem.setOnTouchListener(this);
         mRelativeItem.setOnClickListener(this);
-        mRelativeReport.setOnTouchListener(this);
-        mRelativeReport.setOnClickListener(this);
+        mRelativeInquiry.setOnTouchListener(this);
+        mRelativeInquiry.setOnClickListener(this);
         mRelativeReview.setOnTouchListener(this);
         mRelativeReview.setOnClickListener(this);
         mRelativeHideAds.setOnTouchListener(this);
@@ -522,7 +522,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mRelativeAddSong.setBackgroundColor(color);
             mRelativeHideAds.setBackgroundColor(color);
             mRelativeItem.setBackgroundColor(color);
-            mRelativeReport.setBackgroundColor(color);
+            mRelativeInquiry.setBackgroundColor(color);
             mRelativeReview.setBackgroundColor(color);
             mRelativeInfo.setBackgroundColor(color);
         }
@@ -1176,7 +1176,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mRelativeAddSong.setBackgroundColor(color);
             mRelativeHideAds.setBackgroundColor(color);
             mRelativeItem.setBackgroundColor(color);
-            mRelativeReport.setBackgroundColor(color);
+            mRelativeInquiry.setBackgroundColor(color);
             mRelativeReview.setBackgroundColor(color);
             mRelativeInfo.setBackgroundColor(color);
             if(v.getId() == R.id.btnRewind || v.getId() == R.id.btnRewindInPlayingBar) {
@@ -1204,7 +1204,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if(v.getId() == R.id.relativeAddSong) mRelativeAddSong.setBackgroundColor(color);
             if(v.getId() == R.id.relativeHideAds) mRelativeHideAds.setBackgroundColor(color);
             if(v.getId() == R.id.relativeItem) mRelativeItem.setBackgroundColor(color);
-            if(v.getId() == R.id.relativeReport) mRelativeReport.setBackgroundColor(color);
+            if(v.getId() == R.id.relativeInquiry) mRelativeInquiry.setBackgroundColor(color);
             if(v.getId() == R.id.relativeReview) mRelativeReview.setBackgroundColor(color);
             if(v.getId() == R.id.relativeInfo) mRelativeInfo.setBackgroundColor(color);
         }
@@ -1366,7 +1366,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mDrawerLayout.closeDrawer(GravityCompat.START);
             openItem();
         }
-        else if(v.getId() == R.id.relativeReport) {
+        else if(v.getId() == R.id.relativeInquiry) {
             String strVersionName;
             try {
                 strVersionName = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
@@ -1375,9 +1375,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
                 return;
             }
-            Uri uri = Uri.parse("https://twitter.com/intent/tweet?screen_name=ryota_yama&text=" + getString(R.string.app_name) + " Android ver." + strVersionName + " Android " + Build.VERSION.RELEASE + " " + Build.MODEL);
-            Intent i = new Intent(Intent.ACTION_VIEW,uri);
-            startActivity(i);
+            if (Locale.getDefault().equals(Locale.JAPAN)) {
+                Uri uri = Uri.parse("https://docs.google.com/forms/d/e/1FAIpQLSdtMuEZsi8Xb5CDnyvPyLutgrKhFNQgVLdPmV93eo1s_Q6xTQ/viewform?usp=pp_url&entry.1013674018=" + Build.MODEL + "&entry.676820163=" + "Android " + Build.VERSION.RELEASE + "&entry.2144508540=Android ver." + strVersionName);
+                Intent i = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(i);
+            } else {
+                Uri uri = Uri.parse("https://docs.google.com/forms/d/e/1FAIpQLSfV2ql2kSRo_xk-tiQ8hZ8on0bDmVCeSZjBus4mPF_m1TU_rQ/viewform?usp=pp_url&entry.1811262495=" + Build.MODEL + "&entry.1786651102=" + "Android " + Build.VERSION.RELEASE + "&entry.169112498=Android ver." + strVersionName);
+                Intent i = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(i);
+            }
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
         else if(v.getId() == R.id.relativeReview) {
@@ -2509,7 +2515,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     findViewById(R.id.relativeAddSong).setBackgroundColor(color);
                     findViewById(R.id.relativeHideAds).setBackgroundColor(color);
                     findViewById(R.id.relativeItem).setBackgroundColor(color);
-                    findViewById(R.id.relativeReport).setBackgroundColor(color);
+                    findViewById(R.id.relativeInquiry).setBackgroundColor(color);
                     findViewById(R.id.relativeReview).setBackgroundColor(color);
                     findViewById(R.id.relativeInfo).setBackgroundColor(color);
                 }
@@ -2923,14 +2929,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mRelativeAddSong.setBackgroundColor(nColorModeBk);
                 mRelativeHideAds.setBackgroundColor(nColorModeBk);
                 mRelativeItem.setBackgroundColor(nColorModeBk);
-                mRelativeReport.setBackgroundColor(nColorModeBk);
+                mRelativeInquiry.setBackgroundColor(nColorModeBk);
                 mRelativeReview.setBackgroundColor(nColorModeBk);
                 mRelativeInfo.setBackgroundColor(nColorModeBk);
                 mTextSave.setTextColor(nColorModeText);
                 mTextLock.setTextColor(nColorModeText);
                 mTextHideAds.setTextColor(nColorModeText);
                 mTextItemInMenu.setTextColor(nColorModeText);
-                mTextReport.setTextColor(nColorModeText);
+                mTextInquiry.setTextColor(nColorModeText);
                 mTextReview.setTextColor(nColorModeText);
                 mTextInfo.setTextColor(nColorModeText);
                 mTextAddSong.setTextColor(nColorModeText);
@@ -3162,14 +3168,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mRelativeAddSong.setBackgroundColor(nColorModeBk);
                 mRelativeHideAds.setBackgroundColor(nColorModeBk);
                 mRelativeItem.setBackgroundColor(nColorModeBk);
-                mRelativeReport.setBackgroundColor(nColorModeBk);
+                mRelativeInquiry.setBackgroundColor(nColorModeBk);
                 mRelativeReview.setBackgroundColor(nColorModeBk);
                 mRelativeInfo.setBackgroundColor(nColorModeBk);
                 mTextSave.setTextColor(nColorModeText);
                 mTextLock.setTextColor(nColorModeText);
                 mTextHideAds.setTextColor(nColorModeText);
                 mTextItemInMenu.setTextColor(nColorModeText);
-                mTextReport.setTextColor(nColorModeText);
+                mTextInquiry.setTextColor(nColorModeText);
                 mTextReview.setTextColor(nColorModeText);
                 mTextInfo.setTextColor(nColorModeText);
                 mTextAddSong.setTextColor(nColorModeText);
