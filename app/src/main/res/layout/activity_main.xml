@@ -799,50 +799,12 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/relativeInquiry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:layout_below="@id/relativeItem"
-                    >
-
-                    <ImageView
-                        android:id="@+id/imgInquiry"
-                        android:contentDescription="@null"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:src="@drawable/ic_leftmenu_mail"
-                        android:layout_centerVertical="true"
-                        />
-
-                    <TextView
-                        android:id="@+id/textInquiry"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/inquiry"
-                        android:textColor="#000"
-                        android:textSize="14dp"
-                        android:layout_marginTop="21dp"
-                        android:layout_marginBottom="21dp"
-                        android:layout_toRightOf="@id/imgInquiry"
-                        android:layout_toEndOf="@id/imgInquiry"
-                        android:layout_centerVertical="true"
-                        />
-
-                </RelativeLayout>
-
-                <RelativeLayout
                     android:id="@+id/relativeReview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="true"
-                    android:layout_below="@id/relativeInquiry"
+                    android:layout_below="@id/relativeItem"
                     >
 
                     <ImageView
@@ -875,12 +837,50 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/relativeInfo"
+                    android:id="@+id/relativeInquiry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="true"
                     android:layout_below="@id/relativeReview"
+                    >
+
+                    <ImageView
+                        android:id="@+id/imgInquiry"
+                        android:contentDescription="@null"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_leftmenu_mail"
+                        android:layout_centerVertical="true"
+                        />
+
+                    <TextView
+                        android:id="@+id/textInquiry"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/inquiry"
+                        android:textColor="#000"
+                        android:textSize="14dp"
+                        android:layout_marginTop="21dp"
+                        android:layout_marginBottom="21dp"
+                        android:layout_toRightOf="@id/imgInquiry"
+                        android:layout_toEndOf="@id/imgInquiry"
+                        android:layout_centerVertical="true"
+                        />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_below="@id/relativeInquiry"
                     >
 
                     <ImageView
