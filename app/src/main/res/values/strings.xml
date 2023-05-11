@@ -228,6 +228,7 @@
     <string name="billingItem">Payment items</string>
     <string name="inquiry">Inquiry</string>
     <string name="review">Request / Review</string>
+    <string name="help">Help / FAQ</string>
     <string name="about">About Hayaemon</string>
     <string name="setting">Setting</string>
     <string name="sort">Sort</string>
