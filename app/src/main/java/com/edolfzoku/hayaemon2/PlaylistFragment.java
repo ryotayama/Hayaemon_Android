@@ -3156,9 +3156,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         EffectFragment.setFreq(saver.getFreq(), false);
         EffectFragment.sBpm = saver.getBPM();
         EffectFragment.setSoundEffect(saver.getSoundEffectVolume(), false);
-        EffectFragment.setTimeOfIncreaseSpeed(saver.getTimeOmIncreaseSpeed());
-        EffectFragment.setIncreaseSpeedSpecified(saver.getIncreaseSpeed());
-        EffectFragment.setIncreaseSpeedLoop(saver.getIncreaseSpeedLoop());
+        EffectFragment.setTimeOfIncreaseSpeed(saver.getTimeOmIncreaseSpeed(), false);
+        EffectFragment.setIncreaseSpeedSpecified(saver.getIncreaseSpeed(), false);
+        EffectFragment.setIncreaseSpeedLoop(saver.getIncreaseSpeedLoop(), false);
         EffectFragment.setTimeOfDecreaseSpeed(saver.getTimeOmDecreaseSpeed());
         EffectFragment.setDecreaseSpeedSpecified(saver.getDecreaseSpeed());
         EffectFragment.setDecreaseSpeedLoop(saver.getDecreaseSpeedLoop());
@@ -3217,6 +3217,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         EffectFragment.setPanSelected(saver.getPanSelected());
         EffectFragment.setFreqSelected(saver.getFreqSelected());
         EffectFragment.setMetronomeSelected(saver.getMetronomeSelected());
+        EffectFragment.setIncreaseSpeedSelected(saver.getIncreaseSpeedSelected());
         EffectFragment.setSoundEffectSelected(saver.getSoundEffectSelected());
         if (!saver.isVolPercent()) updateSavingEffect();
     }

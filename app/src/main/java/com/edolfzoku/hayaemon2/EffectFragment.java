@@ -92,6 +92,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static ArrayList<EffectTemplateItem> sPanItems;
     private static ArrayList<EffectTemplateItem> sFreqItems;
     private static ArrayList<EffectTemplateItem> sMetronomeItems;
+    private static ArrayList<EffectTemplateItem> sIncreaseSpeedItems;
     private static ArrayList<EffectTemplateItem> sSoundEffectItems;
     private ItemTouchHelper mEffectTemplateTouchHelper;
     private static Metronome sMetronome;
@@ -151,6 +152,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private static final int PAN_VALUE_MAX = 200;
     private static final int FREQ_VALUE_MAX = 390;
     private static final int METRONOME_VALUE_MAX = 390;
+    private static final int INCREASE_SPEED_VALUE_MAX = 0;
     private static final int ECHO_DRY_MAX = 200;
     private static final int ECHO_WET_MAX = 200;
     private static final int ECHO_FEEDBACK_MAX = 98;
@@ -179,13 +181,13 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private boolean mSorting, mAddTemplate;
     private static float sAccel = 0.0f, sVelo1 = 0.0f, sVelo2 = 0.0f;
     private boolean mContinueFlag = true;
-    static int sEffectDetail = -1, sReverbSelected = -1, sEchoSelected = -1, sChorusSelected = -1, sDistortionSelected = -1, sCompSelected = -1, sPanSelected = -1, sFreqSelected = -1, sMetronomeSelected = -1, sSoundEffectSelected = -1;
+    static int sEffectDetail = -1, sReverbSelected = -1, sEchoSelected = -1, sChorusSelected = -1, sDistortionSelected = -1, sCompSelected = -1, sPanSelected = -1, sFreqSelected = -1, sMetronomeSelected = -1, sIncreaseSpeedSelected = -1, sSoundEffectSelected = -1;
     private RecyclerView mRecyclerEffects, mRecyclerEffectTemplates;
     private TextView mTextEffectName, mTextCompGain, mTextCompThreshold, mTextCompRatio, mTextCompAttack, mTextCompRelease, mTextPanValue, mTextFreqValue, mTextMetronomeValue, mTextEchoDry, mTextEchoWet, mTextEchoFeedback, mTextEchoDelay, mTextReverbDry, mTextReverbWet, mTextReverbRoomSize, mTextReverbDamp, mTextReverbWidth, mTextChorusDry, mTextChorusWet, mTextChorusFeedback, mTextChorusMinSweep, mTextChorusMaxSweep, mTextChorusRate, mTextDistortionDrive, mTextDistortionDry, mTextDistortionWet, mTextDistortionFeedback, mTextDistortionVolume, mTextSoundEffectVolume, mTextFinishSortEffect, mTextCompGainLabel, mTextCompThresholdLabel, mTextCompRatioLabel, mTextCompAttackLabel, mTextCompReleaseLabel, mTextPanValueLabel, mTextFreqValueLabel, mTextMetronomeValueLabel, mTextEchoDryLabel, mTextEchoWetLabel, mTextEchoFeedbackLabel, mTextEchoDelayLabel, mTextReverbDryLabel, mTextReverbWetLabel, mTextReverbRoomSizeLabel, mTextReverbDampLabel, mTextReverbWidthLabel, mTextChorusDryLabel, mTextChorusWetLabel, mTextChorusFeedbackLabel, mTextChorusMinSweepLabel, mTextChorusMaxSweepLabel, mTextChorusRateLabel, mTextDistortionDriveLabel, mTextDistortionDryLabel, mTextDistortionWetLabel, mTextDistortionFeedbackLabel, mTextDistortionVolumeLabel, mTextSoundEffectVolumeLabel, mTextTimeSpecifiedEffectDetail, mTextSpeedSpecifiedEffectDetail, mTextSpeedLoopEffectDetail;
     private RelativeLayout mRelativeEffectDetail, mRelativeSpecifiedEffectDetail, mRelativeLoopEffectDetail, mRelativeEffectTemplates, mRelativeEffectTitle, mRelativeComp, mRelativePan, mRelativeFreq, mRelativeMetronome, mRelativeEcho, mRelativeReverb, mRelativeChorus, mRelativeDistortion, mRelativeSoundEffect;
     private SeekBar mSeekCompGain, mSeekCompThreshold, mSeekCompRatio, mSeekCompAttack, mSeekCompRelease, mSeekPanValue, mSeekFreqValue, mSeekMetronomeValue, mSeekEchoDry, mSeekEchoWet, mSeekEchoFeedback, mSeekEchoDelay, mSeekReverbDry, mSeekReverbWet, mSeekReverbRoomSize, mSeekReverbDamp, mSeekReverbWidth, mSeekChorusDry, mSeekChorusWet, mSeekChorusFeedback, mSeekChorusMinSweep, mSeekChorusMaxSweep, mSeekChorusRate, mSeekDistortionDrive, mSeekDistortionDry, mSeekDistortionWet, mSeekDistortionFeedback, mSeekDistortionVolume, mSeekSoundEffectVolume;
     private ImageButton mBtnCompGainMinus, mBtnCompGainPlus, mBtnCompThresholdMinus, mBtnCompThresholdPlus, mBtnCompRatioMinus, mBtnCompRatioPlus, mBtnCompAttackMinus, mBtnCompAttackPlus, mBtnCompReleaseMinus, mBtnCompReleasePlus, mBtnPanValueMinus, mBtnPanValuePlus, mBtnFreqValueMinus, mBtnFreqValuePlus, mBtnMetronomeValueMinus, mBtnMetronomeValuePlus, mBtnEchoDryMinus, mBtnEchoDryPlus, mBtnEchoWetMinus, mBtnEchoWetPlus, mBtnEchoFeedbackMinus, mBtnEchoFeedbackPlus, mBtnEchoDelayMinus, mBtnEchoDelayPlus, mBtnReverbDryMinus, mBtnReverbDryPlus, mBtnReverbWetMinus, mBtnReverbWetPlus, mBtnReverbRoomSizeMinus, mBtnReverbRoomSizePlus, mBtnReverbDampMinus, mBtnReverbDampPlus, mBtnReverbWidthMinus, mBtnReverbWidthPlus, mBtnChorusDryMinus, mBtnChorusDryPlus, mBtnChorusWetMinus, mBtnChorusWetPlus, mBtnChorusFeedbackMinus, mBtnChorusFeedbackPlus, mBtnChorusMinSweepMinus, mBtnChorusMinSweepPlus, mBtnChorusMaxSweepMinus, mBtnChorusMaxSweepPlus, mBtnChorusRateMinus, mBtnChorusRatePlus, mBtnDistortionDriveMinus, mBtnDistortionDrivePlus, mBtnDistortionDryMinus, mBtnDistortionDryPlus, mBtnDistortionWetMinus, mBtnDistortionWetPlus, mBtnDistortionFeedbackMinus, mBtnDistortionFeedbackPlus, mBtnDistortionVolumeMinus, mBtnDistortionVolumePlus, mBtnSoundEffectVolumeMinus, mBtnSoundEffectVolumePlus;
-    private Button mBtnEffectOff, mBtnEffectBack, mBtnEffectFinish, mBtnEffectTemplateOff, mBtnReverbSaveAs, mBtnEchoSaveAs, mBtnChorusSaveAs, mBtnDistortionSaveAs, mBtnCompSaveAs, mBtnCompRandom, mBtnResetComp, mBtnPanSaveAs, mBtnPanRandom, mBtnResetPan, mBtnFreqSaveAs, mBtnFreqRandom, mBtnResetFreq, mBtnMetronomeSaveAs, mBtnMetronomeRandom, mBtnResetMetronome, mBtnEchoRandom, mBtnResetEcho, mBtnReverbRandom, mBtnResetReverb, mBtnChorusRandom, mBtnResetChorus, mBtnDistortionRandom, mBtnResetDistortion;
+    private Button mBtnEffectOff, mBtnEffectBack, mBtnEffectFinish, mBtnEffectTemplateOff, mBtnReverbSaveAs, mBtnEchoSaveAs, mBtnChorusSaveAs, mBtnDistortionSaveAs, mBtnCompSaveAs, mBtnCompRandom, mBtnResetComp, mBtnPanSaveAs, mBtnPanRandom, mBtnResetPan, mBtnFreqSaveAs, mBtnFreqRandom, mBtnResetFreq, mBtnMetronomeSaveAs, mBtnMetronomeRandom, mBtnResetMetronome, mBtnEchoRandom, mBtnResetEcho, mBtnReverbRandom, mBtnResetReverb, mBtnChorusRandom, mBtnResetChorus, mBtnDistortionRandom, mBtnResetDistortion, mBtnResetIncreaseSpeedSpecified, mBtnIncreaseSpeedSpecifiedRandom, mBtnResetIncreaseSpeedLoop, mBtnIncreaseSpeedLoopRandom;
 
     static boolean sSpecifiedEffectDetail = true, sLoopEffectDetail = false;
     private RadioGroup mRadioGroupEffectDetail;
@@ -193,7 +195,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private EditText mEditSpeedSpecifiedEffectDetail, mEditTimeSpecifiedEffectDetail, mEditPitchSpecifiedEffectDetail, mEditPTimeSpecifiedEffectDetail, mEditSpeedLoopEffectDetail, mEditPitchLoopEffectDetail;
 
     private AnimationButton mBtnEffectTemplateMenu, mBtnAddEffectTemplate;
-    private ScrollView mScrollCompCustomize, mScrollPanCustomize, mScrollFreqCustomize, mScrollMetronomeCustomize, mScrollEchoCustomize, mScrollReverbCustomize, mScrollChorusCustomize, mScrollDistortionCustomize, mScrollSoundEffectCustomize;
+    private ScrollView mScrollCompCustomize, mScrollPanCustomize, mScrollFreqCustomize, mScrollMetronomeCustomize, mScrollEchoCustomize, mScrollReverbCustomize, mScrollChorusCustomize, mScrollDistortionCustomize, mScrollIncreaseSpeedCustomize, mScrollSoundEffectCustomize;
     private View mViewSepEffectHeader, mViewSepEffectDetail, mViewSepEffectTemplateHeader;
     private ImageView mImgEffectBack;
 
@@ -270,6 +272,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private ScrollView getScrollChorusCustomize() { return mScrollChorusCustomize; }
     private ScrollView getScrollDistortionCustomize() { return mScrollDistortionCustomize; }
     private ScrollView getScrollSoundEffectCustomize() { return mScrollSoundEffectCustomize; }
+    private ScrollView getScrollIncreaseSpeedCustomize() { return mScrollIncreaseSpeedCustomize; }
     private RelativeLayout getRelativeEffectTemplates() { return mRelativeEffectTemplates; }
     private Button getBtnEffectTemplateOff() { return mBtnEffectTemplateOff; }
     private EffectTemplatesAdapter getEffectTemplatesAdapter() { return mEffectTemplatesAdapter; }
@@ -331,28 +334,34 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
     }
 
-    public static void setTimeOfIncreaseSpeed(float timeOfIncreaseSpeed) {
+    public static void setTimeOfIncreaseSpeed(float timeOfIncreaseSpeed, boolean bSave) {
         sTimeOfIncreaseSpeedSpecified = timeOfIncreaseSpeed;
         if (sActivity != null) {
             if (sActivity.effectFragment.getTextEffectName().getText().toString().equals(sEffectItems.get(EFFECTTYPE_INCREASESPEED).getEffectName()))
                 sActivity.effectFragment.getEditTimeSpecifiedEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%s", sTimeOfIncreaseSpeedSpecified, sActivity.getString(R.string.sec)));
         }
+
+        if (bSave) PlaylistFragment.updateSavingEffect();
     }
 
-    public static void setIncreaseSpeedSpecified(float increaseSpeed) {
+    public static void setIncreaseSpeedSpecified(float increaseSpeed, boolean bSave) {
         sIncreaseSpeedSpecified = increaseSpeed;
         if (sActivity != null) {
             if (sActivity.effectFragment.getTextEffectName().getText().toString().equals(sEffectItems.get(EFFECTTYPE_INCREASESPEED).getEffectName()))
                 sActivity.effectFragment.getEditSpeedSpecifiedEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%%", sIncreaseSpeedSpecified));
         }
+
+        if (bSave) PlaylistFragment.updateSavingEffect();
     }
 
-    public static void setIncreaseSpeedLoop(float increaseSpeed) {
+    public static void setIncreaseSpeedLoop(float increaseSpeed, boolean bSave) {
         sIncreaseSpeedLoop = increaseSpeed;
         if (sActivity != null) {
             if (sActivity.effectFragment.getTextEffectName().getText().toString().equals(sEffectItems.get(EFFECTTYPE_INCREASESPEED).getEffectName()))
                 sActivity.effectFragment.getEditSpeedLoopEffectDetail().setText(String.format(Locale.getDefault(), "%.1f%%", sIncreaseSpeedLoop));
         }
+
+        if (bSave) PlaylistFragment.updateSavingEffect();
     }
 
     public static void setTimeOfDecreaseSpeed(float timeOfDecreaseSpeed) {
@@ -417,6 +426,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private void setMetronomeItems(ArrayList<EffectTemplateItem> lists) {
         sMetronomeItems = lists;
         mEffectTemplatesAdapter.changeItems(sMetronomeItems);
+    }
+
+    private void setIncreaseSpeedItems(ArrayList<EffectTemplateItem> lists) {
+        sIncreaseSpeedItems = lists;
+        mEffectTemplatesAdapter.changeItems(sIncreaseSpeedItems);
     }
 
     private void setSoundEffectItems(ArrayList<EffectTemplateItem> lists) {
@@ -585,6 +599,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
     }
 
+    public static void setIncreaseSpeedSelected(int nSelected) {
+        sIncreaseSpeedSelected = nSelected;
+        for (int i = 0; i < sIncreaseSpeedItems.size(); i++) sIncreaseSpeedItems.get(i).setSelected(i == nSelected);
+        if(sActivity != null && sActivity.effectFragment != null) {
+            if (sActivity.effectFragment.getRelativeEffectTemplates().getVisibility() == View.VISIBLE && sEffectDetail == EFFECTTYPE_INCREASESPEED) {
+                sActivity.effectFragment.getBtnEffectTemplateOff().setSelected(nSelected == -1);
+                sActivity.effectFragment.getEffectTemplatesAdapter().notifyDataSetChanged();
+            }
+        }
+    }
+
     public static void setSoundEffectSelected(int nSelected) {
         sSoundEffectSelected = nSelected;
         for (int i = 0; i < sSoundEffectItems.size(); i++) sSoundEffectItems.get(i).setSelected(i == nSelected);
@@ -606,6 +631,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         if(sPanItems == null) sPanItems = new ArrayList<>();
         if(sFreqItems == null) sFreqItems = new ArrayList<>();
         if(sMetronomeItems == null) sMetronomeItems = new ArrayList<>();
+        if(sIncreaseSpeedItems == null) sIncreaseSpeedItems = new ArrayList<>();
         if(sSoundEffectItems == null) sSoundEffectItems = new ArrayList<>();
         mHandlerLongClick = new Handler();
     }
@@ -774,6 +800,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
                 if (mBtnAddEffectTemplate.getVisibility() == View.VISIBLE)
                     mBtnAddEffectTemplate.setAlpha(1.0f);
+            } else if (mScrollIncreaseSpeedCustomize.getVisibility() == View.VISIBLE) {
+                // TODO:だんだん速くのカスタマイズ画面表示中に戻るボタン押されたときの処理
             } else {
                 mRelativeEffectDetail.setVisibility(View.GONE);
                 mRelativeEffectTemplates.setVisibility(View.INVISIBLE);
@@ -1066,6 +1094,17 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                         saveData();
                     }
                     mScrollMetronomeCustomize.setVisibility(View.INVISIBLE);
+                } else if (sEffectDetail == EFFECTTYPE_INCREASESPEED) {
+                    for (; nItem < sIncreaseSpeedItems.size(); nItem++) {
+                        item = sIncreaseSpeedItems.get(nItem);
+                        if (item.isSelected()) break;
+                    }
+                    if (item != null) {
+                        ArrayList<Float> arPresets = item.getArPresets();
+                        // TODO: ここは何を書くんだろうか　そもそもやっていることがわからない
+                        // だんだん速くは他とレイアウトちがうからやること変えないといけない気がする
+                    }
+                    mScrollIncreaseSpeedCustomize.setVisibility(View.INVISIBLE);
                 } else if (sEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
                     for (; nItem < sSoundEffectItems.size(); nItem++) {
                         item = sSoundEffectItems.get(nItem);
@@ -1137,6 +1176,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mTextEffectName.setText(R.string.newMetronome);
                 mScrollMetronomeCustomize.setVisibility(View.VISIBLE);
                 mBtnMetronomeSaveAs.setVisibility(View.GONE);
+            } else if (sEffectDetail == EFFECTTYPE_INCREASESPEED) {
+                mTextEffectName.setText(R.string.newIncreaseSpeed);
+                mScrollIncreaseSpeedCustomize.setVisibility(View.VISIBLE);
+                // TODO: mBtnIncreaseSpeedSaveAsの実装
+                // mBtnIncreaseSpeedSaveAs.setVisibility(View.GONE);
             }
 
             mBtnEffectBack.setText(R.string.cancel);
@@ -2619,6 +2663,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mTextTimeSpecifiedEffectDetail = sActivity.findViewById(R.id.textTimeSpecifiedEffectDetail);
         mTextSpeedSpecifiedEffectDetail = sActivity.findViewById(R.id.textSpeedSpecifiedEffectDetail);
         mTextSpeedLoopEffectDetail = sActivity.findViewById(R.id.textSpeedLoopEffectDetail);
+        mScrollIncreaseSpeedCustomize = sActivity.findViewById(R.id.scrollIncreaseSpeedCustomize);
 
         mRecyclerEffects = sActivity.findViewById(R.id.recyclerEffects);
         mRecyclerEffectTemplates = sActivity.findViewById(R.id.recyclerEffectTemplates);
@@ -2638,6 +2683,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnResetChorus = sActivity.findViewById(R.id.btnResetChorus);
         mBtnDistortionRandom = sActivity.findViewById(R.id.btnDistortionRandom);
         mBtnResetDistortion = sActivity.findViewById(R.id.btnResetDistortion);
+        mBtnIncreaseSpeedSpecifiedRandom = sActivity.findViewById(R.id.btnIncreaseSpeedSpecifiedRandom);
+        mBtnResetIncreaseSpeedSpecified = sActivity.findViewById(R.id.btnResetIncreaseSpeedSpecified);
+        mBtnIncreaseSpeedLoopRandom = sActivity.findViewById(R.id.btnIncreaseSpeedLoopRandom);
+        mBtnResetIncreaseSpeedLoop = sActivity.findViewById(R.id.btnResetIncreaseSpeedLoop);
 
         mSeekCompGain.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
         mSeekCompThreshold.getProgressDrawable().setColorFilter(Color.parseColor("#A0A0A0"), PorterDuff.Mode.SRC_IN);
@@ -3052,6 +3101,10 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnSoundEffectVolumePlus.setOnClickListener(this);
         mBtnSoundEffectVolumePlus.setOnLongClickListener(this);
         mBtnSoundEffectVolumePlus.setOnTouchListener(this);
+        mBtnResetIncreaseSpeedSpecified.setOnClickListener(this);
+        mBtnIncreaseSpeedSpecifiedRandom.setOnClickListener(this);
+        mBtnResetIncreaseSpeedLoop.setOnClickListener(this);
+        mBtnIncreaseSpeedLoopRandom.setOnClickListener(this);
 
         //mRadioButtonSpecifiedEffectDetail.setOnClickListener(this);
         //mRadioButtonLoopEffectDetail.setOnClickListener(this);
@@ -3102,6 +3155,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }.getType());
         ArrayList<EffectTemplateItem> metronomeItems = gson.fromJson(preferences.getString("sMetronomeItems", ""), new TypeToken<ArrayList<EffectTemplateItem>>() {
         }.getType());
+        ArrayList<EffectTemplateItem> increaseSpeedItems = gson.fromJson(preferences.getString("sIncreaseSpeed", ""), new TypeToken<ArrayList<EffectTemplateItem>>() {
+        }.getType());
         ArrayList<EffectTemplateItem> soundEffectItems = gson.fromJson(preferences.getString("sSoundEffectItems", ""), new TypeToken<ArrayList<EffectTemplateItem>>() {
         }.getType());
 
@@ -3137,6 +3192,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         else resetFreqs();
         if (metronomeItems != null) setMetronomeItems(metronomeItems);
         else resetMetronomes();
+        if (increaseSpeedItems != null) setIncreaseSpeedItems(increaseSpeedItems);
+        else resetIncreaseSpeeds();
         if (soundEffectItems != null && soundEffectItems.size() != 0)
             setSoundEffectItems(soundEffectItems);
         else resetSoundEffects();
@@ -3296,6 +3353,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         resetMetronome();
     }
 
+    private void resetIncreaseSpeeds() {
+        if (sIncreaseSpeedItems.size() > 0) sIncreaseSpeedItems.clear();
+
+        sIncreaseSpeedItems.add(new EffectTemplateItem(getString(R.string.increase0_1Every1Sec), new ArrayList<>(Arrays.asList(1.0f, 0.1f))));
+        sIncreaseSpeedItems.add(new EffectTemplateItem(getString(R.string.increase0_1Every1Sec), new ArrayList<>(Arrays.asList(1.0f, 1.0f))));
+        sIncreaseSpeedItems.add(new EffectTemplateItem(getString(R.string.increase0_1Every1Sec), new ArrayList<>(Arrays.asList(1.0f))));
+
+        saveData();
+        mEffectTemplatesAdapter.notifyDataSetChanged();
+        resetIncreaseSpeed();
+    }
+
     private void resetSoundEffects() {
         if (sSoundEffectItems.size() > 0) sSoundEffectItems.clear();
 
@@ -3323,7 +3392,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
 
         if (!selected) {
             mBtnEffectOff.setSelected(false);
-            if (nEffect == EFFECTTYPE_REVERB || nEffect == EFFECTTYPE_ECHO || nEffect == EFFECTTYPE_CHORUS || nEffect == EFFECTTYPE_DISTORTION || nEffect == EFFECTTYPE_COMP || nEffect == EFFECTTYPE_PAN || nEffect == EFFECTTYPE_FREQ || nEffect == EFFECTTYPE_METRONOME || nEffect == EFFECTTYPE_SOUNDEFFECT) {
+            if (nEffect == EFFECTTYPE_REVERB || nEffect == EFFECTTYPE_ECHO || nEffect == EFFECTTYPE_CHORUS || nEffect == EFFECTTYPE_DISTORTION || nEffect == EFFECTTYPE_COMP || nEffect == EFFECTTYPE_PAN || nEffect == EFFECTTYPE_FREQ || nEffect == EFFECTTYPE_METRONOME || nEffect == EFFECTTYPE_SOUNDEFFECT || nEffect == EFFECTTYPE_INCREASESPEED) {
                 onEffectDetailClick(nEffect);
                 return;
             }
@@ -3565,9 +3634,6 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         sMetronome.stop();
         sPan = 0.0f;
         sFreq = 1.0f;
-        setTimeOfIncreaseSpeed(1.0f);
-        setIncreaseSpeedSpecified(0.1f);
-        setIncreaseSpeedLoop(1.0f);
         setTimeOfDecreaseSpeed(1.0f);
         setDecreaseSpeedSpecified(0.1f);
         setDecreaseSpeedLoop(1.0f);
@@ -3581,6 +3647,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         resetPan(save);
         resetFreq(save);
         resetMetronome(save);
+        resetIncreaseSpeed(save);
         resetEcho(save);
         resetReverb(save);
         resetChorus(save);
@@ -3720,6 +3787,36 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         setMetronome(110, save);
     }
 
+    private void setIncreaseSpeedSpecifiedRandom() {
+        setIncreaseSpeedSpecified(getRandomValue(0.1f, 10.9f), true);
+    }
+
+    private static void resetIncreaseSpeed() {
+        resetIncreaseSpeed(true);
+    }
+
+    private static void resetIncreaseSpeed(boolean save) {
+        if (sActivity != null && sActivity.effectFragment.getScrollIncreaseSpeedCustomize().getVisibility() != View.VISIBLE)
+            sEffectItems.get(EFFECTTYPE_INCREASESPEED).setSelected(false);
+        boolean bSelected = false;
+        for (int i = 0; i < sEffectItems.size(); i++) {
+            if (sEffectItems.get(i).isSelected()) bSelected = true;
+        }
+        for (int i = 0; i < sIncreaseSpeedItems.size(); i++) sIncreaseSpeedItems.get(i).setSelected(false);
+
+        sIncreaseSpeedSelected = -1;
+        if (sActivity != null) {
+            if (!bSelected) sActivity.effectFragment.getBtnEffectOff().setSelected(true);
+            sActivity.effectFragment.getBtnEffectTemplateOff().setSelected(true);
+            sActivity.effectFragment.getEffectsAdapter().notifyDataSetChanged();
+            sActivity.effectFragment.getEffectTemplatesAdapter().notifyDataSetChanged();
+        }
+
+        setTimeOfIncreaseSpeed(1.0f, save);
+        setIncreaseSpeedSpecified(0.1f, save);
+        setIncreaseSpeedLoop(1.0f, save);
+    }
+
     private void setEchoRandom() {
         int nDry = getRandomValue(50, 100);
         int nWet;
@@ -3761,6 +3858,11 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
     private int getRandomValue(int nMin, int nMax) {
         Random random = new Random();
         return random.nextInt(nMax - nMin) + nMin;
+    }
+
+    private float getRandomValue(float nMin, float nMax) {
+        Random random = new Random();
+        return random.nextFloat() * (nMax - nMin);
     }
 
     private void setReverbRandom() {
@@ -3935,12 +4037,16 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 if (sFreqSelected != -1) onEffectItemClick(nEffect);
             } else if (sEffectDetail == EFFECTTYPE_METRONOME) {
                 if (sMetronomeSelected != -1) onEffectItemClick(nEffect);
+            } else if (sEffectDetail == EFFECTTYPE_INCREASESPEED) {
+                if (sIncreaseSpeedSelected != -1) onEffectItemClick(nEffect);
             } else if (sEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
                 if (sSoundEffectSelected != -1) onEffectItemClick(nEffect);
             } else onEffectItemClick(nEffect);
         }
 
         mTextEffectName.setText(sEffectItems.get(nEffect).getEffectName());
+
+        // TODO: もしかしてこの下の塊をまるっと移動か？
         if (nEffect == EFFECTTYPE_INCREASESPEED) {
             mRadioButtonSpecifiedEffectDetail.setText(R.string.incSpeedTitle);
             mRadioButtonSpecifiedEffectDetail.setVisibility(View.VISIBLE);
@@ -3982,6 +4088,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         }
 
         if (nEffect == EFFECTTYPE_INCREASESPEED || nEffect == EFFECTTYPE_DECREASESPEED) {
+            // TODO: カスタマイズ画面へ遷移
             mTextSpeedSpecifiedEffectDetail.setText(getString(R.string.speedWithColon));
             mRelativeSpecifiedEffectDetail.setVisibility(View.VISIBLE);
             mTextSpeedLoopEffectDetail.setText(getString(R.string.speedWithColon));
@@ -4258,6 +4365,18 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mImgEffectBack.setVisibility(View.VISIBLE);
             mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
             mBtnMetronomeSaveAs.setVisibility(View.VISIBLE);
+        } else if (sEffectDetail == EFFECTTYPE_INCREASESPEED) {
+            EffectTemplateItem item = sIncreaseSpeedItems.get(nTemplate);
+            mTextEffectName.setText(item.getEffectTemplateName());
+
+            mBtnEffectBack.setText(R.string.back);
+            mBtnEffectFinish.setText(R.string.done);
+
+            mBtnEffectFinish.setVisibility(View.VISIBLE);
+            mRelativeEffectTemplates.setVisibility(View.INVISIBLE);
+            // TODO: だんだん速くのUI表示
+            mImgEffectBack.setVisibility(View.VISIBLE);
+            mBtnEffectBack.setPadding((int) (32 * sActivity.getDensity()), mBtnEffectBack.getPaddingTop(), mBtnEffectBack.getPaddingRight(), mBtnEffectBack.getPaddingBottom());
         } else if (sEffectDetail == EFFECTTYPE_SOUNDEFFECT) {
             EffectTemplateItem item = sSoundEffectItems.get(nTemplate);
             mTextEffectName.setText(item.getEffectTemplateName());
@@ -6500,6 +6619,14 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                                         else if (fromPos > saver.getMetronomeSelected() && saver.getMetronomeSelected() >= toPos)
                                             saver.setMetronomeSelected(saver.getMetronomeSelected() + 1);
                                     }
+                                    else if (sEffectDetail == EFFECTTYPE_INCREASESPEED) {
+                                        if (fromPos == saver.getIncreaseSpeedSelected())
+                                            saver.setIncreaseSpeedSelected(toPos);
+                                        else if (fromPos < saver.getIncreaseSpeedSelected() && saver.getIncreaseSpeedSelected() <= toPos)
+                                            saver.setIncreaseSpeedSelected(saver.getIncreaseSpeedSelected() - 1);
+                                        else if (fromPos > saver.getIncreaseSpeedSelected() && saver.getIncreaseSpeedSelected() >= toPos)
+                                            saver.setIncreaseSpeedSelected(saver.getIncreaseSpeedSelected() + 1);
+                                    }
                                 }
                             }
                         }
@@ -6548,6 +6675,7 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                         else if (sEffectDetail == EFFECTTYPE_PAN) resetPans();
                         else if (sEffectDetail == EFFECTTYPE_FREQ) resetFreqs();
                         else if (sEffectDetail == EFFECTTYPE_METRONOME) resetMetronomes();
+                        else if (sEffectDetail == EFFECTTYPE_INCREASESPEED) resetIncreaseSpeeds();
                     }
                 });
                 final AlertDialog alertDialog = builder.create();
@@ -6742,6 +6870,9 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                             } else if (sEffectDetail == EFFECTTYPE_METRONOME) {
                                 if (nItem < saver.getMetronomeSelected())
                                     saver.setMetronomeSelected(saver.getMetronomeSelected() + 1);
+                            } else if (sEffectDetail == EFFECTTYPE_INCREASESPEED) {
+                                if (nItem < saver.getIncreaseSpeedSelected())
+                                    saver.setIncreaseSpeedSelected(saver.getIncreaseSpeedSelected() + 1);
                             }
                         }
                     }
@@ -7035,6 +7166,31 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         saveData();
     }
 
+    private void removeIncreaseSpeedItem(int nItem) {
+        sIncreaseSpeedItems.remove(nItem);
+        mEffectTemplatesAdapter.notifyItemRemoved(nItem);
+
+        if (nItem == sIncreaseSpeedSelected) resetIncreaseSpeed();
+        else if (nItem < sIncreaseSpeedSelected) sIncreaseSpeedSelected--;
+
+        for (int i = 0; i < PlaylistFragment.sPlaylists.size(); i++) {
+
+            ArrayList<SongItem> arSongs = PlaylistFragment.sPlaylists.get(i);
+            ArrayList<EffectSaver> arEffects = PlaylistFragment.sEffects.get(i);
+            for (int j = 0; j < arSongs.size(); j++) {
+                EffectSaver saver = arEffects.get(j);
+                if (saver.isSave()) {
+                    if (nItem == saver.getMetronomeSelected()) {
+                        saver.setMetronomeSelected(-1);
+                        saver.setBPM(0);
+                    } else if (nItem < saver.getMetronomeSelected())
+                        saver.setMetronomeSelected(saver.getMetronomeSelected() - 1);
+                }
+            }
+        }
+        saveData();
+    }
+
     public void setLightMode(boolean animated) {
         final int nDarkModeBk = getResources().getColor(R.color.darkModeBk);
         final int nLightModeBk = getResources().getColor(R.color.lightModeBk);
@@ -7158,6 +7314,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                     mBtnResetChorus.setTextColor(nColorModeBlue);
                     mBtnDistortionRandom.setTextColor(nColorModeBlue);
                     mBtnResetDistortion.setTextColor(nColorModeBlue);
+                    mBtnIncreaseSpeedSpecifiedRandom.setTextColor(nColorModeBlue);
+                    mBtnResetIncreaseSpeedSpecified.setTextColor(nColorModeBlue);
                     mTextFinishSortEffect.setBackgroundColor(nColorModeBlue);
                     mTextFinishSortEffect.setTextColor(nColorModeBk);
                 }
@@ -7278,6 +7436,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
             mBtnResetChorus.setTextColor(nLightModeBlue);
             mBtnDistortionRandom.setTextColor(nLightModeBlue);
             mBtnResetDistortion.setTextColor(nLightModeBlue);
+            mBtnResetIncreaseSpeedSpecified.setTextColor(nLightModeBlue);
+            mBtnIncreaseSpeedSpecifiedRandom.setTextColor(nLightModeBlue);
             mTextFinishSortEffect.setBackgroundColor(nLightModeBlue);
             mTextFinishSortEffect.setTextColor(nLightModeBk);
             mImgEffectBack.setImageDrawable(getResources().getDrawable(R.drawable.ic_button_back));
@@ -7304,6 +7464,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnResetChorus.setBackgroundResource(R.drawable.resetbutton);
         mBtnDistortionRandom.setBackgroundResource(R.drawable.resetbutton);
         mBtnResetDistortion.setBackgroundResource(R.drawable.resetbutton);
+        mBtnResetIncreaseSpeedSpecified.setBackgroundResource(R.drawable.resetbutton);
+        mBtnIncreaseSpeedSpecifiedRandom.setBackgroundResource(R.drawable.resetbutton);
         mSeekCompGain.setProgressDrawable(getResources().getDrawable(R.drawable.progress));
         mSeekCompThreshold.setProgressDrawable(getResources().getDrawable(R.drawable.progress));
         mSeekCompRatio.setProgressDrawable(getResources().getDrawable(R.drawable.progress));
@@ -7567,6 +7729,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
                 mBtnResetChorus.setTextColor(nColorModeBlue);
                 mBtnDistortionRandom.setTextColor(nColorModeBlue);
                 mBtnResetDistortion.setTextColor(nColorModeBlue);
+                mBtnResetIncreaseSpeedSpecified.setTextColor(nColorModeBlue);
+                mBtnIncreaseSpeedSpecifiedRandom.setTextColor(nColorModeBlue);
                 mTextFinishSortEffect.setBackgroundColor(nColorModeBlue);
                 mTextFinishSortEffect.setTextColor(nColorModeBk);
             }
@@ -7605,6 +7769,8 @@ public class EffectFragment extends Fragment implements View.OnClickListener, Vi
         mBtnResetChorus.setBackgroundResource(R.drawable.resetbutton_dark);
         mBtnDistortionRandom.setBackgroundResource(R.drawable.resetbutton_dark);
         mBtnResetDistortion.setBackgroundResource(R.drawable.resetbutton_dark);
+        mBtnResetIncreaseSpeedSpecified.setBackgroundResource(R.drawable.resetbutton_dark);
+        mBtnIncreaseSpeedSpecifiedRandom.setBackgroundResource(R.drawable.resetbutton_dark);
         mRadioButtonSpecifiedEffectDetail.setBackgroundResource(R.drawable.resetbutton_dark);
         mRadioButtonLoopEffectDetail.setBackgroundResource(R.drawable.resetbutton_dark);
         mSeekCompGain.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));

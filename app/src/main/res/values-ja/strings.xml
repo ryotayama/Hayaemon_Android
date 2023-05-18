@@ -100,6 +100,7 @@
     <string name="distortionVolume">音量</string>
     <string name="reverse">逆回転再生</string>
     <string name="increaseSpeed">だんだん速く</string>
+    <string name="newIncreaseSpeed">新規加速</string>
     <string name="decreaseSpeed">だんだん遅く</string>
     <string name="raisePitch">だんだん高く</string>
     <string name="lowerPitch">だんだん低く</string>
@@ -406,4 +407,7 @@
     <string name="copyInfo">情報をコピー</string>
     <string name="copied1">クリップボードに「</string>
     <string name="copied2">」をコピーしました。</string>
+    <string name="increase0.1Every1Sec">１秒ごとに0.1%加速</string>
+    <string name="increase1.0Every1Sec">１秒ごとに1.0%加速</string>
+    <string name="increase1.0EveryLoop">ループごとに0.1%加速</string>
 </resources>
