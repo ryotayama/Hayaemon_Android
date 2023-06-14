@@ -12,6 +12,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ServiceInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -194,21 +195,29 @@ public class ForegroundService extends IntentService {
                 builder.setContentIntent(pendingIntentForeground);
                 builder.setOngoing(true);
                 notification = builder.build();
-                startForeground(1, notification);
+                if (Build.VERSION.SDK_INT >= 29) {
+                    startForeground(1, notification,
+                            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
+                } else {
+                    startForeground(1, notification);
+                }
             }
             else {
                 builder.setLargeIcon(mBitmap);
                 builder.setContentTitle(strTitle);
                 builder.setContentText(strArtist);
-                if(Build.VERSION.SDK_INT >= 19) {
-                    notification.actions[1].icon = iconPlayPause;
-                    notification.actions[1].title = playPauseTitle;
-                }
+                notification.actions[1].icon = iconPlayPause;
+                notification.actions[1].title = playPauseTitle;
                 notification = builder.build();
                 NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
                 if(notificationManager != null)
                     notificationManager.notify(1, notification);
-                startForeground(1, notification);
+                if (Build.VERSION.SDK_INT >= 29) {
+                    startForeground(1, notification,
+                            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
+                } else {
+                    startForeground(1, notification);
+                }
             }
         }
         else {
@@ -245,7 +254,12 @@ public class ForegroundService extends IntentService {
                 builder.setOngoing(true);
                 notification = builder.build();
             }
-            startForeground(1, notification);
+            if (Build.VERSION.SDK_INT >= 29) {
+                startForeground(1, notification,
+                        ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
+            } else {
+                startForeground(1, notification);
+            }
             if (stop || intent.getAction().equals("stop")) stopSelf();
             else if (intent.getAction().equals("action_rewind")) PlaylistFragment.onRewindBtnClick();
             else if(intent.getAction().equals("action_playpause")) PlaylistFragment.onPlayBtnClick();
