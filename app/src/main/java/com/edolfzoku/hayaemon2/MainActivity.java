@@ -1500,7 +1500,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(v.getId() == R.id.btnRewindInPlayingBar) PlaylistFragment.onRewindBtnClick();
         else if(v.getId() == R.id.relativePlaying) upViewPlaying();
         else if(v.getId() == R.id.imgViewDown) downViewPlaying(false);
-        else if(v.getId() == R.id.btnCloseInPlayingBar) PlaylistFragment.stop();
+        else if(v.getId() == R.id.btnCloseInPlayingBar) PlaylistFragment.stop(false);
         else if(v.getId() == R.id.btnMoreInPlayingBar) {
             final BottomMenu menu = new BottomMenu(this);
             final int nPlaying = PlaylistFragment.sPlaying;

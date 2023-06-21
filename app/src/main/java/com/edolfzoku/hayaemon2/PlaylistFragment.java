@@ -576,7 +576,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     @Override
                     public void onClick(View view) {
                         menu.dismiss();
-                        stop();
+                        stop(false);
                     }
                 });
             }
@@ -713,7 +713,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     else if(sPlaying > 0 && sPlaying == arSongs.size())
                         playSong(sPlaying-1, true);
                     else
-                        stop();
+                        stop(false);
                 }
                 finishMultipleSelection();
             }
@@ -2039,7 +2039,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         builder.setPositiveButton(getString(R.string.decideNot), null);
         builder.setNegativeButton(getString(R.string.doDelete), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                if(item == sPlayingPlaylist) stop();
+                if(item == sPlayingPlaylist) stop(false);
                 else if(item < sPlayingPlaylist) sPlayingPlaylist--;
                 ArrayList<SongItem> arSongs = sPlaylists.get(item);
                 for(int i = 0; i < arSongs.size(); i++) {
@@ -2107,7 +2107,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     else if(sPlaying > 0 && sPlaying == arSongs.size())
                         playSong(sPlaying-1, true);
                     else
-                        stop();
+                        stop(false);
                 }
             }
         });
@@ -2725,7 +2725,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 builder.setPositiveButton(getString(R.string.decideNot), null);
                 builder.setNegativeButton(getString(R.string.doDelete), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if(nPosition == sPlayingPlaylist) stop();
+                        if(nPosition == sPlayingPlaylist) stop(false);
                         else if(nPosition < sPlayingPlaylist) sPlayingPlaylist--;
                         ArrayList<SongItem> arSongs = sPlaylists.get(nPosition);
                         for(int i = 0; i < arSongs.size(); i++) {
@@ -3678,7 +3678,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 sPlaying = arSongs.size() - 1;
             }
             else {
-                stop();
+                stop(false);
                 return;
             }
         }
@@ -3699,7 +3699,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             if(!bRepeatSingle) nTempPlaying++;
             if (nTempPlaying >= arSongs.size()) {
                 if(!bRepeatAll) {
-                    stop();
+                    stop(false);
                     return;
                 }
                 nTempPlaying = 0;
@@ -3714,7 +3714,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
             if (arTemp.size() == 0) {
                 if(!bRepeatAll) {
-                    stop();
+                    stop(false);
                     return;
                 }
                 for (int i = 0; i < sPlays.size(); i++) sPlays.set(i, false);
@@ -3733,7 +3733,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             nTempPlaying++;
             if (nTempPlaying >= arSongs.size()) {
                 if(!bRepeatAll) {
-                    stop();
+                    stop(false);
                     return;
                 }
                 nTempPlaying = 0;
@@ -4142,7 +4142,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
-    public static void stop() {
+    public static void stop(boolean serviceDestroyed) {
         MainActivity.sWaitEnd = false;
 
         if(MainActivity.sStream == 0) return;
@@ -4207,7 +4207,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
 
         MainActivity.clearLoop();
-        MainActivity.stopNotification();
+        if (!serviceDestroyed) {
+            MainActivity.stopNotification();
+        }
     }
 
     public void addSong(MainActivity sActivity, Uri uri) {
