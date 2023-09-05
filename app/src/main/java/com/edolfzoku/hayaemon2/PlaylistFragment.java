@@ -898,7 +898,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         e.printStackTrace();
                     }
                     finally {
-                        mmr.release();
+                        try {
+                            mmr.release();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     if(bitmap != null) sActivity.getBtnArtworkInPlayingBar().setImageBitmap(bitmap);
                     else sActivity.getBtnArtworkInPlayingBar().setImageResource(sActivity.isDarkMode() ? R.drawable.ic_playing_large_artwork_dark : R.drawable.ic_playing_large_artwork);
@@ -1556,7 +1560,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     e.printStackTrace();
                 }
                 finally {
-                    mmr.release();
+                    try {
+                        mmr.release();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             if(bitmap != null) mBtnArtworkInPlayingBar.setImageBitmap(bitmap);
@@ -1804,7 +1812,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             e.printStackTrace();
         }
         finally {
-            mmr.release();
+            try {
+                mmr.release();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         if(bitmap != null) mBtnArtworkInPlayingBar.setImageBitmap(bitmap);
         else mBtnArtworkInPlayingBar.setImageResource(sActivity.isDarkMode() ? R.drawable.ic_playing_large_artwork_dark : R.drawable.ic_playing_large_artwork);
@@ -3926,7 +3938,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 e.printStackTrace();
             }
             finally {
-                mmr.release();
+                try {
+                    mmr.release();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         if(sActivity != null) {
@@ -4228,7 +4244,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             e.printStackTrace();
         }
         finally {
-            mmr.release();
+            try {
+                mmr.release();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         if(strTitle != null) {
             SongItem item = new SongItem(String.format(Locale.getDefault(), "%d", arSongs.size()+1), strTitle, strArtist, uri.toString());
@@ -4508,7 +4528,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 e.printStackTrace();
             }
             finally {
-                mmr.release();
+                try {
+                    mmr.release();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             if(durationMs == 0) {
                 ContentResolver cr = sActivity.getApplicationContext().getContentResolver();

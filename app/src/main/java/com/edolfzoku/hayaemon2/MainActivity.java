@@ -575,7 +575,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
                 finally {
-                    mmr.release();
+                    try {
+                        mmr.release();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             if(bitmap != null) mImgViewArtworkInMenu.setImageBitmap(bitmap);

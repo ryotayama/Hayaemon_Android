@@ -26,6 +26,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.un4seen.bass.BASS;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ForegroundService extends IntentService {
@@ -150,7 +151,11 @@ public class ForegroundService extends IntentService {
                     e.printStackTrace();
                 }
                 finally {
-                    mmr.release();
+                    try {
+                        mmr.release();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
