@@ -20,6 +20,8 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -38,6 +40,7 @@ public class ForegroundService extends IntentService {
     private NotificationCompat.Builder builder;
     private BroadcastReceiver mReceiver;
     private Bitmap mBitmap;
+    private MediaSessionCompat mediaSession;
 
     public ForegroundService() {
         super("ForegroundService");
@@ -60,6 +63,46 @@ public class ForegroundService extends IntentService {
                 }
             };
             registerReceiver(mReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
+        }
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            mediaSession = new MediaSessionCompat(this, "MediaSessionTag");
+            MediaSessionCompat.Callback mediaSessionCallback = new MediaSessionCompat.Callback() {
+                @Override
+                public void onPlay() {
+                    PlaylistFragment.onPlayBtnClick();
+                }
+
+                @Override
+                public void onPause() {
+                    PlaylistFragment.onPlayBtnClick();
+                }
+
+                @Override
+                public void onSkipToPrevious() {
+                    PlaylistFragment.onRewindBtnClick();
+                }
+
+                @Override
+                public void onSkipToNext() {
+                    PlaylistFragment.onForwardBtnClick();
+                }
+            };
+
+            mediaSession.setCallback(mediaSessionCallback);
+
+            PlaybackStateCompat playbackState = new PlaybackStateCompat.Builder()
+                    .setState(PlaybackStateCompat.STATE_PLAYING, 0, 1f)
+                    .setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE |
+                            PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
+                            // PlaybackStateCompat.ACTION_SEEK_TO |
+                            PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH |
+                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
+                    .build();
+            mediaSession.setPlaybackState(playbackState);
+
+            mediaSession.setActive(true);
         }
     }
 
@@ -177,22 +220,66 @@ public class ForegroundService extends IntentService {
 
             int iconPlayPause;
             String playPauseTitle;
+            // long length = (long)(BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE)) * 1000);
             if (BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_PLAYING) {
                 iconPlayPause = R.drawable.ic_pause;
                 playPauseTitle = "Pause";
+                if (Build.VERSION.SDK_INT >= 33) {
+                    PlaybackStateCompat playbackState = new PlaybackStateCompat.Builder()
+                            .setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE |
+                                    PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
+                                    // PlaybackStateCompat.ACTION_SEEK_TO |
+                                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH |
+                                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+                                    PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
+                            .setState(PlaybackStateCompat.STATE_PLAYING, 0, 1f)
+                            // .setBufferedPosition(length)
+                            .build();
+                    mediaSession.setPlaybackState(playbackState);
+                    // MediaMetadataCompat metadata = new MediaMetadataCompat.Builder()
+                    //         .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, length)
+                    //         .build();
+                    // mediaSession.setMetadata(metadata);
+                    mediaSession.setActive(true);
+                }
             }
             else {
                 iconPlayPause = R.drawable.ic_play;
                 playPauseTitle = "Play";
+                if (Build.VERSION.SDK_INT >= 33) {
+                    PlaybackStateCompat playbackState = new PlaybackStateCompat.Builder()
+                            .setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE |
+                                    PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
+                                    // PlaybackStateCompat.ACTION_SEEK_TO |
+                                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH |
+                                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+                                    PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
+                            .setState(PlaybackStateCompat.STATE_PAUSED, 0, 1f)
+                            // .setBufferedPosition(length)
+                            .build();
+                    mediaSession.setPlaybackState(playbackState);
+                    // MediaMetadataCompat metadata = new MediaMetadataCompat.Builder()
+                    //         .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, length)
+                    //         .build();
+                    // mediaSession.setMetadata(metadata);
+                    mediaSession.setActive(true);
+                }
             }
             actionPlayPause.icon = iconPlayPause;
             actionPlayPause.title = playPauseTitle;
             if(builder == null) {
                 builder = new NotificationCompat.Builder(this, "playsound");
-                builder.addAction(actionRewind);
-                builder.addAction(actionPlayPause);
-                builder.addAction(actionForward);
-                builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
+                if (Build.VERSION.SDK_INT < 33) {
+                    builder.addAction(actionRewind);
+                    builder.addAction(actionPlayPause);
+                    builder.addAction(actionForward);
+                    builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
+                }
+                else {
+                    builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                            .setMediaSession(mediaSession.getSessionToken())
+                    );
+                }
                 builder.setSmallIcon(R.drawable.ic_statusbar);
                 builder.setLargeIcon(mBitmap);
                 builder.setContentTitle(strTitle);
@@ -211,8 +298,15 @@ public class ForegroundService extends IntentService {
                 builder.setLargeIcon(mBitmap);
                 builder.setContentTitle(strTitle);
                 builder.setContentText(strArtist);
-                notification.actions[1].icon = iconPlayPause;
-                notification.actions[1].title = playPauseTitle;
+                if (Build.VERSION.SDK_INT < 33) {
+                    notification.actions[1].icon = iconPlayPause;
+                    notification.actions[1].title = playPauseTitle;
+                }
+                else {
+                    builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                            .setMediaSession(mediaSession.getSessionToken())
+                    );
+                }
                 notification = builder.build();
                 NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
                 if(notificationManager != null)
@@ -248,10 +342,17 @@ public class ForegroundService extends IntentService {
                 }
                 mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher);
                 builder = new NotificationCompat.Builder(this, "playsound");
-                builder.addAction(actionRewind);
-                builder.addAction(actionPlayPause);
-                builder.addAction(actionForward);
-                builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
+                if (Build.VERSION.SDK_INT < 33) {
+                    builder.addAction(actionRewind);
+                    builder.addAction(actionPlayPause);
+                    builder.addAction(actionForward);
+                    builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
+                }
+                else {
+                    builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                            .setMediaSession(mediaSession.getSessionToken())
+                    );
+                }
                 builder.setSmallIcon(R.drawable.ic_statusbar);
                 builder.setLargeIcon(mBitmap);
                 builder.setContentTitle(getString(R.string.app_name));
