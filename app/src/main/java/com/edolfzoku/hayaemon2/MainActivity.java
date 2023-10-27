@@ -55,7 +55,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClient.*;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingFlowParams.*;
 import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ProductDetails;
+import com.android.billingclient.api.ProductDetailsResponseListener;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.QueryProductDetailsParams;
+import com.android.billingclient.api.QueryProductDetailsParams.*;
+import com.android.billingclient.api.QueryPurchasesParams;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.initialization.InitializationStatus;
@@ -107,9 +117,6 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.edolfzoku.libs.billing.BillingConnectWrapper;
-import com.edolfzoku.libs.billing.item.PurchaseItem;
-import com.edolfzoku.libs.billing.result.IBillingResult;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -141,12 +148,12 @@ import static com.edolfzoku.hayaemon2.Constants.ITEM_HIDE_ADS;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_ORANGE_CAMPER_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_PINK_CAMPER_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_PURPLE_SEA_URCHIN_POINTER;
-import static com.edolfzoku.hayaemon2.Constants.SKU_BLUE_CAMPER_POINTER;
-import static com.edolfzoku.hayaemon2.Constants.SKU_ELEGANT_SEA_URCHIN_POINTER;
-import static com.edolfzoku.hayaemon2.Constants.SKU_HIDE_ADS;
-import static com.edolfzoku.hayaemon2.Constants.SKU_ORANGE_CAMPER_POINTER;
-import static com.edolfzoku.hayaemon2.Constants.SKU_PINK_CAMPER_POINTER;
-import static com.edolfzoku.hayaemon2.Constants.SKU_PURPLE_SEA_URCHIN_POINTER;
+import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_BLUE_CAMPER_POINTER;
+import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_ELEGANT_SEA_URCHIN_POINTER;
+import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_HIDE_ADS;
+import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_ORANGE_CAMPER_POINTER;
+import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_PINK_CAMPER_POINTER;
+import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_PURPLE_SEA_URCHIN_POINTER;
 import static com.edolfzoku.hayaemon2.PlaylistFragment.sEffects;
 import static com.edolfzoku.hayaemon2.PlaylistFragment.sLyrics;
 import static com.edolfzoku.hayaemon2.PlaylistFragment.sPlayingPlaylist;
@@ -157,6 +164,7 @@ import static com.un4seen.bass.BASS_AAC.BASS_CONFIG_AAC_MP4;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         View.OnLongClickListener, View.OnTouchListener, DrawerLayout.DrawerListener
 {
+    private static final String TAG = "MainActivity";
     static MainActivity sActivity;
     static ForegroundService sService;
     static int sStream, sRecord, sEncode, sFxVol, sSync, sShuffle, sRepeat;
@@ -175,8 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private DrawerLayout mDrawerLayout;
     private HoldableViewPager mViewPager;
-    private List<PurchaseItem> mPurchaseItemList;
-    private BillingConnectWrapper mBillingWrapper;
+    private BillingClient mBillingClient;
     private FrameLayout mAdContainerView;
     private AdView mAdView;
     private LinearLayout mLinearControl;
@@ -336,17 +343,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (bootCount >= 5 && bootCount % 5 == 0) mShowReviewRequest = true;
         getSharedPreferences("SaveData", MODE_PRIVATE).edit().putInt("bootcount", bootCount).apply();
 
-        mPurchaseItemList = new ArrayList<>();
-        mPurchaseItemList.add(new PurchaseItem(new PurchaseResult(), SKU_HIDE_ADS));
-        mPurchaseItemList.add(new PurchaseItem(new PurchaseResult(), SKU_PURPLE_SEA_URCHIN_POINTER));
-        mPurchaseItemList.add(new PurchaseItem(new PurchaseResult(), SKU_ELEGANT_SEA_URCHIN_POINTER));
-        mPurchaseItemList.add(new PurchaseItem(new PurchaseResult(), SKU_PINK_CAMPER_POINTER));
-        mPurchaseItemList.add(new PurchaseItem(new PurchaseResult(), SKU_BLUE_CAMPER_POINTER));
-        mPurchaseItemList.add(new PurchaseItem(new PurchaseResult(), SKU_ORANGE_CAMPER_POINTER));
-
-        // 課金システムの準備
-        mBillingWrapper = new BillingConnectWrapper(this, mPurchaseItemList);
-        mBillingWrapper.bind(new BindResult());
+        setupBillingClient();
 
         mBtnShuffle.setOnClickListener(this);
         mBtnRepeat.setOnClickListener(this);
@@ -409,6 +406,114 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             MainActivity.setSystemBarTheme(this, false);
 
         updateDrawer();
+    }
+
+    private void setupBillingClient() {
+        mBillingClient = BillingClient.newBuilder(this)
+                .setListener((billingResult, purchases) -> {
+                    // Handle updated purchases here
+                    if (billingResult.getResponseCode() == BillingResponseCode.OK && purchases != null) {
+                        for (Purchase purchase : purchases) {
+                            // Handle the purchased item
+                            List<String> productIds = purchase.getProducts();
+                            for (String productId: productIds) {
+                                runOnUiThread(() -> handlePurchase(productId));
+                            }
+                        }
+                    }
+                })
+                .enablePendingPurchases()
+                .build();
+
+        mBillingClient.startConnection(new BillingClientStateListener() {
+            @Override
+            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
+                int responseCode = billingResult.getResponseCode();
+                String debugMessage = billingResult.getDebugMessage();
+
+                if (responseCode == BillingResponseCode.OK) {
+                    // Ready to make purchases
+                    checkPurchased();
+                } else {
+                    Log.e(TAG, "onBillingSetupFinished: " + debugMessage);
+                }
+            }
+
+            @Override
+            public void onBillingServiceDisconnected() {
+                // Handle disconnection
+                Log.w(TAG, "onBillingServiceDisconnected");
+            }
+        });
+    }
+
+    private void launchPurchaseFlow(String productId) {
+
+        List<Product> productList = new ArrayList<>();
+        productList.add(
+                Product.newBuilder()
+                        .setProductId(productId)
+                        .setProductType(BillingClient.ProductType.INAPP)
+                        .build()
+        );
+
+        QueryProductDetailsParams params = QueryProductDetailsParams.newBuilder()
+                .setProductList(productList)
+                .build();
+
+        final MainActivity activity = this;
+        mBillingClient.queryProductDetailsAsync(params, new ProductDetailsResponseListener() {
+            @Override
+            public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull List<ProductDetails> list) {
+                // check billingResult
+                // process returned productDetailsList
+                if (list.size() == 0) return;
+
+                ProductDetails productDetails = list.get(0);
+
+                ArrayList<ProductDetailsParams> productList = new ArrayList<>();
+                productList.add(
+                        ProductDetailsParams.newBuilder()
+                                .setProductDetails(productDetails)
+                                .build());
+
+                BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+                        .setProductDetailsParamsList(productList)
+                        .build();
+
+                BillingResult result = mBillingClient.launchBillingFlow(activity, billingFlowParams);
+
+                int responseCode = result.getResponseCode();
+                String debugMessage = result.getDebugMessage();
+
+                if (responseCode != BillingResponseCode.OK) {
+                    Log.e(TAG, "launchPurchaseFlow: " + debugMessage);
+                }
+            }
+        });
+    }
+
+    private void handlePurchase(String productId) {
+        switch (productId) {
+            case PRODUCT_ID_HIDE_ADS:
+                hideAds();
+                break;
+            case PRODUCT_ID_PURPLE_SEA_URCHIN_POINTER:
+                buyPurpleSeaUrchinPointer(mPurchasingItem == ITEM_PURPLE_SEA_URCHIN_POINTER);
+                break;
+            case PRODUCT_ID_ELEGANT_SEA_URCHIN_POINTER:
+                buyElegantSeaUrchinPointer(mPurchasingItem == ITEM_ELEGANT_SEA_URCHIN_POINTER);
+                break;
+            case PRODUCT_ID_PINK_CAMPER_POINTER:
+                buyPinkCamperPointer(mPurchasingItem == ITEM_PINK_CAMPER_POINTER);
+                break;
+            case PRODUCT_ID_BLUE_CAMPER_POINTER:
+                buyBlueCamperPointer(mPurchasingItem == ITEM_BLUE_CAMPER_POINTER);
+                break;
+            case PRODUCT_ID_ORANGE_CAMPER_POINTER:
+                buyOrangeCamperPointer(mPurchasingItem == ITEM_ORANGE_CAMPER_POINTER);
+                break;
+        }
     }
 
     private void loadBanner() {
@@ -702,6 +807,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             });
         }
+
+        checkPurchased();
+    }
+
+    private void checkPurchased() {
+        mBillingClient.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder()
+                        .setProductType(ProductType.INAPP)
+                        .build(),
+                (billingResult, purchases) -> {
+                    // check billingResult
+                    // process returned purchase list, e.g. display the plans user owns
+                    if (billingResult.getResponseCode() == BillingResponseCode.OK) {
+                        for (Purchase purchase : purchases) {
+                            // Handle the purchased item
+                            List<String> productIds = purchase.getProducts();
+                            for (String productId: productIds) {
+                                runOnUiThread(() -> handlePurchase(productId));
+                            }
+                        }
+                    }
+                }
+        );
     }
 
     @Override
@@ -2039,8 +2167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void startBillingHideAds() {
         mPurchasingItem = ITEM_HIDE_ADS;
-        PurchaseItem item = mPurchaseItemList.get(ITEM_HIDE_ADS);
-        mBillingWrapper.startBillingFlow(new PurchaseResult(), item.getSkuDetails());
+        launchPurchaseFlow(PRODUCT_ID_HIDE_ADS);
     }
 
     private void hideAds() {
@@ -2056,8 +2183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void startBillingPurpleSeaUrchinPointer() {
         mPurchasingItem = ITEM_PURPLE_SEA_URCHIN_POINTER;
-        PurchaseItem item = mPurchaseItemList.get(ITEM_PURPLE_SEA_URCHIN_POINTER);
-        mBillingWrapper.startBillingFlow(new PurchaseResult(), item.getSkuDetails());
+        launchPurchaseFlow(PRODUCT_ID_PURPLE_SEA_URCHIN_POINTER);
     }
 
     private void buyPurpleSeaUrchinPointer(boolean ask) {
@@ -2123,8 +2249,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void startBillingElegantSeaUrchinPointer() {
         mPurchasingItem = ITEM_ELEGANT_SEA_URCHIN_POINTER;
-        PurchaseItem item = mPurchaseItemList.get(ITEM_ELEGANT_SEA_URCHIN_POINTER);
-        mBillingWrapper.startBillingFlow(new PurchaseResult(), item.getSkuDetails());
+        launchPurchaseFlow(PRODUCT_ID_ELEGANT_SEA_URCHIN_POINTER);
     }
 
     private void buyElegantSeaUrchinPointer(boolean ask) {
@@ -2190,8 +2315,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void startBillingPinkCamperPointer() {
         mPurchasingItem = ITEM_PINK_CAMPER_POINTER;
-        PurchaseItem item = mPurchaseItemList.get(ITEM_PINK_CAMPER_POINTER);
-        mBillingWrapper.startBillingFlow(new PurchaseResult(), item.getSkuDetails());
+        launchPurchaseFlow(PRODUCT_ID_PINK_CAMPER_POINTER);
     }
 
     private void buyPinkCamperPointer(boolean ask) {
@@ -2259,8 +2383,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void startBillingBlueCamperPointer() {
         mPurchasingItem = ITEM_BLUE_CAMPER_POINTER;
-        PurchaseItem item = mPurchaseItemList.get(ITEM_BLUE_CAMPER_POINTER);
-        mBillingWrapper.startBillingFlow(new PurchaseResult(), item.getSkuDetails());
+        launchPurchaseFlow(PRODUCT_ID_BLUE_CAMPER_POINTER);
     }
 
     private void buyBlueCamperPointer(boolean ask) {
@@ -2328,8 +2451,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void startBillingOrangeCamperPointer() {
         mPurchasingItem = ITEM_ORANGE_CAMPER_POINTER;
-        PurchaseItem item = mPurchaseItemList.get(ITEM_ORANGE_CAMPER_POINTER);
-        mBillingWrapper.startBillingFlow(new PurchaseResult(), item.getSkuDetails());
+        launchPurchaseFlow(PRODUCT_ID_ORANGE_CAMPER_POINTER);
     }
 
     private void buyOrangeCamperPointer(boolean ask) {
@@ -2393,10 +2515,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
             alertDialog.show();
         }
-    }
-
-    public void restorePurchase() {
-        mBillingWrapper.restorePurchaseItem(new RestoreResult());
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -3362,100 +3480,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTextPlaying.setTextColor(getResources().getColor(R.color.darkModePlaying));
         mSeekCurPos.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));
         mSeekCurPos.setThumb(getResources().getDrawable(R.drawable.thumbplaying_dark));
-    }
-
-    // バインドリザルト
-    class BindResult implements IBillingResult {
-        @Override
-        public void resultNotify(@NonNull BillingResult billingResult) {
-            mBillingWrapper.queryPurchases(null);
-        }
-    }
-
-    // 購入リザルト
-    class PurchaseResult implements IBillingResult {
-        @Override
-        public void resultNotify(@NonNull BillingResult billingResult) {
-            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                for (int i = 0; i < mPurchaseItemList.size(); ++i) {
-                    PurchaseItem item = mPurchaseItemList.get(i);
-                    if (item.IsPurchased()) {
-                        if (item.getItemName().equals(SKU_HIDE_ADS))
-                            hideAds();
-                        else if (item.getItemName().equals(SKU_PURPLE_SEA_URCHIN_POINTER))
-                            buyPurpleSeaUrchinPointer(mPurchasingItem == ITEM_PURPLE_SEA_URCHIN_POINTER);
-                        else if (item.getItemName().equals(SKU_ELEGANT_SEA_URCHIN_POINTER))
-                            buyElegantSeaUrchinPointer(mPurchasingItem == ITEM_ELEGANT_SEA_URCHIN_POINTER);
-                        else if (item.getItemName().equals(SKU_PINK_CAMPER_POINTER))
-                            buyPinkCamperPointer(mPurchasingItem == ITEM_PINK_CAMPER_POINTER);
-                        else if (item.getItemName().equals(SKU_BLUE_CAMPER_POINTER))
-                            buyBlueCamperPointer(mPurchasingItem == ITEM_BLUE_CAMPER_POINTER);
-                        else if (item.getItemName().equals(SKU_ORANGE_CAMPER_POINTER))
-                            buyOrangeCamperPointer(mPurchasingItem == ITEM_ORANGE_CAMPER_POINTER);
-                    }
-                }
-            }
-        }
-    }
-
-    // リストアリザルト
-    class RestoreResult implements IBillingResult {
-        @Override
-        public void resultNotify(@NonNull BillingResult billingResult) {
-            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                Log.d("appBillingTest", "リストアの結果の取得に成功");
-                boolean purchasedItemFound = false;
-                for (int i = 0; i < mPurchaseItemList.size(); ++i) {
-                    PurchaseItem item = mPurchaseItemList.get(i);
-                    if (item.IsPurchased()) {
-                        purchasedItemFound = true;
-                        if (item.getItemName().equals(SKU_HIDE_ADS))
-                            hideAds();
-                        else if (item.getItemName().equals(SKU_PURPLE_SEA_URCHIN_POINTER))
-                            buyPurpleSeaUrchinPointer(false);
-                        else if (item.getItemName().equals(SKU_ELEGANT_SEA_URCHIN_POINTER))
-                            buyElegantSeaUrchinPointer(false);
-                        else if (item.getItemName().equals(SKU_PINK_CAMPER_POINTER))
-                            buyPinkCamperPointer(false);
-                        else if (item.getItemName().equals(SKU_BLUE_CAMPER_POINTER))
-                            buyBlueCamperPointer(false);
-                        else if (item.getItemName().equals(SKU_ORANGE_CAMPER_POINTER))
-                            buyOrangeCamperPointer(false);
-                    }
-                }
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                if (purchasedItemFound) {
-                    builder.setTitle(R.string.restoredPurchasedItems);
-                    builder.setPositiveButton("OK", null);
-                    final AlertDialog alertDialog = builder.create();
-                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                        @Override
-                        public void onShow(DialogInterface arg0) {
-                            if (alertDialog.getWindow() != null) {
-                                WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
-                                lp.dimAmount = 0.4f;
-                                alertDialog.getWindow().setAttributes(lp);
-                            }
-                        }
-                    });
-                    alertDialog.show();
-                } else {
-                    builder.setTitle(R.string.restorePurchasedItemsError);
-                    builder.setPositiveButton("OK", null);
-                    final AlertDialog alertDialog = builder.create();
-                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                        @Override
-                        public void onShow(DialogInterface arg0) {
-                            if (alertDialog.getWindow() != null) {
-                                WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
-                                lp.dimAmount = 0.4f;
-                                alertDialog.getWindow().setAttributes(lp);
-                            }
-                        }
-                    });
-                    alertDialog.show();
-                }
-            }
-        }
     }
 }
