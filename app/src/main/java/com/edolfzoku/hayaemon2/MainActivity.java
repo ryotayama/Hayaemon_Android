@@ -44,6 +44,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
@@ -137,8 +138,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -177,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ControlFragment controlFragment;
     EqualizerFragment equalizerFragment;
     EffectFragment effectFragment;
-    private boolean mShowUpdateLog, mDarkMode, mShowReviewRequest;
+    private boolean mShowTenthAnniversary, mShowUpdateLog, mDarkMode, mShowReviewRequest;
     private float mDensity;
     private int mLastY, mPurchasingItem;
 
@@ -869,6 +875,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
+        if (mShowTenthAnniversary) {
+            mShowTenthAnniversary = false;
+
+            LayoutInflater inflater = getLayoutInflater();
+            final View layout = inflater.inflate(mDarkMode ? R.layout.tenth_anniversary_dialog_dark : R.layout.tenth_anniversary_dialog,
+                    (ViewGroup) findViewById(R.id.layout_root));
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setView(layout);
+
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface arg0) {
+                    if (alertDialog.getWindow() != null) {
+                        alertDialog.getWindow().getDecorView().getBackground().setColorFilter(Color.parseColor("#00000000"), PorterDuff.Mode.SRC_IN);
+                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                        lp.dimAmount = 0.4f;
+                        alertDialog.getWindow().setAttributes(lp);
+                    }
+                }
+            });
+            alertDialog.show();
+            Button btnDetail = layout.findViewById(R.id.btnDetail);
+            btnDetail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Uri uri = Uri.parse("http://hayaemon.jp/blog/10th2024");
+                    Intent i = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(i);
+                    alertDialog.dismiss();
+                }
+            });
+            Button btnClose = layout.findViewById(R.id.btnClose);
+            btnClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+        }
+
         if(mShowUpdateLog) {
             mShowUpdateLog = false;
 
@@ -1055,6 +1102,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             arTempLyrics.add("lonely lonely lonely,,yeah yeah\nlove me,,, yeah,yeah\n\n僕はロボット\n店の隅に置かれているよ\nコインを入れたら\n3分で君を笑顔にする\n\n楽しいリズムで\n踊ったら  これを食べればいいよ\n暖かくて  少し懐かしい？\n僕はロボット\n\n小さな君が恐る恐る\n僕を覗きこんだ\nボタンを早く早く押して？\n君を笑顔にしたい！！\n\nねえ、\n愛し愛されることなんて\n僕にはきっと分からないけど\n嫌なこと全部投げ出して\nほら、さあ、踊ろうよ！\n\nねえ、\n君がいつかこの街を\n誰かと抜け出してしまってもね\n嫌なことあった時にはさ\nほら、さあ、オモイダシテ！ \n\n僕はロボット\n寂しさなんて知らないはずさ\nだけどこの頃 \n仕上がりが少し冷めてるんだ\n\n君が来なくなって\n何度目の冬になるのだろうか\nコインを入れる所も少し錆びてきた\n\n大きくなった君はもう\n僕の背を抜かしたのかな\nこんな冷えた体じゃ\n君を笑顔にできないかな\n\nねえ、\n愛し愛されることなんて\n僕は望んじゃいけない事も\n忘れるくらいに踊りたい\nほら、さあ、動け体！\nねえ、\nいつか君がこの街に\n帰ってくると信じたいのは\n僕の愚かなバグデータかな？\nほら、さあ、踊ろうか\n\nやがて光も消えてこの街の\n明けない夜も\n冷えた床の温度も蹴散らすくらいに あああ\n僕のラストダンスだと錆だらけの\nロボットが\n動きだしたステップ踏んで あああ\n\nねえ\nとうとう君はこの街に\n帰ってこない わかってるけど\n暖かいポテトをどうぞ\nほら、さあ、召し上がれ\n抱いたバグデータもて余し\nもうすぐ僕は止まるんだろう\n嫌なこと全部投げ出して\nほら、さあ、踊ろうよ");
         }
 
+        boolean bTenthAnniversaryDisplayed = preferences.getBoolean("bTenthAnniversaryDisplayed", false);
+        final Date currentDate = new Date();
+        DateFormat formatter = new SimpleDateFormat("yyyy/M/d H:m:s", Locale.getDefault());
+        Date dateFrom, dateTo;
+        try {
+            dateFrom = formatter.parse("2024/1/1 0:0:0");
+            dateTo = formatter.parse("2024/1/15 23:59:59");
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;
+        }
+        if (!bTenthAnniversaryDisplayed && currentDate.compareTo(dateFrom) >= 0 && currentDate.compareTo(dateTo) <= 0) {
+            mShowTenthAnniversary = true;
+            preferences.edit().putBoolean("bTenthAnniversaryDisplayed", true).apply();
+        }
+
         String strVersionName = preferences.getString("versionname", null);
         if (strVersionName != null) sPrevVersion = Float.parseFloat(strVersionName);
         boolean bHideUpdateLogNext = preferences.getBoolean("hideupdatelognext", false);
@@ -1065,7 +1128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         catch(PackageManager.NameNotFoundException e) {
             strCurrentVersionName = strVersionName;
         }
-        if(!bHideUpdateLogNext && Locale.getDefault().equals(Locale.JAPAN)) {
+        if(!mShowTenthAnniversary && !bHideUpdateLogNext && Locale.getDefault().equals(Locale.JAPAN)) {
             if(strVersionName != null && !strCurrentVersionName.equals(strVersionName))
                 mShowUpdateLog = true;
         }

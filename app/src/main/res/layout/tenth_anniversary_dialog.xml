@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:background="@drawable/updatedialog">
+
+    <ScrollView
+        android:id="@+id/scollTenthAnniversary"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/btns"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imgTenthAnniversary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/tenth_anniversary"
+                android:adjustViewBounds="true"
+                android:layout_alignParentTop="true"
+                app:shapeAppearanceOverlay="@style/topRoundedImageView"
+                />
+
+            <TextView
+                android:id="@+id/textTenthAnniversaryTitle"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="10周年記念 お年玉プレゼント企画開催!"
+                android:textColor="#FFFFFF"
+                android:background="#FF2E55"
+                android:textSize="17dp"
+                android:gravity="center"
+                android:layout_below="@+id/imgTenthAnniversary"
+                />
+
+            <TextView
+                android:id="@+id/textView"
+                android:text="2024年あけましておめでとうございます！\nいつもハヤえもんをご利用いただきありがとうございます。\nおかげさまで、スマホ版ハヤえもんは2023年11月に10周年を迎えました。\nこれを記念し、日頃の感謝を込めて、お年玉プレゼント企画を特別開催いたします！\n\n【A賞】1名様\n広告非表示1ヶ月分無料＋ハヤえもんオリジナルTシャツ（Mサイズor Lサイズ）＋ハヤえもんトートバッグ\n\n【B賞】1名様\n広告非表示1ヶ月分無料＋ハヤえもんトートバッグ\n\n【C賞】3名様\n広告非表示1ヶ月分無料＋ハヤえもん缶バッジ＆シール\n\n計5名様\n\n◆応募方法\nツイッター（現X）にて、@ryota_yama と@knzk_skをフォローしていただき、ハッシュタグ　#ハヤえもん10周年お年玉 を付けてハヤえもんに対する“愛”をツイート！\n表現方法は、イラスト、音楽、作文など、ツイート内で閲覧できる形式なら何でもOK！（外部リンクは対象外となります）\n選考方法は、ハヤえもん開発者山内良太とデザイナー甘﨑早の2名での審査方式で、審査基準はハヤえもんに対する“愛”が感じられるかどうかとなります。\n\n◆審査員からのコメント\n\n山内良太より：\n（仮組み）改めましてこんにちは！ハヤえもん開発者の山内良太です。僕は元々音楽が好きで、アプリ開発に出会っていなかったらもしかしたら音楽を続けて、表現者としての道を歩んでいたかもしれません。けど、今こうしてアプリ開発者としてユーザーの方々の音楽ライフに彩りを加えることができていると思うと、とても嬉しいです。そんな皆さんの作品を単純に見たいという好奇心だけでなく、広めるためのお手伝いをしたいという目的もこの企画にはあります。応募条件を満たしていればリツイートしますので、ふるってご応募くださいね！そして、iOS版では昨年10月にアプリ内広告を追加しました。この更新がすごくツラく感じたユーザーさんも多いと思います。本当にごめんなさい。（詳細については開発者ブログをご覧ください⇒http://hayaemon.jp/blog/archives/8597）ハヤえもんでは2017年8月〜2020年2月まで、「広告非表示プレゼントキャンペーン」を毎月開催していたのを覚えているユーザーの方もいるかもしれません。それができなくなってしまったのは、徐々にユーザー数が増え、開発や運営がひっ迫してきてしまったから…しかしどうしてもこの10周年の機会にこのキャンペーンを復活して、少しでもユーザーさんへ日頃の感謝の気持ちを届けたい！そう思っています！たくさんのご応募お待ちしてます！\n\n甘﨑早より：\nハヤえもんユーザーの皆さんこんにちは！あけましておめでとうございます！今回年賀イラストを描かせていただいた甘﨑早（かんざき・さき）です。ハヤえもんのアプリ内にコメントを出すのは初めてかなと思います。というわけで少し自己紹介を。実は自分は、子供の頃漫画家になりたかったのですが、今思えばくだらない事で筆を折ってしまいました。毎日何時間も絵を描いていたのに、絵が描けない日常が何年も続きました。漫画を読むことさえできなくなってしまいました。でも2017年にハヤえもんに出会って、キャラクターデザインやイラストも少しずつ描けるようになってきました。まだ到底毎日描いていた頃には枚数は及びませんが、こうしてまた何かを作り出せるようになった事そのものが嬉しいのです。さまざまな形で自分のスキルを活かせる機会を作ってくれたハヤえもんに、本当に感謝しています。その原動力やはりハヤえもんへの“愛”かなと思っています。そして今回、この企画を考えたのも、何かを作り出せることの尊さを知ったからです。ハヤえもんユーザー様の中には、素晴らしいクリエイターさんがたくさんいるのを知っています。だからこそ、そうして生まれてきたものを埋もれさせずにリツイートして、多くの人の目に触れさせてあげる機会を設けたいと思っています。とは言ってもコンクールやコンテストではないので、クオリティは全く関係ありません。ハヤえもんのイメージキャラクター達を使用してくださってもOKですので、どうかたくさんの方に応募していただけると嬉しいです！（画像素材はこちら⇒http://hayaemon.jp/blog/archives/6461）\n\n◆応募締切\n2024年1月22日23時59分まで\n\n選考期間：1月23日〜1月28日\n当選発表：1月29日\n発表方法：ツイッター（現X）および開発者ブログ\n（※景品の送付は2月〜3月中を予定しております）\n\n◆注意事項\n※非公開アカウントは対象外となります。\n※すでに広告非表示（買い切りプラン）をご購入済みの方はグッズのみのお渡しとなります。\n※当選された方はツイッターDMにて広告非表示のためのApple IDもしくはGoogle Playアカウントと景品発送先のご住所、氏名をお伺いしますので、必ず@ryota_yama と@knzk_skをフォローください。\n※広告非表示の1ヶ月無料プレゼントは月額プランを利用するため、無料期間が過ぎて広告非表示の必要のない方はご自身で解約手続きを行ってください。解約手続きがない場合は、1ヶ月後に自動継続課金が適用されます。\n※企画は変更となる場合があります。"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                android:textSize="14dp"
+                android:lineSpacingMultiplier="1.1"
+                android:layout_margin="0dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:background="#f0f0f0"
+                android:scrollbars="none"
+                android:layout_below="@+id/textTenthAnniversaryTitle"
+                android:layout_alignParentBottom="true"
+                />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/btns"
+        >
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="@string/close"
+            android:textColor="#007AFF"
+            android:id="@+id/btnClose"
+            />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="詳しく見る！"
+            android:textStyle="bold"
+            android:textColor="#007AFF"
+            android:id="@+id/btnDetail"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>
