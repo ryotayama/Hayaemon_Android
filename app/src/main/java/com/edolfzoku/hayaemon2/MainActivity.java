@@ -1105,15 +1105,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         boolean bTenthAnniversaryDisplayed = preferences.getBoolean("bTenthAnniversaryDisplayed", false);
         final Date currentDate = new Date();
         DateFormat formatter = new SimpleDateFormat("yyyy/M/d H:m:s", Locale.getDefault());
-        Date dateFrom, dateTo;
+        Date dateTo;
         try {
-            dateFrom = formatter.parse("2024/1/1 0:0:0");
             dateTo = formatter.parse("2024/1/15 23:59:59");
         } catch (ParseException e) {
             e.printStackTrace();
             return;
         }
-        if (!bTenthAnniversaryDisplayed && currentDate.compareTo(dateFrom) >= 0 && currentDate.compareTo(dateTo) <= 0) {
+        if (!bTenthAnniversaryDisplayed && currentDate.compareTo(dateTo) <= 0 && Locale.getDefault().equals(Locale.JAPAN)) {
             mShowTenthAnniversary = true;
             preferences.edit().putBoolean("bTenthAnniversaryDisplayed", true).apply();
         }
