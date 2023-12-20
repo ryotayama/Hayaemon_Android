@@ -669,12 +669,50 @@
                     />
 
                 <RelativeLayout
-                    android:id="@+id/relativeAddSong"
+                    android:id="@+id/relativeNotice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="true"
                     android:layout_below="@+id/dividerMenu"
+                    >
+
+                    <ImageView
+                        android:id="@+id/imgNotice"
+                        android:contentDescription="@null"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_leftmenu_notice"
+                        android:layout_centerVertical="true"
+                        />
+
+                    <TextView
+                        android:id="@+id/textNotice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="アプリからのお知らせ"
+                        android:textColor="#000"
+                        android:textSize="14dp"
+                        android:layout_marginTop="21dp"
+                        android:layout_marginBottom="21dp"
+                        android:layout_toRightOf="@id/imgNotice"
+                        android:layout_toEndOf="@id/imgNotice"
+                        android:layout_centerVertical="true"
+                        />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeAddSong"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_below="@+id/relativeNotice"
                     >
 
                     <ImageView

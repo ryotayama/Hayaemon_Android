@@ -197,9 +197,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView mImgViewDown, mImgViewArtworkInMenu, mImgViewRecording;
     private TabLayout mTabLayout;
     private View mViewSep0, mViewSep1, mViewSep2, mViewSep3, mDividerMenu;
-    private TextView mTextCurPos, mTextRemain, mTextTitle, mTextArtist, mTextRecordingTime, mTextSave, mTextLock, mTextHideAds, mTextItemInMenu, mTextHelp, mTextInquiry, mTextReview, mTextInfo, mTextAddSong, mTextPlaying, mTextTitleInMenu, mTextArtistInMenu, mTextRecording;
+    private TextView mTextCurPos, mTextRemain, mTextTitle, mTextArtist, mTextRecordingTime, mTextSave, mTextLock, mTextHideAds, mTextItemInMenu, mTextHelp, mTextInquiry, mTextReview, mTextInfo, mTextNotice, mTextAddSong, mTextPlaying, mTextTitleInMenu, mTextArtistInMenu, mTextRecording;
     private AnimationButton mBtnMenu, mBtnRewind, mBtnPlay, mBtnForward, mBtnShuffle, mBtnRepeat, mBtnRecord, mBtnPlayInPlayingBar, mBtnForwardInPlayingBar, mBtnRewindInPlayingBar, mBtnMoreInPlayingBar, mBtnShuffleInPlayingBar, mBtnRepeatInPlayingBar, mBtnCloseInPlayingBar, mBtnStopRecording, mBtnArtworkInPlayingBar, mBtnSetting, mBtnDarkMode;
-    private RelativeLayout mRelativeRecording, mRelativeSave, mRelativeLock, mRelativeAddSong, mRelativeItem, mRelativeHelp, mRelativeInquiry, mRelativeReview, mRelativeHideAds, mRelativeInfo, mRelativePlayingWithShadow, mRelativePlaying, mRelativeLeftMenu;
+    private RelativeLayout mRelativeRecording, mRelativeSave, mRelativeLock, mRelativeNotice, mRelativeAddSong, mRelativeItem, mRelativeHelp, mRelativeInquiry, mRelativeReview, mRelativeHideAds, mRelativeInfo, mRelativePlayingWithShadow, mRelativePlaying, mRelativeLeftMenu;
     private GestureDetector mGestureDetector;
 
     public HoldableViewPager getViewPager() { return mViewPager; }
@@ -276,6 +276,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mLinearControl = findViewById(R.id.linearControl);
         mRelativeSave = findViewById(R.id.relativeSave);
         mRelativeLock = findViewById(R.id.relativeLock);
+        mRelativeNotice = findViewById(R.id.relativeNotice);
         mRelativeAddSong = findViewById(R.id.relativeAddSong);
         mRelativeItem = findViewById(R.id.relativeItem);
         mRelativeHelp = findViewById(R.id.relativeHelp);
@@ -294,6 +295,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTextInquiry = findViewById(R.id.textInquiry);
         mTextReview = findViewById(R.id.textReview);
         mTextInfo = findViewById(R.id.textInfo);
+        mTextNotice = findViewById(R.id.textNotice);
         mTextAddSong = findViewById(R.id.textAddSong);
         mTextPlaying = findViewById(R.id.textPlaying);
         mBtnSetting = findViewById(R.id.btnSetting);
@@ -358,6 +360,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRelativeSave.setOnClickListener(this);
         mRelativeLock.setOnTouchListener(this);
         mRelativeLock.setOnClickListener(this);
+        mRelativeNotice.setOnTouchListener(this);
+        mRelativeNotice.setOnClickListener(this);
         mRelativeAddSong.setOnTouchListener(this);
         mRelativeAddSong.setOnClickListener(this);
         mRelativeItem.setOnTouchListener(this);
@@ -634,6 +638,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int color = getResources().getColor(mDarkMode ? R.color.darkModeBk : R.color.lightModeBk);
             mRelativeSave.setBackgroundColor(color);
             mRelativeLock.setBackgroundColor(color);
+            mRelativeNotice.setBackgroundColor(color);
             mRelativeAddSong.setBackgroundColor(color);
             mRelativeHideAds.setBackgroundColor(color);
             mRelativeItem.setBackgroundColor(color);
@@ -664,6 +669,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textView.setVisibility(nCount == 0 ? View.GONE : View.VISIBLE);
         textView.setText(String.format(Locale.getDefault(), "%d", nCount));
 
+        if(!needsToDisplayTenthAnniversary(true, true))  findViewById(R.id.relativeNotice).setVisibility(View.GONE);
         if(!isAdsVisible()) findViewById(R.id.relativeHideAds).setVisibility(View.GONE);
         if(sStream != 0) {
             playlistFragment.selectPlaylist(sPlayingPlaylist);
@@ -877,43 +883,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (mShowTenthAnniversary) {
             mShowTenthAnniversary = false;
-
-            LayoutInflater inflater = getLayoutInflater();
-            final View layout = inflater.inflate(mDarkMode ? R.layout.tenth_anniversary_dialog_dark : R.layout.tenth_anniversary_dialog,
-                    (ViewGroup) findViewById(R.id.layout_root));
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setView(layout);
-
-            final AlertDialog alertDialog = builder.create();
-            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(DialogInterface arg0) {
-                    if (alertDialog.getWindow() != null) {
-                        alertDialog.getWindow().getDecorView().getBackground().setColorFilter(Color.parseColor("#00000000"), PorterDuff.Mode.SRC_IN);
-                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
-                        lp.dimAmount = 0.4f;
-                        alertDialog.getWindow().setAttributes(lp);
-                    }
-                }
-            });
-            alertDialog.show();
-            Button btnDetail = layout.findViewById(R.id.btnDetail);
-            btnDetail.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Uri uri = Uri.parse("http://hayaemon.jp/blog/10th2024");
-                    Intent i = new Intent(Intent.ACTION_VIEW, uri);
-                    startActivity(i);
-                    alertDialog.dismiss();
-                }
-            });
-            Button btnClose = layout.findViewById(R.id.btnClose);
-            btnClose.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    alertDialog.dismiss();
-                }
-            });
+            showTenthAnniversary();
         }
 
         if(mShowUpdateLog) {
@@ -1005,6 +975,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
+    }
+
+    private void showTenthAnniversary() {
+        LayoutInflater inflater = getLayoutInflater();
+        final View layout = inflater.inflate(mDarkMode ? R.layout.tenth_anniversary_dialog_dark : R.layout.tenth_anniversary_dialog,
+                (ViewGroup) findViewById(R.id.layout_root));
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(layout);
+
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                if (alertDialog.getWindow() != null) {
+                    alertDialog.getWindow().getDecorView().getBackground().setColorFilter(Color.parseColor("#00000000"), PorterDuff.Mode.SRC_IN);
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
+            }
+        });
+        alertDialog.show();
+        Button btnDetail = layout.findViewById(R.id.btnDetail);
+        btnDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("http://hayaemon.jp/blog/10th2024");
+                Intent i = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(i);
+                alertDialog.dismiss();
+            }
+        });
+        Button btnClose = layout.findViewById(R.id.btnClose);
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
     }
 
     private File getScreenshot(View view) {
@@ -1102,17 +1111,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             arTempLyrics.add("lonely lonely lonely,,yeah yeah\nlove me,,, yeah,yeah\n\n僕はロボット\n店の隅に置かれているよ\nコインを入れたら\n3分で君を笑顔にする\n\n楽しいリズムで\n踊ったら  これを食べればいいよ\n暖かくて  少し懐かしい？\n僕はロボット\n\n小さな君が恐る恐る\n僕を覗きこんだ\nボタンを早く早く押して？\n君を笑顔にしたい！！\n\nねえ、\n愛し愛されることなんて\n僕にはきっと分からないけど\n嫌なこと全部投げ出して\nほら、さあ、踊ろうよ！\n\nねえ、\n君がいつかこの街を\n誰かと抜け出してしまってもね\n嫌なことあった時にはさ\nほら、さあ、オモイダシテ！ \n\n僕はロボット\n寂しさなんて知らないはずさ\nだけどこの頃 \n仕上がりが少し冷めてるんだ\n\n君が来なくなって\n何度目の冬になるのだろうか\nコインを入れる所も少し錆びてきた\n\n大きくなった君はもう\n僕の背を抜かしたのかな\nこんな冷えた体じゃ\n君を笑顔にできないかな\n\nねえ、\n愛し愛されることなんて\n僕は望んじゃいけない事も\n忘れるくらいに踊りたい\nほら、さあ、動け体！\nねえ、\nいつか君がこの街に\n帰ってくると信じたいのは\n僕の愚かなバグデータかな？\nほら、さあ、踊ろうか\n\nやがて光も消えてこの街の\n明けない夜も\n冷えた床の温度も蹴散らすくらいに あああ\n僕のラストダンスだと錆だらけの\nロボットが\n動きだしたステップ踏んで あああ\n\nねえ\nとうとう君はこの街に\n帰ってこない わかってるけど\n暖かいポテトをどうぞ\nほら、さあ、召し上がれ\n抱いたバグデータもて余し\nもうすぐ僕は止まるんだろう\n嫌なこと全部投げ出して\nほら、さあ、踊ろうよ");
         }
 
-        boolean bTenthAnniversaryDisplayed = preferences.getBoolean("bTenthAnniversaryDisplayed", false);
-        final Date currentDate = new Date();
-        DateFormat formatter = new SimpleDateFormat("yyyy/M/d H:m:s", Locale.getDefault());
-        Date dateTo;
-        try {
-            dateTo = formatter.parse("2024/1/15 23:59:59");
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return;
-        }
-        if (!bTenthAnniversaryDisplayed && currentDate.compareTo(dateTo) <= 0 && Locale.getDefault().equals(Locale.JAPAN)) {
+        updateMenuButton();
+        if (needsToDisplayTenthAnniversary(false, false)) {
             mShowTenthAnniversary = true;
             preferences.edit().putBoolean("bTenthAnniversaryDisplayed", true).apply();
         }
@@ -1372,6 +1372,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int color = getResources().getColor(mDarkMode ? R.color.darkModeBk : R.color.lightModeBk);
             mRelativeSave.setBackgroundColor(color);
             mRelativeLock.setBackgroundColor(color);
+            mRelativeNotice.setBackgroundColor(color);
             mRelativeAddSong.setBackgroundColor(color);
             mRelativeHideAds.setBackgroundColor(color);
             mRelativeItem.setBackgroundColor(color);
@@ -1401,6 +1402,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int color = mDarkMode ? getResources().getColor(R.color.darkModeLightBk) : Color.argb(255, 229, 229, 229);
             if(v.getId() == R.id.relativeSave) mRelativeSave.setBackgroundColor(color);
             if(v.getId() == R.id.relativeLock) mRelativeLock.setBackgroundColor(color);
+            if(v.getId() == R.id.relativeNotice) mRelativeNotice.setBackgroundColor(color);
             if(v.getId() == R.id.relativeAddSong) mRelativeAddSong.setBackgroundColor(color);
             if(v.getId() == R.id.relativeHideAds) mRelativeHideAds.setBackgroundColor(color);
             if(v.getId() == R.id.relativeItem) mRelativeItem.setBackgroundColor(color);
@@ -1491,6 +1493,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(v.getId() == R.id.relativeSave) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
             showSaveExportMenu();
+        }
+        else if(v.getId() == R.id.relativeNotice) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+
+            showTenthAnniversary();
+            SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+            preferences.edit().putBoolean("bTenthAnniversaryDisplayedFromNotice", true).apply();
+            updateMenuButton();
         }
         else if(v.getId() == R.id.relativeAddSong) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -2709,6 +2719,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     int color = getResources().getColor(mDarkMode ? R.color.darkModeBk : R.color.lightModeBk);
                     findViewById(R.id.relativeSave).setBackgroundColor(color);
                     findViewById(R.id.relativeLock).setBackgroundColor(color);
+                    findViewById(R.id.relativeNotice).setBackgroundColor(color);
                     findViewById(R.id.relativeAddSong).setBackgroundColor(color);
                     findViewById(R.id.relativeHideAds).setBackgroundColor(color);
                     findViewById(R.id.relativeItem).setBackgroundColor(color);
@@ -3124,6 +3135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mRelativeLeftMenu.setBackgroundColor(nColorModeBk);
                 mRelativeSave.setBackgroundColor(nColorModeBk);
                 mRelativeLock.setBackgroundColor(nColorModeBk);
+                mRelativeNotice.setBackgroundColor(nColorModeBk);
                 mRelativeAddSong.setBackgroundColor(nColorModeBk);
                 mRelativeHideAds.setBackgroundColor(nColorModeBk);
                 mRelativeItem.setBackgroundColor(nColorModeBk);
@@ -3139,6 +3151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mTextInquiry.setTextColor(nColorModeText);
                 mTextReview.setTextColor(nColorModeText);
                 mTextInfo.setTextColor(nColorModeText);
+                mTextNotice.setTextColor(nColorModeText);
                 mTextAddSong.setTextColor(nColorModeText);
                 mTextTitle.setTextColor(nColorModeText);
                 mTextTitleInMenu.setTextColor(nColorModeText);
@@ -3164,7 +3177,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        TransitionDrawable tdBtnMenu = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_menu_dark), getResources().getDrawable(R.drawable.ic_bar_button_menu) });
+        TransitionDrawable tdBtnMenu;
+        if (needsToDisplayTenthAnniversary(true, false)) {
+            tdBtnMenu = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_menu_notice_dark), getResources().getDrawable(R.drawable.ic_bar_button_menu_notice) });
+        } else {
+            tdBtnMenu = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_menu_dark), getResources().getDrawable(R.drawable.ic_bar_button_menu) });
+        }
         TransitionDrawable tdBtnMoreInPlayingBar = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_playing_large_more_dark), getResources().getDrawable(R.drawable.ic_playing_large_more) });
         TransitionDrawable tdBtnRewind = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_rewind_dark), getResources().getDrawable(R.drawable.ic_bar_button_rewind) });
         TransitionDrawable tdBtnPlay, tdBtnPlayInPlayingBar;
@@ -3365,6 +3383,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mRelativeLeftMenu.setBackgroundColor(nColorModeBk);
                 mRelativeSave.setBackgroundColor(nColorModeBk);
                 mRelativeLock.setBackgroundColor(nColorModeBk);
+                mRelativeNotice.setBackgroundColor(nColorModeBk);
                 mRelativeAddSong.setBackgroundColor(nColorModeBk);
                 mRelativeHideAds.setBackgroundColor(nColorModeBk);
                 mRelativeItem.setBackgroundColor(nColorModeBk);
@@ -3380,6 +3399,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mTextInquiry.setTextColor(nColorModeText);
                 mTextReview.setTextColor(nColorModeText);
                 mTextInfo.setTextColor(nColorModeText);
+                mTextNotice.setTextColor(nColorModeText);
                 mTextAddSong.setTextColor(nColorModeText);
                 mTextTitle.setTextColor(nColorModeText);
                 mTextTitleInMenu.setTextColor(nColorModeText);
@@ -3405,7 +3425,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        TransitionDrawable tdBtnMenu = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_menu), getResources().getDrawable(R.drawable.ic_bar_button_menu_dark)});
+        TransitionDrawable tdBtnMenu;
+        if (needsToDisplayTenthAnniversary(true, false)) {
+            tdBtnMenu = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_menu_notice), getResources().getDrawable(R.drawable.ic_bar_button_menu_notice_dark)});
+        } else {
+            tdBtnMenu = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_menu), getResources().getDrawable(R.drawable.ic_bar_button_menu_dark)});
+        }
         TransitionDrawable tdBtnMoreInPlayingBar = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_playing_large_more), getResources().getDrawable(R.drawable.ic_playing_large_more_dark)});
         TransitionDrawable tdBtnRewind = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_rewind), getResources().getDrawable(R.drawable.ic_bar_button_rewind_dark)});
         TransitionDrawable tdBtnPlay, tdBtnPlayInPlayingBar;
@@ -3542,5 +3567,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTextPlaying.setTextColor(getResources().getColor(R.color.darkModePlaying));
         mSeekCurPos.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dark));
         mSeekCurPos.setThumb(getResources().getDrawable(R.drawable.thumbplaying_dark));
+    }
+
+    private void updateMenuButton() {
+        if (needsToDisplayTenthAnniversary(true, false)) {
+            mBtnMenu.setImageResource(mDarkMode ? R.drawable.ic_bar_button_menu_notice_dark : R.drawable.ic_bar_button_menu_notice);
+        } else {
+            mBtnMenu.setImageResource(mDarkMode ? R.drawable.ic_bar_button_menu_dark : R.drawable.ic_bar_button_menu);
+        }
+    }
+
+    private boolean needsToDisplayTenthAnniversary(boolean fromNotice, boolean ignoreDisplayed) {
+        SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+        boolean bTenthAnniversaryDisplayed = preferences.getBoolean(fromNotice ? "bTenthAnniversaryDisplayedFromNotice" : "bTenthAnniversaryDisplayed", false);
+        final Date currentDate = new Date();
+        DateFormat formatter = new SimpleDateFormat("yyyy/M/d H:m:s", Locale.getDefault());
+        Date dateTo;
+        try {
+            dateTo = formatter.parse("2024/1/15 23:59:59");
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+        if (ignoreDisplayed) {
+            if (currentDate.compareTo(dateTo) <= 0 && Locale.getDefault().equals(Locale.JAPAN)) {
+                return true;
+            }
+        } else {
+            if (!bTenthAnniversaryDisplayed && currentDate.compareTo(dateTo) <= 0 && Locale.getDefault().equals(Locale.JAPAN)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
