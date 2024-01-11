@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ControlFragment controlFragment;
     EqualizerFragment equalizerFragment;
     EffectFragment effectFragment;
-    private boolean mShowTenthAnniversary, mShowUpdateLog, mDarkMode, mShowReviewRequest;
+    private boolean mShowDeadline, mShowUpdateLog, mDarkMode, mShowReviewRequest;
     private float mDensity;
     private int mLastY, mPurchasingItem;
 
@@ -669,7 +669,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textView.setVisibility(nCount == 0 ? View.GONE : View.VISIBLE);
         textView.setText(String.format(Locale.getDefault(), "%d", nCount));
 
-        if(!needsToDisplayTenthAnniversary(true, true))  findViewById(R.id.relativeNotice).setVisibility(View.GONE);
+        if(!needsToDisplayDeadline(true, true))  findViewById(R.id.relativeNotice).setVisibility(View.GONE);
         if(!isAdsVisible()) findViewById(R.id.relativeHideAds).setVisibility(View.GONE);
         if(sStream != 0) {
             playlistFragment.selectPlaylist(sPlayingPlaylist);
@@ -881,9 +881,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
-        if (mShowTenthAnniversary) {
-            mShowTenthAnniversary = false;
-            showTenthAnniversary();
+        if (mShowDeadline) {
+            mShowDeadline = false;
+            showDeadline();
         }
 
         if(mShowUpdateLog) {
@@ -977,7 +977,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void showTenthAnniversary() {
+    private void showDeadline() {
         LayoutInflater inflater = getLayoutInflater();
         final View layout = inflater.inflate(mDarkMode ? R.layout.tenth_anniversary_dialog_dark : R.layout.tenth_anniversary_dialog,
                 (ViewGroup) findViewById(R.id.layout_root));
@@ -1112,9 +1112,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         updateMenuButton();
-        if (needsToDisplayTenthAnniversary(false, false)) {
-            mShowTenthAnniversary = true;
-            preferences.edit().putBoolean("bTenthAnniversaryDisplayed", true).apply();
+        if (needsToDisplayDeadline(false, false)) {
+            mShowDeadline = true;
+            preferences.edit().putBoolean("bDeadlineDisplayed", true).apply();
         }
 
         String strVersionName = preferences.getString("versionname", null);
@@ -1127,7 +1127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         catch(PackageManager.NameNotFoundException e) {
             strCurrentVersionName = strVersionName;
         }
-        if(!mShowTenthAnniversary && !bHideUpdateLogNext && Locale.getDefault().equals(Locale.JAPAN)) {
+        if(!mShowDeadline && !bHideUpdateLogNext && Locale.getDefault().equals(Locale.JAPAN)) {
             if(strVersionName != null && !strCurrentVersionName.equals(strVersionName))
                 mShowUpdateLog = true;
         }
@@ -1497,9 +1497,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(v.getId() == R.id.relativeNotice) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
 
-            showTenthAnniversary();
+            showDeadline();
             SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-            preferences.edit().putBoolean("bTenthAnniversaryDisplayedFromNotice", true).apply();
+            preferences.edit().putBoolean("bDeadlineDisplayedFromNotice", true).apply();
             updateMenuButton();
         }
         else if(v.getId() == R.id.relativeAddSong) {
@@ -3178,7 +3178,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         TransitionDrawable tdBtnMenu;
-        if (needsToDisplayTenthAnniversary(true, false)) {
+        if (needsToDisplayDeadline(true, false)) {
             tdBtnMenu = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_menu_notice_dark), getResources().getDrawable(R.drawable.ic_bar_button_menu_notice) });
         } else {
             tdBtnMenu = new TransitionDrawable( new Drawable[] {getResources().getDrawable(R.drawable.ic_bar_button_menu_dark), getResources().getDrawable(R.drawable.ic_bar_button_menu) });
@@ -3426,7 +3426,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         TransitionDrawable tdBtnMenu;
-        if (needsToDisplayTenthAnniversary(true, false)) {
+        if (needsToDisplayDeadline(true, false)) {
             tdBtnMenu = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_menu_notice), getResources().getDrawable(R.drawable.ic_bar_button_menu_notice_dark)});
         } else {
             tdBtnMenu = new TransitionDrawable(new Drawable[]{getResources().getDrawable(R.drawable.ic_bar_button_menu), getResources().getDrawable(R.drawable.ic_bar_button_menu_dark)});
@@ -3570,21 +3570,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void updateMenuButton() {
-        if (needsToDisplayTenthAnniversary(true, false)) {
+        if (needsToDisplayDeadline(true, false)) {
             mBtnMenu.setImageResource(mDarkMode ? R.drawable.ic_bar_button_menu_notice_dark : R.drawable.ic_bar_button_menu_notice);
         } else {
             mBtnMenu.setImageResource(mDarkMode ? R.drawable.ic_bar_button_menu_dark : R.drawable.ic_bar_button_menu);
         }
     }
 
-    private boolean needsToDisplayTenthAnniversary(boolean fromNotice, boolean ignoreDisplayed) {
+    private boolean needsToDisplayDeadline(boolean fromNotice, boolean ignoreDisplayed) {
         SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-        boolean bTenthAnniversaryDisplayed = preferences.getBoolean(fromNotice ? "bTenthAnniversaryDisplayedFromNotice" : "bTenthAnniversaryDisplayed", false);
+        boolean bDeadlineDisplayed = preferences.getBoolean(fromNotice ? "bDeadlineDisplayedFromNotice" : "bDeadlineDisplayed", false);
         final Date currentDate = new Date();
         DateFormat formatter = new SimpleDateFormat("yyyy/M/d H:m:s", Locale.getDefault());
         Date dateTo;
         try {
-            dateTo = formatter.parse("2024/1/15 23:59:59");
+            dateTo = formatter.parse("2024/1/22 23:59:59");
         } catch (ParseException e) {
             e.printStackTrace();
             return false;
@@ -3594,7 +3594,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             }
         } else {
-            if (!bTenthAnniversaryDisplayed && currentDate.compareTo(dateTo) <= 0 && Locale.getDefault().equals(Locale.JAPAN)) {
+            if (!bDeadlineDisplayed && currentDate.compareTo(dateTo) <= 0 && Locale.getDefault().equals(Locale.JAPAN)) {
                 return true;
             }
         }
