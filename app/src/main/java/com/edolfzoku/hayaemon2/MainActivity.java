@@ -55,6 +55,8 @@ import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClient.*;
 import com.android.billingclient.api.BillingClientStateListener;
@@ -419,6 +421,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setupBillingClient() {
+        AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
+            @Override
+            public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
+            }
+        };
         mBillingClient = BillingClient.newBuilder(this)
                 .setListener((billingResult, purchases) -> {
                     // Handle updated purchases here
@@ -428,6 +435,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             List<String> productIds = purchase.getProducts();
                             for (String productId: productIds) {
                                 runOnUiThread(() -> handlePurchase(productId));
+                            }
+
+                            if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+                                if (!purchase.isAcknowledged()) {
+                                    AcknowledgePurchaseParams acknowledgePurchaseParams =
+                                            AcknowledgePurchaseParams.newBuilder()
+                                                    .setPurchaseToken(purchase.getPurchaseToken())
+                                                    .build();
+                                    mBillingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
+                                }
                             }
                         }
                     }
@@ -824,6 +841,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void checkPurchased() {
+        AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
+            @Override
+            public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
+            }
+        };
         mBillingClient.queryPurchasesAsync(
                 QueryPurchasesParams.newBuilder()
                         .setProductType(ProductType.INAPP)
@@ -837,6 +859,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             List<String> productIds = purchase.getProducts();
                             for (String productId: productIds) {
                                 runOnUiThread(() -> handlePurchase(productId));
+                            }
+
+                            if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+                                if (!purchase.isAcknowledged()) {
+                                    AcknowledgePurchaseParams acknowledgePurchaseParams =
+                                            AcknowledgePurchaseParams.newBuilder()
+                                                    .setPurchaseToken(purchase.getPurchaseToken())
+                                                    .build();
+                                    mBillingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
+                                }
                             }
                         }
                     }
