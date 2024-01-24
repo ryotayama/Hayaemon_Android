@@ -225,6 +225,8 @@
     <string name="saveExport">保存／エクスポート</string>
     <string name="addSong">曲を追加</string>
     <string name="hideAds">広告を非表示にする</string>
+    <string name="hideAdsTitle">広告非表示</string>
+    <string name="hideAdsDescription">アプリ内のすべての広告を非表示にすることができます。\n\n広告の非表示には、現在2種類の方法があります。</string>
     <string name="billingItem">課金アイテム</string>
     <string name="inquiry">お問い合わせ</string>
     <string name="review">ご要望／レビュー</string>

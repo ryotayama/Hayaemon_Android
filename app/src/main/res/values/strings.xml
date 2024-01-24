@@ -225,6 +225,8 @@
     <string name="saveExport">Save / Export</string>
     <string name="addSong">Add song</string>
     <string name="hideAds">Hide the Ads</string>
+    <string name="hideAdsTitle">Hide the Ads</string>
+    <string name="hideAdsDescription">That can hide all ads in this app.\n\nThere are currently two ways to hide ads.</string>
     <string name="billingItem">Payment items</string>
     <string name="inquiry">Inquiry</string>
     <string name="review">Request / Review</string>

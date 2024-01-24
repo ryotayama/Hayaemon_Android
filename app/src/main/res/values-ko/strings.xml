@@ -225,6 +225,8 @@
     <string name="saveExport">저장/내보내기</string>
     <string name="addSong">곡 추가</string>
     <string name="hideAds">광고 제거</string>
+    <string name="hideAdsTitle">Hide the Ads</string>
+    <string name="hideAdsDescription">That can hide all ads in this app.\n\nThere are currently two ways to hide ads.</string>
     <string name="billingItem">유료 아이템</string>
     <string name="inquiry">문의</string>
     <string name="review">요청 / 검토</string>
