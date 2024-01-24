@@ -227,6 +227,9 @@
     <string name="hideAds">広告を非表示にする</string>
     <string name="hideAdsTitle">広告非表示</string>
     <string name="hideAdsDescription">アプリ内のすべての広告を非表示にすることができます。\n\n広告の非表示には、現在2種類の方法があります。</string>
+    <string name="purchaseOncePlanTitle">【買い切りプラン】2,000円</string>
+    <string name="purchaseOncePlanDescription">1回のみ購入が必要で、それ以降はお使いのGoogleアカウントに関連付けられている他のデバイスでも適用できます。</string>
+    <string name="restorePurchase">購入済みを復元</string>
     <string name="billingItem">課金アイテム</string>
     <string name="inquiry">お問い合わせ</string>
     <string name="review">ご要望／レビュー</string>
