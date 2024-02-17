@@ -1627,10 +1627,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         if(uri != null) {
                             try {
                                 sActivity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                                addSong(sActivity, data.getData());
+                                addSong(sActivity, uri);
                             } catch (SecurityException e) {
                                 e.printStackTrace();
-                                Uri uriCopy = sActivity.copyFile(data.getData());
+                                Uri uriCopy = sActivity.copyFile(uri);
                                 addSong(sActivity, uriCopy);
                             }
                         }
