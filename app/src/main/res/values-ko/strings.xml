@@ -229,6 +229,8 @@
     <string name="hideAdsDescription">That can hide all ads in this app.\n\nThere are currently two ways to hide ads.</string>
     <string name="purchaseOncePlanTitle">&lt;One time payment> $16.99</string>
     <string name="purchaseOncePlanDescription">You buy this item one time, and you can apply this to other devices that are associated with your Google account.</string>
+    <string name="purchaseContinuousPlanTitle">&lt;Monthly payment> $1.49 / Month</string>
+    <string name="purchaseContinuousPlanDescription">purchaseContinuousPlanDescription</string>
     <string name="restorePurchase">Restore purchase</string>
     <string name="billingItem">유료 아이템</string>
     <string name="inquiry">문의</string>
