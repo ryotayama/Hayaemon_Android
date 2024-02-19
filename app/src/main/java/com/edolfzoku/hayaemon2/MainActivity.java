@@ -74,6 +74,8 @@ import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.play.core.tasks.Task;
+import com.google.android.ump.ConsentDebugSettings;
+import com.google.android.ump.ConsentForm;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.core.content.ContextCompat;
@@ -149,6 +151,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import com.google.android.ump.ConsentInformation;
+import com.google.android.ump.ConsentRequestParameters;
+import com.google.android.ump.UserMessagingPlatform;
 
 import static com.edolfzoku.hayaemon2.Constants.ITEM_BLUE_CAMPER_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_ELEGANT_SEA_URCHIN_POINTER;
@@ -192,6 +199,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DrawerLayout mDrawerLayout;
     private HoldableViewPager mViewPager;
     private BillingClient mBillingClient;
+
+    private ConsentInformation consentInformation;
+
+    // Use an atomic boolean to initialize the Google Mobile Ads SDK and load ads once.
+    private final AtomicBoolean isMobileAdsInitializeCalled = new AtomicBoolean(false);
+
     private FrameLayout mAdContainerView;
     private AdView mAdView;
     private LinearLayout mLinearControl;
@@ -239,6 +252,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDensity = getResources().getDisplayMetrics().density;
 
         setContentView(R.layout.activity_main);
+
+        mAdContainerView = findViewById(R.id.ad_view_container);
+        if(!getSharedPreferences("SaveData", MODE_PRIVATE).getBoolean("hideads", false)) {
+            ConsentDebugSettings debugSettings = new ConsentDebugSettings
+                    .Builder(this)
+                    // .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+                    .addTestDeviceHashedId("C274AC018E6509532711089B8BC4433D")
+                    .build();
+
+            // Create a ConsentRequestParameters object.
+            ConsentRequestParameters params = new ConsentRequestParameters
+                    .Builder()
+                    .setConsentDebugSettings(debugSettings)
+                    .build();
+
+            consentInformation = UserMessagingPlatform.getConsentInformation(this);
+            // consentInformation.reset();
+            consentInformation.requestConsentInfoUpdate(
+                    this,
+                    params,
+                    (ConsentInformation.OnConsentInfoUpdateSuccessListener) () -> {
+                        UserMessagingPlatform.loadAndShowConsentFormIfRequired(
+                                this,
+                                (ConsentForm.OnConsentFormDismissedListener) loadAndShowError -> {
+                                    if (loadAndShowError != null) {
+                                        // Consent gathering failed.
+                                        Log.w(TAG, String.format("%s: %s",
+                                                loadAndShowError.getErrorCode(),
+                                                loadAndShowError.getMessage()));
+                                    }
+
+                                    // Consent has been gathered.
+                                    if (consentInformation.canRequestAds()) {
+                                        initializeMobileAdsSdk();
+                                    }
+                                }
+                        );
+                    },
+                    (ConsentInformation.OnConsentInfoUpdateFailureListener) requestConsentError -> {
+                        // Consent gathering failed.
+                        Log.w(TAG, String.format("%s: %s",
+                                requestConsentError.getErrorCode(),
+                                requestConsentError.getMessage()));
+                    });
+
+            // Check if you can initialize the Google Mobile Ads SDK in parallel
+            // while checking for new consent information. Consent obtained in
+            // the previous session can be used to request ads.
+            if (consentInformation.canRequestAds()) {
+                initializeMobileAdsSdk();
+            }
+        }
 
         mBtnShuffle = findViewById(R.id.btnShuffle);
         mBtnRepeat = findViewById(R.id.btnRepeat);
@@ -303,7 +368,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnSetting = findViewById(R.id.btnSetting);
         mBtnDarkMode = findViewById(R.id.btnDarkMode);
         mTextRecording = findViewById(R.id.textRecording);
-        mAdContainerView = findViewById(R.id.ad_view_container);
 
         initialize(savedInstanceState);
         loadData();
@@ -418,6 +482,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             MainActivity.setSystemBarTheme(this, false);
 
         updateDrawer();
+    }
+
+    private void initializeMobileAdsSdk() {
+        if (isMobileAdsInitializeCalled.getAndSet(true)) {
+            return;
+        }
+
+        // Initialize the Google Mobile Ads SDK.
+        List<String> testDeviceIds = Arrays.asList("C274AC018E6509532711089B8BC4433D", "7A4DCE2E7A051D5905BDA9790B453502");
+        RequestConfiguration configuration =
+                new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build();
+        MobileAds.setRequestConfiguration(configuration);
+        MobileAds.initialize(this);
+
+        if(!getSharedPreferences("SaveData", MODE_PRIVATE).getBoolean("hideads", false)) {
+            mAdContainerView.getLayoutParams().height = (int) (getAdSize().getHeight() * mDensity);
+            mAdContainerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    loadBanner();
+                }
+            });
+        }
     }
 
     private void setupBillingClient() {
@@ -1182,30 +1269,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         boolean bHideAds = preferences.getBoolean("hideads", false);
         if(bHideAds) hideAds();
-        else {
-            List<String> testDeviceIds = Arrays.asList("C274AC018E6509532711089B8BC4433D", "7A4DCE2E7A051D5905BDA9790B453502");
-            RequestConfiguration configuration =
-                    new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build();
-            MobileAds.setRequestConfiguration(configuration);
-            MobileAds.initialize(this, new OnInitializationCompleteListener() {
-                @Override
-                public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
-                }
-            });
-
-            MobileAds.initialize(this, new OnInitializationCompleteListener() {
-                @Override
-                public void onInitializationComplete(InitializationStatus initializationStatus) {
-                }
-            });
-            mAdContainerView.getLayoutParams().height = (int)(getAdSize().getHeight() * mDensity);
-            mAdContainerView.post(new Runnable() {
-                @Override
-                public void run() {
-                    loadBanner();
-                }
-            });
-        }
 
         sShuffle = preferences.getInt("shufflemode", 0);
         if(sShuffle == 1) {

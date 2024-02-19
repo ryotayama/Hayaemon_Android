@@ -6,7 +6,7 @@ android {
     compileSdkVersion 33
     defaultConfig {
         applicationId "com.edolfzoku.hayaemon2"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 33
         versionCode 184
         versionName "2.55"
@@ -38,6 +38,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.0'
     implementation 'androidx.media:media:1.0.0'
     implementation 'com.google.android.gms:play-services-ads:22.0.0'
+    implementation("com.google.android.ump:user-messaging-platform:2.2.0")
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.android.billingclient:billing:6.0.1'
     implementation "androidx.work:work-runtime-ktx:2.7.1"
