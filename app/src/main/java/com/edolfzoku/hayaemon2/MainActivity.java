@@ -491,6 +491,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             MainActivity.setSystemBarTheme(this, false);
 
         updateDrawer();
+
+        connectMediaBrowser();
     }
 
     private void connectMediaBrowser() {

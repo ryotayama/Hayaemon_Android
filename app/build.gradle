@@ -43,8 +43,11 @@ dependencies {
     implementation 'com.android.billingclient:billing:6.0.1'
     implementation "androidx.work:work-runtime-ktx:2.7.1"
     implementation 'com.google.android.play:core:1.10.2'
+
+    // 以下を消すとなぜか java.lang.RuntimeException: Unable to start service com.edolfzoku.hayaemon2.AudioPlayerService@f548d0b with Intent { cmp=com.edolfzoku.hayaemon2/.AudioPlayerService (has extras) }: java.lang.IllegalArgumentException: com.edolfzoku.hayaemon2: Targeting S+ (version 31 and above) requires that one of FLAG_IMMUTABLE or FLAG_MUTABLE be specified when creating a PendingIntent. が出るようになる
     implementation 'com.google.android.exoplayer:exoplayer:2.18.0'
     implementation 'com.google.android.exoplayer:extension-mediasession:2.18.0'
+
     testImplementation 'junit:junit:4.12'
     implementation files('src/main/libs/mp3agic-0.9.0.jar')
     implementation 'org.jcodec:jcodec:0.2.3'
