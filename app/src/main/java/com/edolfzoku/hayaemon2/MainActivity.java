@@ -27,6 +27,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -90,7 +91,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.RemoteException;
 import android.provider.Settings;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
@@ -216,6 +222,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AnimationButton mBtnMenu, mBtnRewind, mBtnPlay, mBtnForward, mBtnShuffle, mBtnRepeat, mBtnRecord, mBtnPlayInPlayingBar, mBtnForwardInPlayingBar, mBtnRewindInPlayingBar, mBtnMoreInPlayingBar, mBtnShuffleInPlayingBar, mBtnRepeatInPlayingBar, mBtnCloseInPlayingBar, mBtnStopRecording, mBtnArtworkInPlayingBar, mBtnSetting, mBtnDarkMode;
     private RelativeLayout mRelativeRecording, mRelativeSave, mRelativeLock, mRelativeNotice, mRelativeAddSong, mRelativeItem, mRelativeHelp, mRelativeInquiry, mRelativeReview, mRelativeHideAds, mRelativeInfo, mRelativePlayingWithShadow, mRelativePlaying, mRelativeLeftMenu;
     private GestureDetector mGestureDetector;
+
+    private MediaBrowserCompat mMediaBrowser;
+    private MediaControllerCompat mMediaController;
 
     public HoldableViewPager getViewPager() { return mViewPager; }
     public SeekBar getSeekCurPos() { return mSeekCurPos; }
@@ -483,6 +492,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         updateDrawer();
     }
+
+    private void connectMediaBrowser() {
+        //MediaBrowserを初期化
+        mMediaBrowser = new MediaBrowserCompat(getApplicationContext(), new ComponentName(getApplicationContext(),AudioPlayerService.class), connectionCallback, null);
+        //接続(サービスをバインド)
+        mMediaBrowser.connect();
+        Log.d(TAG," connectMediaBrowser()");
+    }
+
+    private MediaBrowserCompat.ConnectionCallback connectionCallback = new MediaBrowserCompat.ConnectionCallback() {
+        @Override
+        public void onConnected() {
+            Log.d(TAG," onConnected Call");
+
+            //接続が完了するとSessionTokenが取得できるので
+            //それを利用してMediaControllerを作成
+            if(mMediaBrowser == null) return;
+            mMediaController = new MediaControllerCompat(getApplicationContext(), mMediaBrowser.getSessionToken());
+            // 以下を追加
+            MediaControllerCompat.setMediaController(MainActivity.this, mMediaController);
+            //サービスから送られてくるプレイヤーの状態や曲の情報が変更された際のコールバックを設定
+            mMediaController.registerCallback(controllerCallback);
+        }
+    };
+
+    private MediaControllerCompat.Callback controllerCallback = new MediaControllerCompat.Callback() {
+        //再生中の曲の情報が変更された際に呼び出される
+        @Override
+        public void onMetadataChanged(MediaMetadataCompat metadata) {
+        }
+
+        //プレイヤーの状態が変更された時に呼び出される
+        @Override
+        public void onPlaybackStateChanged(PlaybackStateCompat state) {
+        }
+    };
 
     private void initializeMobileAdsSdk() {
         if (isMobileAdsInitializeCalled.getAndSet(true)) {
@@ -979,7 +1024,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SongItem item = arSongs.get(playing);
         Context context = sActivity != null ? sActivity : sService;
         if (context == null) return;
-        Intent intent = new Intent(context, ForegroundService.class);
+//        Intent intent = new Intent(context, ForegroundService.class);
+        Intent intent = new Intent(context, AudioPlayerService.class);
         intent.putExtra("strTitle", item.getTitle());
         intent.putExtra("strArtist", item.getArtist());
         intent.putExtra("strPathArtwork", item.getPathArtwork());
@@ -990,7 +1036,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static void stopNotification() {
         Context context = sActivity != null ? sActivity : sService;
-        Intent intent = new Intent(context, ForegroundService.class)
+//        Intent intent = new Intent(context, ForegroundService.class)
+        Intent intent = new Intent(context, AudioPlayerService.class)
                 .setAction("stop");
         if (Build.VERSION.SDK_INT >= 26) context.startForegroundService(intent);
         else context.startService(intent);
