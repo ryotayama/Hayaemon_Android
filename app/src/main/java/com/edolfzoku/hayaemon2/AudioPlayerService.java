@@ -129,12 +129,33 @@ public class AudioPlayerService extends MediaBrowserServiceCompat {
             @Override
             public boolean onMediaButtonEvent(Intent intent) {
                 KeyEvent key = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
-                Log.d(TAG, String.valueOf(key.getKeyCode()));
+                if (key != null && key.getAction() == KeyEvent.ACTION_DOWN) {
+                    Log.d(TAG, String.valueOf(key.getKeyCode()));
+                    switch (key.getKeyCode()) {
+                        case KeyEvent.KEYCODE_MEDIA_PLAY:
+                            Log.d(TAG, "KEYCODE_MEDIA_PLAY");
+                            this.onPlay();
+                            return true;
+                        case KeyEvent.KEYCODE_MEDIA_PAUSE:
+                            Log.d(TAG, "KEYCODE_MEDIA_PAUSE");
+                            this.onPause();
+                            return true;
+                        case KeyEvent.KEYCODE_MEDIA_NEXT:
+                            Log.d(TAG, "KEYCODE_MEDIA_NEXT");
+                            this.onSkipToNext();
+                            return true;
+                        case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                            Log.d(TAG, "KEYCODE_MEDIA_PREVIOUS");
+                            this.onSkipToPrevious();
+                            return true;
+                    }
+                }
                 return super.onMediaButtonEvent(intent);
             }
 
             @Override
             public void onPlay() {
+                Log.d(TAG, "onPlay");
                 PlaylistFragment.onPlayBtnClick();
                 setNewState(PlaybackStateCompat.STATE_PLAYING);
                 mMediaSession.setActive(true);
@@ -142,18 +163,21 @@ public class AudioPlayerService extends MediaBrowserServiceCompat {
 
             @Override
             public void onPause() {
-                mMediaSession.setActive(true);
-                setNewState(PlaybackStateCompat.STATE_PAUSED);
+                Log.d(TAG, "onPause");
                 PlaylistFragment.onPlayBtnClick();
+                setNewState(PlaybackStateCompat.STATE_PAUSED);
+                mMediaSession.setActive(true);
             }
 
             @Override
             public void onSkipToPrevious() {
+                Log.d(TAG, "onSkipToPrevious");
                 PlaylistFragment.onRewindBtnClick();
             }
 
             @Override
             public void onSkipToNext() {
+                Log.d(TAG, "onSkipToNext");
                 PlaylistFragment.onForwardBtnClick();
             }
         };
@@ -172,7 +196,7 @@ public class AudioPlayerService extends MediaBrowserServiceCompat {
         String strPathArtwork = intent.getStringExtra("strPathArtwork");
         showNotification(strPath, strTitle, strArtist, strPathArtwork);
 
-        MediaButtonReceiver.handleIntent(mMediaSession, intent);
+//        MediaButtonReceiver.handleIntent(mMediaSession, intent);
 
         return START_NOT_STICKY;
     }
