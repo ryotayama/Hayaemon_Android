@@ -230,7 +230,7 @@
     <string name="purchaseOncePlanTitle">【買い切りプラン】2,000円</string>
     <string name="purchaseOncePlanDescription">1回のみ購入が必要で、それ以降はお使いのGoogleアカウントに関連付けられている他のデバイスでも適用できます。</string>
     <string name="purchaseContinuousPlanTitle">【月額プラン】180円</string>
-    <string name="purchaseContinuousPlanDescription">月単位の定期購入で、広告非表示が適用されます。\n月額プランの購入後、買い切りプランに変更することも可能です。（※買い切りプランを購入する際は、月額プランの解約手続きを行ってください。）\n\n【解約方法】\n１）Android デバイスで Google Play の定期購入 ( https://play.google.com/store/account/subscriptions ) にアクセスします。\n２）解約する定期購入を選択します。\n３）[定期購入を解約] をタップします。\n４）画面上の指示に沿って操作します。\n\n【自動継続課金について】\n月額プランは自動更新されます。期間終了の24時間前までに登録のキャンセルがなかった場合、次の期間に自動更新され課金されます。\n\n【注意点】\n・当月分のキャンセルについては受け付けておりません。\n・Googleアカウントを経由して課金されます。</string>
+    <string name="purchaseContinuousPlanDescription">月単位の定期購入で、広告非表示が適用されます。\n月額プランの購入後、買い切りプランに変更することも可能です。（※買い切りプランを購入する際は、月額プランの解約手続きを行ってください。）\n\n【解約方法】\n１）Android デバイスで <a href="https://play.google.com/store/account/subscriptions">Google Play の定期購入</a> にアクセスします。\n２）解約する定期購入を選択します。\n３）[定期購入を解約] をタップします。\n４）画面上の指示に沿って操作します。\n\n【自動継続課金について】\n月額プランは自動更新されます。期間終了の24時間前までに登録のキャンセルがなかった場合、次の期間に自動更新され課金されます。\n\n【注意点】\n・当月分のキャンセルについては受け付けておりません。\n・Googleアカウントを経由して課金されます。\n\n<a href="https://hayaemon.jp/blog/hayaemon_privacy_jp">利用規約・プライバシーポリシー</a></string>
     <string name="restorePurchase">購入済みを復元</string>
     <string name="billingItem">課金アイテム</string>
     <string name="inquiry">お問い合わせ</string>
