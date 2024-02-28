@@ -2,6 +2,10 @@ package com.edolfzoku.hayaemon2;
 
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+import static android.view.KeyEvent.KEYCODE_MEDIA_NEXT;
+import static android.view.KeyEvent.KEYCODE_MEDIA_PAUSE;
+import static android.view.KeyEvent.KEYCODE_MEDIA_PLAY;
+import static android.view.KeyEvent.KEYCODE_MEDIA_PREVIOUS;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -22,9 +26,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.view.KeyEvent;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.media.session.MediaButtonReceiver;
 
 import com.un4seen.bass.BASS;
 
@@ -41,6 +47,12 @@ public class ForegroundService extends IntentService {
     private BroadcastReceiver mReceiver;
     private Bitmap mBitmap;
     private MediaSessionCompat mediaSession;
+    private static final long AVAILABLE_ACTIONS = PlaybackStateCompat.ACTION_PLAY_PAUSE |
+            PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
+            // PlaybackStateCompat.ACTION_SEEK_TO |
+            PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH |
+            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+            PlaybackStateCompat.ACTION_SKIP_TO_NEXT;
 
     public ForegroundService() {
         super("ForegroundService");
@@ -65,45 +77,60 @@ public class ForegroundService extends IntentService {
             registerReceiver(mReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
         }
 
-        if (Build.VERSION.SDK_INT >= 33) {
-            mediaSession = new MediaSessionCompat(this, "MediaSessionTag");
-            MediaSessionCompat.Callback mediaSessionCallback = new MediaSessionCompat.Callback() {
-                @Override
-                public void onPlay() {
-                    PlaylistFragment.onPlayBtnClick();
+        mediaSession = new MediaSessionCompat(this, "MediaSessionTag", null, PendingIntent.getBroadcast(this, 0, new Intent(Intent.ACTION_MEDIA_BUTTON), FLAG_IMMUTABLE));
+        MediaSessionCompat.Callback mediaSessionCallback = new MediaSessionCompat.Callback() {
+            @Override
+            public void onPlay() {
+                PlaylistFragment.onPlayBtnClick();
+            }
+
+            @Override
+            public void onPause() {
+                PlaylistFragment.onPlayBtnClick();
+            }
+
+            @Override
+            public void onSkipToPrevious() {
+                PlaylistFragment.onRewindBtnClick();
+            }
+
+            @Override
+            public void onSkipToNext() {
+                PlaylistFragment.onForwardBtnClick();
+            }
+
+            @Override
+            public boolean onMediaButtonEvent(Intent intent) {
+                final KeyEvent key = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+                if (key != null && key.getAction() == KeyEvent.ACTION_DOWN) {
+                    switch (key.getKeyCode()) {
+                        case KEYCODE_MEDIA_PLAY:
+                            onPlay();
+                            return true;
+                        case KEYCODE_MEDIA_PAUSE:
+                            onPause();
+                            return true;
+                        case KEYCODE_MEDIA_PREVIOUS:
+                            onSkipToPrevious();
+                            return true;
+                        case KEYCODE_MEDIA_NEXT:
+                            onSkipToNext();
+                            return true;
+                    }
                 }
+                return super.onMediaButtonEvent(intent);
+            }
+        };
 
-                @Override
-                public void onPause() {
-                    PlaylistFragment.onPlayBtnClick();
-                }
+        mediaSession.setCallback(mediaSessionCallback);
 
-                @Override
-                public void onSkipToPrevious() {
-                    PlaylistFragment.onRewindBtnClick();
-                }
+        PlaybackStateCompat playbackState = new PlaybackStateCompat.Builder()
+                .setState(PlaybackStateCompat.STATE_PLAYING, 0, 1f)
+                .setActions(AVAILABLE_ACTIONS)
+                .build();
+        mediaSession.setPlaybackState(playbackState);
 
-                @Override
-                public void onSkipToNext() {
-                    PlaylistFragment.onForwardBtnClick();
-                }
-            };
-
-            mediaSession.setCallback(mediaSessionCallback);
-
-            PlaybackStateCompat playbackState = new PlaybackStateCompat.Builder()
-                    .setState(PlaybackStateCompat.STATE_PLAYING, 0, 1f)
-                    .setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE |
-                            PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
-                            // PlaybackStateCompat.ACTION_SEEK_TO |
-                            PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH |
-                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
-                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
-                    .build();
-            mediaSession.setPlaybackState(playbackState);
-
-            mediaSession.setActive(true);
-        }
+        mediaSession.setActive(true);
     }
 
     @Override
@@ -125,6 +152,9 @@ public class ForegroundService extends IntentService {
             }
             mReceiver = null;
         }
+
+        mediaSession.release();
+
         super.onDestroy();
     }
 
@@ -224,46 +254,32 @@ public class ForegroundService extends IntentService {
             if (BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_PLAYING) {
                 iconPlayPause = R.drawable.ic_pause;
                 playPauseTitle = "Pause";
-                if (Build.VERSION.SDK_INT >= 33) {
-                    PlaybackStateCompat playbackState = new PlaybackStateCompat.Builder()
-                            .setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE |
-                                    PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
-                                    // PlaybackStateCompat.ACTION_SEEK_TO |
-                                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH |
-                                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
-                                    PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
-                            .setState(PlaybackStateCompat.STATE_PLAYING, 0, 1f)
-                            // .setBufferedPosition(length)
-                            .build();
-                    mediaSession.setPlaybackState(playbackState);
-                    // MediaMetadataCompat metadata = new MediaMetadataCompat.Builder()
-                    //         .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, length)
-                    //         .build();
-                    // mediaSession.setMetadata(metadata);
-                    mediaSession.setActive(true);
-                }
+                PlaybackStateCompat playbackState = new PlaybackStateCompat.Builder()
+                        .setActions(AVAILABLE_ACTIONS)
+                        .setState(PlaybackStateCompat.STATE_PLAYING, 0, 1f)
+                        // .setBufferedPosition(length)
+                        .build();
+                mediaSession.setPlaybackState(playbackState);
+                // MediaMetadataCompat metadata = new MediaMetadataCompat.Builder()
+                //         .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, length)
+                //         .build();
+                // mediaSession.setMetadata(metadata);
+                mediaSession.setActive(true);
             }
             else {
                 iconPlayPause = R.drawable.ic_play;
                 playPauseTitle = "Play";
-                if (Build.VERSION.SDK_INT >= 33) {
-                    PlaybackStateCompat playbackState = new PlaybackStateCompat.Builder()
-                            .setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE |
-                                    PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
-                                    // PlaybackStateCompat.ACTION_SEEK_TO |
-                                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH |
-                                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
-                                    PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
-                            .setState(PlaybackStateCompat.STATE_PAUSED, 0, 1f)
-                            // .setBufferedPosition(length)
-                            .build();
-                    mediaSession.setPlaybackState(playbackState);
-                    // MediaMetadataCompat metadata = new MediaMetadataCompat.Builder()
-                    //         .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, length)
-                    //         .build();
-                    // mediaSession.setMetadata(metadata);
-                    mediaSession.setActive(true);
-                }
+                PlaybackStateCompat playbackState = new PlaybackStateCompat.Builder()
+                        .setActions(AVAILABLE_ACTIONS)
+                        .setState(PlaybackStateCompat.STATE_PAUSED, 0, 1f)
+                        // .setBufferedPosition(length)
+                        .build();
+                mediaSession.setPlaybackState(playbackState);
+                // MediaMetadataCompat metadata = new MediaMetadataCompat.Builder()
+                //         .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, length)
+                //         .build();
+                // mediaSession.setMetadata(metadata);
+                mediaSession.setActive(true);
             }
             actionPlayPause.icon = iconPlayPause;
             actionPlayPause.title = playPauseTitle;
@@ -372,6 +388,8 @@ public class ForegroundService extends IntentService {
             else if (intent.getAction().equals("action_forward")) PlaylistFragment.onForwardBtnClick();
             else getBaseContext().sendBroadcast(new Intent(intent.getAction()));
         }
+
+        MediaButtonReceiver.handleIntent(mediaSession, intent);
 
         return START_STICKY_COMPATIBILITY;
     }
