@@ -1603,7 +1603,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if(v.getId() == R.id.relativeHideAds) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-            startBillingHideAds();
+            // startBillingHideAds();
+            openHideAds();
         }
         else if(v.getId() == R.id.relativeItem) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -2218,6 +2219,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         menu.setCancelMenu();
         menu.show();
+    }
+
+    private void openHideAds() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        final FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
+        transaction.replace(R.id.relativeMain, new HideAdsFragment());
+        transaction.commit();
     }
 
     private void openItem() {
