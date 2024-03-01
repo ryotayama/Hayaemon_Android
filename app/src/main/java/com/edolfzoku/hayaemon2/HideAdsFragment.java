@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,6 +43,12 @@ public class HideAdsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Button btnCloseItem = mActivity.findViewById(R.id.btnCloseHideAds);
+
+        btnCloseItem.setOnClickListener(this);
+
+        btnCloseItem.setTextColor(getResources().getColor(R.color.darkModeBlue));
     }
 
     public void close() {
@@ -54,5 +61,7 @@ public class HideAdsFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
+        if(view.getId() == R.id.btnCloseHideAds)
+            close();
     }
 }

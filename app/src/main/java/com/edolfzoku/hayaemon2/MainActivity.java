@@ -1603,7 +1603,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if(v.getId() == R.id.relativeHideAds) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-            // startBillingHideAds();
             openHideAds();
         }
         else if(v.getId() == R.id.relativeItem) {
