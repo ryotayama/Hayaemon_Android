@@ -232,6 +232,8 @@
     <string name="purchaseContinuousPlanTitle">&lt;Monthly payment> $1.49 / Month</string>
     <string name="purchaseContinuousPlanDescription">Hiding ads applies by monthly subscriptions.\nAfter purchasing the monthly payment plan, you can change it to the one time payment plan also.\n* When you buy the one time payment plan, please cancel the monthly payment plan.\n\n[How to cancel?]\n1. On your Android device, go to <a href="https://play.google.com/store/account/subscriptions">subscriptions in Google Play</a> .\n2. Select the subscription you want to cancel.\n3. Tap Cancel subscription.\n4. Follow the instructions.\n\n[About auto-renewing subscription]\nYour monthly payment plan is automatically renewed. If you don’t cancel more than 24 hours before your renewal date, your subscription might renew.\n\n[Notes]\n* We do not accept cancellations for this month.\n* You will be charged via your Google account.\n\n<a href="https://hayaemon.jp/blog/hayaemon_privacy_en">Terms of Use / Privacy policy</a></string>
     <string name="restorePurchase">Restore purchase</string>
+    <string name="restored">Restored</string>
+    <string name="notRestored">Restore failed.</string>
     <string name="billingItem">Payment items</string>
     <string name="inquiry">Inquiry</string>
     <string name="review">Request / Review</string>

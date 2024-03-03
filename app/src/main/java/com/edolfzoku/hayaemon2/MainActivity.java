@@ -856,23 +856,68 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // check billingResult
                     // process returned purchase list, e.g. display the plans user owns
                     if (billingResult.getResponseCode() == BillingResponseCode.OK) {
-                        for (Purchase purchase : purchases) {
-                            // Handle the purchased item
-                            List<String> productIds = purchase.getProducts();
-                            for (String productId: productIds) {
-                                runOnUiThread(() -> handlePurchase(productId));
-                            }
+                        runOnUiThread(() -> {
+                            boolean hideAdsRestored = false;
+                            for (Purchase purchase : purchases) {
+                                // Handle the purchased item
+                                List<String> productIds = purchase.getProducts();
+                                for (String productId: productIds) {
+                                    handlePurchase(productId);
+                                    if (productId.equals(PRODUCT_ID_HIDE_ADS)) {
+                                        hideAdsRestored = true;
+                                    }
+                                }
 
-                            if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-                                if (!purchase.isAcknowledged()) {
-                                    AcknowledgePurchaseParams acknowledgePurchaseParams =
-                                            AcknowledgePurchaseParams.newBuilder()
-                                                    .setPurchaseToken(purchase.getPurchaseToken())
-                                                    .build();
-                                    mBillingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
+                                if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+                                    if (!purchase.isAcknowledged()) {
+                                        AcknowledgePurchaseParams acknowledgePurchaseParams =
+                                                AcknowledgePurchaseParams.newBuilder()
+                                                        .setPurchaseToken(purchase.getPurchaseToken())
+                                                        .build();
+                                        mBillingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
+                                    }
                                 }
                             }
-                        }
+                            HideAdsFragment hideAdsFragment = null;
+                            for (Fragment f : getSupportFragmentManager().getFragments()) {
+                                if (f.getClass().getName().equals("com.edolfzoku.hayaemon2.HideAdsFragment"))
+                                    hideAdsFragment = (HideAdsFragment)f;
+                            }
+                            if (hideAdsFragment != null) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                if (hideAdsRestored) {
+                                    builder.setTitle(R.string.restored);
+                                    builder.setPositiveButton("OK", null);
+                                    final AlertDialog alertDialog = builder.create();
+                                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                                        @Override
+                                        public void onShow(DialogInterface arg0) {
+                                            if (alertDialog.getWindow() != null) {
+                                                WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                                                lp.dimAmount = 0.4f;
+                                                alertDialog.getWindow().setAttributes(lp);
+                                            }
+                                        }
+                                    });
+                                    alertDialog.show();
+                                } else {
+                                    builder.setTitle(R.string.notRestored);
+                                    builder.setPositiveButton("OK", null);
+                                    final AlertDialog alertDialog = builder.create();
+                                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                                        @Override
+                                        public void onShow(DialogInterface arg0) {
+                                            if (alertDialog.getWindow() != null) {
+                                                WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                                                lp.dimAmount = 0.4f;
+                                                alertDialog.getWindow().setAttributes(lp);
+                                            }
+                                        }
+                                    });
+                                    alertDialog.show();
+                                }
+                            }
+                        });
                     }
                 }
         );
