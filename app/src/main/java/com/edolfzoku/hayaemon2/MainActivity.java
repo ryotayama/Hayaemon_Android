@@ -842,7 +842,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // checkPurchased();
     }
 
-    private void checkPurchased() {
+    public void checkPurchased() {
         AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
             @Override
             public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
