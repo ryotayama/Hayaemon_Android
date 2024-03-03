@@ -45,10 +45,15 @@ public class HideAdsFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         Button btnCloseItem = mActivity.findViewById(R.id.btnCloseHideAds);
+        Button btnPurchaseOnce = mActivity.findViewById(R.id.btnPurchaseOnce);
 
         btnCloseItem.setOnClickListener(this);
+        btnPurchaseOnce.setOnClickListener(this);
 
         btnCloseItem.setTextColor(getResources().getColor(R.color.darkModeBlue));
+
+        // TODO: 購入済みかの判定処理を追加
+        btnPurchaseOnce.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.itempurchase_dark : R.drawable.itempurchase);
     }
 
     public void close() {
@@ -63,5 +68,7 @@ public class HideAdsFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         if(view.getId() == R.id.btnCloseHideAds)
             close();
+        else if(view.getId() == R.id.btnPurchaseOnce)
+            mActivity.startBillingHideAds();
     }
 }

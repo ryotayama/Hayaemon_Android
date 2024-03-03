@@ -460,7 +460,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (responseCode == BillingResponseCode.OK) {
                     // Ready to make purchases
-                    checkPurchased();
+                    // TODO: リリース時にコメント化をやめる
+                    // checkPurchased();
                 } else {
                     Log.e(TAG, "onBillingSetupFinished: " + debugMessage);
                 }
@@ -837,7 +838,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
         }
 
-        checkPurchased();
+        // TODO: リリース時にコメント化をやめる
+        // checkPurchased();
     }
 
     private void checkPurchased() {
@@ -2283,6 +2285,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void hideAds() {
+        HideAdsFragment hideAdsFragment = null;
+        for (Fragment f : getSupportFragmentManager().getFragments()) {
+            if (f.getClass().getName().equals("com.edolfzoku.hayaemon2.HideAdsFragment"))
+                hideAdsFragment = (HideAdsFragment)f;
+        }
+        if (hideAdsFragment != null) {
+            Button btnPurchaseOnce = findViewById(R.id.btnPurchaseOnce);
+            btnPurchaseOnce.setBackgroundResource(mDarkMode ? R.drawable.itempurchased_dark : R.drawable.itempurchased);
+            btnPurchaseOnce.setTextColor(mDarkMode ? getResources().getColor(R.color.darkModeTextDarkGray) : Color.argb(255, 148, 148, 148));
+            btnPurchaseOnce.setText(R.string.purchased);
+            btnPurchaseOnce.setShadowLayer(0, 0, 0, Color.argb(0,0, 0, 0));
+            btnPurchaseOnce.setOnClickListener(null);
+            Button btnRestoreOnce = findViewById(R.id.btnRestoreOnce);
+            btnRestoreOnce.setVisibility(View.GONE);
+
+            RelativeLayout relativePurchaseOnce = findViewById(R.id.relativePurchaseOnce);
+            RelativeLayout.LayoutParams paramBtnPurchaseOnce = (RelativeLayout.LayoutParams) relativePurchaseOnce.getLayoutParams();
+            paramBtnPurchaseOnce.bottomMargin = (int) (14 * getDensity());;
+            relativePurchaseOnce.setLayoutParams(paramBtnPurchaseOnce);
+        }
         if(mAdContainerView.getVisibility() != View.GONE) {
             mAdContainerView.setVisibility(View.GONE);
 
