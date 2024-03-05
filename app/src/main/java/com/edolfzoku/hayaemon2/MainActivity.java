@@ -153,12 +153,14 @@ import java.util.Locale;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_BLUE_CAMPER_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_ELEGANT_SEA_URCHIN_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_HIDE_ADS;
+import static com.edolfzoku.hayaemon2.Constants.ITEM_HIDE_ADS_MONTHLY;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_ORANGE_CAMPER_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_PINK_CAMPER_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_PURPLE_SEA_URCHIN_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_BLUE_CAMPER_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_ELEGANT_SEA_URCHIN_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_HIDE_ADS;
+import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_HIDE_ADS_MONTHLY;
 import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_ORANGE_CAMPER_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_PINK_CAMPER_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_PURPLE_SEA_URCHIN_POINTER;
@@ -478,12 +480,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void launchPurchaseFlow(String productId) {
 
         List<Product> productList = new ArrayList<>();
-        productList.add(
-                Product.newBuilder()
-                        .setProductId(productId)
-                        .setProductType(BillingClient.ProductType.INAPP)
-                        .build()
-        );
+        switch (productId) {
+            case PRODUCT_ID_HIDE_ADS:
+            case PRODUCT_ID_PURPLE_SEA_URCHIN_POINTER:
+            case PRODUCT_ID_ELEGANT_SEA_URCHIN_POINTER:
+            case PRODUCT_ID_PINK_CAMPER_POINTER:
+            case PRODUCT_ID_BLUE_CAMPER_POINTER:
+            case PRODUCT_ID_ORANGE_CAMPER_POINTER:
+                productList.add(
+                        Product.newBuilder()
+                                .setProductId(productId)
+                                .setProductType(BillingClient.ProductType.INAPP)
+                                .build()
+                );
+                break;
+            case PRODUCT_ID_HIDE_ADS_MONTHLY:
+            default:
+                productList.add(
+                        Product.newBuilder()
+                                .setProductId(productId)
+                                .setProductType(BillingClient.ProductType.SUBS)
+                                .build()
+                );
+                break;
+        }
 
         QueryProductDetailsParams params = QueryProductDetailsParams.newBuilder()
                 .setProductList(productList)
@@ -500,10 +520,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ProductDetails productDetails = list.get(0);
 
                 ArrayList<ProductDetailsParams> productList = new ArrayList<>();
-                productList.add(
-                        ProductDetailsParams.newBuilder()
-                                .setProductDetails(productDetails)
-                                .build());
+                switch (productId) {
+                    case PRODUCT_ID_HIDE_ADS:
+                    case PRODUCT_ID_PURPLE_SEA_URCHIN_POINTER:
+                    case PRODUCT_ID_ELEGANT_SEA_URCHIN_POINTER:
+                    case PRODUCT_ID_PINK_CAMPER_POINTER:
+                    case PRODUCT_ID_BLUE_CAMPER_POINTER:
+                    case PRODUCT_ID_ORANGE_CAMPER_POINTER:
+                        productList.add(
+                                ProductDetailsParams.newBuilder()
+                                        .setProductDetails(productDetails)
+                                        .build());
+                        break;
+                    case PRODUCT_ID_HIDE_ADS_MONTHLY:
+                    default:
+                        List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
+                        productList.add(
+                                ProductDetailsParams.newBuilder()
+                                        .setProductDetails(productDetails)
+                                        .setOfferToken(offerDetails.get(0).getOfferToken())
+                                        .build());
+                        break;
+                }
 
                 BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
                         .setProductDetailsParamsList(productList)
@@ -524,6 +562,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void handlePurchase(String productId) {
         switch (productId) {
             case PRODUCT_ID_HIDE_ADS:
+            case PRODUCT_ID_HIDE_ADS_MONTHLY:
                 hideAds();
                 break;
             case PRODUCT_ID_PURPLE_SEA_URCHIN_POINTER:
@@ -2327,6 +2366,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void startBillingHideAds() {
         mPurchasingItem = ITEM_HIDE_ADS;
         launchPurchaseFlow(PRODUCT_ID_HIDE_ADS);
+    }
+
+    public void startBillingHideAdsMonthly() {
+        mPurchasingItem = ITEM_HIDE_ADS_MONTHLY;
+        launchPurchaseFlow(PRODUCT_ID_HIDE_ADS_MONTHLY);
     }
 
     private void hideAds() {

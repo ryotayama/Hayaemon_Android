@@ -47,10 +47,12 @@ public class HideAdsFragment extends Fragment implements View.OnClickListener {
         Button btnCloseItem = mActivity.findViewById(R.id.btnCloseHideAds);
         Button btnPurchaseOnce = mActivity.findViewById(R.id.btnPurchaseOnce);
         Button btnRestoreOnce = mActivity.findViewById(R.id.btnRestoreOnce);
+        Button btnPurchaseContinuous = mActivity.findViewById(R.id.btnPurchaseContinuous);
 
         btnCloseItem.setOnClickListener(this);
         btnPurchaseOnce.setOnClickListener(this);
         btnRestoreOnce.setOnClickListener(this);
+        btnPurchaseContinuous.setOnClickListener(this);
 
         btnCloseItem.setTextColor(getResources().getColor(R.color.darkModeBlue));
 
@@ -74,5 +76,7 @@ public class HideAdsFragment extends Fragment implements View.OnClickListener {
             mActivity.startBillingHideAds();
         else if(view.getId() == R.id.btnRestoreOnce)
             mActivity.checkPurchased();
+        else if(view.getId() == R.id.btnPurchaseContinuous)
+            mActivity.startBillingHideAdsMonthly();
     }
 }
