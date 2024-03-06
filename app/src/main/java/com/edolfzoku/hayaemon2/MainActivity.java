@@ -461,8 +461,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (responseCode == BillingResponseCode.OK) {
                     // Ready to make purchases
-                    // TODO: リリース時にコメント化をやめる
-                    // checkPurchased();
+                    checkPurchased();
                 } else {
                     Log.e(TAG, "onBillingSetupFinished: " + debugMessage);
                 }
@@ -879,8 +878,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
         }
 
-        // TODO: リリース時にコメント化をやめる
-        // checkPurchased();
+        checkPurchased();
     }
 
     public void checkPurchased() {
@@ -921,6 +919,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             } else {
                                 if (checkSubs) {
                                     checkSubsPurchasedFromInApp(true);
+                                } else {
+                                    if (isHideAdsFragmentShowing()) {
+                                        showNotRestoredDialog();
+                                    }
                                 }
                             }
                         });
@@ -962,7 +964,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 }
                             } else {
                                 if (fromInApp) {
-                                    // TODO: 広告が表示されていない場合は再表示する
+                                    showAdsAgainIfNeeded();
                                 }
 
                                 if (isHideAdsFragmentShowing()) {
@@ -973,6 +975,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
         );
+    }
+
+    private void showAdsAgainIfNeeded() {
+        if(mAdContainerView.getVisibility() == View.GONE) {
+            mAdContainerView.getLayoutParams().height = (int)(getAdSize().getHeight() * mDensity);
+            mAdContainerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    loadBanner();
+                }
+            });
+            mAdContainerView.setVisibility(View.VISIBLE);
+
+            SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+            preferences.edit().putBoolean("hideads", false).apply();
+        }
     }
 
     private void acknowledgePurchaseIfNeeded(Purchase purchase) {
