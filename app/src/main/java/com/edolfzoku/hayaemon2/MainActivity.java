@@ -913,7 +913,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 acknowledgePurchaseIfNeeded(purchase);
                             }
                             if (hideAdsRestored) {
-                                if (isHideAdsFragmentShowing()) {
+                                if (isHideAdsFragmentShowing() && !checkSubs) {
                                     showRestoredDialog();
                                 }
                             } else {
@@ -959,16 +959,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 acknowledgePurchaseIfNeeded(purchase);
                             }
                             if (hideAdsRestored) {
-                                if (isHideAdsFragmentShowing()) {
+                                if (isHideAdsFragmentShowing() && !fromInApp) {
                                     showRestoredDialog();
                                 }
                             } else {
                                 if (fromInApp) {
                                     showAdsAgainIfNeeded();
-                                }
-
-                                if (isHideAdsFragmentShowing()) {
-                                    showNotRestoredDialog();
+                                } else {
+                                    if (isHideAdsFragmentShowing()) {
+                                        showNotRestoredDialog();
+                                    }
                                 }
                             }
                         });
