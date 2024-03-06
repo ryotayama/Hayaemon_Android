@@ -728,7 +728,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textView.setText(String.format(Locale.getDefault(), "%d", nCount));
 
         if(!needsToDisplayDeadline(true, true))  findViewById(R.id.relativeNotice).setVisibility(View.GONE);
-        if(!isAdsVisible()) findViewById(R.id.relativeHideAds).setVisibility(View.GONE);
+        findViewById(R.id.relativeHideAds).setVisibility(isAdsVisible() ? View.VISIBLE : View.GONE);
         if(sStream != 0) {
             playlistFragment.selectPlaylist(sPlayingPlaylist);
             PlaylistFragment.sSelectedItem = PlaylistFragment.sPlaying;
