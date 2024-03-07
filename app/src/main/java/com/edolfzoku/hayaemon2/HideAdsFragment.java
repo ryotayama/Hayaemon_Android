@@ -2,13 +2,16 @@ package com.edolfzoku.hayaemon2;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -49,6 +52,7 @@ public class HideAdsFragment extends Fragment implements View.OnClickListener {
         Button btnRestoreOnce = mActivity.findViewById(R.id.btnRestoreOnce);
         Button btnPurchaseContinuous = mActivity.findViewById(R.id.btnPurchaseContinuous);
         Button btnRestoreContinuous = mActivity.findViewById(R.id.btnRestoreContinuous);
+        TextView textPurchaseContinuousPlanDescription = mActivity.findViewById(R.id.textPurchaseContinuousPlanDescription);
 
         btnCloseItem.setOnClickListener(this);
         btnPurchaseOnce.setOnClickListener(this);
@@ -60,6 +64,9 @@ public class HideAdsFragment extends Fragment implements View.OnClickListener {
 
         // TODO: 購入済みかの判定処理を追加
         btnPurchaseOnce.setBackgroundResource(mActivity.isDarkMode() ? R.drawable.itempurchase_dark : R.drawable.itempurchase);
+
+        textPurchaseContinuousPlanDescription.setText(HtmlCompat.fromHtml(getString(R.string.purchaseContinuousPlanDescription), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textPurchaseContinuousPlanDescription.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     public void close() {
