@@ -1627,10 +1627,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         if(uri != null) {
                             try {
                                 sActivity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                                addSong(sActivity, data.getData());
+                                addSong(sActivity, uri);
                             } catch (SecurityException e) {
                                 e.printStackTrace();
-                                Uri uriCopy = sActivity.copyFile(data.getData());
+                                Uri uriCopy = sActivity.copyFile(uri);
                                 addSong(sActivity, uriCopy);
                             }
                         }
@@ -4158,6 +4158,24 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private boolean isSdcardFile(Uri uri) {
+        if (!isExternalStorageDocument(uri)) {
+            return false;
+        }
+        try {
+            final String storageName = uri.getPathSegments().get(1).split(":")[0];
+            for (File dir : sActivity.getExternalFilesDirs(null)) {
+                final String externalStorageName = dir.toString().split("/")[2];
+                if (Environment.isExternalStorageRemovable(dir) && externalStorageName.equals(storageName)) {
+                    return true;
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return false;
+    }
+
     public static void stop(boolean serviceDestroyed) {
         MainActivity.sWaitEnd = false;
 
@@ -4232,6 +4250,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(sSelectedPlaylist < 0) sSelectedPlaylist = 0;
         else if(sSelectedPlaylist >= sPlaylists.size()) sSelectedPlaylist = sPlaylists.size() - 1;
         ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isSdcardFile(uri)) {
+            uri = sActivity.copyFile(uri);
+        }
         String strTitle = null;
         String strArtist = null;
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
