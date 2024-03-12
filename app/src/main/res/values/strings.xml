@@ -225,6 +225,15 @@
     <string name="saveExport">Save / Export</string>
     <string name="addSong">Add song</string>
     <string name="hideAds">Hide the Ads</string>
+    <string name="hideAdsTitle">Hide the Ads</string>
+    <string name="hideAdsDescription">That can hide all ads in this app.\n\nThere are currently two ways to hide ads.</string>
+    <string name="purchaseOncePlanTitle">&lt;One time payment> $16.99</string>
+    <string name="purchaseOncePlanDescription">You buy this item one time, and you can apply this to other devices that are associated with your Google account.</string>
+    <string name="purchaseContinuousPlanTitle">&lt;Monthly payment> $1.49 / Month</string>
+    <string name="purchaseContinuousPlanDescription">Hiding ads applies by monthly subscriptions.&lt;br /&gt;After purchasing the monthly payment plan, you can change it to the one time payment plan also.&lt;br /&gt;* When you buy the one time payment plan, please cancel the monthly payment plan.&lt;br /&gt;&lt;br /&gt;[How to cancel?]&lt;br /&gt;1. On your Android device, go to &lt;a href="https://play.google.com/store/account/subscriptions"&gt;subscriptions in Google Play&lt;/a&gt; .&lt;br /&gt;2. Select the subscription you want to cancel.&lt;br /&gt;3. Tap Cancel subscription.&lt;br /&gt;4. Follow the instructions.&lt;br /&gt;&lt;br /&gt;[About auto-renewing subscription]&lt;br /&gt;Your monthly payment plan is automatically renewed. If you don’t cancel more than 24 hours before your renewal date, your subscription might renew.&lt;br /&gt;&lt;br /&gt;[Notes]&lt;br /&gt;* We do not accept cancellations for this month.&lt;br /&gt;* You will be charged via your Google account.&lt;br /&gt;&lt;br /&gt;&lt;a href="https://hayaemon.jp/blog/hayaemon_privacy_en"&gt;Terms of Use / Privacy policy&lt;/a&gt;</string>
+    <string name="restorePurchase">Restore purchase</string>
+    <string name="restored">Restored</string>
+    <string name="notRestored">Restore failed.</string>
     <string name="billingItem">Payment items</string>
     <string name="inquiry">Inquiry</string>
     <string name="review">Request / Review</string>

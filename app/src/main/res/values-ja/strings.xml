@@ -225,6 +225,15 @@
     <string name="saveExport">保存／エクスポート</string>
     <string name="addSong">曲を追加</string>
     <string name="hideAds">広告を非表示にする</string>
+    <string name="hideAdsTitle">広告非表示</string>
+    <string name="hideAdsDescription">アプリ内のすべての広告を非表示にすることができます。\n\n広告の非表示には、現在2種類の方法があります。</string>
+    <string name="purchaseOncePlanTitle">【買い切りプラン】2,000円</string>
+    <string name="purchaseOncePlanDescription">1回のみ購入が必要で、それ以降はお使いのGoogleアカウントに関連付けられている他のデバイスでも適用できます。</string>
+    <string name="purchaseContinuousPlanTitle">【月額プラン】180円</string>
+    <string name="purchaseContinuousPlanDescription">月単位の定期購入で、広告非表示が適用されます。&lt;br /&gt;月額プランの購入後、買い切りプランに変更することも可能です。（※買い切りプランを購入する際は、月額プランの解約手続きを行ってください。）&lt;br /&gt;&lt;br /&gt;【解約方法】&lt;br /&gt;１）Android デバイスで &lt;a href="https://play.google.com/store/account/subscriptions"&gt;Google Play の定期購入&lt;/a&gt; にアクセスします。&lt;br /&gt;２）解約する定期購入を選択します。&lt;br /&gt;３）[定期購入を解約] をタップします。&lt;br /&gt;４）画面上の指示に沿って操作します。&lt;br /&gt;&lt;br /&gt;【自動継続課金について】&lt;br /&gt;月額プランは自動更新されます。期間終了の24時間前までに登録のキャンセルがなかった場合、次の期間に自動更新され課金されます。&lt;br /&gt;&lt;br /&gt;【注意点】&lt;br /&gt;・当月分のキャンセルについては受け付けておりません。&lt;br /&gt;・Googleアカウントを経由して課金されます。&lt;br /&gt;&lt;br /&gt;&lt;a href="https://hayaemon.jp/blog/hayaemon_privacy_jp"&gt;利用規約・プライバシーポリシー&lt;/a&gt;</string>
+    <string name="restorePurchase">購入済みを復元</string>
+    <string name="restored">リストアが完了しました。</string>
+    <string name="notRestored">リストアに失敗しました。</string>
     <string name="billingItem">課金アイテム</string>
     <string name="inquiry">お問い合わせ</string>
     <string name="review">ご要望／レビュー</string>

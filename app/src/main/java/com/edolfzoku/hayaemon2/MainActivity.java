@@ -44,7 +44,6 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
@@ -145,7 +144,6 @@ import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -160,12 +158,14 @@ import com.google.android.ump.UserMessagingPlatform;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_BLUE_CAMPER_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_ELEGANT_SEA_URCHIN_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_HIDE_ADS;
+import static com.edolfzoku.hayaemon2.Constants.ITEM_HIDE_ADS_MONTHLY;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_ORANGE_CAMPER_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_PINK_CAMPER_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.ITEM_PURPLE_SEA_URCHIN_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_BLUE_CAMPER_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_ELEGANT_SEA_URCHIN_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_HIDE_ADS;
+import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_HIDE_ADS_MONTHLY;
 import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_ORANGE_CAMPER_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_PINK_CAMPER_POINTER;
 import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_PURPLE_SEA_URCHIN_POINTER;
@@ -564,12 +564,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void launchPurchaseFlow(String productId) {
 
         List<Product> productList = new ArrayList<>();
-        productList.add(
-                Product.newBuilder()
-                        .setProductId(productId)
-                        .setProductType(BillingClient.ProductType.INAPP)
-                        .build()
-        );
+        switch (productId) {
+            case PRODUCT_ID_HIDE_ADS:
+            case PRODUCT_ID_PURPLE_SEA_URCHIN_POINTER:
+            case PRODUCT_ID_ELEGANT_SEA_URCHIN_POINTER:
+            case PRODUCT_ID_PINK_CAMPER_POINTER:
+            case PRODUCT_ID_BLUE_CAMPER_POINTER:
+            case PRODUCT_ID_ORANGE_CAMPER_POINTER:
+                productList.add(
+                        Product.newBuilder()
+                                .setProductId(productId)
+                                .setProductType(BillingClient.ProductType.INAPP)
+                                .build()
+                );
+                break;
+            case PRODUCT_ID_HIDE_ADS_MONTHLY:
+            default:
+                productList.add(
+                        Product.newBuilder()
+                                .setProductId(productId)
+                                .setProductType(BillingClient.ProductType.SUBS)
+                                .build()
+                );
+                break;
+        }
 
         QueryProductDetailsParams params = QueryProductDetailsParams.newBuilder()
                 .setProductList(productList)
@@ -586,10 +604,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ProductDetails productDetails = list.get(0);
 
                 ArrayList<ProductDetailsParams> productList = new ArrayList<>();
-                productList.add(
-                        ProductDetailsParams.newBuilder()
-                                .setProductDetails(productDetails)
-                                .build());
+                switch (productId) {
+                    case PRODUCT_ID_HIDE_ADS:
+                    case PRODUCT_ID_PURPLE_SEA_URCHIN_POINTER:
+                    case PRODUCT_ID_ELEGANT_SEA_URCHIN_POINTER:
+                    case PRODUCT_ID_PINK_CAMPER_POINTER:
+                    case PRODUCT_ID_BLUE_CAMPER_POINTER:
+                    case PRODUCT_ID_ORANGE_CAMPER_POINTER:
+                        productList.add(
+                                ProductDetailsParams.newBuilder()
+                                        .setProductDetails(productDetails)
+                                        .build());
+                        break;
+                    case PRODUCT_ID_HIDE_ADS_MONTHLY:
+                    default:
+                        List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
+                        if (offerDetails == null || offerDetails.size() == 0) return;
+                        productList.add(
+                                ProductDetailsParams.newBuilder()
+                                        .setProductDetails(productDetails)
+                                        .setOfferToken(offerDetails.get(0).getOfferToken())
+                                        .build());
+                        break;
+                }
 
                 BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
                         .setProductDetailsParamsList(productList)
@@ -610,7 +647,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void handlePurchase(String productId) {
         switch (productId) {
             case PRODUCT_ID_HIDE_ADS:
-                hideAds();
+                hideAds(true, false);
+                break;
+            case PRODUCT_ID_HIDE_ADS_MONTHLY:
+                hideAds(false, true);
                 break;
             case PRODUCT_ID_PURPLE_SEA_URCHIN_POINTER:
                 buyPurpleSeaUrchinPointer(mPurchasingItem == ITEM_PURPLE_SEA_URCHIN_POINTER);
@@ -774,7 +814,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textView.setText(String.format(Locale.getDefault(), "%d", nCount));
 
         if(!needsToDisplayDeadline(true, true))  findViewById(R.id.relativeNotice).setVisibility(View.GONE);
-        if(!isAdsVisible()) findViewById(R.id.relativeHideAds).setVisibility(View.GONE);
+        findViewById(R.id.relativeHideAds).setVisibility(isAdsVisible() ? View.VISIBLE : View.GONE);
         if(sStream != 0) {
             playlistFragment.selectPlaylist(sPlayingPlaylist);
             PlaylistFragment.sSelectedItem = PlaylistFragment.sPlaying;
@@ -927,12 +967,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkPurchased();
     }
 
-    private void checkPurchased() {
-        AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
-            @Override
-            public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
-            }
-        };
+    public void checkPurchased() {
+        checkInAppPurchasedWithCheckSubs(true);
+    }
+
+    public void checkInAppPurchased() {
+        checkInAppPurchasedWithCheckSubs(false);
+    }
+
+    public void checkInAppPurchasedWithCheckSubs(boolean checkSubs) {
         mBillingClient.queryPurchasesAsync(
                 QueryPurchasesParams.newBuilder()
                         .setProductType(ProductType.INAPP)
@@ -941,26 +984,161 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // check billingResult
                     // process returned purchase list, e.g. display the plans user owns
                     if (billingResult.getResponseCode() == BillingResponseCode.OK) {
-                        for (Purchase purchase : purchases) {
-                            // Handle the purchased item
-                            List<String> productIds = purchase.getProducts();
-                            for (String productId: productIds) {
-                                runOnUiThread(() -> handlePurchase(productId));
-                            }
+                        runOnUiThread(() -> {
+                            boolean hideAdsRestored = false;
+                            for (Purchase purchase : purchases) {
+                                // Handle the purchased item
+                                List<String> productIds = purchase.getProducts();
+                                for (String productId: productIds) {
+                                    handlePurchase(productId);
+                                    if (productId.equals(PRODUCT_ID_HIDE_ADS)) {
+                                        hideAdsRestored = true;
+                                    }
+                                }
 
-                            if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-                                if (!purchase.isAcknowledged()) {
-                                    AcknowledgePurchaseParams acknowledgePurchaseParams =
-                                            AcknowledgePurchaseParams.newBuilder()
-                                                    .setPurchaseToken(purchase.getPurchaseToken())
-                                                    .build();
-                                    mBillingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
+                                acknowledgePurchaseIfNeeded(purchase);
+                            }
+                            if (hideAdsRestored) {
+                                if (isHideAdsFragmentShowing() && !checkSubs) {
+                                    showRestoredDialog();
+                                }
+                            } else {
+                                if (checkSubs) {
+                                    checkSubsPurchasedFromInApp(true);
+                                } else {
+                                    if (isHideAdsFragmentShowing()) {
+                                        showNotRestoredDialog();
+                                    }
                                 }
                             }
-                        }
+                        });
                     }
                 }
         );
+    }
+
+    public void checkSubsPurchased() {
+        checkSubsPurchasedFromInApp(false);
+    }
+
+    public void checkSubsPurchasedFromInApp(boolean fromInApp) {
+        mBillingClient.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder()
+                        .setProductType(ProductType.SUBS)
+                        .build(),
+                (subsBillingResult, subsPurchases) -> {
+                    // check billingResult
+                    // process returned purchase list, e.g. display the plans user owns
+                    if (subsBillingResult.getResponseCode() == BillingResponseCode.OK) {
+                        runOnUiThread(() -> {
+                            boolean hideAdsRestored = false;
+                            for (Purchase purchase : subsPurchases) {
+                                // Handle the purchased item
+                                List<String> productIds = purchase.getProducts();
+                                for (String productId: productIds) {
+                                    handlePurchase(productId);
+                                    if (productId.equals(PRODUCT_ID_HIDE_ADS_MONTHLY)) {
+                                        hideAdsRestored = true;
+                                    }
+                                }
+
+                                acknowledgePurchaseIfNeeded(purchase);
+                            }
+                            if (hideAdsRestored) {
+                                if (isHideAdsFragmentShowing() && !fromInApp) {
+                                    showRestoredDialog();
+                                }
+                            } else {
+                                if (fromInApp) {
+                                    showAdsAgainIfNeeded();
+                                } else {
+                                    if (isHideAdsFragmentShowing()) {
+                                        showNotRestoredDialog();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+        );
+    }
+
+    private void showAdsAgainIfNeeded() {
+        if(mAdContainerView.getVisibility() == View.GONE) {
+            mAdContainerView.getLayoutParams().height = (int)(getAdSize().getHeight() * mDensity);
+            mAdContainerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    loadBanner();
+                }
+            });
+            mAdContainerView.setVisibility(View.VISIBLE);
+
+            SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
+            preferences.edit().putBoolean("hideads", false).apply();
+        }
+    }
+
+    private void acknowledgePurchaseIfNeeded(Purchase purchase) {
+        AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
+            @Override
+            public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
+            }
+        };
+        if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+            if (!purchase.isAcknowledged()) {
+                AcknowledgePurchaseParams acknowledgePurchaseParams =
+                        AcknowledgePurchaseParams.newBuilder()
+                                .setPurchaseToken(purchase.getPurchaseToken())
+                                .build();
+                mBillingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
+            }
+        }
+    }
+
+    private boolean isHideAdsFragmentShowing() {
+        HideAdsFragment hideAdsFragment = null;
+        for (Fragment f : getSupportFragmentManager().getFragments()) {
+            if (f.getClass().getName().equals("com.edolfzoku.hayaemon2.HideAdsFragment"))
+                hideAdsFragment = (HideAdsFragment)f;
+        }
+        return hideAdsFragment != null;
+    }
+
+    private void showRestoredDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(R.string.restored);
+        builder.setPositiveButton("OK", null);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                if (alertDialog.getWindow() != null) {
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void showNotRestoredDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(R.string.notRestored);
+        builder.setPositiveButton("OK", null);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                if (alertDialog.getWindow() != null) {
+                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+                    lp.dimAmount = 0.4f;
+                    alertDialog.getWindow().setAttributes(lp);
+                }
+            }
+        });
+        alertDialog.show();
     }
 
     @Override
@@ -1268,7 +1446,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         boolean bHideAds = preferences.getBoolean("hideads", false);
-        if(bHideAds) hideAds();
+        if(bHideAds) hideAds(false, false);
+        else {
+            List<String> testDeviceIds = Arrays.asList("C274AC018E6509532711089B8BC4433D", "7A4DCE2E7A051D5905BDA9790B453502");
+            RequestConfiguration configuration =
+                    new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build();
+            MobileAds.setRequestConfiguration(configuration);
+            MobileAds.initialize(this, new OnInitializationCompleteListener() {
+                @Override
+                public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
+                }
+            });
+
+            MobileAds.initialize(this, new OnInitializationCompleteListener() {
+                @Override
+                public void onInitializationComplete(InitializationStatus initializationStatus) {
+                }
+            });
+            mAdContainerView.getLayoutParams().height = (int)(getAdSize().getHeight() * mDensity);
+            mAdContainerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    loadBanner();
+                }
+            });
+        }
 
         sShuffle = preferences.getInt("shufflemode", 0);
         if(sShuffle == 1) {
@@ -1666,7 +1868,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if(v.getId() == R.id.relativeHideAds) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-            startBillingHideAds();
+            openHideAds();
         }
         else if(v.getId() == R.id.relativeItem) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -2283,6 +2485,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         menu.show();
     }
 
+    private void openHideAds() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        final FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
+        transaction.replace(R.id.relativeMain, new HideAdsFragment());
+        transaction.commit();
+    }
+
     private void openItem() {
         SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
         preferences.edit().putBoolean("bPinkCamperDisplayed", true).apply();
@@ -2337,7 +2547,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         launchPurchaseFlow(PRODUCT_ID_HIDE_ADS);
     }
 
-    private void hideAds() {
+    public void startBillingHideAdsMonthly() {
+        mPurchasingItem = ITEM_HIDE_ADS_MONTHLY;
+        launchPurchaseFlow(PRODUCT_ID_HIDE_ADS_MONTHLY);
+    }
+
+    private void hideAds(boolean updatePurchaseOnceButton, boolean updatePurchaseContinuousButton) {
+        HideAdsFragment hideAdsFragment = null;
+        for (Fragment f : getSupportFragmentManager().getFragments()) {
+            if (f.getClass().getName().equals("com.edolfzoku.hayaemon2.HideAdsFragment"))
+                hideAdsFragment = (HideAdsFragment)f;
+        }
+        if (hideAdsFragment != null) {
+            if (updatePurchaseOnceButton) {
+                Button btnPurchaseOnce = findViewById(R.id.btnPurchaseOnce);
+                btnPurchaseOnce.setBackgroundResource(mDarkMode ? R.drawable.itempurchased_dark : R.drawable.itempurchased);
+                btnPurchaseOnce.setTextColor(mDarkMode ? getResources().getColor(R.color.darkModeTextDarkGray) : Color.argb(255, 148, 148, 148));
+                btnPurchaseOnce.setText(R.string.purchased);
+                btnPurchaseOnce.setShadowLayer(0, 0, 0, Color.argb(0, 0, 0, 0));
+                btnPurchaseOnce.setOnClickListener(null);
+                Button btnRestoreOnce = findViewById(R.id.btnRestoreOnce);
+                btnRestoreOnce.setVisibility(View.GONE);
+
+                RelativeLayout relativePurchaseOnce = findViewById(R.id.relativePurchaseOnce);
+                RelativeLayout.LayoutParams paramBtnPurchaseOnce = (RelativeLayout.LayoutParams) relativePurchaseOnce.getLayoutParams();
+                paramBtnPurchaseOnce.bottomMargin = (int) (14 * getDensity());
+                relativePurchaseOnce.setLayoutParams(paramBtnPurchaseOnce);
+            }
+            if (updatePurchaseContinuousButton) {
+                Button btnPurchaseContinuous = findViewById(R.id.btnPurchaseContinuous);
+                btnPurchaseContinuous.setBackgroundResource(mDarkMode ? R.drawable.itempurchased_dark : R.drawable.itempurchased);
+                btnPurchaseContinuous.setTextColor(mDarkMode ? getResources().getColor(R.color.darkModeTextDarkGray) : Color.argb(255, 148, 148, 148));
+                btnPurchaseContinuous.setText(R.string.purchased);
+                btnPurchaseContinuous.setShadowLayer(0, 0, 0, Color.argb(0, 0, 0, 0));
+                btnPurchaseContinuous.setOnClickListener(null);
+                Button btnRestoreContinuous = findViewById(R.id.btnRestoreContinuous);
+                btnRestoreContinuous.setVisibility(View.GONE);
+
+                RelativeLayout relativePurchaseContinuous = findViewById(R.id.relativePurchaseContinuous);
+                RelativeLayout.LayoutParams paramBtnPurchaseContinuous = (RelativeLayout.LayoutParams) relativePurchaseContinuous.getLayoutParams();
+                paramBtnPurchaseContinuous.bottomMargin = (int) (14 * getDensity());
+                relativePurchaseContinuous.setLayoutParams(paramBtnPurchaseContinuous);
+            }
+        }
         if(mAdContainerView.getVisibility() != View.GONE) {
             mAdContainerView.setVisibility(View.GONE);
 
