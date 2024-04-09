@@ -51,15 +51,16 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
     private final PlaylistFragment mPlaylistFragment;
     private final String mPathTo;
     private final AlertDialog mAlert;
-    private final int mLength, mChans;
+    private final int mLength, mChans, mSampleRate;
     private String mMP4Path;
 
-    VideoSavingTask(PlaylistFragment playlistFragment, String pathTo, AlertDialog alert, int length, int chans) {
+    VideoSavingTask(PlaylistFragment playlistFragment, String pathTo, AlertDialog alert, int length, int chans, int sampleRate) {
         mPlaylistFragment = playlistFragment;
         mPathTo = pathTo;
         mAlert = alert;
         mLength = length;
         mChans = chans;
+        mSampleRate = sampleRate;
     }
 
     @SuppressWarnings("deprecation")
@@ -141,7 +142,7 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
             MediaFormat outputFormat = new MediaFormat();
             outputFormat.setString(MediaFormat.KEY_MIME, "audio/mp4a-latm");
             outputFormat.setInteger(MediaFormat.KEY_CHANNEL_COUNT, mChans);
-            outputFormat.setInteger(MediaFormat.KEY_SAMPLE_RATE, 44100);
+            outputFormat.setInteger(MediaFormat.KEY_SAMPLE_RATE, mSampleRate);
             outputFormat.setInteger(MediaFormat.KEY_BIT_RATE, 128 * 1024);
             outputFormat.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC);
 

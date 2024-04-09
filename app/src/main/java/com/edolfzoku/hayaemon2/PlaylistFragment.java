@@ -3590,6 +3590,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         BASS.BASS_CHANNELINFO info = new BASS.BASS_CHANNELINFO();
         BASS.BASS_ChannelGetInfo(hTempStream, info);
         int nLength = (int)BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE)) + 1;
+        BASS.FloatValue sampleRate = new BASS.FloatValue();
+        BASS.BASS_ChannelGetAttribute(hTempStream, BASS.BASS_ATTRIB_FREQ, sampleRate);
         BASS.BASS_StreamFree(hTempStream);
 
         if (sFinish) {
@@ -3602,7 +3604,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         if(mVideoSavingTask != null && mVideoSavingTask.getStatus() == AsyncTask.Status.RUNNING)
             mVideoSavingTask.cancel(true);
-        mVideoSavingTask = new VideoSavingTask(this, strPathTo, alert, nLength, info.chans);
+        mVideoSavingTask = new VideoSavingTask(this, strPathTo, alert, nLength, info.chans, (int)sampleRate.value);
         mVideoSavingTask.execute(0);
     }
 
