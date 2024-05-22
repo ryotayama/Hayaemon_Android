@@ -3431,6 +3431,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     void saveSongToLocal() {
+        sActivity.showInterstitialAd();
+
         saveSong(0, null);
     }
 
