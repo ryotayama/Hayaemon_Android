@@ -1411,7 +1411,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         updateMenuButton();
         if (needsToDisplayDeadline(false, false)) {
             mShowDeadline = true;
-            preferences.edit().putBoolean("bSuzuri202406Displayed", true).apply();
+            preferences.edit().putBoolean("bSuzuri202406_02_Displayed", true).apply();
         }
 
         String strVersionName = preferences.getString("versionname", null);
@@ -1796,7 +1796,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             showDeadline();
             SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-            preferences.edit().putBoolean("bSuzuri202406DisplayedFromNotice", true).apply();
+            preferences.edit().putBoolean("bSuzuri202406_02_DisplayedFromNotice", true).apply();
             updateMenuButton();
         }
         else if(v.getId() == R.id.relativeAddSong) {
@@ -3926,7 +3926,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean needsToDisplayDeadline(boolean fromNotice, boolean ignoreDisplayed) {
         SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-        boolean bSuzuri202406Displayed = preferences.getBoolean(fromNotice ? "bSuzuri202406DisplayedFromNotice" : "bSuzuri202406Displayed", false);
+        boolean bSuzuri202406_02_Displayed = preferences.getBoolean(fromNotice ? "bSuzuri202406_02_DisplayedFromNotice" : "bSuzuri202406_02_Displayed", false);
         final Date currentDate = new Date();
         DateFormat formatter = new SimpleDateFormat("yyyy/M/d H:m:s", Locale.getDefault());
         Date dateTo;
@@ -3941,7 +3941,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             }
         } else {
-            if (!bSuzuri202406Displayed && currentDate.compareTo(dateTo) <= 0 && Locale.getDefault().equals(Locale.JAPAN)) {
+            if (!bSuzuri202406_02_Displayed && currentDate.compareTo(dateTo) <= 0 && Locale.getDefault().equals(Locale.JAPAN)) {
                 return true;
             }
         }
