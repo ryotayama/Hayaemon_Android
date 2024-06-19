@@ -3110,14 +3110,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public static void onEnded(final boolean bForce) {
-        if (LoopFragment.sABLoop && (sLoopA || sLoopB) && !sPlayNextByBPos) {
-            if (EffectFragment.isReverse())
-                BASS.BASS_ChannelSetPosition(sStream, BASS.BASS_ChannelSeconds2Bytes(sStream, sLoopBPos), BASS.BASS_POS_BYTE);
-            else
-                BASS.BASS_ChannelSetPosition(sStream, BASS.BASS_ChannelSeconds2Bytes(sStream, sLoopAPos), BASS.BASS_POS_BYTE);
-            setSync();
-            if (BASS.BASS_ChannelIsActive(sStream) != BASS.BASS_ACTIVE_PLAYING)
-                BASS.BASS_ChannelPlay(sStream, false);
+        if (LoopFragment.sABLoop && (sLoopA || sLoopB)) {
+            boolean bRepeatSingle = sRepeat == 2;
+            if (!bRepeatSingle && sPlayNextByBPos) {
+                Runnable timer = new Runnable() {
+                    public void run() {
+                        boolean bSingle = sShuffle == 2;
+
+                        if (bSingle)
+                            PlaylistFragment.playNext(false);
+                        else if (bRepeatSingle)
+                            BASS.BASS_ChannelPlay(sStream, true);
+                        else
+                            PlaylistFragment.playNext(true);
+                    }
+                };
+                sHandler.postDelayed(timer, 0);
+            } else {
+                if (EffectFragment.isReverse())
+                    BASS.BASS_ChannelSetPosition(sStream, BASS.BASS_ChannelSeconds2Bytes(sStream, sLoopBPos), BASS.BASS_POS_BYTE);
+                else
+                    BASS.BASS_ChannelSetPosition(sStream, BASS.BASS_ChannelSeconds2Bytes(sStream, sLoopAPos), BASS.BASS_POS_BYTE);
+                setSync();
+                if (BASS.BASS_ChannelIsActive(sStream) != BASS.BASS_ACTIVE_PLAYING)
+                    BASS.BASS_ChannelPlay(sStream, false);
+            }
         } else if (!LoopFragment.sABLoop && LoopFragment.sMarkerPlay) {
             BASS.BASS_ChannelSetPosition(sStream, BASS.BASS_ChannelSeconds2Bytes(sStream, LoopFragment.getMarkerSrcPos()), BASS.BASS_POS_BYTE);
             setSync();
