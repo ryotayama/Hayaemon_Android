@@ -231,6 +231,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public TextView getTextRecordingTime() { return mTextRecordingTime; }
     public AnimationButton getBtnStopRecording() { return mBtnStopRecording; }
     public float getDensity() { return mDensity; }
+    public BillingClient getBillingClient() { return mBillingClient; }
     public boolean isDarkMode() { return mDarkMode; }
 
     public MainActivity() {

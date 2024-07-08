@@ -1,5 +1,8 @@
 package com.edolfzoku.hayaemon2;
 
+import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_HIDE_ADS;
+import static com.edolfzoku.hayaemon2.Constants.PRODUCT_ID_HIDE_ADS_MONTHLY;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
@@ -19,8 +22,17 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.ProductDetails;
+import com.android.billingclient.api.QueryProductDetailsParams;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 public class HideAdsFragment extends Fragment implements View.OnClickListener {
     private MainActivity mActivity = null;
+    private TextView mTextPurchaseOncePlan, mTextPurchaseContinuousPlan;
 
     public HideAdsFragment() {
     }
@@ -53,8 +65,10 @@ public class HideAdsFragment extends Fragment implements View.OnClickListener {
         Button btnCloseItem = mActivity.findViewById(R.id.btnCloseHideAds);
         Button btnPurchaseOnce = mActivity.findViewById(R.id.btnPurchaseOnce);
         Button btnRestoreOnce = mActivity.findViewById(R.id.btnRestoreOnce);
+        mTextPurchaseOncePlan = mActivity.findViewById(R.id.textPurchaseOncePlan);
         Button btnPurchaseContinuous = mActivity.findViewById(R.id.btnPurchaseContinuous);
         Button btnRestoreContinuous = mActivity.findViewById(R.id.btnRestoreContinuous);
+        mTextPurchaseContinuousPlan = mActivity.findViewById(R.id.textPurchaseContinuousPlan);
         TextView textPurchaseContinuousPlanDescription = mActivity.findViewById(R.id.textPurchaseContinuousPlanDescription);
 
         btnCloseItem.setOnClickListener(this);
@@ -71,6 +85,9 @@ public class HideAdsFragment extends Fragment implements View.OnClickListener {
         textPurchaseContinuousPlanDescription.setText(HtmlCompat.fromHtml(stringHtml, HtmlCompat.FROM_HTML_MODE_LEGACY));
         textPurchaseContinuousPlanDescription.setMovementMethod(LinkMovementMethod.getInstance());
 
+        updateTextPurchaseOncePlan();
+        updateTextPurchaseContinuousPlan();
+
         if(mActivity.isDarkMode()) {
             final int nDarkModeLightBk = getResources().getColor(R.color.darkModeLightBk);
             if (Build.VERSION.SDK_INT >= 23) {
@@ -82,9 +99,7 @@ public class HideAdsFragment extends Fragment implements View.OnClickListener {
             RelativeLayout relativePurchaseContinuous = mActivity.findViewById(R.id.relativePurchaseContinuous);
             TextView textHideAdsTitle = mActivity.findViewById(R.id.textHideAdsTitle);
             TextView textHideAdsHeader = mActivity.findViewById(R.id.textHideAdsHeader);
-            TextView textPurchaseOncePlan = mActivity.findViewById(R.id.textPurchaseOncePlan);
             TextView textPurchaseOncePlanDescription = mActivity.findViewById(R.id.textPurchaseOncePlanDescription);
-            TextView textPurchaseContinuousPlan = mActivity.findViewById(R.id.textPurchaseContinuousPlan);
             View viewSepHideAds = mActivity.findViewById(R.id.viewSepHideAds);
             View viewSepHideAdsHeader = mActivity.findViewById(R.id.viewSepHideAdsHeader);
             View viewSepHideAdsOnceBottom = mActivity.findViewById(R.id.viewSepHideAdsOnceBottom);
@@ -98,9 +113,9 @@ public class HideAdsFragment extends Fragment implements View.OnClickListener {
             relativePurchaseContinuous.setBackgroundColor(getResources().getColor(R.color.darkModeLightBk));
             textHideAdsTitle.setTextColor(getResources().getColor(android.R.color.white));
             textHideAdsHeader.setTextColor(getResources().getColor(R.color.darkModeGray));
-            textPurchaseOncePlan.setTextColor(getResources().getColor(android.R.color.white));
+            mTextPurchaseOncePlan.setTextColor(getResources().getColor(android.R.color.white));
             textPurchaseOncePlanDescription.setTextColor(getResources().getColor(R.color.darkModeGray));
-            textPurchaseContinuousPlan.setTextColor(getResources().getColor(android.R.color.white));
+            mTextPurchaseContinuousPlan.setTextColor(getResources().getColor(android.R.color.white));
             textPurchaseContinuousPlanDescription.setTextColor(getResources().getColor(R.color.darkModeGray));
             viewSepHideAds.setBackgroundColor(getResources().getColor(R.color.darkModeSep));
             viewSepHideAdsHeader.setBackgroundColor(getResources().getColor(R.color.darkModeSep));
@@ -116,6 +131,50 @@ public class HideAdsFragment extends Fragment implements View.OnClickListener {
             btnPurchaseOnce.setBackgroundResource(R.drawable.itempurchase);
             btnPurchaseContinuous.setBackgroundResource(R.drawable.itempurchase);
         }
+    }
+
+    public void updateTextPurchaseOncePlan() {
+        List<QueryProductDetailsParams.Product> productList = new ArrayList<>();
+        productList.add(QueryProductDetailsParams.Product.newBuilder()
+                .setProductId(PRODUCT_ID_HIDE_ADS)
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build());
+
+        QueryProductDetailsParams params = QueryProductDetailsParams.newBuilder()
+                .setProductList(productList)
+                .build();
+
+        mActivity.getBillingClient().queryProductDetailsAsync(params, (billingResult, productDetailsList) -> {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                for (ProductDetails productDetails : productDetailsList) {
+                    String price = Objects.requireNonNull(productDetails.getOneTimePurchaseOfferDetails()).getFormattedPrice();
+                    mTextPurchaseOncePlan.setText(mTextPurchaseOncePlan.getText() + price);
+                }
+            }
+        });
+    }
+
+    public void updateTextPurchaseContinuousPlan() {
+        List<QueryProductDetailsParams.Product> productList = new ArrayList<>();
+        productList.add(QueryProductDetailsParams.Product.newBuilder()
+                .setProductId(PRODUCT_ID_HIDE_ADS_MONTHLY)
+                .setProductType(BillingClient.ProductType.SUBS)
+                .build());
+
+        QueryProductDetailsParams params = QueryProductDetailsParams.newBuilder()
+                .setProductList(productList)
+                .build();
+
+        mActivity.getBillingClient().queryProductDetailsAsync(params, (billingResult, productDetailsList) -> {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                for (ProductDetails productDetails : productDetailsList) {
+                    assert productDetails.getSubscriptionOfferDetails() != null;
+                    String price = productDetails.getSubscriptionOfferDetails().get(0).getPricingPhases()
+                            .getPricingPhaseList().get(0).getFormattedPrice();
+                    mTextPurchaseContinuousPlan.setText(mTextPurchaseContinuousPlan.getText() + price);
+                }
+            }
+        });
     }
 
     public void close() {

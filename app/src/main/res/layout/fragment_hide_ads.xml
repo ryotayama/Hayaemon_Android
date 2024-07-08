@@ -100,7 +100,7 @@
 
             <TextView
                 android:id="@+id/textPurchaseOncePlan"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/purchaseOncePlanTitle"
                 android:textSize="17sp"
@@ -179,7 +179,7 @@
 
             <TextView
                 android:id="@+id/textPurchaseContinuousPlan"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/purchaseContinuousPlanTitle"
                 android:textSize="17sp"
