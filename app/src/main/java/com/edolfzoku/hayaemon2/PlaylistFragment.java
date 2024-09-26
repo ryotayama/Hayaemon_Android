@@ -1676,7 +1676,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         if(uri != null)
                             sActivity.getContentResolver().takePersistableUriPermission(uri, takeFlags);
                     }
-                    else {
+                    else {π
                         for(int i = 0; i < data.getClipData().getItemCount(); i++) {
                             Uri uri = data.getClipData().getItemAt(i).getUri();
                             setArtwork(uri);
@@ -3618,12 +3618,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             return;
         }
 
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
-        values.put(MediaStore.Video.Media.DURATION, nLength * 1000);
-        values.put("_data", strMP4Path);
-        ContentResolver cr = sActivity.getContentResolver();
-        cr.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+            values.put(MediaStore.Video.Media.DURATION, nLength * 1000);
+            values.put(MediaStore.Video.Media.DATA, strMP4Path);
+            ContentResolver cr = sActivity.getContentResolver();
+            cr.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+        }
 
         AlertDialog.Builder builder;
         if(sActivity.isDarkMode())

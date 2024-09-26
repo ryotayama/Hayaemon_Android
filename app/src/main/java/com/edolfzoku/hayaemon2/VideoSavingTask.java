@@ -73,8 +73,6 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
         File inputMp4File = null;
         FileInputStream fis;
         try {
-            if (Build.VERSION.SDK_INT < 18) return 0;
-
             fis = new FileInputStream(inputFile);
             if(fis.skip(44) != 44) System.out.println("44バイトのスキップに失敗しました");
 
@@ -105,7 +103,7 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
                 values.put(MediaStore.Video.Media.TITLE, strTitle);
                 values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
                 values.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
-                values.put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES);
+                values.put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/Hayaemon");
                 values.put(MediaStore.Video.Media.IS_PENDING, 1);
                 mpegUri = contentResolver.insert(MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), values);
                 if (mpegUri == null) return 0;
@@ -149,13 +147,6 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
             codec.configure(outputFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
             codec.start();
 
-            ByteBuffer[] codecInputBuffers = null;
-            ByteBuffer[] codecOutputBuffers = null;
-            if(Build.VERSION.SDK_INT < 21) {
-                codecInputBuffers = codec.getInputBuffers();
-                codecOutputBuffers = codec.getOutputBuffers();
-            }
-
             MediaCodec.BufferInfo outBuffInfo = new MediaCodec.BufferInfo();
             byte[] tempBuffer = new byte[44100];
             boolean hasMoreData = true;
@@ -171,10 +162,7 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
                     inputBufIndex = codec.dequeueInputBuffer(5000);
 
                     if (inputBufIndex >= 0) {
-                        ByteBuffer dstBuf;
-                        if(Build.VERSION.SDK_INT < 21)
-                            dstBuf = codecInputBuffers[inputBufIndex];
-                        else dstBuf = codec.getInputBuffer(inputBufIndex);
+                        ByteBuffer dstBuf = codec.getInputBuffer(inputBufIndex);
                         dstBuf.clear();
 
                         int bytesRead = fis.read(tempBuffer, 0, dstBuf.limit());
@@ -194,10 +182,7 @@ class VideoSavingTask extends AsyncTask<Integer, Integer, Integer> {
                     if(PlaylistFragment.sFinish) break;
                     outputBufIndex = codec.dequeueOutputBuffer(outBuffInfo, 5000);
                     if (outputBufIndex >= 0) {
-                        ByteBuffer encodedData;
-                        if(Build.VERSION.SDK_INT < 21)
-                            encodedData = codecOutputBuffers[outputBufIndex];
-                        else encodedData = codec.getOutputBuffer(outputBufIndex);
+                        ByteBuffer encodedData = codec.getOutputBuffer(outputBufIndex);
                         encodedData.position(outBuffInfo.offset);
                         encodedData.limit(outBuffInfo.offset + outBuffInfo.size);
                         if ((outBuffInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0 && outBuffInfo.size != 0) {
