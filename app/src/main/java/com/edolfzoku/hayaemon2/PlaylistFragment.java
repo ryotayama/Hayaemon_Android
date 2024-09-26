@@ -1676,7 +1676,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         if(uri != null)
                             sActivity.getContentResolver().takePersistableUriPermission(uri, takeFlags);
                     }
-                    else {π
+                    else {
                         for(int i = 0; i < data.getClipData().getItemCount(); i++) {
                             Uri uri = data.getClipData().getItemAt(i).getUri();
                             setArtwork(uri);
