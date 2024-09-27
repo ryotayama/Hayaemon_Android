@@ -100,6 +100,7 @@
     <string name="distortionVolume">Volume</string>
     <string name="reverse">Reverse</string>
     <string name="increaseSpeed">Increase Speed</string>
+    <string name="newIncreaseSpeed">New increase speed</string>
     <string name="decreaseSpeed">Decrease Speed</string>
     <string name="raisePitch">Raise Pitch</string>
     <string name="lowerPitch">Lower Pitch</string>
@@ -123,6 +124,9 @@
     <string name="bpm140">BPM 140</string>
     <string name="bpm150">BPM 150</string>
     <string name="bpm160">BPM 160</string>
+    <string name="increase0.1Every1Sec">Increase 0.1% every 1 sec.</string>
+    <string name="increase1.0Every1Sec">Increase 1.0% every 1 sec.</string>
+    <string name="increase1.0EveryLoop">Increase 1.0% every loop.</string>
     <string name="soundEffect">Sound effect</string>
     <string name="eightBitSound">8-bit sound simulator</string>
     <string name="recordNoise">Record Noise</string>
