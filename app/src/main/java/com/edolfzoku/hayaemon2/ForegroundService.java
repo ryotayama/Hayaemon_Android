@@ -374,11 +374,11 @@ public class ForegroundService extends IntentService {
             else if (intent.getAction().equals("action_rewind")) PlaylistFragment.onRewindBtnClick();
             else if(intent.getAction().equals("action_play")) {
                 PlaylistFragment.onPlayBtnClick();
-                updateNotificationIfSdk33(actionPause);
+                updateNotificationIfSdkLessThan33(actionPause);
             }
             else if(intent.getAction().equals("action_pause")) {
                 PlaylistFragment.onPlayBtnClick();
-                updateNotificationIfSdk33(actionPlay);
+                updateNotificationIfSdkLessThan33(actionPlay);
             }
             else if (intent.getAction().equals("action_forward")) PlaylistFragment.onForwardBtnClick();
             else getBaseContext().sendBroadcast(new Intent(intent.getAction()));
@@ -393,7 +393,7 @@ public class ForegroundService extends IntentService {
      * SDK33未満の場合に通知の再生/停止ボタンを切り替えるため通知を更新(出しなおす)
      * @param actionPlayOrPause actionPlay or actionPause
      */
-    private void updateNotificationIfSdk33(NotificationCompat.Action actionPlayOrPause) {
+    private void updateNotificationIfSdkLessThan33(NotificationCompat.Action actionPlayOrPause) {
         if (Build.VERSION.SDK_INT < 33) {
             builder.clearActions();
             builder.addAction(actionRewind);
