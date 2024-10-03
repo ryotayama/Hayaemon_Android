@@ -40,7 +40,9 @@ import java.util.ArrayList;
 public class ForegroundService extends IntentService {
     private PendingIntent pendingIntentForeground = null;
     private NotificationCompat.Action actionRewind= null;
-    private NotificationCompat.Action actionPlayPause= null;
+//    private NotificationCompat.Action actionPlayPause= null;
+    private NotificationCompat.Action actionPlay= null;
+    private NotificationCompat.Action actionPause= null;
     private NotificationCompat.Action actionForward= null;
     private Notification notification;
     private NotificationCompat.Builder builder;
@@ -169,11 +171,25 @@ public class ForegroundService extends IntentService {
             actionRewind = new NotificationCompat.Action.Builder(R.drawable.ic_rewind, "Previous", pendingIntentRewind).build();
         }
 
-        if(actionPlayPause == null) {
-            Intent intentPlayPause = new Intent(this, ForegroundService.class);
-            intentPlayPause.setAction("action_playpause");
-            PendingIntent pendingIntentPlayPause = PendingIntent.getService(this, 1, intentPlayPause, Build.VERSION.SDK_INT >= 23 ? FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE : FLAG_UPDATE_CURRENT);
-            actionPlayPause = new NotificationCompat.Action.Builder(R.drawable.ic_pause, "Pause", pendingIntentPlayPause).build();
+//        if(actionPlayPause == null) {
+//            Intent intentPlayPause = new Intent(this, ForegroundService.class);
+//            intentPlayPause.setAction("action_playpause");
+//            PendingIntent pendingIntentPlayPause = PendingIntent.getService(this, 1, intentPlayPause, Build.VERSION.SDK_INT >= 23 ? FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE : FLAG_UPDATE_CURRENT);
+//            actionPlayPause = new NotificationCompat.Action.Builder(R.drawable.ic_pause, "Pause", pendingIntentPlayPause).build();
+//        }
+
+        if(actionPlay == null) {
+            Intent intentPlay = new Intent(this, ForegroundService.class);
+            intentPlay.setAction("action_play");
+            PendingIntent pendingIntentPlay = PendingIntent.getService(this, 1, intentPlay, Build.VERSION.SDK_INT >= 23 ? FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE : FLAG_UPDATE_CURRENT);
+            actionPlay = new NotificationCompat.Action.Builder(R.drawable.ic_play, "Play", pendingIntentPlay).build();
+        }
+
+        if(actionPause == null) {
+            Intent intentPause = new Intent(this, ForegroundService.class);
+            intentPause.setAction("action_pause");
+            PendingIntent pendingIntentPause = PendingIntent.getService(this, 1, intentPause, Build.VERSION.SDK_INT >= 23 ? FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE : FLAG_UPDATE_CURRENT);
+            actionPause = new NotificationCompat.Action.Builder(R.drawable.ic_pause, "Pause", pendingIntentPause).build();
         }
 
         if(actionForward == null) {
@@ -248,12 +264,12 @@ public class ForegroundService extends IntentService {
             if (mBitmap == null)
                 mBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher);
 
-            int iconPlayPause;
-            String playPauseTitle;
+//            int iconPlayPause;
+//            String playPauseTitle;
             // long length = (long)(BASS.BASS_ChannelBytes2Seconds(MainActivity.sStream, BASS.BASS_ChannelGetLength(MainActivity.sStream, BASS.BASS_POS_BYTE)) * 1000);
             if (BASS.BASS_ChannelIsActive(MainActivity.sStream) == BASS.BASS_ACTIVE_PLAYING) {
-                iconPlayPause = R.drawable.ic_pause;
-                playPauseTitle = "Pause";
+//                iconPlayPause = R.drawable.ic_pause;
+//                playPauseTitle = "Pause";
                 PlaybackStateCompat playbackState = new PlaybackStateCompat.Builder()
                         .setActions(AVAILABLE_ACTIONS)
                         .setState(PlaybackStateCompat.STATE_PLAYING, 0, 1f)
@@ -267,8 +283,8 @@ public class ForegroundService extends IntentService {
                 mediaSession.setActive(true);
             }
             else {
-                iconPlayPause = R.drawable.ic_play;
-                playPauseTitle = "Play";
+//                iconPlayPause = R.drawable.ic_play;
+//                playPauseTitle = "Play";
                 PlaybackStateCompat playbackState = new PlaybackStateCompat.Builder()
                         .setActions(AVAILABLE_ACTIONS)
                         .setState(PlaybackStateCompat.STATE_PAUSED, 0, 1f)
@@ -281,13 +297,15 @@ public class ForegroundService extends IntentService {
                 // mediaSession.setMetadata(metadata);
                 mediaSession.setActive(true);
             }
-            actionPlayPause.icon = iconPlayPause;
-            actionPlayPause.title = playPauseTitle;
+//            actionPlayPause.icon = iconPlayPause;
+//            actionPlayPause.title = playPauseTitle;
             if(builder == null) {
                 builder = new NotificationCompat.Builder(this, "playsound");
                 if (Build.VERSION.SDK_INT < 33) {
                     builder.addAction(actionRewind);
-                    builder.addAction(actionPlayPause);
+//                    builder.addAction(actionPlayPause);
+//                    builder.addAction(actionPlay);
+                    builder.addAction(actionPause);
                     builder.addAction(actionForward);
                     builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
                 }
@@ -315,8 +333,8 @@ public class ForegroundService extends IntentService {
                 builder.setContentTitle(strTitle);
                 builder.setContentText(strArtist);
                 if (Build.VERSION.SDK_INT < 33) {
-                    notification.actions[1].icon = iconPlayPause;
-                    notification.actions[1].title = playPauseTitle;
+//                    notification.actions[1].icon = iconPlayPause;
+//                    notification.actions[1].title = playPauseTitle;
                 }
                 else {
                     builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
@@ -360,7 +378,9 @@ public class ForegroundService extends IntentService {
                 builder = new NotificationCompat.Builder(this, "playsound");
                 if (Build.VERSION.SDK_INT < 33) {
                     builder.addAction(actionRewind);
-                    builder.addAction(actionPlayPause);
+//                    builder.addAction(actionPlayPause);
+//                    builder.addAction(actionPlay);
+                    builder.addAction(actionPause);
                     builder.addAction(actionForward);
                     builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
                 }
@@ -385,6 +405,30 @@ public class ForegroundService extends IntentService {
             if (stop || intent.getAction().equals("stop")) stopSelf();
             else if (intent.getAction().equals("action_rewind")) PlaylistFragment.onRewindBtnClick();
             else if(intent.getAction().equals("action_playpause")) PlaylistFragment.onPlayBtnClick();
+            else if(intent.getAction().equals("action_play")) {
+                PlaylistFragment.onPlayBtnClick();
+                if (Build.VERSION.SDK_INT < 33) {
+                    builder.clearActions();
+                    builder.addAction(actionRewind);
+                    builder.addAction(actionPause);
+                    builder.addAction(actionForward);
+                    Notification newNotification = builder.build();
+                    NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.notify(1, newNotification);
+                }
+            }
+            else if(intent.getAction().equals("action_pause")) {
+                PlaylistFragment.onPlayBtnClick();
+                if (Build.VERSION.SDK_INT < 33) {
+                    builder.clearActions();
+                    builder.addAction(actionRewind);
+                    builder.addAction(actionPlay);
+                    builder.addAction(actionForward);
+                    Notification newNotification = builder.build();
+                    NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.notify(1, newNotification);
+                }
+            }
             else if (intent.getAction().equals("action_forward")) PlaylistFragment.onForwardBtnClick();
             else getBaseContext().sendBroadcast(new Intent(intent.getAction()));
         }
