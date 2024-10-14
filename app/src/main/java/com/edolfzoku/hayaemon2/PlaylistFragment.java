@@ -72,7 +72,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.WindowMetrics;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -986,29 +985,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             alertDialog.show();
             return;
         }
-        AlertDialog.Builder builder;
-        if(sActivity.isDarkMode()) builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-        else builder = new AlertDialog.Builder(sActivity);
-        builder.setTitle(R.string.downloading);
-        LinearLayout linearLayout = new LinearLayout(sActivity);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
         mProgress = new ProgressBar(sActivity, null, android.R.attr.progressBarStyleHorizontal);
-        mProgress.setMax(100);
-        mProgress.setProgress(0);
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        param.topMargin = (int)(24 *  sActivity.getDensity());
-        param.leftMargin = (int)(16 *  sActivity.getDensity());
-        param.rightMargin = (int)(16 *  sActivity.getDensity());
-        int nWidth;
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            WindowMetrics windowMetrics = sActivity.getWindowManager().getCurrentWindowMetrics();
-            nWidth = windowMetrics.getBounds().width();
-        } else {
-            nWidth = getResources().getDisplayMetrics().widthPixels;
-        }
-        param.width = (int)(nWidth * 0.8);
-        linearLayout.addView(mProgress, param);
-        builder.setView(linearLayout);
+        ProgressDialogBuilder builder = new ProgressDialogBuilder(sActivity, R.string.downloading, mProgress);
 
         String strPathTo;
         int i = 0;
@@ -3145,29 +3123,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void saveSong(int nPurpose, String strFileName) {
-        AlertDialog.Builder builder;
-        if(sActivity.isDarkMode())
-            builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-        else builder = new AlertDialog.Builder(sActivity);
-        builder.setTitle(R.string.saving);
-        LinearLayout linearLayout = new LinearLayout(sActivity);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
         mProgress = new ProgressBar(sActivity, null, android.R.attr.progressBarStyleHorizontal);
-        mProgress.setMax(100);
-        mProgress.setProgress(0);
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        param.topMargin = (int)(24 *  sActivity.getDensity());
-        param.leftMargin = param.rightMargin = (int)(16 *  sActivity.getDensity());
-        int nWidth;
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            WindowMetrics windowMetrics = sActivity.getWindowManager().getCurrentWindowMetrics();
-            nWidth = windowMetrics.getBounds().width();
-        } else {
-            nWidth = getResources().getDisplayMetrics().widthPixels;
-        }
-        param.width = (int)(nWidth * 0.8);
-        linearLayout.addView(mProgress, param);
-        builder.setView(linearLayout);
+        ProgressDialogBuilder builder = new ProgressDialogBuilder(sActivity, R.string.saving, mProgress);
 
         ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
         SongItem item = arSongs.get(sSelectedItem);
