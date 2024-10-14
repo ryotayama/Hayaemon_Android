@@ -283,12 +283,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             Runnable timer=new Runnable() {
                 public void run() {
                     if (sActivity == null) return;
-                    AlertDialog.Builder builder;
-                    if(sActivity.isDarkMode())
-                        builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-                    else
-                        builder = new AlertDialog.Builder(sActivity);
-                    builder.setTitle(R.string.addNewList);
+                    AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.addNewList);
                     final ClearableEditText editText = new ClearableEditText(sActivity, sActivity.isDarkMode());
                     editText.setHint(R.string.playlist);
                     editText.setText(R.string.playlist);
@@ -333,10 +328,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             if (sActivity != null) sActivity.getViewSep1().setVisibility(View.VISIBLE);
         }
         else if(v.getId() == R.id.btnAddPlaylist_small) {
-            AlertDialog.Builder builder;
-            if(sActivity.isDarkMode()) builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-            else builder = new AlertDialog.Builder(sActivity);
-            builder.setTitle(R.string.addNewList);
+            AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.addNewList);
             final ClearableEditText editText = new ClearableEditText(sActivity, sActivity.isDarkMode());
             editText.setHint(R.string.playlist);
             editText.setText(R.string.playlist);
@@ -392,12 +384,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                         public void onClick(View view) {
                             menu.dismiss();
 
-                            AlertDialog.Builder builder;
-                            if(sActivity.isDarkMode())
-                                builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-                            else
-                                builder = new AlertDialog.Builder(sActivity);
-                            builder.setTitle(R.string.addURL);
+                            AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.addURL);
                             LinearLayout linearLayout = new LinearLayout(sActivity);
                             linearLayout.setOrientation(LinearLayout.VERTICAL);
                             final ClearableEditText editURL = new ClearableEditText(sActivity, sActivity.isDarkMode());
@@ -682,10 +669,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void deleteMultipleSelection() {
-        AlertDialog.Builder builder;
-        if(sActivity.isDarkMode()) builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-        else builder = new AlertDialog.Builder(sActivity);
-        builder.setTitle(R.string.delete);
+        AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.delete);
         builder.setMessage(R.string.askDeleteSong);
         builder.setPositiveButton(getString(R.string.decideNot), null);
         builder.setNegativeButton(getString(R.string.doDelete), new DialogInterface.OnClickListener() {
@@ -985,11 +969,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             nFreeSpace = sf.getAvailableBlocksLong() * sf.getBlockSizeLong();
         else nFreeSpace = (long)sf.getAvailableBlocks() * (long)sf.getBlockSize();
         if(nFreeSpace < 100) {
-            AlertDialog.Builder builder;
-            if(sActivity.isDarkMode())
-                builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-            else builder = new AlertDialog.Builder(sActivity);
-            builder.setTitle(R.string.diskFullError);
+            AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.diskFullError);
             builder.setMessage(R.string.diskFullErrorDetail);
             builder.setPositiveButton("OK", null);
             final AlertDialog alertDialog = builder.create();
@@ -1076,11 +1056,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         final File file = new File(strPathTo);
         if(nError == 1) {
             if(!file.delete()) System.out.println("ファイルが削除できませんでした");
-            AlertDialog.Builder builder;
-            if(sActivity.isDarkMode())
-                builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-            else builder = new AlertDialog.Builder(sActivity);
-            builder.setTitle(R.string.downloadError);
+            AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.downloadError);
             builder.setMessage(R.string.downloadErrorDetail);
             builder.setPositiveButton("OK", null);
             final AlertDialog alertDialog = builder.create();
@@ -1109,11 +1085,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             return;
         }
 
-        AlertDialog.Builder builder;
-        if(sActivity.isDarkMode())
-            builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-        else builder = new AlertDialog.Builder(sActivity);
-        builder.setTitle(R.string.addURL);
+        AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.addURL);
         LinearLayout linearLayout = new LinearLayout(sActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         final ClearableEditText editTitle = new ClearableEditText(sActivity, sActivity.isDarkMode());
@@ -1189,11 +1161,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             nFreeSpace = sf.getAvailableBlocksLong() * sf.getBlockSizeLong();
         else nFreeSpace = (long)sf.getAvailableBlocks() * (long)sf.getBlockSize();
         if(nFreeSpace < 100) {
-            AlertDialog.Builder builder;
-            if(sActivity.isDarkMode())
-                builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-            else builder = new AlertDialog.Builder(sActivity);
-            builder.setTitle(R.string.diskFullError);
+            AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.diskFullError);
             builder.setMessage(R.string.diskFullErrorDetail);
             builder.setPositiveButton("OK", null);
             final AlertDialog alertDialog = builder.create();
@@ -1298,11 +1266,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         MainActivity.sRecord = 0;
 
         sActivity.getBtnRecord().clearColorFilter();
-        AlertDialog.Builder builder;
-        if(sActivity.isDarkMode())
-            builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-        else builder = new AlertDialog.Builder(sActivity);
-        builder.setTitle(R.string.newRecord);
+        AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.newRecord);
         LinearLayout linearLayout = new LinearLayout(sActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         final ClearableEditText editTitle = new ClearableEditText(sActivity, sActivity.isDarkMode());
@@ -2037,11 +2001,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void askDeletePlaylist(final int item) {
-        AlertDialog.Builder builder;
-        if(sActivity.isDarkMode())
-            builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-        else builder = new AlertDialog.Builder(sActivity);
-        builder.setTitle(R.string.deletePlaylist);
+        AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.deletePlaylist);
         builder.setMessage(R.string.askDeletePlaylist);
         builder.setPositiveButton(getString(R.string.decideNot), null);
         builder.setNegativeButton(getString(R.string.doDelete), new DialogInterface.OnClickListener() {
@@ -2092,13 +2052,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
         if (item >= arSongs.size()) return;
         final SongItem songItem = arSongs.get(item);
-        AlertDialog.Builder builder;
-        if(sActivity.isDarkMode())
-            builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-        else
-            builder = new AlertDialog.Builder(sActivity);
         String strTitle = songItem.getTitle();
-        builder.setTitle(strTitle);
+        AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, strTitle);
         builder.setMessage(R.string.askDeleteSong);
         builder.setPositiveButton(getString(R.string.decideNot), null);
         builder.setNegativeButton(getString(R.string.doDelete), new DialogInterface.OnClickListener() {
@@ -2217,11 +2172,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
         final SongItem songItem = arSongs.get(nItem);
 
-        AlertDialog.Builder builder;
-        if(sActivity.isDarkMode())
-            builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-        else builder = new AlertDialog.Builder(sActivity);
-        builder.setTitle(R.string.changeTitleAndArtist);
+        AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.changeTitleAndArtist);
         LinearLayout linearLayout = new LinearLayout(sActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         final ClearableEditText editTitle = new ClearableEditText(sActivity, sActivity.isDarkMode());
@@ -2285,12 +2236,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder;
-                if(sActivity.isDarkMode())
-                    builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-                else
-                    builder = new AlertDialog.Builder(sActivity);
-                builder.setTitle(R.string.changePlaylistName);
+                AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.changePlaylistName);
                 final ClearableEditText editText = new ClearableEditText(sActivity, sActivity.isDarkMode());
                 editText.setHint(R.string.playlist);
                 editText.setText(sPlaylistNames.get(nPosition));
@@ -2330,12 +2276,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder;
-                if(sActivity.isDarkMode())
-                    builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-                else
-                    builder = new AlertDialog.Builder(sActivity);
-                builder.setTitle(R.string.copyPlaylist);
+                AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.copyPlaylist);
                 final ClearableEditText editText = new ClearableEditText(sActivity, sActivity.isDarkMode());
                 editText.setHint(R.string.playlist);
                 editText.setText(String.format(Locale.getDefault(), "%s のコピー", sPlaylistNames.get(nPosition)));
@@ -2406,12 +2347,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder;
-                if(sActivity.isDarkMode())
-                    builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-                else
-                    builder = new AlertDialog.Builder(sActivity);
-                builder.setTitle(R.string.emptyPlaylist);
+                AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.emptyPlaylist);
                 builder.setMessage(R.string.askEmptyPlaylist);
                 builder.setPositiveButton(getString(R.string.decideNot), null);
                 builder.setNegativeButton(getString(R.string.doEmpty), new DialogInterface.OnClickListener() {
@@ -2547,12 +2483,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder;
-                if(sActivity.isDarkMode())
-                    builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-                else
-                    builder = new AlertDialog.Builder(sActivity);
-                builder.setTitle(R.string.changePlaylistName);
+                AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.changePlaylistName);
                 final ClearableEditText editText = new ClearableEditText(sActivity, sActivity.isDarkMode());
                 editText.setHint(R.string.playlist);
                 editText.setText(sPlaylistNames.get(nPosition));
@@ -2592,12 +2523,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder;
-                if(sActivity.isDarkMode())
-                    builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-                else
-                    builder = new AlertDialog.Builder(sActivity);
-                builder.setTitle(R.string.copyPlaylist);
+                AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.copyPlaylist);
                 final ClearableEditText editText = new ClearableEditText(sActivity, sActivity.isDarkMode());
                 editText.setHint(R.string.playlist);
                 editText.setText(String.format(Locale.getDefault(), "%s のコピー", sPlaylistNames.get(nPosition)));
@@ -2668,12 +2594,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder;
-                if(sActivity.isDarkMode())
-                    builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-                else
-                    builder = new AlertDialog.Builder(sActivity);
-                builder.setTitle(R.string.emptyPlaylist);
+                AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.emptyPlaylist);
                 builder.setMessage(R.string.askEmptyPlaylist);
                 builder.setPositiveButton(getString(R.string.decideNot), null);
                 builder.setNegativeButton(getString(R.string.doEmpty), new DialogInterface.OnClickListener() {
@@ -2722,12 +2643,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onClick(View view) {
                 menu.dismiss();
-                AlertDialog.Builder builder;
-                if(sActivity.isDarkMode())
-                    builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-                else
-                    builder = new AlertDialog.Builder(sActivity);
-                builder.setTitle(R.string.deletePlaylist);
+                AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.deletePlaylist);
                 builder.setMessage(R.string.askDeletePlaylist);
                 builder.setPositiveButton(getString(R.string.decideNot), null);
                 builder.setNegativeButton(getString(R.string.doDelete), new DialogInterface.OnClickListener() {
@@ -3622,11 +3538,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             cr.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
         }
 
-        AlertDialog.Builder builder;
-        if(sActivity.isDarkMode())
-            builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-        else builder = new AlertDialog.Builder(sActivity);
-        builder.setTitle(R.string.saveAsVideo);
+        AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.saveAsVideo);
         builder.setMessage(R.string.saved);
         builder.setPositiveButton("OK", null);
         final AlertDialog alertDialog = builder.create();
@@ -4375,11 +4287,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
         }
 
-        AlertDialog.Builder builder;
-        if(sActivity.isDarkMode())
-            builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-        else builder = new AlertDialog.Builder(sActivity);
-        builder.setTitle(R.string.addFromVideo);
+        AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.addFromVideo);
         LinearLayout linearLayout = new LinearLayout(sActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         final ClearableEditText editTitle = new ClearableEditText(sActivity, sActivity.isDarkMode());
