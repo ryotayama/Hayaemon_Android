@@ -3364,60 +3364,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     void export() {
-        AlertDialog.Builder builder;
-        if(sActivity.isDarkMode())
-            builder = new AlertDialog.Builder(sActivity, R.style.DarkModeDialog);
-        else builder = new AlertDialog.Builder(sActivity);
-        builder.setTitle(R.string.export);
-        LinearLayout linearLayout = new LinearLayout(sActivity);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        final ClearableEditText editTitle = new ClearableEditText(sActivity, sActivity.isDarkMode());
-        editTitle.setHint(R.string.fileName);
         ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
         SongItem item = arSongs.get(sSelectedItem);
-        String strTitle = item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_");
-        float fSpeed = ControlFragment.sSpeed;
-        float fPitch = ControlFragment.sPitch;
-        String strSpeed = String.format(Locale.getDefault(), "%.1f%%", fSpeed + 100);
-        String strPitch;
-        if(fPitch >= 0.05f) strPitch = String.format(Locale.getDefault(), "♯%.1f", fPitch);
-        else if(fPitch <= -0.05f)
-            strPitch = String.format(Locale.getDefault(), "♭%.1f", fPitch * -1);
-        else {
-            strPitch = String.format(Locale.getDefault(), "%.1f", fPitch < 0.0f ? fPitch * -1 : fPitch);
-            if(strPitch.equals("-0.0")) strPitch = "0.0";
-        }
-        if(fSpeed != 0.0f && fPitch != 0.0f)
-            strTitle += "(" + getString(R.string.speed) + strSpeed + "," + getString(R.string.pitch) + strPitch + ")";
-        else if(fSpeed != 0.0f) strTitle += "(" + getString(R.string.speed) + strSpeed + ")";
-        else if(fPitch != 0.0f) strTitle += "(" + getString(R.string.pitch) + strPitch + ")";
-        DateFormat df = new SimpleDateFormat("_yyyyMMdd_HHmmss", Locale.getDefault());
-        Date date = new Date(System.currentTimeMillis());
-        editTitle.setText(String.format(Locale.getDefault(), "%s%s", strTitle, df.format(date)));
-        linearLayout.addView(editTitle);
-        builder.setView(linearLayout);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                saveSong(1, editTitle.getText().toString().replaceAll("[\\\\/:*?\"<>|]", "_"));
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, null);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface arg0) {
-                if(alertDialog.getWindow() != null) {
-                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
-                    lp.dimAmount = 0.4f;
-                    alertDialog.getWindow().setAttributes(lp);
-                }
-                editTitle.requestFocus();
-                editTitle.setSelection(editTitle.getText().toString().length());
-                InputMethodManager imm = (InputMethodManager) sActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (null != imm) imm.showSoftInput(editTitle, 0);
-            }
-        });
-        alertDialog.show();
+        saveSong(1, item.getTitle());
     }
 
     void finishExport(int hTempStream, int hEncode, String strPathTo, AlertDialog alert) {
