@@ -82,7 +82,7 @@ class SongSavingTask extends AsyncTask<Integer, Integer, Integer> {
         if(mPurpose == 0)
             mPlaylistFragment.finishSaveSongToLocal(mTempStream, mEncode, mPathTo, mAlert);
         else if(mPurpose == 1)
-            mPlaylistFragment.finishExport(mTempStream, mEncode, mPathTo, mAlert);
+            mPlaylistFragment.finishExportWithFilePath(mTempStream, mEncode, mPathTo, mAlert);
         else
             mPlaylistFragment.finishSaveSongToGallery(mTempStream, mEncode, mPathTo, mAlert);
     }

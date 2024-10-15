@@ -3122,156 +3122,44 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if (!saver.isVolPercent()) updateSavingEffect();
     }
 
+    private boolean hasActiveEffectOrEq() {
+        // ループ画面: A地点かB地点が設定されているか
+        if (sSelectedPlaylist == sPlayingPlaylist && sSelectedItem == sPlaying) {
+            if (MainActivity.sLoopA || MainActivity.sLoopB) {
+                return true;
+            }
+        }
+        // コントロール: スピードが100.0ではないか？ ピッチが-0.05< <0.05ではないか？
+        float epsilon = 0.05f;
+        if (((ControlFragment.sSpeed - 100.0f) >= epsilon) ||
+                (ControlFragment.sPitch >= epsilon) || (ControlFragment.sPitch <= -1 * epsilon)) {
+            return true;
+        }
+        // イコライザ: 選択中のイコライザがないか
+        for (EqualizerItem item : EqualizerFragment.sEqualizerItems) {
+            if (item.isSelected()) {
+                return true;
+            }
+        }
+        // エフェクト: 選択中のエフェクトがないか
+        for (EffectItem item : EffectFragment.sEffectItems) {
+            if (item.isSelected()) {
+                return true;
+            }
+        }
+
+        // 各画面の設定を保持: 保存している各設定がデフォルト値かどうかはチェックしない
+        ArrayList<EffectSaver> arEffectSavers = sEffects.get(sSelectedPlaylist);
+        EffectSaver saver = arEffectSavers.get(sSelectedItem);
+        if (saver.isSave()) {
+            return true;
+        }
+        return false;
+    }
+
     private void saveSong(int nPurpose, String strFileName) {
         mProgress = new ProgressBar(sActivity, null, android.R.attr.progressBarStyleHorizontal);
         ProgressDialogBuilder builder = new ProgressDialogBuilder(sActivity, R.string.saving, mProgress);
-
-        ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
-        SongItem item = arSongs.get(sSelectedItem);
-        String strPath = item.getPath();
-        int _hTempStream;
-        Uri uri = Uri.parse(strPath);
-        if(uri.getScheme() != null && uri.getScheme().equals("content")) {
-            ContentResolver cr = sActivity.getApplicationContext().getContentResolver();
-            try {
-                MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
-                params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
-                if(params.assetFileDescriptor == null) return;
-                params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
-                _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-            if(_hTempStream == 0) {
-                try {
-                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
-                    params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
-                    if(params.assetFileDescriptor == null) return;
-                    params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
-                    _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return;
-                }
-            }
-        }
-        else {
-            if (strPath.equals("potatoboy.m4a"))
-                _hTempStream = BASS.BASS_StreamCreateFile(new BASS.Asset(sActivity.getAssets(), strPath), 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
-            else _hTempStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
-        }
-        if(_hTempStream == 0) return;
-
-        _hTempStream = BASS_FX.BASS_FX_ReverseCreate(_hTempStream, 2, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
-        _hTempStream = BASS_FX.BASS_FX_TempoCreate(_hTempStream, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
-        final int hTempStream = _hTempStream;
-        int chan = BASS_FX.BASS_FX_TempoGetSource(hTempStream);
-        if(EffectFragment.isReverse())
-            BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
-        else
-            BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
-        int hTempFxVol = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_VOLUME, 0);
-        int hTempFx20K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx16K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx12_5K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx10K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx8K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx6_3K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx5K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx4K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx3_15K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx2_5K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx2K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx1_6K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx1_25K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx1K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx800 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx630 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx500 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx400 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx315 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx250 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx200 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx160 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx125 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx100 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx80 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx63 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx50 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx40 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx31_5 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx25 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        int hTempFx20 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-        BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO, ControlFragment.sSpeed);
-        BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, ControlFragment.sPitch);
-        int[] arHFX = new int[] {hTempFx20K, hTempFx16K, hTempFx12_5K, hTempFx10K, hTempFx8K, hTempFx6_3K, hTempFx5K, hTempFx4K, hTempFx3_15K, hTempFx2_5K, hTempFx2K, hTempFx1_6K, hTempFx1_25K, hTempFx1K, hTempFx800, hTempFx630, hTempFx500, hTempFx400, hTempFx315, hTempFx250, hTempFx200, hTempFx160, hTempFx125, hTempFx100, hTempFx80, hTempFx63, hTempFx50, hTempFx40, hTempFx31_5, hTempFx25, hTempFx20};
-        float fLevel = sActivity.equalizerFragment.getSeeks().get(0).getProgress() / 100.0f;
-        BASS_FX.BASS_BFX_VOLUME vol = new BASS_FX.BASS_BFX_VOLUME();
-        vol.lChannel = 0;
-        vol.fVolume = fLevel;
-        BASS.BASS_FXSetParameters(hTempFxVol, vol);
-
-        for(int i = 0; i < 31; i++) {
-            int nLevel = sActivity.equalizerFragment.getSeeks().get(i+1).getProgress() - 30;
-            BASS_FX.BASS_BFX_PEAKEQ eq = new BASS_FX.BASS_BFX_PEAKEQ();
-            eq.fBandwidth = 0.7f;
-            eq.fQ = 0.0f;
-            eq.lChannel = BASS_FX.BASS_BFX_CHANALL;
-            eq.fGain = nLevel;
-            eq.fCenter = sActivity.equalizerFragment.getArCenters()[i];
-            BASS.BASS_FXSetParameters(arHFX[i], eq);
-        }
-        EffectFragment.applyEffect(hTempStream, item);
-        String strPathTo;
-        if(nPurpose == 0) { // saveSongToLocal
-            int i = 0;
-            File fileForCheck;
-            while (true) {
-                strPathTo = sActivity.getFilesDir() + "/recorded" + String.format(Locale.getDefault(), "%d", i) + ".mp3";
-                fileForCheck = new File(strPathTo);
-                if (!fileForCheck.exists()) break;
-                i++;
-            }
-        }
-        else if(nPurpose == 1) { // export
-            File fileDir = new File(sActivity.getExternalCacheDir() + "/export");
-            if(!fileDir.exists()) {
-                if(!fileDir.mkdir()) System.out.println("ディレクトリが作成できませんでした");
-            }
-            strPathTo = sActivity.getExternalCacheDir() + "/export/";
-            strPathTo += strFileName + ".mp3";
-            File file = new File(strPathTo);
-            if(file.exists()) {
-                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
-            }
-        }
-        else { // saveSongToGallery
-            File fileDir = new File(sActivity.getExternalCacheDir() + "/export");
-            if(!fileDir.exists()) {
-                if(!fileDir.mkdir()) System.out.println("ディレクトリが作成できませんでした");
-            }
-            strPathTo = sActivity.getExternalCacheDir() + "/export/export.wav";
-            File file = new File(strPathTo);
-            if (file.exists()) {
-                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
-            }
-        }
-
-        double _dEnd = BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE));
-        if(sSelectedPlaylist == sPlayingPlaylist && sSelectedItem == sPlaying) {
-            if(MainActivity.sLoopA)
-                BASS.BASS_ChannelSetPosition(hTempStream, BASS.BASS_ChannelSeconds2Bytes(hTempStream, MainActivity.sLoopAPos), BASS.BASS_POS_BYTE);
-            if(MainActivity.sLoopB)
-                _dEnd = MainActivity.sLoopBPos;
-        }
-        final double dEnd = _dEnd;
-        int hTempEncode;
-        if(nPurpose == 2) // saveSongToGallery
-            hTempEncode = BASSenc.BASS_Encode_Start(hTempStream, strPathTo, BASSenc.BASS_ENCODE_PCM | BASSenc.BASS_ENCODE_FP_16BIT, null, null);
-        else
-            hTempEncode = BASSenc_MP3.BASS_Encode_MP3_StartFile(hTempStream, "", 0, strPathTo);
-        final int hEncode = hTempEncode;
         sFinish = false;
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
@@ -3292,10 +3180,160 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         });
         alertDialog.show();
 
-        if(mSongSavingTask != null && mSongSavingTask.getStatus() == AsyncTask.Status.RUNNING)
-            mSongSavingTask.cancel(true);
-        mSongSavingTask = new SongSavingTask(nPurpose, this, hTempStream, hEncode, strPathTo, alertDialog, dEnd);
-        mSongSavingTask.execute(0);
+        ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
+        SongItem item = arSongs.get(sSelectedItem);
+        String strPath = item.getPath();
+        if (nPurpose != 1 || hasActiveEffectOrEq()) {
+            int _hTempStream;
+            Uri uri = Uri.parse(strPath);
+            if (uri.getScheme() != null && uri.getScheme().equals("content")) {
+                ContentResolver cr = sActivity.getApplicationContext().getContentResolver();
+                try {
+                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                    params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+                    if (params.assetFileDescriptor == null) return;
+                    params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
+                    _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return;
+                }
+                if (_hTempStream == 0) {
+                    try {
+                        MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+                        params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+                        if (params.assetFileDescriptor == null) return;
+                        params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
+                        _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                }
+            } else {
+                if (strPath.equals("potatoboy.m4a"))
+                    _hTempStream = BASS.BASS_StreamCreateFile(new BASS.Asset(sActivity.getAssets(), strPath), 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+                else
+                    _hTempStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+            }
+            if (_hTempStream == 0) return;
+
+            _hTempStream = BASS_FX.BASS_FX_ReverseCreate(_hTempStream, 2, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+            _hTempStream = BASS_FX.BASS_FX_TempoCreate(_hTempStream, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+            final int hTempStream = _hTempStream;
+            int chan = BASS_FX.BASS_FX_TempoGetSource(hTempStream);
+            if (EffectFragment.isReverse())
+                BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
+            else
+                BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
+            int hTempFxVol = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_VOLUME, 0);
+            int hTempFx20K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx16K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx12_5K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx10K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx8K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx6_3K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx5K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx4K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx3_15K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx2_5K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx2K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx1_6K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx1_25K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx1K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx800 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx630 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx500 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx400 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx315 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx250 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx200 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx160 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx125 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx100 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx80 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx63 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx50 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx40 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx31_5 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx25 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            int hTempFx20 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+            BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO, ControlFragment.sSpeed);
+            BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, ControlFragment.sPitch);
+            int[] arHFX = new int[]{hTempFx20K, hTempFx16K, hTempFx12_5K, hTempFx10K, hTempFx8K, hTempFx6_3K, hTempFx5K, hTempFx4K, hTempFx3_15K, hTempFx2_5K, hTempFx2K, hTempFx1_6K, hTempFx1_25K, hTempFx1K, hTempFx800, hTempFx630, hTempFx500, hTempFx400, hTempFx315, hTempFx250, hTempFx200, hTempFx160, hTempFx125, hTempFx100, hTempFx80, hTempFx63, hTempFx50, hTempFx40, hTempFx31_5, hTempFx25, hTempFx20};
+            float fLevel = sActivity.equalizerFragment.getSeeks().get(0).getProgress() / 100.0f;
+            BASS_FX.BASS_BFX_VOLUME vol = new BASS_FX.BASS_BFX_VOLUME();
+            vol.lChannel = 0;
+            vol.fVolume = fLevel;
+            BASS.BASS_FXSetParameters(hTempFxVol, vol);
+
+            for (int i = 0; i < 31; i++) {
+                int nLevel = sActivity.equalizerFragment.getSeeks().get(i + 1).getProgress() - 30;
+                BASS_FX.BASS_BFX_PEAKEQ eq = new BASS_FX.BASS_BFX_PEAKEQ();
+                eq.fBandwidth = 0.7f;
+                eq.fQ = 0.0f;
+                eq.lChannel = BASS_FX.BASS_BFX_CHANALL;
+                eq.fGain = nLevel;
+                eq.fCenter = sActivity.equalizerFragment.getArCenters()[i];
+                BASS.BASS_FXSetParameters(arHFX[i], eq);
+            }
+            EffectFragment.applyEffect(hTempStream, item);
+            String strPathTo;
+            if (nPurpose == 0) { // saveSongToLocal
+                int i = 0;
+                File fileForCheck;
+                while (true) {
+                    strPathTo = sActivity.getFilesDir() + "/recorded" + String.format(Locale.getDefault(), "%d", i) + ".mp3";
+                    fileForCheck = new File(strPathTo);
+                    if (!fileForCheck.exists()) break;
+                    i++;
+                }
+            } else if (nPurpose == 1) { // export
+                File fileDir = new File(sActivity.getExternalCacheDir() + "/export");
+                if (!fileDir.exists()) {
+                    if (!fileDir.mkdir()) System.out.println("ディレクトリが作成できませんでした");
+                }
+                strPathTo = sActivity.getExternalCacheDir() + "/export/";
+                strPathTo += strFileName + ".mp3";
+                File file = new File(strPathTo);
+                if (file.exists()) {
+                    if (!file.delete()) System.out.println("ファイルが削除できませんでした");
+                }
+            } else { // saveSongToGallery
+                File fileDir = new File(sActivity.getExternalCacheDir() + "/export");
+                if (!fileDir.exists()) {
+                    if (!fileDir.mkdir()) System.out.println("ディレクトリが作成できませんでした");
+                }
+                strPathTo = sActivity.getExternalCacheDir() + "/export/export.wav";
+                File file = new File(strPathTo);
+                if (file.exists()) {
+                    if (!file.delete()) System.out.println("ファイルが削除できませんでした");
+                }
+            }
+
+            double _dEnd = BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE));
+            if (sSelectedPlaylist == sPlayingPlaylist && sSelectedItem == sPlaying) {
+                if (MainActivity.sLoopA)
+                    BASS.BASS_ChannelSetPosition(hTempStream, BASS.BASS_ChannelSeconds2Bytes(hTempStream, MainActivity.sLoopAPos), BASS.BASS_POS_BYTE);
+                if (MainActivity.sLoopB)
+                    _dEnd = MainActivity.sLoopBPos;
+            }
+            final double dEnd = _dEnd;
+            int hTempEncode;
+            if (nPurpose == 2) // saveSongToGallery
+                hTempEncode = BASSenc.BASS_Encode_Start(hTempStream, strPathTo, BASSenc.BASS_ENCODE_PCM | BASSenc.BASS_ENCODE_FP_16BIT, null, null);
+            else
+                hTempEncode = BASSenc_MP3.BASS_Encode_MP3_StartFile(hTempStream, "", 0, strPathTo);
+            final int hEncode = hTempEncode;
+
+            if (mSongSavingTask != null && mSongSavingTask.getStatus() == AsyncTask.Status.RUNNING)
+                mSongSavingTask.cancel(true);
+            mSongSavingTask = new SongSavingTask(nPurpose, this, hTempStream, hEncode, strPathTo, alertDialog, dEnd);
+            mSongSavingTask.execute(0);
+        }
+        else {
+            finishExportWithUri(0, 0, Uri.parse(item.getPath()), alertDialog);
+        }
     }
 
     void saveSongToLocal() {
@@ -3369,7 +3407,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saveSong(1, item.getTitle());
     }
 
-    void finishExport(int hTempStream, int hEncode, String strPathTo, AlertDialog alert) {
+    void finishExportWithFilePath(int hTempStream, int hEncode, String strPathTo, AlertDialog alert) {
         if(alert.isShowing()) alert.dismiss();
 
         BASSenc.BASS_Encode_Stop(hEncode);
@@ -3401,6 +3439,212 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         file.deleteOnExit();
     }
+    void finishExportWithUri(int hTempStream, int hEncode, Uri uri, AlertDialog alert) {
+        if(alert.isShowing()) alert.dismiss();
+
+        BASSenc.BASS_Encode_Stop(hEncode);
+        BASS.BASS_StreamFree(hTempStream);
+
+        Intent share = new Intent();
+        share.setAction(Intent.ACTION_SEND);
+        share.setType("audio/mp3");
+        PackageManager pm = sActivity.getPackageManager();
+        int flag;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) flag = PackageManager.MATCH_ALL;
+        else flag = PackageManager.MATCH_DEFAULT_ONLY;
+        List<ResolveInfo> resInfoList = pm.queryIntentActivities(share, flag);
+        for (ResolveInfo resolveInfo : resInfoList) {
+            String packageName = resolveInfo.activityInfo.packageName;
+            sActivity.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+        share.putExtra(Intent.EXTRA_STREAM, uri);
+        startActivityForResult(Intent.createChooser(share, getString(R.string.export)), 0);
+    }
+
+//    void exportMultipleSelection() {
+//        mProgress = new ProgressBar(sActivity, null, android.R.attr.progressBarStyleHorizontal);
+//        ProgressDialogBuilder builder = new ProgressDialogBuilder(sActivity, R.string.saving, mProgress);
+//
+//        ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
+//        ArrayList<SongItem> selectedSongs = new ArrayList<>();
+//        for (SongItem songItem : arSongs) {
+//            if (songItem.isSelected()) {
+//                selectedSongs.add(songItem);
+//            }
+//        }
+//
+//
+//
+//        SongItem item = arSongs.get(sSelectedItem);
+//        String strPath = item.getPath();
+//        int _hTempStream;
+//        Uri uri = Uri.parse(strPath);
+//        if(uri.getScheme() != null && uri.getScheme().equals("content")) {
+//            ContentResolver cr = sActivity.getApplicationContext().getContentResolver();
+//            try {
+//                MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+//                params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+//                if(params.assetFileDescriptor == null) return;
+//                params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
+//                _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_BUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                return;
+//            }
+//            if(_hTempStream == 0) {
+//                try {
+//                    MainActivity.FileProcsParams params = new MainActivity.FileProcsParams();
+//                    params.assetFileDescriptor = cr.openAssetFileDescriptor(Uri.parse(strPath), "r");
+//                    if(params.assetFileDescriptor == null) return;
+//                    params.fileChannel = params.assetFileDescriptor.createInputStream().getChannel();
+//                    _hTempStream = BASS.BASS_StreamCreateFileUser(BASS.STREAMFILE_NOBUFFER, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE, MainActivity.fileProcs, params);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    return;
+//                }
+//            }
+//        }
+//        else {
+//            if (strPath.equals("potatoboy.m4a"))
+//                _hTempStream = BASS.BASS_StreamCreateFile(new BASS.Asset(sActivity.getAssets(), strPath), 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+//            else _hTempStream = BASS.BASS_StreamCreateFile(strPath, 0, 0, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+//        }
+//        if(_hTempStream == 0) return;
+//
+//        _hTempStream = BASS_FX.BASS_FX_ReverseCreate(_hTempStream, 2, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+//        _hTempStream = BASS_FX.BASS_FX_TempoCreate(_hTempStream, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
+//        final int hTempStream = _hTempStream;
+//        int chan = BASS_FX.BASS_FX_TempoGetSource(hTempStream);
+//        if(EffectFragment.isReverse())
+//            BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
+//        else
+//            BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
+//        int hTempFxVol = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_VOLUME, 0);
+//        int hTempFx20K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx16K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx12_5K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx10K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx8K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx6_3K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx5K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx4K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx3_15K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx2_5K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx2K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx1_6K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx1_25K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx1K = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx800 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx630 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx500 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx400 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx315 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx250 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx200 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx160 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx125 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx100 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx80 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx63 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx50 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx40 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx31_5 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx25 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        int hTempFx20 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
+//        BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO, ControlFragment.sSpeed);
+//        BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, ControlFragment.sPitch);
+//        int[] arHFX = new int[] {hTempFx20K, hTempFx16K, hTempFx12_5K, hTempFx10K, hTempFx8K, hTempFx6_3K, hTempFx5K, hTempFx4K, hTempFx3_15K, hTempFx2_5K, hTempFx2K, hTempFx1_6K, hTempFx1_25K, hTempFx1K, hTempFx800, hTempFx630, hTempFx500, hTempFx400, hTempFx315, hTempFx250, hTempFx200, hTempFx160, hTempFx125, hTempFx100, hTempFx80, hTempFx63, hTempFx50, hTempFx40, hTempFx31_5, hTempFx25, hTempFx20};
+//        float fLevel = sActivity.equalizerFragment.getSeeks().get(0).getProgress() / 100.0f;
+//        BASS_FX.BASS_BFX_VOLUME vol = new BASS_FX.BASS_BFX_VOLUME();
+//        vol.lChannel = 0;
+//        vol.fVolume = fLevel;
+//        BASS.BASS_FXSetParameters(hTempFxVol, vol);
+//
+//        for(int i = 0; i < 31; i++) {
+//            int nLevel = sActivity.equalizerFragment.getSeeks().get(i+1).getProgress() - 30;
+//            BASS_FX.BASS_BFX_PEAKEQ eq = new BASS_FX.BASS_BFX_PEAKEQ();
+//            eq.fBandwidth = 0.7f;
+//            eq.fQ = 0.0f;
+//            eq.lChannel = BASS_FX.BASS_BFX_CHANALL;
+//            eq.fGain = nLevel;
+//            eq.fCenter = sActivity.equalizerFragment.getArCenters()[i];
+//            BASS.BASS_FXSetParameters(arHFX[i], eq);
+//        }
+//        EffectFragment.applyEffect(hTempStream, item);
+//        String strPathTo;
+//        if(nPurpose == 0) { // saveSongToLocal
+//            int i = 0;
+//            File fileForCheck;
+//            while (true) {
+//                strPathTo = sActivity.getFilesDir() + "/recorded" + String.format(Locale.getDefault(), "%d", i) + ".mp3";
+//                fileForCheck = new File(strPathTo);
+//                if (!fileForCheck.exists()) break;
+//                i++;
+//            }
+//        }
+//        else if(nPurpose == 1) { // export
+//            File fileDir = new File(sActivity.getExternalCacheDir() + "/export");
+//            if(!fileDir.exists()) {
+//                if(!fileDir.mkdir()) System.out.println("ディレクトリが作成できませんでした");
+//            }
+//            strPathTo = sActivity.getExternalCacheDir() + "/export/";
+//            strPathTo += strFileName + ".mp3";
+//            File file = new File(strPathTo);
+//            if(file.exists()) {
+//                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
+//            }
+//        }
+//        else { // saveSongToGallery
+//            File fileDir = new File(sActivity.getExternalCacheDir() + "/export");
+//            if(!fileDir.exists()) {
+//                if(!fileDir.mkdir()) System.out.println("ディレクトリが作成できませんでした");
+//            }
+//            strPathTo = sActivity.getExternalCacheDir() + "/export/export.wav";
+//            File file = new File(strPathTo);
+//            if (file.exists()) {
+//                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
+//            }
+//        }
+//
+//        double _dEnd = BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE));
+//        if(sSelectedPlaylist == sPlayingPlaylist && sSelectedItem == sPlaying) {
+//            if(MainActivity.sLoopA)
+//                BASS.BASS_ChannelSetPosition(hTempStream, BASS.BASS_ChannelSeconds2Bytes(hTempStream, MainActivity.sLoopAPos), BASS.BASS_POS_BYTE);
+//            if(MainActivity.sLoopB)
+//                _dEnd = MainActivity.sLoopBPos;
+//        }
+//        final double dEnd = _dEnd;
+//        int hTempEncode;
+//        if(nPurpose == 2) // saveSongToGallery
+//            hTempEncode = BASSenc.BASS_Encode_Start(hTempStream, strPathTo, BASSenc.BASS_ENCODE_PCM | BASSenc.BASS_ENCODE_FP_16BIT, null, null);
+//        else
+//            hTempEncode = BASSenc_MP3.BASS_Encode_MP3_StartFile(hTempStream, "", 0, strPathTo);
+//        final int hEncode = hTempEncode;
+//        sFinish = false;
+//        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                sFinish = true;
+//            }
+//        });
+//        final AlertDialog alertDialog = builder.create();
+//        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+//            @Override
+//            public void onShow(DialogInterface arg0) {
+//                if(alertDialog.getWindow() != null) {
+//                    WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
+//                    lp.dimAmount = 0.4f;
+//                    alertDialog.getWindow().setAttributes(lp);
+//                }
+//            }
+//        });
+//        alertDialog.show();
+//
+//        if(mSongSavingTask != null && mSongSavingTask.getStatus() == AsyncTask.Status.RUNNING)
+//            mSongSavingTask.cancel(true);
+//        mSongSavingTask = new SongSavingTask(nPurpose, this, hTempStream, hEncode, strPathTo, alertDialog, dEnd);
+//        mSongSavingTask.execute(0);
+//    }
 
     void finishSaveSongToGallery(int hTempStream, int hEncode, String strPathTo, AlertDialog alert) {
         BASSenc.BASS_Encode_Stop(hEncode);
