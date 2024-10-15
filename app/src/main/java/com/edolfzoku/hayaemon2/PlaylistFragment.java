@@ -786,7 +786,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         final BottomMenu menu = new BottomMenu(sActivity);
         menu.setTitle(getString(R.string.selectedSongs));
-        menu.addMenu(getString(R.string.export), sActivity.isDarkMode() ? R.drawable.ic_actionsheet_save_dark : R.drawable.ic_actionsheet_save, new View.OnClickListener() {
+        menu.addMenu(getString(R.string.export), sActivity.isDarkMode() ? R.drawable.ic_actionsheet_share_dark : R.drawable.ic_actionsheet_share, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 exportMultipleSelection();
