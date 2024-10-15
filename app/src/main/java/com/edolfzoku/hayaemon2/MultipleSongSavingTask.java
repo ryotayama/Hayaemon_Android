@@ -1,5 +1,5 @@
 /*
- * SongSavingTask
+ * MultipleSongSavingTask
  *
  * Copyright (c) 2018 Ryota Yamauchi. All rights reserved.
  *
@@ -21,7 +21,6 @@ package com.edolfzoku.hayaemon2;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.un4seen.bass.BASS;
