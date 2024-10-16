@@ -3645,7 +3645,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         Intent share = new Intent();
         share.setAction(Intent.ACTION_SEND_MULTIPLE);
-        share.setType("audio/mp3");
+        share.setType("audio/*");
         PackageManager pm = sActivity.getPackageManager();
         int flag;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) flag = PackageManager.MATCH_ALL;
