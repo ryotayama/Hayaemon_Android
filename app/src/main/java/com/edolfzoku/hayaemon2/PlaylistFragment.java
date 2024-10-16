@@ -3449,7 +3449,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         for (SongItem item : selectedSongs.keySet()) {
             String strPath = item.getPath();
             Uri uri = Uri.parse(strPath);
-            if (hasActiveEffectOrEq(selectedSongs.get(item))) {
+            int sSongIndex = selectedSongs.get(item);
+            EffectSaver saver = sEffects.get(sSelectedPlaylist).get(sSongIndex);
+            if (hasActiveEffectOrEq(sSongIndex)) {
                 int _hTempStream;
                 if (uri.getScheme() != null && uri.getScheme().equals("content")) {
                     ContentResolver cr = sActivity.getApplicationContext().getContentResolver();
@@ -3487,7 +3489,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 _hTempStream = BASS_FX.BASS_FX_TempoCreate(_hTempStream, BASS.BASS_STREAM_DECODE | BASS_FX.BASS_FX_FREESOURCE);
                 final int hTempStream = _hTempStream;
                 int chan = BASS_FX.BASS_FX_TempoGetSource(hTempStream);
-                if (EffectFragment.isReverse())
+                if (sSongIndex == sPlaying ? EffectFragment.isReverse() : saver.isSave() && saver.getEffectItems().get(EffectFragment.EFFECTTYPE_REVERSE).isSelected())
                     BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_REVERSE);
                 else
                     BASS.BASS_ChannelSetAttribute(chan, BASS_FX.BASS_ATTRIB_REVERSE_DIR, BASS_FX.BASS_FX_RVS_FORWARD);
@@ -3523,17 +3525,23 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 int hTempFx31_5 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
                 int hTempFx25 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
                 int hTempFx20 = BASS.BASS_ChannelSetFX(hTempStream, BASS_FX.BASS_FX_BFX_PEAKEQ, 1);
-                BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO, ControlFragment.sSpeed);
-                BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH, ControlFragment.sPitch);
+                BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO,
+                        sSongIndex == sPlaying ? ControlFragment.sSpeed : saver.isSave() ? saver.getSpeed() : 0.0f);
+                BASS.BASS_ChannelSetAttribute(hTempStream, BASS_FX.BASS_ATTRIB_TEMPO_PITCH,
+                        sSongIndex == sPlaying ? ControlFragment.sPitch : saver.isSave() ? saver.getPitch() : 0.0f);
                 int[] arHFX = new int[]{hTempFx20K, hTempFx16K, hTempFx12_5K, hTempFx10K, hTempFx8K, hTempFx6_3K, hTempFx5K, hTempFx4K, hTempFx3_15K, hTempFx2_5K, hTempFx2K, hTempFx1_6K, hTempFx1_25K, hTempFx1K, hTempFx800, hTempFx630, hTempFx500, hTempFx400, hTempFx315, hTempFx250, hTempFx200, hTempFx160, hTempFx125, hTempFx100, hTempFx80, hTempFx63, hTempFx50, hTempFx40, hTempFx31_5, hTempFx25, hTempFx20};
-                float fLevel = sActivity.equalizerFragment.getSeeks().get(0).getProgress() / 100.0f;
+                float fLevel = sSongIndex == sPlaying ? sActivity.equalizerFragment.getSeeks().get(0).getProgress() / 100.0f : saver.isSave() ? saver.getVol() / 100.0f : 1.0f;
                 BASS_FX.BASS_BFX_VOLUME vol = new BASS_FX.BASS_BFX_VOLUME();
                 vol.lChannel = 0;
                 vol.fVolume = fLevel;
                 BASS.BASS_FXSetParameters(hTempFxVol, vol);
 
+                List<Integer> saverEqs = null;
+                if (saver.isSave()) {
+                    saverEqs = Arrays.asList(saver.getEQ20K(), saver.getEQ16K(), saver.getEQ12_5K(), saver.getEQ10K(), saver.getEQ8K(), saver.getEQ6_3K(), saver.getEQ5K(), saver.getEQ4K(), saver.getEQ3_15K(), saver.getEQ2_5K(), saver.getEQ2K(), saver.getEQ1_6K(), saver.getEQ1_25K(), saver.getEQ1K(), saver.getEQ800(), saver.getEQ630(), saver.getEQ500(), saver.getEQ400(), saver.getEQ315(), saver.getEQ250(), saver.getEQ200(), saver.getEQ160(), saver.getEQ125(), saver.getEQ100(), saver.getEQ80(), saver.getEQ63(), saver.getEQ50(), saver.getEQ40(), saver.getEQ31_5(), saver.getEQ25(), saver.getEQ20());
+                }
                 for (int i = 0; i < 31; i++) {
-                    int nLevel = sActivity.equalizerFragment.getSeeks().get(i + 1).getProgress() - 30;
+                    int nLevel = sSongIndex == sPlaying ? sActivity.equalizerFragment.getSeeks().get(i + 1).getProgress() - 30 : saverEqs != null ? saverEqs.get(i) - 30 : 0;
                     BASS_FX.BASS_BFX_PEAKEQ eq = new BASS_FX.BASS_BFX_PEAKEQ();
                     eq.fBandwidth = 0.7f;
                     eq.fQ = 0.0f;
@@ -3556,11 +3564,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 }
 
                 double _dEnd = BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE));
-                if (sSelectedPlaylist == sPlayingPlaylist && sSelectedItem == sPlaying) {
-                    if (MainActivity.sLoopA)
-                        BASS.BASS_ChannelSetPosition(hTempStream, BASS.BASS_ChannelSeconds2Bytes(hTempStream, MainActivity.sLoopAPos), BASS.BASS_POS_BYTE);
-                    if (MainActivity.sLoopB)
-                        _dEnd = MainActivity.sLoopBPos;
+                if (sSelectedPlaylist == sPlayingPlaylist) {
+                    if (sSongIndex == sPlaying) {
+                        if (MainActivity.sLoopA)
+                            BASS.BASS_ChannelSetPosition(hTempStream, BASS.BASS_ChannelSeconds2Bytes(hTempStream, MainActivity.sLoopAPos), BASS.BASS_POS_BYTE);
+                        if (MainActivity.sLoopB)
+                            _dEnd = MainActivity.sLoopBPos;
+                    } else if (saver.isSave()) {
+                        if (saver.isLoopA()) {
+                            BASS.BASS_ChannelSetPosition(hTempStream, BASS.BASS_ChannelSeconds2Bytes(hTempStream, saver.getLoopA()), BASS.BASS_POS_BYTE);
+                        }
+                        if (saver.isLoopB())
+                            _dEnd = saver.getLoopB();
+                    }
                 }
                 final double dEnd = _dEnd;
 
