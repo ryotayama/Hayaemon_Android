@@ -3451,7 +3451,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             Uri uri = Uri.parse(strPath);
             int sSongIndex = selectedSongs.get(item);
             EffectSaver saver = sEffects.get(sSelectedPlaylist).get(sSongIndex);
-            if (hasActiveEffectOrEq(sSongIndex)) {
+            if (hasActiveEffectOrEq(sSongIndex) || strPath.equals("potatoboy.m4a")) {
                 int _hTempStream;
                 if (uri.getScheme() != null && uri.getScheme().equals("content")) {
                     ContentResolver cr = sActivity.getApplicationContext().getContentResolver();
