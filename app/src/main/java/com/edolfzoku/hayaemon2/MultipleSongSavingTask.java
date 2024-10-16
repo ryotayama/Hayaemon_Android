@@ -20,6 +20,7 @@ package com.edolfzoku.hayaemon2;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -29,6 +30,9 @@ import com.un4seen.bass.BASSenc_MP3;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 class MultipleSongSavingTask extends AsyncTask<Integer, Integer, Integer> {
     static class SongStreamInfo {
@@ -92,6 +96,17 @@ class MultipleSongSavingTask extends AsyncTask<Integer, Integer, Integer> {
 
     @Override
     protected void onPostExecute(Integer result) {
-        mPlaylistFragment.finishExportMultipleSelection(mUris, mAlert);
+        List<Boolean> isNeededDeleteFile;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            isNeededDeleteFile = mSongStreamInfos.stream().map(Objects::nonNull).collect(Collectors.toList());
+        } else {
+            List<Boolean> _isNeedDeleteFile = new ArrayList<>();
+            for (SongStreamInfo songStreamInfo : mSongStreamInfos) {
+                _isNeedDeleteFile.add(songStreamInfo != null);
+            }
+            isNeededDeleteFile = _isNeedDeleteFile;
+        }
+
+        mPlaylistFragment.finishExportMultipleSelection(mUris, mAlert, isNeededDeleteFile);
     }
 }

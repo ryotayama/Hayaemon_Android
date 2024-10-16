@@ -3629,13 +3629,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         return false;
     }
 
-    void finishExportMultipleSelection(ArrayList<Uri> uris, AlertDialog alert) {
+    void finishExportMultipleSelection(ArrayList<Uri> uris, AlertDialog alert, List<Boolean> isNeededDeleteFile) {
         if(alert.isShowing()) alert.dismiss();
 
         if(sFinish) {
             for (Uri uri : uris) {
                 if (uri.getPath().matches(sActivity.getExternalCacheDir().getPath())) {
-                    File file = new File(uri.getPath());
+                    File file = new File(sActivity.getExternalCacheDir() + "/export" + uri.getPath());
                     if (!file.delete()) System.out.println("ファイルが削除できませんでした");
                 }
             }
@@ -3659,6 +3659,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
         share.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
         startActivityForResult(Intent.createChooser(share, getString(R.string.export)), 0);
+
+        for (int i = 0; i < isNeededDeleteFile.size(); i++) {
+            if (isNeededDeleteFile.get(i)) {
+                new File(sActivity.getExternalCacheDir() + "/export" + uris.get(i).getPath()).deleteOnExit();
+            }
+        }
     }
 
     void finishSaveSongToGallery(int hTempStream, int hEncode, String strPathTo, AlertDialog alert) {
