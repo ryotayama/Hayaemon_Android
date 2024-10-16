@@ -3541,7 +3541,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     saverEqs = Arrays.asList(saver.getEQ20K(), saver.getEQ16K(), saver.getEQ12_5K(), saver.getEQ10K(), saver.getEQ8K(), saver.getEQ6_3K(), saver.getEQ5K(), saver.getEQ4K(), saver.getEQ3_15K(), saver.getEQ2_5K(), saver.getEQ2K(), saver.getEQ1_6K(), saver.getEQ1_25K(), saver.getEQ1K(), saver.getEQ800(), saver.getEQ630(), saver.getEQ500(), saver.getEQ400(), saver.getEQ315(), saver.getEQ250(), saver.getEQ200(), saver.getEQ160(), saver.getEQ125(), saver.getEQ100(), saver.getEQ80(), saver.getEQ63(), saver.getEQ50(), saver.getEQ40(), saver.getEQ31_5(), saver.getEQ25(), saver.getEQ20());
                 }
                 for (int i = 0; i < 31; i++) {
-                    int nLevel = sSongIndex == sPlaying ? sActivity.equalizerFragment.getSeeks().get(i + 1).getProgress() - 30 : saverEqs != null ? saverEqs.get(i) - 30 : 0;
+                    int nLevel = sSongIndex == sPlaying ? sActivity.equalizerFragment.getSeeks().get(i + 1).getProgress() - 30 : saverEqs != null ? saverEqs.get(i) : 0;
                     BASS_FX.BASS_BFX_PEAKEQ eq = new BASS_FX.BASS_BFX_PEAKEQ();
                     eq.fBandwidth = 0.7f;
                     eq.fQ = 0.0f;
