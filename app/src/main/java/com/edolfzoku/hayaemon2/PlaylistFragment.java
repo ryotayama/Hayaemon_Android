@@ -3584,7 +3584,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 songStreamInfos.add(new MultipleSongSavingTask.SongStreamInfo(hTempStream, strPathTo, dEnd));
             }
             else {
-                uris.add(uri);
+                if (uri.getScheme() != null && uri.getScheme().equals("content")) {
+                    uris.add(uri);
+                } else {
+                    uris.add(FileProvider.getUriForFile(sActivity, "com.edolfzoku.hayaemon2", new File(strPath)));
+                }
                 songStreamInfos.add(null);
             }
         }
@@ -3633,9 +3637,9 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if(alert.isShowing()) alert.dismiss();
 
         if(sFinish) {
-            for (Uri uri : uris) {
-                if (uri.getPath().matches(sActivity.getExternalCacheDir().getPath())) {
-                    File file = new File(sActivity.getExternalCacheDir() + "/export" + uri.getPath());
+            for (int i = 0; i < isNeededDeleteFile.size(); i++) {
+                if (isNeededDeleteFile.get(i)) {
+                    File file = new File(sActivity.getExternalCacheDir() + "/export" + uris.get(i).getPath());
                     if (!file.delete()) System.out.println("ファイルが削除できませんでした");
                 }
             }
