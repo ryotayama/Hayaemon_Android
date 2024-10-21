@@ -91,9 +91,11 @@ import com.un4seen.bass.BASSenc;
 import com.un4seen.bass.BASSenc_MP3;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -971,13 +973,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-    void startAddURL(String strURL) {
+    private boolean showStorageLowAlertIfNeeded() {
+        return showStorageLowAlertIfLowerThan(100);
+    }
+
+    private boolean showStorageLowAlertIfLowerThan(long size) {
         StatFs sf = new StatFs(sActivity.getFilesDir().toString());
         long nFreeSpace;
         if(Build.VERSION.SDK_INT >= 18)
             nFreeSpace = sf.getAvailableBlocksLong() * sf.getBlockSizeLong();
         else nFreeSpace = (long)sf.getAvailableBlocks() * (long)sf.getBlockSize();
-        if(nFreeSpace < 100) {
+        if(nFreeSpace < size) {
             AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.diskFullError);
             builder.setMessage(R.string.diskFullErrorDetail);
             builder.setPositiveButton("OK", null);
@@ -993,8 +999,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 }
             });
             alertDialog.show();
-            return;
+            return true;
         }
+        return false;
+    }
+
+    void startAddURL(String strURL) {
+        if (showStorageLowAlertIfNeeded()) return;
         mProgress = new ProgressBar(sActivity, null, android.R.attr.progressBarStyleHorizontal);
         ProgressDialogBuilder builder = new ProgressDialogBuilder(sActivity, R.string.downloading, mProgress);
 
@@ -1143,30 +1154,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 return;
             }
         }
-        StatFs sf = new StatFs(sActivity.getFilesDir().toString());
-        long nFreeSpace;
-        if(Build.VERSION.SDK_INT >= 18)
-            nFreeSpace = sf.getAvailableBlocksLong() * sf.getBlockSizeLong();
-        else nFreeSpace = (long)sf.getAvailableBlocks() * (long)sf.getBlockSize();
-        if(nFreeSpace < 100) {
-            AlertDialog.Builder builder = new LightDarkDialogBuilder(sActivity, R.string.diskFullError);
-            builder.setMessage(R.string.diskFullErrorDetail);
-            builder.setPositiveButton("OK", null);
-            final AlertDialog alertDialog = builder.create();
-            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(DialogInterface arg0) {
-                    if(alertDialog.getWindow() != null) {
-                        WindowManager.LayoutParams lp = alertDialog.getWindow().getAttributes();
-                        lp.dimAmount = 0.4f;
-                        alertDialog.getWindow().setAttributes(lp);
-                    }
-                }
-            });
-            alertDialog.show();
-            return;
-        }
-
+        if (showStorageLowAlertIfNeeded()) return;
         sActivity.getBtnStopRecording().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -3245,27 +3233,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             }
         }
         else if(nPurpose == 1) { // export
-            File fileDir = new File(sActivity.getExternalCacheDir() + "/export");
-            if(!fileDir.exists()) {
-                if(!fileDir.mkdir()) System.out.println("ディレクトリが作成できませんでした");
-            }
-            strPathTo = sActivity.getExternalCacheDir() + "/export/";
-            strPathTo += strFileName + ".mp3";
-            File file = new File(strPathTo);
-            if(file.exists()) {
-                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
-            }
+            makeAndClearExportDirIfNeeded();
+            strPathTo = sActivity.getExternalCacheDir() + "/export/" + strFileName + ".mp3";
         }
         else { // saveSongToGallery
-            File fileDir = new File(sActivity.getExternalCacheDir() + "/export");
-            if(!fileDir.exists()) {
-                if(!fileDir.mkdir()) System.out.println("ディレクトリが作成できませんでした");
-            }
+            makeAndClearExportDirIfNeeded();
             strPathTo = sActivity.getExternalCacheDir() + "/export/export.wav";
-            File file = new File(strPathTo);
-            if (file.exists()) {
-                if(!file.delete()) System.out.println("ファイルが削除できませんでした");
-            }
         }
 
         double _dEnd = BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE));
@@ -3373,7 +3346,29 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saveFiles(true, true, true, true, false);
     }
 
+    private long getTotalSizeOfFiles(ArrayList<Uri> uris) {
+        ContentResolver cr = sActivity.getContentResolver();
+        long total = 0;
+        for (Uri uri : uris) {
+            if (uri != null) {
+                try {
+                    InputStream in;
+                    if (uri.getScheme() != null && uri.getScheme().equals("content"))
+                        in = cr.openInputStream(uri);
+                    else in = new FileInputStream(uri.toString());
+                    if (in != null) {
+                        total += in.available();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return total;
+    }
+
     void export() {
+        if (showStorageLowAlertIfNeeded()) return;
         ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
         SongItem item = arSongs.get(sSelectedItem);
         saveSong(1, item.getTitle());
@@ -3413,6 +3408,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     void exportMultipleSelection() {
+        if (showStorageLowAlertIfNeeded()) return;
         mProgress = new ProgressBar(sActivity, null, android.R.attr.progressBarStyleHorizontal);
         ProgressDialogBuilder builder = new ProgressDialogBuilder(sActivity, R.string.saving, mProgress);
         sFinish = false;
@@ -3437,12 +3433,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
         HashMap<SongItem, Integer> selectedSongs = new HashMap<>();
+        ArrayList<Uri> maybeCopiedSongs = new ArrayList<>();
         for (int i = 0; i < arSongs.size(); i++) {
             SongItem songItem = arSongs.get(i);
             if (songItem.isSelected()) {
                 selectedSongs.put(songItem, i);
+                Uri uri = Uri.parse(songItem.getPath());
+                if (hasActiveEffectOrEq(i) || !(uri.getScheme() != null && uri.getScheme().equals("content"))) {
+                    maybeCopiedSongs.add(uri);
+                }
             }
         }
+
+        makeAndClearExportDirIfNeeded();
+        if (showStorageLowAlertIfLowerThan(getTotalSizeOfFiles(maybeCopiedSongs))) return;
 
         ArrayList<Uri> uris = new ArrayList<>();
         ArrayList<MultipleSongSavingTask.SongStreamInfo> songStreamInfos = new ArrayList<>();
@@ -3587,7 +3591,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 if (uri.getScheme() != null && uri.getScheme().equals("content")) {
                     uris.add(uri);
                 } else {
-                    uris.add(FileProvider.getUriForFile(sActivity, "com.edolfzoku.hayaemon2", new File(strPath)));
+                    if (item.getPath().contains(".")) {
+                        String extension = item.getPath().substring(item.getPath().lastIndexOf("."));
+                        String filename = "export/" + item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_") + extension;
+                        uri = sActivity.copyTempFileAs(uri, filename);
+                    }
+                    if (uri != null)
+                        uris.add(FileProvider.getUriForFile(sActivity, "com.edolfzoku.hayaemon2", new File(uri.getPath())));
+                    else
+                        uris.add(null);
                 }
                 songStreamInfos.add(null);
             }
@@ -3596,6 +3608,17 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             mMultipleSongSavingTask.cancel(true);
         mMultipleSongSavingTask = new MultipleSongSavingTask(this, uris, alertDialog, songStreamInfos);
         mMultipleSongSavingTask.execute(0);
+    }
+
+    private void makeAndClearExportDirIfNeeded() {
+        File fileDir = new File(sActivity.getExternalCacheDir() + "/export");
+        if(!fileDir.exists()) {
+            if(!fileDir.mkdir()) System.out.println("ディレクトリが作成できませんでした");
+        }
+        File[] files = fileDir.listFiles();
+        for (File f : files) {
+            f.delete();
+        }
     }
 
     private boolean hasActiveEffectOrEq(int sSongIndex) {

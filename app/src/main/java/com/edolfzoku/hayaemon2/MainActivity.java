@@ -933,6 +933,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return Uri.parse(strPath);
     }
 
+    /**
+     * 指定ファイル名でExternalCacheにコピー
+     * @param uri コピー元ファイルのURI
+     * @param filename 指定するファイル名（拡張子を含む）
+     * @return コピー先ファイルのURI
+     */
+    public Uri copyTempFileAs(Uri uri, String filename) {
+        if (!filename.contains(".")) return null;
+        int lastIndexOfDot = filename.lastIndexOf('.');
+        String name = filename.substring(0, lastIndexOfDot);
+        String ext = filename.substring(lastIndexOfDot);
+        String strPath = getExternalCacheDir() + "/" + filename;
+        File file;
+        int i = 0;
+        while(true) {
+            file = new File(strPath);
+            if(!file.exists()) break;
+            i++;
+            strPath = getExternalCacheDir() + "/" + name + "(" + i + ")" + ext;
+        }
+        try {
+            InputStream in;
+            if(uri.getScheme() != null && uri.getScheme().equals("content"))
+                in = getContentResolver().openInputStream(uri);
+            else in = new FileInputStream(uri.toString());
+            FileOutputStream out = new FileOutputStream(file);
+            byte[] buf = new byte[1024];
+            int len;
+            if(in != null) {
+                while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+                in.close();
+            }
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return Uri.parse(strPath);
+    }
+
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
