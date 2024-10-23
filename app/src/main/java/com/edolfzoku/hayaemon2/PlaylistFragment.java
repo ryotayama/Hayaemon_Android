@@ -3454,7 +3454,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
 
         makeAndClearExportDirIfNeeded();
-        if (showStorageLowAlertIfLowerThan(getTotalSizeOfFiles(maybeCopiedSongs))) return;
+        if (showStorageLowAlertIfLowerThan(getTotalSizeOfFiles(maybeCopiedSongs))) {
+            alertDialog.dismiss();
+            return;
+        }
 
         ArrayList<Uri> uris = new ArrayList<>();
         ArrayList<MultipleSongSavingTask.SongStreamInfo> songStreamInfos = new ArrayList<>();
