@@ -3371,11 +3371,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if (showStorageLowAlertIfNeeded()) return;
         ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
         SongItem item = arSongs.get(sSelectedItem);
-        saveSong(1, item.getTitle());
+        if (hasActiveEffectOrEq(sSelectedItem) || item.getPath().equals("potatoboy.m4a")) {
+            saveSong(1, item.getTitle());
+        } else {
+            makeAndClearExportDirIfNeeded();
+            Uri uri = Uri.parse(item.getPath());
+            String filename = "export/" + item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_") + getAudioFileExtension(uri);
+            Uri copied = sActivity.copyTempFileAs(uri, filename);
+            finishExport(0, 0, copied.getPath(), null);
+        }
     }
 
     void finishExport(int hTempStream, int hEncode, String strPathTo, AlertDialog alert) {
-        if(alert.isShowing()) alert.dismiss();
+        if(alert != null && alert.isShowing()) alert.dismiss();
 
         BASSenc.BASS_Encode_Stop(hEncode);
         BASS.BASS_StreamFree(hTempStream);
@@ -3588,19 +3596,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                 songStreamInfos.add(new MultipleSongSavingTask.SongStreamInfo(hTempStream, strPathTo, dEnd));
             }
             else {
-                if (uri.getScheme() != null && uri.getScheme().equals("content")) {
-                    uris.add(uri);
-                } else {
-                    if (item.getPath().contains(".")) {
-                        String extension = item.getPath().substring(item.getPath().lastIndexOf("."));
-                        String filename = "export/" + item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_") + extension;
-                        uri = sActivity.copyTempFileAs(uri, filename);
-                    }
-                    if (uri != null)
-                        uris.add(FileProvider.getUriForFile(sActivity, "com.edolfzoku.hayaemon2", new File(uri.getPath())));
-                    else
-                        uris.add(null);
-                }
+                String filename = "export/" + item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_") + getAudioFileExtension(uri);
+                uri = sActivity.copyTempFileAs(uri, filename);
+                if (uri != null)
+                    uris.add(FileProvider.getUriForFile(sActivity, "com.edolfzoku.hayaemon2", new File(uri.getPath())));
+                else
+                    uris.add(null);
                 songStreamInfos.add(null);
             }
         }
@@ -3608,6 +3609,31 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             mMultipleSongSavingTask.cancel(true);
         mMultipleSongSavingTask = new MultipleSongSavingTask(this, uris, alertDialog, songStreamInfos);
         mMultipleSongSavingTask.execute(0);
+    }
+
+    private String getAudioFileExtension(Uri uri) {
+        String displayName = null;
+
+        if (uri.getScheme() != null && uri.getScheme().equals("content")) {
+            ContentResolver cr = sActivity.getContentResolver();
+            String[] projection = {
+                    MediaStore.Audio.Media.DISPLAY_NAME
+            };
+            try (Cursor cursor = cr.query(uri, projection, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int displayNameIndex = cursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME);
+                    displayName = cursor.getString(displayNameIndex);
+                }
+            }
+        } else {
+            displayName = uri.getPath();
+        }
+
+        if (displayName != null && displayName.contains(".")) {
+            return displayName.substring(displayName.lastIndexOf("."));
+        }
+
+        return "";
     }
 
     private void makeAndClearExportDirIfNeeded() {
