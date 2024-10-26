@@ -73,6 +73,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -3378,7 +3379,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             Uri uri = Uri.parse(item.getPath());
             String filename = "export/" + item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_") + getAudioFileExtension(uri);
             Uri copied = sActivity.copyTempFileAs(uri, filename);
-            finishExport(0, 0, copied.getPath(), null);
+            if (copied != null)
+                finishExport(0, 0, copied.getPath(), null);
         }
     }
 
@@ -3615,7 +3617,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
     }
 
     private String getAudioFileExtension(Uri uri) {
-        String displayName = null;
+        String extension = "";
 
         if (uri.getScheme() != null && uri.getScheme().equals("content")) {
             ContentResolver cr = sActivity.getContentResolver();
@@ -3625,18 +3627,30 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             try (Cursor cursor = cr.query(uri, projection, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
                     int displayNameIndex = cursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME);
-                    displayName = cursor.getString(displayNameIndex);
+                    String displayName = cursor.getString(displayNameIndex);
+                    if (displayName != null && displayName.contains(".")) {
+                        extension = displayName.substring(displayName.lastIndexOf("."));
+                    }
                 }
             }
         } else {
-            displayName = uri.getPath();
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            try {
+                mmr.setDataSource(sActivity, uri);
+                String mime = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
+                extension = "." + MimeTypeMap.getSingleton().getExtensionFromMimeType(mime);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    mmr.release();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
-        if (displayName != null && displayName.contains(".")) {
-            return displayName.substring(displayName.lastIndexOf("."));
-        }
-
-        return "";
+        return extension;
     }
 
     private void makeAndClearExportDirIfNeeded() {
