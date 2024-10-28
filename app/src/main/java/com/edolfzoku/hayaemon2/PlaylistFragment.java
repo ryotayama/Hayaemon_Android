@@ -3372,12 +3372,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         if (showStorageLowAlertIfNeeded()) return;
         ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
         SongItem item = arSongs.get(sSelectedItem);
+        String songTitle = item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_");
         if (hasActiveEffectOrEq(sSelectedItem) || item.getPath().equals("potatoboy.m4a")) {
-            saveSong(1, item.getTitle());
+            saveSong(1, songTitle);
         } else {
             makeAndClearExportDirIfNeeded();
             Uri uri = Uri.parse(item.getPath());
-            String filename = "export/" + item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_") + getAudioFileExtension(uri);
+            String filename = "export/" + songTitle + getAudioFileExtension(uri);
             Uri copied = sActivity.copyTempFileAs(uri, filename);
             if (copied != null)
                 finishExport(0, 0, copied.getPath(), null);
@@ -3568,17 +3569,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                     BASS.BASS_FXSetParameters(arHFX[i], eq);
                 }
                 EffectFragment.applyEffect(hTempStream, item);
-                File fileDir = new File(sActivity.getExternalCacheDir() + "/export");
-                if (!fileDir.exists()) {
-                    if (!fileDir.mkdir())
-                        System.out.println("ディレクトリが作成できませんでした");
-                }
+                makeAndClearExportDirIfNeeded();
                 String strPathTo = sActivity.getExternalCacheDir() + "/export/";
-                strPathTo += item.getTitle() + ".mp3";
+                strPathTo += item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_") + ".mp3";
                 File file = new File(strPathTo);
-                if (file.exists()) {
-                    if (!file.delete()) System.out.println("ファイルが削除できませんでした");
-                }
 
                 double _dEnd = BASS.BASS_ChannelBytes2Seconds(hTempStream, BASS.BASS_ChannelGetLength(hTempStream, BASS.BASS_POS_BYTE));
                 if (sSelectedPlaylist == sPlayingPlaylist) {
