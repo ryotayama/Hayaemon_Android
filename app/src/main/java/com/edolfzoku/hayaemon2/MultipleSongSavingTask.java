@@ -59,6 +59,9 @@ class MultipleSongSavingTask extends AsyncTask<Integer, Integer, Integer> {
     private final ArrayList<MultipleSongSavingTask.SongStreamInfo> mSongStreamInfos = new ArrayList<>();
     private final ArrayList<Uri> mUris = new ArrayList<>();
 
+    private int mProgress = 0;
+    private int mPreviousProgress = 0;
+
     MultipleSongSavingTask(PlaylistFragment playlistFragment, HashMap<SongItem, Integer> selectedSongs, AlertDialog alert) {
         mPlaylistFragment = playlistFragment;
         mSelectedSongs = selectedSongs;
@@ -67,6 +70,7 @@ class MultipleSongSavingTask extends AsyncTask<Integer, Integer, Integer> {
 
     @Override
     protected Integer doInBackground(Integer... _params) {
+        int j = 0;
         for (SongItem item : mSelectedSongs.keySet()) {
             String strPath = item.getPath();
             Uri uri = Uri.parse(strPath);
@@ -198,6 +202,8 @@ class MultipleSongSavingTask extends AsyncTask<Integer, Integer, Integer> {
                 mSongStreamInfos.add(new MultipleSongSavingTask.SongStreamInfo(hTempStream, strPathTo, dEnd));
             }
             else {
+                mProgress = (int) (100.0 / mSelectedSongs.size() * j++ + 1);
+                publishProgress(mProgress);
                 String filename = "export/" + item.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_") + mPlaylistFragment.getAudioFileExtension(uri);
                 uri = PlaylistFragment.sActivity.copyTempFileAs(uri, filename);
                 if (uri != null)
@@ -223,11 +229,17 @@ class MultipleSongSavingTask extends AsyncTask<Integer, Integer, Integer> {
 
                 MainActivity activity = (MainActivity) mPlaylistFragment.getActivity();
                 if (activity == null) return 0;
-                int previousProgress = (int) (100.0 / mSongStreamInfos.size() * i);
-                if (EffectFragment.isReverse())
-                    publishProgress((int) ((songStreamInfo.mEnd - dPos) / songStreamInfo.mEnd * 100.0 / mSongStreamInfos.size() + previousProgress));
-                else
-                    publishProgress((int) (dPos / songStreamInfo.mEnd * 100.0 / mSongStreamInfos.size() + previousProgress));
+                int progress;
+                if (EffectFragment.isReverse()) {
+                    progress = mProgress + (int) ((songStreamInfo.mEnd - dPos) / songStreamInfo.mEnd * 100.0 / mSongStreamInfos.size());
+                } else {
+                    progress = mProgress + (int) (dPos / songStreamInfo.mEnd * 100.0 / mSongStreamInfos.size());
+                }
+
+                if (mPreviousProgress != progress) {
+                    publishProgress(progress);
+                    mPreviousProgress = progress;
+                }
             }
 
             BASSenc.BASS_Encode_Stop(hEncode);
