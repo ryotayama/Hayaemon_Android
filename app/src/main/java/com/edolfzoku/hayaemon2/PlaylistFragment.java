@@ -1556,18 +1556,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
 
         if(requestCode == 1) {
             if(resultCode == RESULT_OK) {
-                if(Build.VERSION.SDK_INT < 19) addSong(sActivity, data.getData());
+                if(Build.VERSION.SDK_INT < 19) addSong(sActivity, data.getData(), null);
                 else {
                     if(data.getClipData() == null) {
                         Uri uri = data.getData();
                         if(uri != null) {
                             try {
                                 sActivity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                                addSong(sActivity, uri);
+                                addSong(sActivity, uri, null);
                             } catch (SecurityException e) {
                                 e.printStackTrace();
+                                String filename = getFileNameFromUri(sActivity.getApplicationContext(), uri);
                                 Uri uriCopy = sActivity.copyFile(uri);
-                                addSong(sActivity, uriCopy);
+                                addSong(sActivity, uriCopy, filename);
                             }
                         }
                     }
@@ -1576,11 +1577,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
                             Uri uri = data.getClipData().getItemAt(i).getUri();
                             try {
                                 sActivity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                                addSong(sActivity, uri);
+                                addSong(sActivity, uri, null);
                             } catch (SecurityException e) {
                                 e.printStackTrace();
+                                String filename = getFileNameFromUri(sActivity.getApplicationContext(), uri);
                                 Uri uriCopy = sActivity.copyFile(uri);
-                                addSong(sActivity, uriCopy);
+                                addSong(sActivity, uriCopy, filename);
                             }
                         }
                     }
@@ -4250,7 +4252,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-    public void addSong(MainActivity sActivity, Uri uri) {
+    public void addSong(MainActivity sActivity, Uri uri, String fileName) {
         if(sSelectedPlaylist < 0) sSelectedPlaylist = 0;
         else if(sSelectedPlaylist >= sPlaylists.size()) sSelectedPlaylist = sPlaylists.size() - 1;
         ArrayList<SongItem> arSongs = sPlaylists.get(sSelectedPlaylist);
@@ -4280,7 +4282,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
             arSongs.add(item);
         }
         else {
-            strTitle = getFileNameFromUri(sActivity.getApplicationContext(), uri);
+            if (fileName != null) {
+                strTitle = fileName;
+            } else {
+                strTitle = getFileNameFromUri(sActivity.getApplicationContext(), uri);
+            }
             if(strTitle == null) {
                 int startIndex = uri.toString().lastIndexOf('/');
                 strTitle = uri.toString().substring(startIndex + 1);
@@ -4471,7 +4477,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener, 
         saveFiles(true, true, true, true, false);
     }
 
-    private String getFileNameFromUri(Context context, Uri uri) {
+    public String getFileNameFromUri(Context context, Uri uri) {
         if (null == uri) return null;
 
         String scheme = uri.getScheme();
