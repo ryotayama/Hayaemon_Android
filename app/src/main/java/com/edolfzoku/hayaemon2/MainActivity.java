@@ -378,27 +378,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if(intent.getType().contains("audio/")) {
                 if(Build.VERSION.SDK_INT < 16)
                 {
-                    Uri uri = copyFile(intent.getData());
+                    Uri uri = intent.getData();
+                    String filename = playlistFragment.getFileNameFromUri(sActivity.getApplicationContext(), uri);
+                    uri = copyFile(uri);
                     if (uri != null)
-                        playlistFragment.addSong(this, uri);
+                        playlistFragment.addSong(this, uri, filename);
                 }
                 else
                 {
                     if(intent.getClipData() == null)
                     {
                         if (intent.getData() != null) {
-                            Uri uri = copyFile(intent.getData());
+                            Uri uri = intent.getData();
+                            String filename = playlistFragment.getFileNameFromUri(sActivity.getApplicationContext(), uri);
+                            uri = copyFile(uri);
                             if (uri != null)
-                                playlistFragment.addSong(this, uri);
+                                playlistFragment.addSong(this, uri, filename);
                         }
                     }
                     else
                     {
                         for(int i = 0; i < intent.getClipData().getItemCount(); i++)
                         {
-                            Uri uri = copyFile(intent.getClipData().getItemAt(i).getUri());
+                            Uri uri = intent.getClipData().getItemAt(i).getUri();
+                            String filename = playlistFragment.getFileNameFromUri(sActivity.getApplicationContext(), uri);
+                            uri = copyFile(intent.getClipData().getItemAt(i).getUri());
                             if (uri != null)
-                                playlistFragment.addSong(this, uri);
+                                playlistFragment.addSong(this, uri, filename);
                         }
                     }
                 }
@@ -1389,7 +1395,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             playlistFragment.addPlaylist(String.format(Locale.getDefault(), "%s 3", getString(R.string.playlist)));
             playlistFragment.selectPlaylist(0);
             for(int i = 0; i < arSongsPath.size(); i++) {
-                playlistFragment.addSong(this, Uri.parse(arSongsPath.get(i)));
+                Uri uri = Uri.parse(arSongsPath.get(i));
+                playlistFragment.addSong(this, uri, playlistFragment.getFileNameFromUri(sActivity.getApplicationContext(), uri));
             }
         }
         else {
