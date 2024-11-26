@@ -100,6 +100,7 @@
     <string name="distortionVolume">음량</string>
     <string name="reverse">역회전재생</string>
     <string name="increaseSpeed">점점 빠르게</string>
+    <string name="newIncreaseSpeed">New increase speed</string>
     <string name="decreaseSpeed">점점 느리게</string>
     <string name="raisePitch">피치 올리기</string>
     <string name="lowerPitch">낮은 피치</string>
@@ -415,4 +416,7 @@
     <string name="copyInfo">Copy info</string>
     <string name="copied1">Copied \"</string>
     <string name="copied2">\" to the clipboard.</string>
+    <string name="increase0.1Every1Sec">Increase 0.1% every 1 sec.</string>
+    <string name="increase1.0Every1Sec">Increase 1.0% every 1 sec.</string>
+    <string name="increase1.0EveryLoop">Increase 1.0% every loop.</string>
 </resources>

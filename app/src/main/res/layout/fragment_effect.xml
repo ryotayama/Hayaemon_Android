@@ -92,160 +92,6 @@
             android:layout_below="@id/relativeEffectTitle"
             />
 
-        <RadioGroup
-            android:id="@+id/radioGroupEffectDetail"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/viewSepEffectDetail"
-            android:checkedButton="@id/radioButtonSpecifiedEffectDetail"
-            >
-
-            <RadioButton
-                android:id="@+id/radioButtonSpecifiedEffectDetail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/volume"
-                android:textSize="15dp"
-                android:textColor="#000000"
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="32dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginEnd="12dp"
-                android:visibility="invisible"
-                android:checked="true"
-            />
-
-            <RelativeLayout
-                android:id="@+id/relativeSpecifiedEffectDetail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:visibility="invisible"
-                >
-
-                <TextView
-                    android:id="@+id/textTimeSpecifiedEffectDetail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/timeWithColon"
-                    android:textSize="15dp"
-                    android:textColor="#000000"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginStart="32dp"
-                    android:layout_alignParentTop="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    />
-
-                <EditText
-                    android:id="@+id/editTimeSpecifiedEffectDetail"
-                    android:textSize="13dp"
-                    android:inputType="text"
-                    android:hint="@null"
-                    android:autofillHints="@null"
-                    android:layout_width="64dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:layout_alignBaseline="@id/textTimeSpecifiedEffectDetail"
-                    android:layout_alignLeft="@+id/editSpeedSpecifiedEffectDetail"
-                    android:layout_alignStart="@+id/editSpeedSpecifiedEffectDetail"
-                    android:layout_alignRight="@+id/editSpeedSpecifiedEffectDetail"
-                    android:layout_alignEnd="@+id/editSpeedSpecifiedEffectDetail"
-                    android:background="@drawable/editborder"
-                    />
-
-                <TextView
-                    android:id="@+id/textSpeedSpecifiedEffectDetail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/speedWithColon"
-                    android:textSize="15dp"
-                    android:textColor="#000000"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginStart="32dp"
-                    android:layout_below="@id/textTimeSpecifiedEffectDetail"
-                    />
-
-                <EditText
-                    android:id="@+id/editSpeedSpecifiedEffectDetail"
-                    android:textSize="13dp"
-                    android:inputType="text"
-                    android:hint="@null"
-                    android:autofillHints="@null"
-                    android:layout_width="64dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:layout_alignBaseline="@id/textSpeedSpecifiedEffectDetail"
-                    android:layout_toRightOf="@id/textSpeedSpecifiedEffectDetail"
-                    android:layout_toEndOf="@id/textSpeedSpecifiedEffectDetail"
-                    android:background="@drawable/editborder"
-                    />
-
-            </RelativeLayout>
-
-            <RadioButton
-                android:id="@+id/radioButtonLoopEffectDetail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/volume"
-                android:textSize="15dp"
-                android:textColor="#000000"
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="32dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginEnd="12dp"
-                android:visibility="invisible"
-                />
-
-            <RelativeLayout
-                android:id="@+id/relativeLoopEffectDetail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:visibility="invisible"
-                >
-
-                <TextView
-                    android:id="@+id/textSpeedLoopEffectDetail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/speedWithColon"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginTop="16dp"
-                    android:textColor="#000000"
-                    android:textSize="15dp"
-                    android:enabled="false"
-                    android:alpha="0.5"
-                    />
-
-                <EditText
-                    android:id="@+id/editSpeedLoopEffectDetail"
-                    android:textSize="13dp"
-                    android:inputType="text"
-                    android:hint="@null"
-                    android:autofillHints="@null"
-                    android:layout_width="64dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:layout_alignBaseline="@id/textSpeedLoopEffectDetail"
-                    android:layout_toRightOf="@id/textSpeedLoopEffectDetail"
-                    android:layout_toEndOf="@id/textSpeedLoopEffectDetail"
-                    android:background="@drawable/editborder"
-                    android:enabled="false"
-                    android:alpha="0.5"
-                    />
-
-            </RelativeLayout>
-
-        </RadioGroup>
-
         <RelativeLayout
             android:id="@+id/relativeEffectTemplates"
             android:layout_width="match_parent"
@@ -3417,6 +3263,253 @@
                 </RelativeLayout>
 
             </RelativeLayout>
+
+        </ScrollView>
+
+        <ScrollView
+            android:id="@+id/scrollIncreaseSpeedCustomize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/viewSepEffectDetail"
+            android:visibility="invisible"
+            >
+
+            <RadioGroup
+                android:id="@+id/radioGroupEffectDetail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/viewSepEffectDetail"
+                android:checkedButton="@id/radioButtonSpecifiedEffectDetail"
+                >
+
+                <RadioButton
+                    android:id="@+id/radioButtonSpecifiedEffectDetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/volume"
+                    android:textSize="15dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:visibility="invisible"
+                    android:checked="true"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeSpecifiedEffectDetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:visibility="invisible"
+                    >
+
+                    <RelativeLayout
+                        android:id="@+id/relativeSpecifiedTopButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        >
+
+                        <Button
+                            android:id="@+id/btnIncreaseSpeedSpecifiedRandom"
+                            android:text="@string/random"
+                            android:textSize="12sp"
+                            android:textColor="@color/btn_text"
+                            android:background="@drawable/resetbutton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:gravity="center"
+                            android:stateListAnimator="@null"
+                            />
+
+                        <Button
+                            android:id="@+id/btnResetIncreaseSpeedSpecified"
+                            android:text="@string/reset"
+                            android:textSize="12sp"
+                            android:textColor="@color/btn_text"
+                            android:background="@drawable/resetbutton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:gravity="center"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginStart="16dp"
+                            android:stateListAnimator="@null"
+                            android:layout_toRightOf="@id/btnIncreaseSpeedSpecifiedRandom"
+                            android:layout_toEndOf="@id/btnIncreaseSpeedSpecifiedRandom"
+                            />
+
+                    </RelativeLayout>
+
+
+                    <TextView
+                        android:id="@+id/textTimeSpecifiedEffectDetail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/timeWithColon"
+                        android:textSize="15dp"
+                        android:textColor="#000000"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_below="@id/relativeSpecifiedTopButton"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        />
+
+                    <EditText
+                        android:id="@+id/editTimeSpecifiedEffectDetail"
+                        android:textSize="13dp"
+                        android:inputType="text"
+                        android:hint="@null"
+                        android:autofillHints="@null"
+                        android:layout_width="64dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:layout_alignTop="@id/textTimeSpecifiedEffectDetail"
+                        android:layout_alignLeft="@id/editSpeedSpecifiedEffectDetail"
+                        android:layout_alignStart="@id/editSpeedSpecifiedEffectDetail"
+                        android:layout_alignRight="@id/editSpeedSpecifiedEffectDetail"
+                        android:layout_alignEnd="@id/editSpeedSpecifiedEffectDetail"
+                        android:background="@drawable/editborder"
+                        />
+
+                    <TextView
+                        android:id="@+id/textSpeedSpecifiedEffectDetail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/speedWithColon"
+                        android:textSize="15dp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginStart="32dp"
+                        android:layout_below="@id/textTimeSpecifiedEffectDetail"
+                        />
+
+                    <EditText
+                        android:id="@+id/editSpeedSpecifiedEffectDetail"
+                        android:textSize="13dp"
+                        android:inputType="text"
+                        android:hint="@null"
+                        android:autofillHints="@null"
+                        android:layout_width="64dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:layout_alignBaseline="@id/textSpeedSpecifiedEffectDetail"
+                        android:layout_toRightOf="@id/textSpeedSpecifiedEffectDetail"
+                        android:layout_toEndOf="@id/textSpeedSpecifiedEffectDetail"
+                        android:background="@drawable/editborder"
+                        />
+
+                </RelativeLayout>
+
+                <RadioButton
+                    android:id="@+id/radioButtonLoopEffectDetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/volume"
+                    android:textSize="15dp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:visibility="invisible"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/relativeLoopEffectDetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:visibility="invisible"
+                    >
+
+                    <RelativeLayout
+                        android:id="@+id/relativeLoopTopButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_centerHorizontal="true"
+                        >
+
+                        <Button
+                            android:id="@+id/btnIncreaseSpeedLoopRandom"
+                            android:text="@string/random"
+                            android:textSize="12sp"
+                            android:textColor="@color/btn_text"
+                            android:background="@drawable/resetbutton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:layout_alignParentTop="true"
+                            android:gravity="center"
+                            android:stateListAnimator="@null"
+                            android:enabled="false"
+                            />
+
+                        <Button
+                            android:id="@+id/btnResetIncreaseSpeedLoop"
+                            android:text="@string/reset"
+                            android:textSize="12sp"
+                            android:textColor="@color/btn_text"
+                            android:background="@drawable/resetbutton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:gravity="center"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginStart="16dp"
+                            android:stateListAnimator="@null"
+                            android:layout_alignParentTop="true"
+                            android:layout_toRightOf="@id/btnIncreaseSpeedLoopRandom"
+                            android:layout_toEndOf="@id/btnIncreaseSpeedLoopRandom"
+                            android:enabled="false"
+                            />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/textSpeedLoopEffectDetail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/speedWithColon"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_below="@id/relativeLoopTopButton"
+                        android:textColor="#000000"
+                        android:textSize="15dp"
+                        android:enabled="false"
+                        android:alpha="0.5"
+                        />
+
+                    <EditText
+                        android:id="@+id/editSpeedLoopEffectDetail"
+                        android:textSize="13dp"
+                        android:inputType="text"
+                        android:hint="@null"
+                        android:autofillHints="@null"
+                        android:layout_width="64dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:layout_toRightOf="@id/textSpeedLoopEffectDetail"
+                        android:layout_toEndOf="@id/textSpeedLoopEffectDetail"
+                        android:layout_alignTop="@id/textSpeedLoopEffectDetail"
+                        android:background="@drawable/editborder"
+                        android:enabled="false"
+                        android:alpha="0.5"
+                        />
+
+                </RelativeLayout>
+
+            </RadioGroup>
 
         </ScrollView>
 

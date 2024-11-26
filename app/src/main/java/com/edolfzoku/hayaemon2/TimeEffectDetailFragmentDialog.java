@@ -83,7 +83,7 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
 
                 TextView textEffectName = mActivity.findViewById(R.id.textEffectName);
                 if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
-                    mActivity.effectFragment.setTimeOfIncreaseSpeed(fTime);
+                    mActivity.effectFragment.setTimeOfIncreaseSpeed(fTime, true);
                 else if(textEffectName.getText().toString().equals(getString(R.string.decreaseSpeed)))
                     mActivity.effectFragment.setTimeOfDecreaseSpeed(fTime);
                 else if(textEffectName.getText().toString().equals(getString(R.string.raisePitch)))
@@ -115,7 +115,7 @@ public class TimeEffectDetailFragmentDialog extends DialogFragment
 
                 TextView textEffectName = mActivity.findViewById(R.id.textEffectName);
                 if(textEffectName.getText().toString().equals(getString(R.string.increaseSpeed)))
-                    mActivity.effectFragment.setTimeOfIncreaseSpeed(fTime);
+                    mActivity.effectFragment.setTimeOfIncreaseSpeed(fTime, true);
                 else if(textEffectName.getText().toString().equals(getString(R.string.decreaseSpeed)))
                     mActivity.effectFragment.setTimeOfDecreaseSpeed(fTime);
                 else if(textEffectName.getText().toString().equals(getString(R.string.raisePitch)))
