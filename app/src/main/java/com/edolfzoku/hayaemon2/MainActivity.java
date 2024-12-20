@@ -1299,7 +1299,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("https://suzuri.jp/hayaemon10th");
+                Uri uri = Uri.parse("https://hayaemon.jp/blog/nenga2025");
                 Intent i = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(i);
                 alertDialog.dismiss();
@@ -1412,7 +1412,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         updateMenuButton();
         if (needsToDisplayDeadline(false, false)) {
             mShowDeadline = true;
-            preferences.edit().putBoolean("bSuzuri202407Displayed", true).apply();
+            preferences.edit().putBoolean("b2025AnniversaryDisplayed", true).apply();
         }
 
         String strVersionName = preferences.getString("versionname", null);
@@ -1797,7 +1797,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             showDeadline();
             SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-            preferences.edit().putBoolean("bSuzuri202407DisplayedFromNotice", true).apply();
+            preferences.edit().putBoolean("b2025AnniversaryDisplayedFromNotice", true).apply();
             updateMenuButton();
         }
         else if(v.getId() == R.id.relativeAddSong) {
@@ -3944,12 +3944,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean needsToDisplayDeadline(boolean fromNotice, boolean ignoreDisplayed) {
         SharedPreferences preferences = getSharedPreferences("SaveData", Activity.MODE_PRIVATE);
-        boolean bSuzuri202407Displayed = preferences.getBoolean(fromNotice ? "bSuzuri202407DisplayedFromNotice" : "bSuzuri202407Displayed", false);
+        boolean b2025AnniversaryDisplayed = preferences.getBoolean(fromNotice ? "b2025AnniversaryDisplayedFromNotice" : "b2025AnniversaryDisplayed", false);
         final Date currentDate = new Date();
         DateFormat formatter = new SimpleDateFormat("yyyy/M/d H:m:s", Locale.getDefault());
         Date dateTo;
         try {
-            dateTo = formatter.parse("2024/8/5 1:59:59");
+            dateTo = formatter.parse("2025/1/15 23:59:59");
         } catch (ParseException e) {
             e.printStackTrace();
             return false;
@@ -3959,7 +3959,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             }
         } else {
-            if (!bSuzuri202407Displayed && currentDate.compareTo(dateTo) <= 0 && Locale.getDefault().equals(Locale.JAPAN)) {
+            if (!b2025AnniversaryDisplayed && currentDate.compareTo(dateTo) <= 0 && Locale.getDefault().equals(Locale.JAPAN)) {
                 return true;
             }
         }
